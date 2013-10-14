@@ -61,11 +61,7 @@ module Renderer
 
   @@html_render = HTMLWithPygments.new(@@markdown_extensions)
 
-  @@renderer = Redcarpet::Markdown.new(@@html_render, @@renderer_options)
-
-  def self.renderer
-    @@renderer
-  end
+  @@default_renderer = Redcarpet::Markdown.new(@@html_render, @@renderer_options)
 
   def self.read_file(path)
     res = ""
@@ -75,7 +71,7 @@ module Renderer
     return res
   end
 
-  def self.render_file(path, rd=@@renderer)
+  def self.render_file(path, rd=@@default_renderer)
     contents = read_file("#{path}.md")
 
     # Strip and capture variable part
