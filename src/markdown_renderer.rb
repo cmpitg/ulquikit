@@ -22,18 +22,18 @@ require 'redcarpet'
 require 'pygments'
 
 class String
-  def has_variable_path?
-    self.start_with? "---\n"
+  def self.has_variable_path?(s)
+    s.start_with? "---\n"
   end
 
-  def strip_vars
-    return {}, self if !self.has_variable_path?
+  def self.strip_vars(s)
+    return {}, s if not String.has_variable_path?(s)
 
-    var_part = self[/^---\n(.*)^---\n/m][4..-5]
+    var_part = s[/^---\n(.*)^---\n/m][4..-5]
     var_part = var_part[0..-3] if var_part.end_with?("\n\n")
 
     # Remove the variable part
-    return var_part, self[(var_part.length + 8)..-1]
+    return var_part, s[(var_part.length + 8)..-1]
   end
 end
 
@@ -79,7 +79,7 @@ module Renderer
     contents = read_file("#{path}.md")
 
     # Strip and capture variable part
-    vars, contents = contents.strip_vars
+    vars, contents = String.strip_vars contents
 
     File.open("#{path}.html", 'w') { |file|
       file.write rd.render(contents)
