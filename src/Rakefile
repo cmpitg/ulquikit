@@ -24,7 +24,7 @@
 require_relative 'markdown_renderer'
 
 task :try do
-  Renderer.render_file("main")
+  Renderer::render_file("main")
 end
 
 task :clean do
