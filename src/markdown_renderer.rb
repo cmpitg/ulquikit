@@ -37,6 +37,12 @@ class String
   end
 end
 
+class HTMLWithPygments < Redcarpet::Render::HTML
+  def block_code(code, language)
+    Pygments.highlight(code, :lexer => language)
+  end
+end
+
 module Renderer
   @@markdown_extensions = {
     :with_toc_data => true,
@@ -52,12 +58,6 @@ module Renderer
     :highlight => true,
     :footnotes => true
   }
-
-  class HTMLWithPygments < Redcarpet::Render::HTML
-    def block_code(code, language)
-      Pygments.highlight(code, :lexer => language)
-    end
-  end
 
   @@html_render = HTMLWithPygments.new(@@markdown_extensions)
 
