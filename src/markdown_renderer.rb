@@ -75,7 +75,7 @@ module Renderer
     return res
   end
 
-  def self.render_file(path, rd)
+  def self.render_file(path, rd=@@renderer)
     contents = read_file("#{path}.md")
 
     # Strip and capture variable part
