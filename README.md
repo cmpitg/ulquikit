@@ -95,7 +95,7 @@ A typical example looks like the following:
   [Espada](http://en.wikipedia.org/wiki/Ulquiorra#Espada).
 
 * Ulquikit is written in literate programming itself using some small scripts
-  to bootstrap.
+  to bootstrap residing in `src/bootstrap` directory.
 
 ## License
 
