@@ -46,8 +46,8 @@ Output is HTML, epub or PDF.
 * Ruby 1.9+
 * Gems:
   - [pygments.rb](https://github.com/tmm1/pygments.rb), wrapper for
-    [Pygments](http://pygments.org/) syntax highlighter
-  - [redcarpet](https://github.com/vmg/redcarpet) for markdown processing
+    [Pygments](http://pygments.org/) syntax highlighter.
+  - [redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
 
 #### Installation command
 
@@ -57,9 +57,9 @@ gem install -V pygments redcarpet
 
 ### Constraints
 
-* Filename contains no space and `:`
-* Fragment name contains no space
-* Fragment names are unique
+* Filename contains no space and `:`.
+* Fragment name contains no space.
+* Fragment names are unique.
 
 ### The Markdown language
 
@@ -73,8 +73,8 @@ processor.
   supported outputs with the following options:
   - All headings will have name anchors.
   - A table of contents is built.
-  - Using **CSS** from `src/styles/`, opt-in
-  - Using **JavaScript** from `src/scripts/`, opt-in
+  - Using **CSS** from `src/styles/`, opt-in.
+  - Using **JavaScript** from `src/scripts/`, opt-in.
 
 ### Directory structure
 
