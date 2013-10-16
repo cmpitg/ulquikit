@@ -81,10 +81,18 @@ processor.
 ```
 project/
   src/
+    images/
     scripts/
     styles/
     main.md
+
+  build/
+    img/
+    js/
+    css/
+
   README.md
+  ...
 ```
 
 ### Process
