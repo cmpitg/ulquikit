@@ -95,6 +95,70 @@ project/
   ...
 ```
 
+Some special directories to note:
+
+* The `src/` directory:
+  - `scripts/` includes JavaScript scripts to be compiled to JavaScript to use
+    in the HTML output of the document.
+  - `styles/` includes CSS or files to be compiled to CSS to use in the HTML
+    output of the document.
+
+* `build/` contains the result of the build process by Ulquikit:
+  - The directory itself contains HTML and/or PDF output.
+  - `img/` is a copy of `images/`.
+  - `js/` contains all JavaScript from or generated from `src/scripts/`.
+  - `css/` contains all CSS from or generated from `src/styles/`.
+
+* The above structure is completely configurable (what's the point of being
+  fully hackable if it's not? (-:).  However, it's strongly advised not to
+  change:
+
+  ```ruby
+  === config-project-structure ===
+
+  class ConfigSingleton
+    include Singleton
+
+    attr_accessor :project_structure
+
+    project_structure = {
+      :main_dir => {
+        :src         => 'src',
+        :build       => 'build',
+      }
+
+      :images => {
+        :src         => 'images',
+        :output      => 'img'
+      },
+
+      :js => {
+        :src         => 'scripts',
+        :output      => 'js',
+        :action      => Producer.method(:compile_js),
+        :file_regex  => /\.js$/
+      },
+
+      :css => {
+        :src         => 'styles',
+        :output      => 'css',
+        :action      => Producer.method(:compile_css),
+        :file_regex  => /\.css$/
+      },
+
+      :md => {
+        :src         => './',
+        :output      => './',
+        :action      => Producer.method(:compile_md),
+        :file_regex  => /\.(html|pdf|epub)$/
+      }
+
+    }
+
+  ======
+
+  ```
+
 ### Process
 
 * Erb
