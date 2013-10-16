@@ -38,7 +38,7 @@ SOURCE_DIRS = %w[scripts/ styles/ images/]
 Dir.ensure_dirs *SOURCE_DIRS
 
 task :clean do
-  sh 'rm -rf *.html'
+  FileUtils.remove_paths *Dir.glob('*.html')
 end
 
 task :nuke => [:clean] do
