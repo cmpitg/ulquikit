@@ -27,6 +27,7 @@
 # * Remove dirs recursively
 # * Check if a file/dir exists
 # * Functional-style apply method
+# * Glob
 #
 
 require_relative 'bootstrap/markdown_renderer'
