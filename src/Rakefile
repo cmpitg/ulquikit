@@ -45,7 +45,7 @@ task :nuke => [:clean] do
 end
 
 task :try do
-  Renderer::render_file("main")
+  Renderer::render_file "main"
 end
 
 task :gen_pygment_styles do
