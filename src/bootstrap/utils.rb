@@ -56,3 +56,15 @@ class Dir
     }
   end
 end
+
+module FileUtils
+  # Remove paths recursively
+  def self.remove_paths(*paths)
+    paths.each { |path|
+      if FileTest.exists? path
+        puts "Removing #{path}"
+        self.rmtree path
+      end
+    }
+  end
+end
