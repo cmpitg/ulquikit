@@ -22,6 +22,17 @@
 #
 
 require_relative 'markdown_renderer'
+require 'pygments'
+
+sh 'mkdir -p scripts/ styles/ images/'
+
+task :clean do
+  sh 'rm -rf *.html'
+end
+
+task :nuke => [:clean] do
+  sh 'rm -rf scripts/* styles/* images/*'
+end
 
 task :try do
   Renderer::render_file("main")
