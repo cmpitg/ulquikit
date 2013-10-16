@@ -38,7 +38,7 @@ task :clean do
 end
 
 task :nuke => [:clean] do
-  sh 'rm -rf scripts/* styles/* images/*'
+  FileUtils.remove_paths 'scripts/', 'styles/', 'images/'
 end
 
 task :try do
