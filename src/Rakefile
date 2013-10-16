@@ -38,6 +38,8 @@ task :try do
   Renderer::render_file("main")
 end
 
-task :clean do
-  sh 'rm -rf *.html'
+task :gen_pygment_styles do
+  File.open('styles/pygments.css', 'w') { |file|
+    file.write Pygments.css
+  }
 end
