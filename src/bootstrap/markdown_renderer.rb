@@ -21,21 +21,7 @@
 require 'redcarpet'
 require 'pygments'
 
-class String
-  def self.has_variable_path?(s)
-    s.start_with? "---\n"
-  end
-
-  def self.strip_vars(s)
-    return {}, s if not String.has_variable_path?(s)
-
-    var_part = s[/^---\n(.*)^---\n/m][4..-5]
-    var_part = var_part[0..-3] if var_part.end_with?("\n\n")
-
-    # Remove the variable part
-    return var_part, s[(var_part.length + 8)..-1]
-  end
-end
+require_relative 'utils'
 
 class HTMLWithPygments < Redcarpet::Render::HTML
   def block_code(code, language)
