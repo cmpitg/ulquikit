@@ -21,6 +21,13 @@
 #    https://github.com/vmg/redcarpet
 #
 
+#
+# Write docs:
+# * Create a dir
+# * Remove dirs recursively
+# * Check if a file/dir exists
+#
+
 require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
 
