@@ -46,3 +46,12 @@ class File
     }
   end
 end
+
+class Dir
+  # Ensure a list of directories exists
+  def self.ensure_dirs(*args)
+    args.each { |dir|
+      Dir.mkdir(dir) if !FileTest.exists?(dir)
+    }
+  end
+end
