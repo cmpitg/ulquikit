@@ -50,9 +50,12 @@ end
 
 class Dir
   # Ensure a list of directories exists
-  def self.ensure_dirs(*args)
-    args.each { |dir|
-      Dir.mkdir(dir) if !FileTest.exists?(dir)
+  def self.ensure_dirs(*dirs)
+    dirs.each { |dir|
+      if !FileTest.exists? dir
+        puts "Creating #{dir}"
+        Dir.mkdir dir
+      end
     }
   end
 end
