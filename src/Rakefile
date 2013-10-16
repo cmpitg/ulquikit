@@ -21,7 +21,7 @@
 #    https://github.com/vmg/redcarpet
 #
 
-require_relative 'markdown_renderer'
+require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
 
 sh 'mkdir -p scripts/ styles/ images/'
