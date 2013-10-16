@@ -18,6 +18,23 @@ In literate programming:
 
 * A program is a real *flow* of words and text.
 
+## Misunderstandings
+
+Some tools like [Docco](http://jashkenas.github.io/docco/) and its *partners
+in crime* are **not** literate programming tools.
+
+*Literate programming* is the term created by Prof. Knuth to indicate a way of
+coding by writing document (**not** documentation).  It's not about *reading*
+source code and documentation but *writing* and *extending* them.  It's not
+about *generating beautiful documentation* but *writing document*.
+
+Nothing personal, but the author(s) Docco have made a terrible mistake by
+*calling* those tools literate programming tools.  Not only do they not get
+the art of it, they spread the wrong idea about Knuth's work as well.
+
+Tools are supposed to get the job done, but please respect the orginal author.
+Name them your ways.
+
 ## Why literate programming?
 
 * Don't you like
