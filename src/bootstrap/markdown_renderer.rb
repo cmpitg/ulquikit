@@ -22,6 +22,7 @@ require 'redcarpet'
 require 'pygments'
 
 require_relative 'utils'
+require_relative 'markdown_renderer_config'
 
 class HTMLWithPygments < Redcarpet::Render::HTML
   def block_code(code, language)
@@ -30,21 +31,6 @@ class HTMLWithPygments < Redcarpet::Render::HTML
 end
 
 module Renderer
-  @@markdown_extensions = {
-    :with_toc_data => true,
-    :prettify => true
-  }
-
-  @@renderer_options = {
-    :autolink => true,
-    :space_after_headers => true,
-    :no_intra_emphasis => true,
-    :fenced_code_blocks => true,
-    :tables => true,
-    :highlight => true,
-    :footnotes => true
-  }
-
   @@html_render = HTMLWithPygments.new(@@markdown_extensions)
 
   @@default_renderer = Redcarpet::Markdown.new(@@html_render, @@renderer_options)
