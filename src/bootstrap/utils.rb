@@ -40,6 +40,7 @@ class String
 end
 
 class File
+  # Write to a file, overwrite if the file exists
   def self.write_file(path, contents)
     File.open(path) { |file|
       file.write contents
