@@ -171,9 +171,9 @@ Some special directories to note:
 * Snippets
 
   ```
-  $newfrag
-  $newfile
-  $addfrag
+  -new-frag
+  -new-file
+  -add-frag
   ```
 
 * Code navigation based on pattern
