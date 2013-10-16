@@ -89,10 +89,13 @@ A typical example looks like the following:
 
 ## Trivia
 
-Ulquikit is named after
-[Ulquiorra Schiffer](http://en.wikipedia.org/wiki/Ulquiorra#Ulquiorra_Schiffer),
-the 4th and is considered the most dangerous
-[Espada](http://en.wikipedia.org/wiki/Ulquiorra#Espada).
+* Ulquikit is named after
+  [Ulquiorra Schiffer](http://en.wikipedia.org/wiki/Ulquiorra#Ulquiorra_Schiffer),
+  the 4th and is considered the most dangerous
+  [Espada](http://en.wikipedia.org/wiki/Ulquiorra#Espada).
+
+* Ulquikit is written in literate programming itself using some small scripts
+  to bootstrap.
 
 ## License
 
