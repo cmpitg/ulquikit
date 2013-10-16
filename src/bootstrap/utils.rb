@@ -39,3 +39,10 @@ class String
   end
 end
 
+class File
+  def self.write_file(path, contents)
+    File.open(path) { |file|
+      file.write contents
+    }
+  end
+end
