@@ -52,7 +52,7 @@ task :try do
   Renderer::render_file "main"
 end
 
-task :gen_pygment_styles do
+task :gen_pygment_css do
   File.open('styles/pygments.css', 'w') { |file|
     file.write Pygments.css
   }
