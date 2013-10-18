@@ -84,6 +84,7 @@ project/
     images/
     scripts/
     styles/
+    templates/
     main.md
 
   build/
@@ -102,6 +103,8 @@ Some special directories to note:
     in the HTML output of the document.
   - `styles/` includes CSS or files to be compiled to CSS to use in the HTML
     output of the document.
+  - `templates/` includes basic template for Markdown documents.  This
+    directory exists in Ulquikit and is optional.
 
 * `build/` contains the result of the build process by Ulquikit:
   - The directory itself contains HTML and/or PDF output.
@@ -122,9 +125,15 @@ Some special directories to note:
     attr_accessor :project_structure
 
     project_structure = {
-      :main_dir => {
+      :main_dirs => {
         :src         => 'src',
         :build       => 'build',
+      }
+
+      :template => {
+        :path        => 'src/templates',
+        :default     => 'main.mab'
+        :action      => Producer.method(:read_template_markaby)
       }
 
       :images => {
