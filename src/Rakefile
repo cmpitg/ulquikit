@@ -33,7 +33,7 @@
 require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
 
-SOURCE_DIRS = %w[scripts/ styles/ images/]
+SOURCE_DIRS = %w[scripts/ styles/ images/ templates/]
 
 Dir.ensure_dirs *SOURCE_DIRS
 
