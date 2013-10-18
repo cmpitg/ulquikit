@@ -48,6 +48,8 @@ Output is HTML, epub or PDF.
   - [pygments.rb](https://github.com/tmm1/pygments.rb), wrapper for
     [Pygments](http://pygments.org/) syntax highlighter.
   - [redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
+  - [nokogiri](http://nokogiri.org/) for HTML/XML processing.
+  - [markaby](https://github.com/markaby/markaby) for templating.
 
 #### Installation command
 
