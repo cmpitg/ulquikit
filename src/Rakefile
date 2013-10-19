@@ -48,12 +48,16 @@ task :nuke => [:clean] do
   FileUtils.remove_paths *Dir.glob("styles/pygments.css")
 end
 
-task :try do
+task :try => [:gen_pygments_css] do
+  BUILD_DIRS.each { |dir|
+    Dir.ensure_dirs File.expand_path("../build/#{dir}")
+  }
   Renderer::render_file "main"
 end
 
-task :gen_pygment_css do
+task :gen_pygments_css do
   File.open('styles/pygments.css', 'w') { |file|
+    # file.write Pygments.css(:style => "monokai")
     file.write Pygments.css
   }
 end
