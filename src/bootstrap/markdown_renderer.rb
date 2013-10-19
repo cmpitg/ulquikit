@@ -36,6 +36,17 @@ module Renderer
 
   @@default_renderer = Redcarpet::Markdown.new(@@html_render, @@renderer_options)
 
+  @@default_template = File.expand_path "templates/main.html"
+
+  @@css_source = "styles"
+  @@js_source  = "scripts"
+
+  @@css_dest   = "css"
+  @@js_dest    = "js"
+
+  @@css_tag = "<link rel='stylesheet' type='text/css' href='%{src}' />"
+  @@js_tag  = "<script type='text/javascript' src='%{src}'></script>"
+
   def self.read_file(path)
     res = ""
     File.open(path, 'r') { |file|
