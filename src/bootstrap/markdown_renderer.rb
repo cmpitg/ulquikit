@@ -73,27 +73,36 @@ class RendererSingleton
   end
 
   def get_css(path=CSSSourceDir)
-    result = []
-    Find.find(path) { |file|
-      if file.end_with? '.css'
-        filename = File.basename file
-        dest = css_dest filename
-        result << CSSTag % { :src => dest }
-        create_file file, dest
-      end
-    }
+    get_assets(:extension => '.css',
+               :source_path => CSSSourceDir,
+               :dest_format => :css_dest,
+               :tag_format => CSSTag)
   end
 
   def get_js(path=JSSourceDir)
+    get_assets(:extension => '.js',
+               :source_path => JSSourceDir,
+               :dest_format => :js_dest,
+               :tag_format => JSTag)
+  end
+
+  def get_assets(args)
+    extension    = args[:extension]
+    src_path     = args[:source_path]
+    dest_format  = method args[:dest_format]
+    tag_format   = args[:tag_format]
+
     result = []
-    Find.find(path) { |file|
-      if file.end_with? '.js'
-        filename = File.basename file
-        dest = js_dest filename
-        result << JSTag % { :src => dest }
+
+    Find.find(src_path) { |file|
+      if file.end_with? extension
+        dest = dest_format.call File.basename(file)
+        result << tag_format % { :src => dest }
         create_file file, dest
       end
     }
+
+    result.join "\n"
   end
 end
 
