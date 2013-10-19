@@ -33,18 +33,19 @@
 require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
 
-SOURCE_DIRS = %w[scripts/ styles/ images/ templates/]
+SOURCE_DIRS = %w[scripts/ styles/ images/]
+BUILD_DIRS = %w[img/ js/ css/]
 
 Dir.ensure_dirs *SOURCE_DIRS
 
-puts TEMPLATE
-
 task :clean do
   FileUtils.remove_paths *Dir.glob('*.html')
+  FileUtils.remove_paths File.expand_path("../build")
 end
 
 task :nuke => [:clean] do
-  FileUtils.remove_paths *SOURCE_DIRS
+  # FileUtils.remove_paths *SOURCE_DIRS
+  FileUtils.remove_paths *Dir.glob("styles/pygments.css")
 end
 
 task :try do
