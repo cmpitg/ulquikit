@@ -65,7 +65,33 @@ module Renderer
     vars, contents = String.strip_vars contents
 
     File.open("#{path}.html", 'w') { |file|
-      file.write rd.render(contents)
+      file.write templates % {
+        :title => "",
+        :contents => rd.render(contents),
+        :js => "",
+        :css => get_css,
+      }
+    }
+  end
+
+  def self.create_file(file, dest)
+    puts "Creating ../build/#{dest}"
+    FileUtils.cp file, "../build/#{dest}"
+  end
+
+  def self.css_dest(filename)
+    "#{@@css_dest}/#{filename}"
+  end
+
+  def self.get_css(path=@@css_source)
+    result = []
+    Find.find(path) { |file|
+      if file.end_with? '.css'
+        filename = File.basename file
+        dest = css_dest filename
+        result << @@css_tag % { :src => dest }
+        create_file file, dest
+      end
     }
   end
 end
