@@ -54,7 +54,7 @@ class Dir
     dirs.each { |dir|
       if !FileTest.exists? dir
         puts "Creating #{dir}"
-        Dir.mkdir dir
+        FileUtils.mkdir_p dir
       end
     }
   end
