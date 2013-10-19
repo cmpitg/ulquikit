@@ -47,7 +47,7 @@ task :nuke => [:clean] do
   FileUtils.remove_paths *Dir.glob("styles/pygments.css")
 end
 
-task :try => [:gen_pygments_css] do
+task :default => [:gen_pygments_css] do
   BUILD_DIRS.each { |dir|
     Dir.ensure_dirs File.expand_path("../build/#{dir}")
   }
