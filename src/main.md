@@ -134,8 +134,8 @@ Some special directories to note:
 
       :template => {
         :path        => 'src/templates',
-        :default     => 'main.mab'
-        :action      => Producer.method(:read_template_markaby)
+        :default     => 'main.html'
+        :action      => Producer.method(:read_template_html)
       }
 
       :images => {
