@@ -20,6 +20,7 @@
 
 require 'redcarpet'
 require 'pygments'
+require 'find'
 
 require_relative 'utils'
 require_relative 'markdown_renderer_config'
