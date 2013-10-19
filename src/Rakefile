@@ -44,7 +44,6 @@ task :clean do
 end
 
 task :nuke => [:clean] do
-  # FileUtils.remove_paths *SOURCE_DIRS
   FileUtils.remove_paths *Dir.glob("styles/pygments.css")
 end
 
