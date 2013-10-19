@@ -21,6 +21,7 @@
 require 'redcarpet'
 require 'pygments'
 require 'find'
+require 'singleton'
 
 require_relative 'utils'
 require_relative 'markdown_renderer_config'
@@ -31,23 +32,15 @@ class HTMLWithPygments < Redcarpet::Render::HTML
   end
 end
 
-module Renderer
-  @@html_render = HTMLWithPygments.new(@@markdown_extensions)
+class RendererSingleton
+  include Singleton
 
-  @@default_renderer = Redcarpet::Markdown.new(@@html_render, @@renderer_options)
+  def initialize
+    @html_render = HTMLWithPygments.new(MarkdownExtensions)
+    @default_renderer = Redcarpet::Markdown.new(@html_render, RendererOptions)
+  end
 
-  @@default_template = File.expand_path "templates/main.html"
-
-  @@css_source = "styles"
-  @@js_source  = "scripts"
-
-  @@css_dest   = "css"
-  @@js_dest    = "js"
-
-  @@css_tag = "<link rel='stylesheet' type='text/css' href='%{src}' />"
-  @@js_tag  = "<script type='text/javascript' src='%{src}'></script>"
-
-  def self.read_file(path)
+  def read_file(path)
     res = ""
     File.open(path, 'r') { |file|
       res = file.read
@@ -55,9 +48,9 @@ module Renderer
     return res
   end
 
-  def self.render_file(path,
-                       template_path=@@default_template,
-                       rd=@@default_renderer)
+  def render_file(path,
+                  template_path=DefaultTemplate,
+                  rd=@default_renderer)
     templates = read_file "#{template_path}"
     contents = read_file "#{path}.md"
 
@@ -74,24 +67,26 @@ module Renderer
     }
   end
 
-  def self.create_file(file, dest)
+  def create_file(file, dest)
     puts "Creating ../build/#{dest}"
     FileUtils.cp file, "../build/#{dest}"
   end
 
-  def self.css_dest(filename)
-    "#{@@css_dest}/#{filename}"
+  def css_dest(filename)
+    "#{CSSDestDir}/#{filename}"
   end
 
-  def self.get_css(path=@@css_source)
+  def get_css(path=CSSSourceDir)
     result = []
     Find.find(path) { |file|
       if file.end_with? '.css'
         filename = File.basename file
         dest = css_dest filename
-        result << @@css_tag % { :src => dest }
+        result << CSSTag % { :src => dest }
         create_file file, dest
       end
     }
   end
 end
+
+Renderer = RendererSingleton.instance
