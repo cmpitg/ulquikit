@@ -55,8 +55,11 @@ module Renderer
     return res
   end
 
-  def self.render_file(path, rd=@@default_renderer)
-    contents = read_file("#{path}.md")
+  def self.render_file(path,
+                       template_path=@@default_template,
+                       rd=@@default_renderer)
+    templates = read_file "#{template_path}"
+    contents = read_file "#{path}.md"
 
     # Strip and capture variable part
     vars, contents = String.strip_vars contents
