@@ -53,7 +53,7 @@ class RendererSingleton
       file.write templates % {
         :title => "",
         :contents => rd.render(contents),
-        :js => "",
+        :js => get_js,
         :css => get_css,
       }
     }
@@ -68,6 +68,10 @@ class RendererSingleton
     "#{CSSDestDir}/#{filename}"
   end
 
+  def js_dest(filename)
+    "#{JSDestDir}/#{filename}"
+  end
+
   def get_css(path=CSSSourceDir)
     result = []
     Find.find(path) { |file|
@@ -75,6 +79,18 @@ class RendererSingleton
         filename = File.basename file
         dest = css_dest filename
         result << CSSTag % { :src => dest }
+        create_file file, dest
+      end
+    }
+  end
+
+  def get_js(path=JSSourceDir)
+    result = []
+    Find.find(path) { |file|
+      if file.end_with? '.js'
+        filename = File.basename file
+        dest = js_dest filename
+        result << JSTag % { :src => dest }
         create_file file, dest
       end
     }
