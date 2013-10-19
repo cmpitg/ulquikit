@@ -40,19 +40,11 @@ class RendererSingleton
     @default_renderer = Redcarpet::Markdown.new(@html_render, RendererOptions)
   end
 
-  def read_file(path)
-    res = ""
-    File.open(path, 'r') { |file|
-      res = file.read
-    }
-    return res
-  end
-
   def render_file(path,
                   template_path=DefaultTemplate,
                   rd=@default_renderer)
-    templates = read_file "#{template_path}"
-    contents = read_file "#{path}.md"
+    templates = File.read_file "#{template_path}"
+    contents = File.read_file "#{path}.md"
 
     # Strip and capture variable part
     vars, contents = String.strip_vars contents

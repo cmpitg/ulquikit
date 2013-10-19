@@ -46,6 +46,15 @@ class File
       file.write contents
     }
   end
+
+  # Read a file and return its contents
+  def self.read_file(path)
+    res = ""
+    File.open(path, 'r') { |file|
+      res = file.read
+    }
+    return res
+  end
 end
 
 class Dir
