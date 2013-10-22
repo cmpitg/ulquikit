@@ -56,7 +56,7 @@ class RendererSingleton
         :contents => rd.render(contents),
         :js => get_js,
         :css => get_css,
-      }
+      }.merge(parse_vars vars_str)
     }
   end
 
@@ -84,6 +84,7 @@ class RendererSingleton
   #   }
   #
   def parse_vars(vars_str)
+    {}
   end
 
   def create_file(file, dest)
