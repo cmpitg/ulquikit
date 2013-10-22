@@ -94,6 +94,7 @@ project/
     img/
     js/
     css/
+    src/
 
   README.md
   ...
@@ -114,6 +115,7 @@ Some special directories to note:
   - `img/` is a copy of `images/`.
   - `js/` contains all JavaScript from or generated from `src/scripts/`.
   - `css/` contains all CSS from or generated from `src/styles/`.
+  - `src/` contains the source code generated from the docs.
 
 * The above structure is completely configurable (what's the point of being
   fully hackable if it's not? (-:).  However, it's strongly advised not to
