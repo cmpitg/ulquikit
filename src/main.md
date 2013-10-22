@@ -1,6 +1,7 @@
 ---
 project_name: Ulquikit
 authors: Duong H. Nguyen <cmpitg AT gmailDOTcom>
+title: Ulquikit
 short_description: A simple literate programming tool in Ruby
 version: 0.0.1
 
