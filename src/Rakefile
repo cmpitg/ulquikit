@@ -30,11 +30,9 @@
 # * Glob
 #
 
+require_relative 'bootstrap/config'
 require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
-
-SOURCE_DIRS = %w[scripts/ styles/ images/]
-BUILD_DIRS = %w[img/ js/ css/]
 
 Dir.ensure_dirs *SOURCE_DIRS
 
