@@ -50,7 +50,7 @@ class RendererSingleton
     # Strip and capture variable part
     vars_str, contents = String.strip_vars contents
 
-    File.open("#{path}.html", 'w') { |file|
+    File.open("../build/#{path}.html", 'w') { |file|
       file.write templates % {
         :title => "",
         :contents => rd.render(contents),
