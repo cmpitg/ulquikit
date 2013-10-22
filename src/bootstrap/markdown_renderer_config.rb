@@ -35,12 +35,3 @@ class RendererSingleton
 end
 
 DefaultTemplate = File.expand_path "templates/main.html"
-
-CSSSourceDir = "styles"
-JSSourceDir  = "scripts"
-
-CSSDestDir   = "css"
-JSDestDir    = "js"
-
-CSSTag = "<link rel='stylesheet' type='text/css' href='%{src}' />"
-JSTag  = "<script type='text/javascript' src='%{src}'></script>"

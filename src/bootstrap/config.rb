@@ -19,3 +19,12 @@
 
 SOURCE_DIRS = %w[scripts/ styles/ images/]
 BUILD_DIRS = %w[img/ js/ css/]
+
+CSSSourceDir = "styles"
+JSSourceDir  = "scripts"
+
+CSSDestDir   = "css"
+JSDestDir    = "js"
+
+CSSTag = "<link rel='stylesheet' type='text/css' href='%{src}' />"
+JSTag  = "<script type='text/javascript' src='%{src}'></script>"

@@ -24,6 +24,7 @@ require 'find'
 require 'singleton'
 
 require_relative 'utils'
+require_relative 'config'
 require_relative 'markdown_renderer_config'
 
 class HTMLWithPygments < Redcarpet::Render::HTML
