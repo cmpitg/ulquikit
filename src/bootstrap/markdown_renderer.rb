@@ -29,7 +29,7 @@ require_relative 'markdown_renderer_config'
 
 class HTMLWithPygments < Redcarpet::Render::HTML
   def block_code(code, language)
-    Pygments.highlight(code, :lexer => language)
+    Pygments.highlight code, :lexer => language
   end
 end
 
@@ -37,8 +37,8 @@ class RendererSingleton
   include Singleton
 
   def initialize
-    @html_render = HTMLWithPygments.new(MarkdownExtensions)
-    @default_renderer = Redcarpet::Markdown.new(@html_render, RendererOptions)
+    @html_render = HTMLWithPygments.new MarkdownExtensions
+    @default_renderer = Redcarpet::Markdown.new @html_render, RendererOptions
   end
 
   def render_file(path,
