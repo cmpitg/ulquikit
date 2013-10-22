@@ -87,7 +87,7 @@ class RendererSingleton
     {}
   end
 
-  def create_file(file, dest)
+  def create_built_file(file, dest)
     puts "Creating ../build/#{dest}"
     FileUtils.cp file, "../build/#{dest}"
   end
@@ -126,7 +126,7 @@ class RendererSingleton
       if file.end_with? extension
         dest = dest_format.call File.basename(file)
         result << tag_format % { :src => dest }
-        create_file file, dest
+        create_built_file file, dest
       end
     }
 
