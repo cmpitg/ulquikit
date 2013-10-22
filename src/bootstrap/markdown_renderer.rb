@@ -48,7 +48,7 @@ class RendererSingleton
     contents = File.read_file "#{path}.md"
 
     # Strip and capture variable part
-    vars, contents = String.strip_vars contents
+    vars_str, contents = String.strip_vars contents
 
     File.open("#{path}.html", 'w') { |file|
       file.write templates % {
@@ -58,6 +58,32 @@ class RendererSingleton
         :css => get_css,
       }
     }
+  end
+
+  # Public: Parsing section that declares variables at the beginning of the
+  # markdown file, returning a Ruby hash.
+  #
+  # E.g.
+  #
+  #   ---
+  #   project_name: Foobar
+  #   authors: The Grr Quux, Friends
+  #   title: Foobar Full Source Code
+  #   short_description: A foo project, with literate programming as its enlightenment
+  #   version: 0.1.1
+  #   ---
+  #
+  # Would become:
+  #
+  #   {
+  #     :project_name => "Foobar",
+  #     :authors => ["The Grr Quux", "Friends"],
+  #     :title => "Foobar Full Source Code",
+  #     :short_description => "A foo project, with literate programming as its enlightenment",
+  #     :version => "0.1.1"
+  #   }
+  #
+  def parse_vars(vars_str)
   end
 
   def create_file(file, dest)
