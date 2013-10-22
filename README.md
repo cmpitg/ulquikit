@@ -6,8 +6,8 @@ tool.
 
 ## Literate programming at a glance
 
-Literate programming is a term coined by the great
-Prof. [Donald E. Knuth](http://en.wikipedia.org/wiki/Donald_Knuth) in 1984,
+Literate programming is a term coined by
+prof. [Donald E. Knuth](http://en.wikipedia.org/wiki/Donald_Knuth) in 1984,
 describing a new way of writing computer programs.
 
 In literate programming:
