@@ -84,7 +84,12 @@ class RendererSingleton
   #   }
   #
   def parse_vars(vars_str)
-    {}
+    result = {}
+    vars_str.each_line { |line|
+      key, val = line.split ':', 2
+      result[key.to_sym] = val
+    }
+    result
   end
 
   def create_built_file(file, dest)
