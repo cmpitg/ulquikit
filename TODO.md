@@ -18,7 +18,7 @@
 
 * Rakefile: use directory task
 
-* Should one-line fragment is supported? (still thinking)
+* Should one-line snippet is supported? (still thinking)
   - Case: conditional control flow
 
     ```elisp
@@ -26,10 +26,10 @@
         (message "Found it")
       -{ proceed-further-when-odd }-)
     ```
-  - No.  In this case, the fragment should be a function call, so it is a
+  - No.  In this case, the snippet should be a function call, so it is a
     semantic unit itself.
 
   - Yes.  Because of performance reason.
 
   - No.  If that the case, the whole statement/condition/whatsoever should be
-    a fragment in its own right.
+    a snippet in its own right.
