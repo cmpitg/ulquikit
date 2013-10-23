@@ -22,7 +22,13 @@ Started as a collection of Ruby scripts used to:
 
 * Build and run tests
 
-Output is HTML, epub or PDF.
+Output is one of the following items:
+
+* A single HTML page with styles
+
+* A PDF file
+
+* An ePub file
 
 ### Features
 
