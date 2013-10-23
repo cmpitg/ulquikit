@@ -42,7 +42,7 @@ class RendererSingleton
   end
 
   def render_file(path,
-                  template_path=DefaultTemplate,
+                  template_path=DEFAULT_TEMPLATE_PATH,
                   rd=@default_renderer)
     templates = File.read_file "#{template_path}"
     contents = File.read_file "#{path}.md"

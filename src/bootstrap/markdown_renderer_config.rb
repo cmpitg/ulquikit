@@ -34,4 +34,4 @@ class RendererSingleton
   }
 end
 
-DefaultTemplate = File.expand_path "templates/main.html"
+DEFAULT_TEMPLATE_PATH = File.expand_path "templates/main.html"
