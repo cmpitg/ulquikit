@@ -75,39 +75,6 @@ Name them your way.
 
 ## Examples
 
-A typical example looks like the following:
-
-    ```scheme
-    === license-header ===
-    ;; -*- mode: scheme -*-
-
-    ;;
-    ;; Copyright 2013 © Nguyễn Hà Dương (cmpitgATgmailDOTcom)
-    ;;
-    ;; This file is part of Foobarquus.
-    ;;
-    ;; Foobarquus is free software: you can redistribute it and/or modify it
-    ;; under the terms of the GNU General Public License as published by
-    ;; the Free Software Foundation, either version 3 of the License, or
-    ;; (at your option) any later version.
-    ;;
-    ;; Foobarquus is distributed in the hope that it will be useful, but
-    ;; WITHOUT ANY WARRANTY; without even the implied warranty of
-    ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-    ;; General Public License for more details.
-    ;;
-    ;; You should have received a copy of the GNU General Public License
-    ;; along with Foobarquus.  If not, see <http://www.gnu.org/licenses/>.
-    ;;
-
-    ======
-
-    _____ file: main.scm _____
-    <<< license-header <<<
-
-
-    __________
-
 ## Trivia
 
 * Ulquikit is named after
