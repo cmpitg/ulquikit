@@ -6,7 +6,7 @@ short_description: How to use Ulquikit
 
 # Ulquikit Guide
 
-### Variables definition
+## Variables definition
 
 * Format:
 
