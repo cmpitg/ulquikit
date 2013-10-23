@@ -74,6 +74,14 @@ Output is one of the following items:
 gem install -V pygments redcarpet
 ```
 
+### Concepts
+
+* Snippets refer to *code snippets* that are used to structure source code.
+  Each snippet has a unique name and either:
+
+  - defines a potion of code, or
+  - defines the structure of a code
+
 ### Constraints
 
 * Filename contains no space and `:`.
