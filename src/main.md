@@ -136,11 +136,47 @@ gem install -V pygments redcarpet
 
 ### The Markdown language
 
-The tool uses Redcarpet as its Markdown processor and Erb as its eRuby
-processor.
+#### How it works
 
-* Erb is called first to transform all placeholders into actual values,
-  producing a pure Markdown file.
+* With HTML as Ulquikit's output, it needs a basic template which defines the
+  structure of the HTML file.  The template is stored in `src/templates/`
+  directory.
+
+* A Markdown processor is used to render the Markdown file as the `<body>` of
+  the result.
+
+#### Process
+
+* Firstly, Ulquikit determines which template is used for the final single
+  HTML file via `MainTemplate`.  By default, `MainTemplate` is `main.html` and
+  its content is supersimple:
+
+  ```ruby
+  === define-main-template ===
+  MainTemplate = "main.html"
+  MainTemplateContent = """<!doctype>
+  <html>
+    <head>
+      <title>%{title}</title>
+      %{css}
+    </head>
+    <body>
+      %{contents}
+      %{js}
+    </body>
+  </html>
+  """
+  ======
+  ```
+
+* Also, the function to process main template is 
+
+* Firstly, Ulquikit reads all templates in `src/templates/`.
+
+* Then, all Markdown files are read and rendered using Redcarpet.  Variable
+  definition part is parsed and all variables are stored in a hash.
+
+* 
 
 * Finally, Redcarpet is called to turn the Markdown file into one of the
   supported outputs with the following options:
