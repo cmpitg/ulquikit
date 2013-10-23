@@ -220,7 +220,11 @@ Some special directories to note:
   - The directory itself contains HTML and/or PDF output.
   - `img/` is a copy of `images/`.
   - `js/` contains all JavaScript from or generated from `src/scripts/`.
-  - `css/` contains all CSS from or generated from `src/styles/`.
+    Unless specified in the config, JavaScript are added using their names in
+    *alphabetical order*.
+  - `css/` contains all CSS from or generated from `src/styles/`.  Unless
+    specified in the config, styles are added using their names in
+    *alphabetical order*.
   - `src/` contains the source code generated from the docs.
 
 * The above structure is completely configurable (what's the point of being
