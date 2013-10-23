@@ -84,6 +84,7 @@ class RendererSingleton
   #   }
   #
   def parse_vars(vars_str)
+    # TODO: parsing array (authors)
     result = {}
     vars_str.each_line { |line|
       key, val = line.split ':', 2
