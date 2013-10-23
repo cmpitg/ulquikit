@@ -14,8 +14,9 @@ short_description: How to use Ulquikit
 
   - For each var: `var_name: value`.
 
-  - Variable names can **only** contain letters or numbers.  This restriction
-    is to keep the names readable and clean.
+  - Variable names can **only** contain letters, numbers, dash (`-`), or
+    underscore (`_`).  This restriction is to keep the names readable and
+    clean.
 
   - Variable values are string, except for `authors`.
 
