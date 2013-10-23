@@ -85,8 +85,54 @@ gem install -V pygments redcarpet
 ### Constraints
 
 * Filename contains no space and `:`.
-* Fragment name contains no space.
-* Fragment names are unique.
+
+* Snippet name contains no space.
+
+* Snippet names are unique.
+
+* **Note**: if the code might be polluted by the character sequences that are
+  used to define snippets, their corresponding regular expressions in config
+  should be redefined.
+
+### Configuration
+
+* All configuration is managed by a singleton named `UlquiConfig`:
+
+* All configuration is modifiable directly by changing the singleton or by
+  placing a YAML file in the `src/` directory.
+
+  ```ruby
+  === config-declaration ===
+  class UlquiConfigSingleton
+    include Singleton
+
+    -{ config-project-structure             }-
+    -{ config-define-snippet-regex          }-
+  end
+
+  UlquiConfig = UlquiConfigSingleton.instance
+  ======
+  ```
+
+* By default, all regular expressions are defined so that source code part of
+  the document looks clean and uncluttered:
+
+  ```ruby
+  === config-define-snippet-regex ===
+  attr_accessor :snippet_def_regex, :file_def_regex, :snippet_add_regex
+
+  @snippet_def_regex = {
+    :begin  => /=== ([^ ]+) ===$/,
+    :end    => /======$/
+  }
+
+  @file_def_regex = {
+    :begin  => /_____ file: ([^ ]+) _____$/,
+    :end    => /__________$/
+  }
+
+  @snippet_add_regex = /-{ ([^ ]+) }-$/
+  ```
 
 ### The Markdown language
 
@@ -148,9 +194,7 @@ Some special directories to note:
   ```ruby
   === config-project-structure ===
 
-  class ConfigSingleton
-    include Singleton
-
+  class UlquiConfigSingleton
     attr_accessor :project_structure
 
     project_structure = {
@@ -197,11 +241,6 @@ Some special directories to note:
 
   ```
 
-### Process
-
-* Erb
-* Markdown
-
 ### Emacs supporting
 
 * Multi-major mode
@@ -215,27 +254,3 @@ Some special directories to note:
   ```
 
 * Code navigation based on pattern
-
-### Fragment definition
-
-```ruby
-FragmentDefinition = {
-    :begin  => /=== ([^ ]+) ===$/,
-    :end    => /======$/
-}
-```
-
-### File definition
-
-```ruby
-FileDefinition = {
-    :begin  => /_____ file: ([^ ]+) _____$/,
-    :end    => /__________$/
-}
-```
-
-### Adding fragment
-
-```ruby
-AddingFragmentRegex = /<<< ([^ ]+) <<<$/
-```
