@@ -43,9 +43,10 @@ end
 
 task :nuke => [:clean] do
   FileUtils.remove_paths *Dir.glob("styles/pygments.css")
+  FileUtils.remove_paths File.expand_path("templates/main.html")
 end
 
-task :default => [:gen_pygments_css] do
+task :default => [:gen_pygments_css, :gen_default_template] do
   BUILD_DIRS.each { |dir|
     Dir.ensure_dirs File.expand_path("../build/#{dir}")
   }
@@ -56,5 +57,11 @@ task :gen_pygments_css do
   File.open('styles/pygments.css', 'w') { |file|
     # file.write Pygments.css(:style => "monokai")
     file.write Pygments.css
+  }
+end
+
+task :gen_default_template do
+  File.open('templates/main.html', 'w') { |file|
+    file.write DEFAULT_TEMPLATE
   }
 end

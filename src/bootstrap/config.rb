@@ -28,3 +28,16 @@ JSDestDir    = "js"
 
 CSSTag = "<link rel='stylesheet' type='text/css' href='%{src}' />"
 JSTag  = "<script type='text/javascript' src='%{src}'></script>"
+
+DEFAULT_TEMPLATE = """<!doctype>
+<html>
+  <head>
+    <title>%{title}</title>
+    %{css}
+  </head>
+  <body>
+    %{contents}
+    %{js}
+  </body>
+</html>
+"""
