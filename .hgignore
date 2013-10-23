@@ -1,2 +1,4 @@
+syntax: regexp
 .*\.html
+src/styles/pygments\.css
 build/
