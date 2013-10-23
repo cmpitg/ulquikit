@@ -183,15 +183,6 @@ gem install -V pygments redcarpet
 * Then, all Markdown files are read and rendered using Redcarpet.  Variable
   definition part is parsed and all variables are stored in a hash.
 
-* 
-
-* Finally, Redcarpet is called to turn the Markdown file into one of the
-  supported outputs with the following options:
-  - All headings will have name anchors.
-  - A table of contents is built.
-  - Using **CSS** from `src/styles/`, opt-in.
-  - Using **JavaScript** from `src/scripts/`, opt-in.
-
 ### Directory structure
 
 ```
