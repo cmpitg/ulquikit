@@ -54,6 +54,8 @@ task :default => [:gen_pygments_css, :gen_default_template] do
 end
 
 task :gen_pygments_css do
+  puts "Generating Pygments styles: styles/pygments.css"
+
   File.open('styles/pygments.css', 'w') { |file|
     # file.write Pygments.css(:style => "monokai")
     file.write Pygments.css
@@ -61,6 +63,8 @@ task :gen_pygments_css do
 end
 
 task :gen_default_template do
+  puts "Generating main template: templates/main.html"
+
   File.open('templates/main.html', 'w') { |file|
     file.write DEFAULT_TEMPLATE
   }
