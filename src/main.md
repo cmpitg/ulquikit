@@ -108,6 +108,7 @@ gem install -V pygments redcarpet
 
     -{ config-project-structure             }-
     -{ config-define-snippet-regex          }-
+    -{ config-default-template              }-
   end
 
   UlquiConfig = UlquiConfigSingleton.instance
@@ -148,13 +149,19 @@ gem install -V pygments redcarpet
 #### Process
 
 * Firstly, Ulquikit determines which template is used for the final single
-  HTML file via `MainTemplate`.  By default, `MainTemplate` is `main.html` and
-  its content is supersimple:
+  HTML file.  If it finds `templates/main.html`, it would read the content of
+  that file as its main template; otherwise, simple template is used
+  (`@main_template_content`).
 
   ```ruby
-  === define-main-template ===
-  MainTemplate = "main.html"
-  MainTemplateContent = """<!doctype>
+  === config-default-template ===
+  attr_accessor :main_template_file, :main_template_content
+
+  @main_template_file = "main.html"
+
+  @main_template_content = File.try_read_file @main_template_content
+
+  @main_template_content = """<!doctype>
   <html>
     <head>
       <title>%{title}</title>
@@ -165,7 +172,7 @@ gem install -V pygments redcarpet
       %{js}
     </body>
   </html>
-  """
+  """ if @main_template_content == ""
   ======
   ```
 
