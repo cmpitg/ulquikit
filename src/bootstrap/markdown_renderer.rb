@@ -36,9 +36,13 @@ end
 class RendererSingleton
   include Singleton
 
+  attr_accessor :html_render, :default_renderer, :css_list, :js_list
+
   def initialize
-    @html_render = HTMLWithPygments.new MarkdownExtensions
-    @default_renderer = Redcarpet::Markdown.new @html_render, RendererOptions
+    @html_render       = HTMLWithPygments.new MarkdownExtensions
+    @default_renderer  = Redcarpet::Markdown.new @html_render, RendererOptions
+    @css_list          = get_css
+    @js_list           = get_js
   end
 
   def render_file(path,
@@ -54,8 +58,8 @@ class RendererSingleton
       file.write templates % {
         :title => "",
         :contents => rd.render(contents),
-        :js => get_js,
-        :css => get_css,
+        :css => @css_list,
+        :js => @js_list,
       }.merge(parse_vars vars_str)
     }
   end
