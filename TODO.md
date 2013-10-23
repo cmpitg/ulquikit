@@ -6,3 +6,4 @@
 * Support different theme set
 * Better code example @ `README.md`
 * Support multiple docs
+* Should multiple-HTML output be supported?
