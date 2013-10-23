@@ -50,7 +50,10 @@ task :default => [:gen_pygments_css, :gen_default_template] do
   BUILD_DIRS.each { |dir|
     Dir.ensure_dirs File.expand_path("../build/#{dir}")
   }
-  Renderer::render_file "main"
+
+  Dir.glob("*.md") { |file|
+    Renderer::render_file File.basename(file, ".md")
+  }
 end
 
 task :gen_pygments_css => 'styles/pygments.css'
