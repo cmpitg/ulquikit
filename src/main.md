@@ -133,6 +133,7 @@ gem install -V pygments redcarpet
   }
 
   @snippet_add_regex = /-{ ([^ ]+) }-$/
+  ===
   ```
 
 ### The Markdown language
