@@ -9,9 +9,13 @@ version: 0.0.1
 
 # Ulquikit
 
-## The literate programming tool
+This is full documentation and source code about Ulquikit.  Ulquikit is
+written using Ulquikit itself.  On how to use Ulquikit in your project, see
+[Ulquikit guide](guide.html).
 
-Started as a collection of Ruby scripts used to:
+## Introduction
+
+Ulquikit started as a collection of Ruby scripts to:
 
 * Generate source code from a
   [Markdown](http://en.wikipedia.org/wiki/Markdown) document
@@ -63,6 +67,8 @@ Output is one of the following items:
   - [markaby](https://github.com/markaby/markaby) for templating.
 
 #### Installation command
+
+(TODO)
 
 ```sh
 gem install -V pygments redcarpet
