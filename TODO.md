@@ -7,3 +7,5 @@
 * Better code example @ `README.md`
 * Support multiple docs
 * Should multiple-HTML output be supported?
+* Rakefile: specify file prerequisites for `gen` tasks
+  - Avoid regenerating generated files
