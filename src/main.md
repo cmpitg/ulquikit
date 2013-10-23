@@ -32,6 +32,10 @@ Output is one of the following items:
 
 ### Features
 
+* **Fully hackable** source code
+
+* [Convention over configuration](http://en.wikipedia.org/wiki/Convention_over_configuration)
+
 * "Visually pleased"
 
 * Output syntax highlighting
