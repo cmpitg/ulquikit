@@ -9,3 +9,4 @@
 * Should multiple-HTML output be supported?
 * Rakefile: specify file prerequisites for `gen` tasks
   - Avoid regenerating generated files
+* Rakefile: use directory task
