@@ -161,7 +161,6 @@ gem install -V pygments redcarpet
   @main_template_file = "main.html"
 
   @main_template_content = File.try_read_file @main_template_content
-
   @main_template_content = """<!doctype>
   <html>
     <head>
@@ -284,7 +283,6 @@ Some special directories to note:
       }
 
     }
-
   ======
 
   ```
