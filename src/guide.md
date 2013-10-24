@@ -125,7 +125,13 @@ By default:
 * To invoke help on a specific command:
 
   ```sh
-  ulqui <command> help
+  ulqui help <command>
+  ```
+
+  or
+
+  ```sh
+  ulqui <command> --help
   ```
 
 * To initialize a Ulquikit project:
