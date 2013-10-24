@@ -151,5 +151,5 @@ By default:
 * To install a new theme from a URL (current supported Github):
 
   ```sh
-  ulqui theme install <github-project-url>
+  ulqui theme install github.com/<user>/<project>
   ```
