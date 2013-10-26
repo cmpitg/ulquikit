@@ -41,13 +41,13 @@ end
 
 class File
   # Write to a file, overwrite if the file exists
-  def self.write_file(path, contents)
+  def self.write_file(path, content)
     File.open(path) { |file|
-      file.write contents
+      file.write content
     }
   end
 
-  # Read a file and return its contents
+  # Read a file and return its content
   def self.read_file(path)
     res = ""
     File.open(path, 'r') { |file|
