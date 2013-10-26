@@ -6,6 +6,37 @@ short_description: How to use Ulquikit
 
 # Ulquikit Guide
 
+## Directory structure overview
+
+A typical project directory would look like the following
+
+```
+<project-name>/
+  build_docs/
+    css/
+    img/
+    js/
+    somefile.html
+    somefile.pdf
+    somefile.epub
+  build_src/
+  themes/
+    <theme-name>/
+      images/
+      scripts/
+      styles/
+      templates/
+      info.yaml
+  src/
+    images/
+    scripts/
+    styles/
+    templates/
+    somefile.md
+  COPYING
+  README
+```
+
 ## Variables definition
 
 * Format:
