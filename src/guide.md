@@ -94,6 +94,17 @@ be created with the command:
 ulqui theme new <theme-name>
 ```
 
+### Use a theme
+
+Simple copy all the contents from `themes/<theme-name>/` to `src/`, or use
+the built-in command:
+
+```sh
+ulqui theme use <theme-name>
+```
+
+If the theme name doesn't exist, nothing will change.
+
 ## Templating
 
 A template is used to insert the result of the compilation process of your
@@ -107,14 +118,14 @@ By default:
     document(s).
 
   - `%{css}` will be replaced by the list of CSS files produced in
-    `src/themes/<theme-name>/css/`, *in alphabetical order*.
+    `themes/<theme-name>/css/`, *in alphabetical order*.
 
   - `%{js}` will be replaced by the list of JavaScript files produced in
-    `src/themes/<theme-name>/js/`
+    `themes/<theme-name>/js/`
 
   - `%{content}` will be replaced by HTML produced from your Markdown document(s).
 
-## Command line
+## Command line references
 
 * To invoke help:
 
@@ -153,6 +164,12 @@ By default:
   ```sh
   ulqui theme install <theme-name>
   ulqui theme install github.com/<user>/<project>
+  ```
+
+* To use a theme:
+
+  ```sh
+  ulqui theme use <theme-name>
   ```
 
 * To build documentation:
