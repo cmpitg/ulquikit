@@ -31,7 +31,7 @@ documents are in HTML process, they can be themed.
 ### Structure
 
 ```
-src/themes/<theme-name>
+themes/<theme-name>
   images/
   scripts/
   styles/
@@ -86,7 +86,7 @@ src/themes/<theme-name>
 ### Creating a theme
 
 To create a theme, simply create the directory structure mentioned above and
-put it into `src/themes/<theme-name>`.  A theme name *should* only contain
+put it into `themes/<theme-name>`.  A theme name *should* only contain
 alphanumberic characters and/or `_` and/or `-`.  The skeleton of a theme could
 be created with the command:
 
