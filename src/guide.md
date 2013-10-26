@@ -66,8 +66,9 @@ themes/<theme-name>
   images/
   scripts/
   styles/
+  templates/
+    page.html
   info.yaml
-  page.html
 ```
 
 * Images, in `<theme-name>/images/`
