@@ -151,5 +151,31 @@ By default:
 * To install a new theme from a URL (current supported Github):
 
   ```sh
+  ulqui theme install <theme-name>
   ulqui theme install github.com/<user>/<project>
+  ```
+
+* To build documentation:
+
+  ```sh
+  ulqui build docs
+  ```
+
+* To extract source code:
+
+  ```sh
+  ulqui build source
+  ```
+
+* To build both docs and source code:
+
+  ```sh
+  ulqui build
+  ```
+
+  which is equivalent to:
+
+  ```sh
+  ulqui build docs
+  ulqui build source
   ```
