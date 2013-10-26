@@ -51,7 +51,7 @@ src/themes/<theme-name>
   no template, the default one is used:
 
   ```html
-  <!doctype>
+  <!doctype html>
   <html>
     <head>
       <title>%{title}</title>
