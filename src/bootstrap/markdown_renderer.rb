@@ -49,15 +49,15 @@ class RendererSingleton
                   template_path=DEFAULT_TEMPLATE_PATH,
                   rd=@default_renderer)
     templates = File.read_file "#{template_path}"
-    contents = File.read_file "#{path}.md"
+    content = File.read_file "#{path}.md"
 
     # Strip and capture variable part
-    vars_str, contents = String.strip_vars contents
+    vars_str, content = String.strip_vars content
 
     File.open("../build/#{path}.html", 'w') { |file|
       file.write templates % {
         :title => "",
-        :contents => rd.render(contents),
+        :content => rd.render(content),
         :css => @css_list,
         :js => @js_list,
       }.merge(parse_vars vars_str)
