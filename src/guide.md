@@ -127,6 +127,8 @@ By default:
 
 ## Command line references
 
+### General commands
+
 * To invoke help:
 
   ```sh
@@ -145,6 +147,8 @@ By default:
   ulqui <command> --help
   ```
 
+### Project management
+
 * To initialize a Ulquikit project:
 
   ```sh
@@ -152,25 +156,6 @@ By default:
   ```
 
   This will create an empty project structure with default theme (named `default`).
-
-* To create a new theme:
-
-  ```sh
-  ulqui theme new <theme-name>
-  ```
-
-* To install a new theme from a URL (current supported Github):
-
-  ```sh
-  ulqui theme install <theme-name>
-  ulqui theme install github.com/<user>/<project>
-  ```
-
-* To use a theme:
-
-  ```sh
-  ulqui theme use <theme-name>
-  ```
 
 * To build documentation:
 
@@ -195,4 +180,25 @@ By default:
   ```sh
   ulqui build docs
   ulqui build source
+  ```
+
+### Theme management
+
+* To create a new theme:
+
+  ```sh
+  ulqui theme new <theme-name>
+  ```
+
+* To install a new theme from a URL (current supported Github):
+
+  ```sh
+  ulqui theme install <theme-name>
+  ulqui theme install github.com/<user>/<project>
+  ```
+
+* To use a theme:
+
+  ```sh
+  ulqui theme use <theme-name>
   ```
