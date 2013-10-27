@@ -326,7 +326,12 @@ Notes:
   ulqui init <project-name>
   ```
 
-  This will create an empty project structure with default theme (named `default`).
+  This will create an empty project structure with default theme.  Or you may
+  want to initialize the project right inside the current directory:
+
+  ```sh
+  ulqui init .
+  ```
 
 * To build documentation:
 
