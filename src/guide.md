@@ -366,11 +366,17 @@ Notes:
   ulqui theme new <theme-name>
   ```
 
-* To install a new theme from a URL (current supported Github):
+* To add a new theme from a URL (current supported Github):
 
   ```sh
-  ulqui theme install <theme-name>
-  ulqui theme install github.com/<user>/<project>
+  ulqui theme add <theme-name>
+  ulqui theme add github.com/<user>/<project>
+  ```
+
+* To remove a theme:
+
+  ```sh
+  ulqui theme remove <theme-name>
   ```
 
 * To use a theme:
