@@ -18,6 +18,13 @@
 
 * Rakefile: use directory task
 
+* Directory structure?
+  - Theme organization:
+    * Install new theme
+    * Using a theme
+    * Modify a theme
+    * **Important**: A theme should be **there** (aka. copied into project dir)
+
 * Should one-line snippet is supported? (still thinking)
   - Case: conditional control flow
 
