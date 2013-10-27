@@ -6,9 +6,130 @@ short_description: The Ulquikit guide
 
 # Ulquikit Guide
 
-## Directory structure overview
+## Full directory structure
 
-A typical project directory would look like the following
+A full Ulquikit project directory structure would look like:
+
+```
+<project-name>/
+  src/
+    images/
+    scripts/
+    styles/
+    templates/
+    config/
+      custom-commands.rb
+      pre-processing.rb
+      post-processing.rb
+    somefile.md
+  COPYING
+  README
+```
+
+The directory names speak for itself.  (Or please *drop me a line if you need
+more explanation*).
+
+However, for the most parts, the simplest project is like the following, and
+it's probably *just* what people need:
+
+```
+<project-name>/
+  src/
+    somefile.md
+  COPYING
+  README.md
+```
+
+See **Typical workflows** section for more about this.
+
+## Typical workflows
+
+### Simple project
+
+This is what most users need:
+
+* Write code and doc straightforward by writing Markdown in `src/`
+
+* The default theme would be used.  Default theme looks like (TODO).
+
+* Docs will be generated in `build_docs/`, code will be generated in
+  `build_src/`.
+
+```
+<project-name>/
+  src/
+    somefile.md
+  COPYING
+  README
+```
+
+### Simple project with custom commands
+
+A simple workflow with Ulquikit would be something similar to:
+
+* Generating docs and source code:
+
+  ```sh
+  ulqui build
+  ```
+
+* Compile the source code:
+
+  ```sh
+  cd build_src/
+
+  # Run whatever command to compile the source code
+  make
+  # rake compile
+  ```
+
+* Run tests or try the program:
+
+  ```sh
+  # Still is build_src/ perhaps, depending on your source code structure
+  make test
+  # or
+  # rake test
+
+  # To run
+  /path/to/executable
+  ```
+
+The is a repeated process and might be very troublesome, thus users might want
+to *define one command to rule them all*:
+
+  ```sh
+  # Generate docs and source code, then compile, and run tests all at once
+  ulqui build_all_then_test
+  ```
+
+This is when the project structure would look like:
+
+```
+<project-name>/
+  src/
+    config/
+      custom-commands.rb
+    somefile.md
+  COPYING
+  README
+```
+
+### Project with theme
+
+```
+<project-name>/
+  src/
+    images/
+    scripts/
+    styles/
+    templates/
+    somefile.md
+  COPYING
+  README
+```
+
+### Output directories
 
 ```
 <project-name>/
@@ -20,21 +141,10 @@ A typical project directory would look like the following
     somefile.pdf
     somefile.epub
   build_src/
-  themes/
-    <theme-name>/
-      images/
-      scripts/
-      styles/
-      templates/
-      info.yaml
-  src/
-    images/
-    scripts/
-    styles/
-    templates/
-    somefile.md
-  COPYING
-  README
+    file_a.rb
+    file_b.rb
+    file_c.rb
+    Rakefile
 ```
 
 ## Variables definition
