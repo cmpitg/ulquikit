@@ -286,6 +286,18 @@ By default:
 
 ## Command line references
 
+Notes:
+
+* Good convention: Main argument(s) go first, options go later:
+
+  ```sh
+  # Do this
+  ulqui theme show-info foo-bar --field demo_url
+
+  # Don't do this
+  ulqui theme show-info --field demo_url foo-bar
+  ```
+
 ### General commands
 
 * To invoke help:
