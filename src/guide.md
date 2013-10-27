@@ -1,7 +1,7 @@
 ---
 title: Ulquikit Guide
 authors: Duong H. Nguyen <cmpitg AT gmailDOTcom>
-short_description: How to use Ulquikit
+short_description: The Ulquikit guide
 ---
 
 # Ulquikit Guide
