@@ -225,12 +225,14 @@ themes/<theme-name>
   [YAML](http://en.wikipedia.org/wiki/YAML) format.  The following fields are
   supported, opt-in:
 
-  - `name`: human-readable name of the theme, for displaying purpose only
-  - `authors`: list of authors, separated by a comma (`,`)
-  - `license`: the license that theme is released under
-  - `url`: URL of the theme
-  - `fetch_command`: command to fetch the theme
-  - `update_command`: command to update the theme
+  - `name`: human-readable name of the theme, for displaying purpose only.
+  - `authors`: list of authors, separated by a comma (`,`).
+  - `license`: the license that theme is released under.
+  - `url`: URL of the theme.
+  - `demo_url`: demo URL so users can preview the theme.
+  - `fetch_command`: command to fetch the theme.
+  - `update_command`: command to update the theme.
+  - `version`: theme version.
 
   E.g. here are the meta-information of the `default` theme:
 
