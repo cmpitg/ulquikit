@@ -384,3 +384,50 @@ Notes:
   ```sh
   ulqui theme use <theme-name>
   ```
+
+* To save the current theme as a theme stored in your local Ulquikit setting,
+  if the theme name has already existed, a prompt will ask if you want to
+  override.  You can also force overriding old theme using `--override`.
+
+  ```sh
+  # Run interactively
+  ulqui theme save
+
+  # Or
+  ulqui theme save <theme-name>
+
+  # Force overriding
+  ulqui theme save <theme-name> --override
+  ```
+
+* To show information of a theme:
+
+  ```sh
+  # Interatively ask for a theme name
+  ulqui theme show-info
+
+  # Or specify yourself
+  ulqui theme show-info <theme-name>
+  ```
+
+  The output would look like:
+
+  ```
+  Name: foo-bar
+  Human-readable name: Foo Bar Github-style
+  Authors: John Doe <jdoe@example.com>, Jane Unknown <jane@example.com>
+  License: GPL v3
+  URL: https://github.com/example/test
+  Demo URL: http://example.com/ulquikit-themes/foo-bar/
+  Fetch command: git clone https://github.com/example/test.git
+  Update command: git pull
+  Version: 0.1.0
+  Local path: /home/johndoe/.config/ulquikit/themes/foo-bar
+  ```
+
+  Or to show only one field about the theme:
+
+  ```sh
+  ulqui theme show-info foo-bar --field demo_url
+  Demo URL: http://example.com/ulquikit-themes/foo-bar/
+  ```
