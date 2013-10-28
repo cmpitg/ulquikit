@@ -175,15 +175,21 @@ Hope the file names speak for themselves.
 * Default variables:
 
   - `project_name`: name of the project.
+
   - `authors`: list of authors as array; if there's only one author, `authors`
     is a normal string.
+
   - `title`: title of the document.
+
   - `short_description` (optional): a short description about the
     project/document.
+
   - `version` (optional): project version, should follow
     [semantic versioning](http://semver.org/).
+
   - `theme` (optional): name of the theme the document uses.  If no `theme` is
     specified, `default` is used.
+
   - `page_template`: name of the template file *without extension* that the
     document uses.
 
