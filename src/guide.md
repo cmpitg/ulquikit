@@ -44,9 +44,7 @@ probably *just* what people need:
 
 ### Simple project
 
-This is what most users need:
-
-* Write code and doc straightforward by writing Markdown in `src/`
+* Write code and doc straightforward by writing Markdown in `src/`.
 
 * The default theme would be used.  Default theme looks like (TODO).
 
@@ -63,7 +61,7 @@ This is what most users need:
 
 ### Simple project with custom commands
 
-A simple workflow with Ulquikit would be something similar to:
+Another simple workflow with Ulquikit would be something similar to:
 
 * Generating docs and source code:
 
@@ -93,15 +91,15 @@ A simple workflow with Ulquikit would be something similar to:
   /path/to/executable
   ```
 
-The is a repeated process and might be very troublesome, thus users might want
-to *define one command to rule them all*:
+This is a repeated process and might be very troublesome, thus users might
+want to *define one command to rule them all*:
 
   ```sh
   # Generate docs and source code, then compile, and run tests all at once
   ulqui build_all_then_test
   ```
 
-This is when the project structure would look like:
+This is when the project structure looks like:
 
 ```
 <project-name>/
