@@ -26,11 +26,11 @@ A full Ulquikit project directory structure would look like:
   README
 ```
 
-The directory names speak for itself.  (Or please *drop me a line if you need
-more explanation*).
+The directory names should speak for itself.  (Please *drop me a line if they
+don't*)
 
-However, for the most parts, the simplest project is like the following, and
-it's probably *just* what people need:
+For the most part, the simplest project looks like the following, and it's
+probably *just* what people need:
 
 ```
 <project-name>/
@@ -39,8 +39,6 @@ it's probably *just* what people need:
   COPYING
   README.md
 ```
-
-See **Typical workflows** section for more about this.
 
 ## Typical workflows
 
