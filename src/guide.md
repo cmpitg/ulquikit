@@ -26,7 +26,7 @@ A full Ulquikit project directory structure would look like:
   README
 ```
 
-The directory names should speak for itself.  (Please *drop me a line if they
+The directory names should speak for themselves.  (Please *drop me a line if they
 don't*)
 
 For the most part, the simplest project looks like the following, and it's
@@ -113,6 +113,9 @@ This is when the project structure looks like:
 
 ### Project with theme
 
+In Ulquikit, document output is themeable.  A simple themed project would look
+similar to:
+
 ```
 <project-name>/
   src/
@@ -142,6 +145,8 @@ This is when the project structure looks like:
     file_c.rb
     Rakefile
 ```
+
+Hope the file names speak for themselves.
 
 ## Document variable definition
 
