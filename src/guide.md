@@ -163,7 +163,7 @@ Users might create those directories manually or use Ulquikit command:
   #     main.html
   ```
 
-  See src/templates/main.html for basic template creation, or check Ulquikit
+  See `src/templates/main.html` for basic template creation, or check Ulquikit
   guide, section **Theming**.
 
 * To create a theme based on a defined theme, you simply *use* that theme:
