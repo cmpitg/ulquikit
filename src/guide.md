@@ -128,6 +128,15 @@ similar to:
   README
 ```
 
+Structure explanation:
+
+* `src/images/` contains images.  Images **should be added using relative URL**.
+* `src/scripts/` contains files to be compiled to JavaScript, or JavaScript
+  themselves.  These scripts will be include in your document(s) *in
+  alphabetical order*.
+* `src/styles/` contains files to be compiles to CSS, or CSS themselves.
+  These CSSs will be include in your document(s) *in alphabetical order*.
+
 ### Output directories
 
 ```
