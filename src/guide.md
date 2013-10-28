@@ -123,6 +123,7 @@ similar to:
     scripts/
     styles/
     templates/
+      main.html
     somefile.md
   COPYING
   README
@@ -131,11 +132,44 @@ similar to:
 Structure explanation:
 
 * `src/images/` contains images.  Images **should be added using relative URL**.
+
 * `src/scripts/` contains files to be compiled to JavaScript, or JavaScript
   themselves.  These scripts will be include in your document(s) *in
   alphabetical order*.
+
 * `src/styles/` contains files to be compiles to CSS, or CSS themselves.
   These CSSs will be include in your document(s) *in alphabetical order*.
+
+* `src/templates/` contains templates to be compile to HTML, or HTML
+  themselves.  These HTMLs define the structure of the document output.  The
+  filenames should contain alphanumberic characters, and `_` and `-` only.
+
+Users might create those directories manually or use Ulquikit command:
+
+* To create an empty theme:
+
+  ```sh
+  ulqui theme init
+
+  # You will then have:
+  #
+  # src/
+  #   images/
+  #   scripts/
+  #   styles/
+  #   templates/
+  #     main.html
+  ```
+
+  See src/templates/main.html for basic template creation, or check Ulquikit
+  guide, section **Theming**.
+
+* To create a theme based on a defined theme, you simply *use* that theme:
+
+  ```sh
+  ulqui theme use <theme-name>
+  ```
+
 
 ### Output directories
 
