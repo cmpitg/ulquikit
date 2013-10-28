@@ -111,6 +111,8 @@ This is when the project structure looks like:
   README
 ```
 
+Please refer to the **Custom commands** section for further information.
+
 ### Project with theme
 
 In Ulquikit, document output is themeable.  A simple themed project would look
