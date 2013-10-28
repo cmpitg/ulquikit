@@ -94,10 +94,10 @@ Another simple workflow with Ulquikit would be something similar to:
 This is a repeated process and might be very troublesome, thus users might
 want to *define one command to rule them all*:
 
-  ```sh
-  # Generate docs and source code, then compile, and run tests all at once
-  ulqui build_all_then_test
-  ```
+```sh
+# Generate docs and source code, then compile, and run tests all at once
+ulqui build_all_then_test
+```
 
 This is when the project structure looks like:
 
