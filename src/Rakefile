@@ -35,8 +35,8 @@ require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
 
 task :clean do
-  FileUtils.remove_paths File.expand_path(BUILD_SRC_DIR)
-  FileUtils.remove_paths File.expand_path(BUILD_DOCS_DIR)
+  FileUtils.remove_paths BUILD_SRC_DIR
+  FileUtils.remove_paths BUILD_DOCS_DIR
 end
 
 task :default do
