@@ -160,7 +160,7 @@ gem install -V pygments redcarpet nokogiri
   @main_template_file = "main.html"
 
   @main_template_content = File.try_read_file @main_template_content
-  @main_template_content = """<!doctype>
+  @main_template_content = """<!DOCTYPE html>
   <html>
     <head>
       <title>%{title}</title>
