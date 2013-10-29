@@ -19,18 +19,18 @@
 
 class RendererSingleton
   MarkdownExtensions = {
-    :with_toc_data => true,
-    :prettify => true
+    :with_toc_data  => true,
+    :prettify       => true,
   }
 
   RendererOptions = {
-    :autolink => true,
-    :space_after_headers => true,
-    :no_intra_emphasis => true,
-    :fenced_code_blocks => true,
-    :tables => true,
-    :highlight => true,
-    :footnotes => true
+    :autolink             => true,
+    :space_after_headers  => true,
+    :no_intra_emphasis    => true,
+    :fenced_code_blocks   => true,
+    :tables               => true,
+    :highlight            => true,
+    :footnotes            => true,
   }
 end
 
