@@ -33,5 +33,3 @@ class RendererSingleton
     :footnotes            => true,
   }
 end
-
-DEFAULT_TEMPLATE_PATH = File.expand_path "templates/main.html"
