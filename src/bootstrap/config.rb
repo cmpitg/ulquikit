@@ -22,14 +22,18 @@ require 'pygments'
 BOOTSTRAP_DIR = File.dirname File.expand_path(__FILE__)
 PROJECT_DIR   = File.expand_path "#{BOOTSTRAP_DIR}../../"
 
-TEMPLATE_DIR    = "#{BOOTSTRAP_DIR}/templates"
+BOOTSTRAP_TEMPLATE_DIR  = "#{BOOTSTRAP_DIR}/templates"
+BOOTSTRAP_CSS_DIR       = "#{BOOTSTRAP_DIR}/css"
+BOOTSTRAP_JS_DIR        = "#{BOOTSTRAP_DIR}/js"
 
 BUILD_SRC_DIR   = "#{PROJECT_DIR}/build_src"
 BUILD_DOCS_DIR  = "#{PROJECT_DIR}/build_doc"
+BUILD_CSS_DIR   = "#{BUILD_DOCS_DIR}/css"
+BUILD_JS_DIR    = "#{BUILD_DOCS_DIR}/js"
 
 ASSETS = [{
-            :source       => "#{BOOTSTRAP_DIR}/css",
-            :destination  => "#{BUILD_DOCS_DIR}/css",
+            :source       => BOOTSTRAP_CSS_DIR,
+            :destination  => BUILD_CSS_DIR,
           }]
 
 CSS_TAG = "<link rel='stylesheet' type='text/css' href='%{src}' />"
