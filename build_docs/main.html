@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Ulquikit
+</title>
+    <link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/github.css' />
+<link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/pygments.css' />
+  </head>
+  <body>
+    <ul>
+<li>
+<a href="#toc_0"></a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_1">Ulquikit</a>
+<ul>
+<li>
+<a href="#toc_2">Introduction</a>
+<ul>
+<li>
+<a href="#toc_3">Features</a>
+</li>
+<li>
+<a href="#toc_4">Requirements</a>
+<ul>
+<li>
+<a href="#toc_5">Installation command</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_6">Concepts</a>
+</li>
+<li>
+<a href="#toc_7">Constraints</a>
+</li>
+<li>
+<a href="#toc_8">Configuration</a>
+</li>
+<li>
+<a href="#toc_9">The Markdown language</a>
+<ul>
+<li>
+<a href="#toc_10">How it works</a>
+</li>
+<li>
+<a href="#toc_11">Process</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_12">Directory structure</a>
+</li>
+<li>
+<a href="#toc_13">Emacs supporting</a>
+</li>
+</ul>
+</li>
+</ul>
+
+    <h2 id="toc_0"></h2>
+
+<h1 id="toc_1">Ulquikit</h1>
+
+<p>This is full documentation and source code about Ulquikit.  Ulquikit is
+written using Ulquikit itself.  On how to use Ulquikit in your project, see
+<a href="guide.html">Ulquikit guide</a>.</p>
+
+<h2 id="toc_2">Introduction</h2>
+
+<p>Ulquikit started as a collection of Ruby scripts to:</p>
+
+<ul>
+<li><p>Generate source code from a
+<a href="http://en.wikipedia.org/wiki/Markdown">Markdown</a> document</p></li>
+<li><p>Build the software using the generated source code</p></li>
+<li><p>Build the documentation from Markdown documents</p></li>
+<li><p>Build and run tests</p></li>
+</ul>
+
+<p>Output is one of the following items:</p>
+
+<ul>
+<li><p>A single HTML page with styles</p></li>
+<li><p>A PDF file</p></li>
+<li><p>An ePub file</p></li>
+</ul>
+
+<h3 id="toc_3">Features</h3>
+
+<ul>
+<li><p><strong>Fully hackable</strong> source code</p></li>
+<li><p><a href="http://en.wikipedia.org/wiki/Convention_over_configuration">Convention over configuration</a></p></li>
+<li><p>&quot;Visually pleased&quot;</p></li>
+<li><p>Output syntax highlighting</p></li>
+<li><p>Convention over configuration</p></li>
+<li><p>Generated source code has references to original documentation with the
+formats:</p>
+
+<ul>
+<li><code class="prettyprint">/path/to/docs:line_number</code></li>
+<li><code class="prettyprint">/path/to/docs:line_number_from:line_number_to</code></li>
+<li><code class="prettyprint">/path/to/docs:/pattern/</code></li>
+<li><code class="prettyprint">/path/to/docs:/pattern_from/,/pattern_to/</code></li>
+</ul>
+
+<p>Editors can make use of this pattern to implement code/doc navigation.</p></li>
+</ul>
+
+<h3 id="toc_4">Requirements</h3>
+
+<ul>
+<li>Ruby 1.9+</li>
+<li>Gems:
+
+<ul>
+<li><a href="https://github.com/tmm1/pygments.rb">pygments.rb</a>, wrapper for
+<a href="http://pygments.org/">Pygments</a> syntax highlighter.</li>
+<li><a href="https://github.com/vmg/redcarpet">redcarpet</a> for markdown processing.</li>
+<li><a href="http://nokogiri.org/">nokogiri</a> for HTML/XML processing.</li>
+</ul></li>
+</ul>
+
+<h4 id="toc_5">Installation command</h4>
+
+<p>(TODO)</p>
+<div class="highlight"><pre>gem install -V pygments redcarpet nokogiri
+</pre></div>
+<h3 id="toc_6">Concepts</h3>
+
+<ul>
+<li><p>Snippets refer to <em>code snippets</em> that are used to structure source code.
+Each snippet has a unique name and either:</p>
+
+<ul>
+<li>defines a potion of code, or</li>
+<li>defines the structure of a code</li>
+</ul></li>
+</ul>
+
+<h3 id="toc_7">Constraints</h3>
+
+<ul>
+<li><p>Filename contains no space and <code class="prettyprint">:</code>.</p></li>
+<li><p>Snippet name contains no space.</p></li>
+<li><p>Snippet names are unique.</p></li>
+<li><p><strong>Note</strong>: if the code might be polluted by the character sequences that are
+used to define snippets, their corresponding regular expressions in config
+should be redefined.</p></li>
+</ul>
+
+<h3 id="toc_8">Configuration</h3>
+
+<ul>
+<li><p>All configuration is managed by a singleton named <code class="prettyprint">UlquiConfig</code>:</p></li>
+<li><p>All configuration is modifiable directly by changing the singleton or by
+placing a YAML file in the <code class="prettyprint">src/</code> directory.</p>
+<div class="highlight"><pre><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">declaration</span> <span class="o">===</span>
+<span class="k">class</span> <span class="nc">UlquiConfigSingleton</span>
+<span class="kp">include</span> <span class="no">Singleton</span>
+
+<span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">project</span><span class="o">-</span><span class="n">structure</span>             <span class="p">}</span><span class="o">-</span>
+<span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">define</span><span class="o">-</span><span class="n">snippet</span><span class="o">-</span><span class="n">regex</span>          <span class="p">}</span><span class="o">-</span>
+<span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">template</span>              <span class="p">}</span><span class="o">-</span>
+<span class="k">end</span>
+
+<span class="no">UlquiConfig</span> <span class="o">=</span> <span class="no">UlquiConfigSingleton</span><span class="o">.</span><span class="n">instance</span>
+<span class="o">======</span>
+</pre></div></li>
+<li><p>By default, all regular expressions are defined so that source code part of
+the document looks clean and uncluttered:</p>
+<div class="highlight"><pre><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">define</span><span class="o">-</span><span class="n">snippet</span><span class="o">-</span><span class="n">regex</span> <span class="o">===</span>
+<span class="kp">attr_accessor</span> <span class="ss">:snippet_def_regex</span><span class="p">,</span> <span class="ss">:file_def_regex</span><span class="p">,</span> <span class="ss">:snippet_add_regex</span>
+
+<span class="vi">@snippet_def_regex</span> <span class="o">=</span> <span class="p">{</span>
+<span class="ss">:begin</span>  <span class="o">=&gt;</span> <span class="sr">/=== ([^ ]+) ===$/</span><span class="p">,</span>
+<span class="ss">:end</span>    <span class="o">=&gt;</span> <span class="sr">/======$/</span>
+<span class="p">}</span>
+
+<span class="vi">@file_def_regex</span> <span class="o">=</span> <span class="p">{</span>
+<span class="ss">:begin</span>  <span class="o">=&gt;</span> <span class="sr">/_____ file: ([^ ]+) _____$/</span><span class="p">,</span>
+<span class="ss">:end</span>    <span class="o">=&gt;</span> <span class="sr">/__________$/</span>
+<span class="p">}</span>
+
+<span class="vi">@snippet_add_regex</span> <span class="o">=</span> <span class="sr">/-{ ([^ ]+) }-$/</span>
+<span class="o">===</span>
+</pre></div></li>
+</ul>
+
+<h3 id="toc_9">The Markdown language</h3>
+
+<h4 id="toc_10">How it works</h4>
+
+<ul>
+<li><p>With HTML as Ulquikit&#39;s output, it needs a basic template which defines the
+structure of the HTML file.  The template is stored in <code class="prettyprint">src/templates/</code>
+directory.</p></li>
+<li><p>A Markdown processor is used to render the Markdown file as the <code class="prettyprint">&lt;body&gt;</code> of
+the result.</p></li>
+</ul>
+
+<h4 id="toc_11">Process</h4>
+
+<ul>
+<li><p>Firstly, Ulquikit determines which template is used for the final single
+HTML file.  If it finds <code class="prettyprint">templates/main.html</code>, it would read the content of
+that file as its main template; otherwise, simple template is used
+(<code class="prettyprint">@main_template_content</code>).</p>
+<div class="highlight"><pre><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">template</span> <span class="o">===</span>
+<span class="kp">attr_accessor</span> <span class="ss">:main_template_file</span><span class="p">,</span> <span class="ss">:main_template_content</span>
+
+<span class="vi">@main_template_file</span> <span class="o">=</span> <span class="s2">&quot;main.html&quot;</span>
+
+<span class="vi">@main_template_content</span> <span class="o">=</span> <span class="no">File</span><span class="o">.</span><span class="n">try_read_file</span> <span class="vi">@main_template_content</span>
+<span class="vi">@main_template_content</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;&lt;!DOCTYPE html&gt;</span>
+<span class="s2">&lt;html&gt;</span>
+<span class="s2">&lt;head&gt;</span>
+<span class="s2">  &lt;title&gt;%{title}&lt;/title&gt;</span>
+<span class="s2">  %{css}</span>
+<span class="s2">&lt;/head&gt;</span>
+<span class="s2">&lt;body&gt;</span>
+<span class="s2">  %{content}</span>
+<span class="s2">  %{js}</span>
+<span class="s2">&lt;/body&gt;</span>
+<span class="s2">&lt;/html&gt;</span>
+<span class="s2">&quot;&quot;&quot;</span> <span class="k">if</span> <span class="vi">@main_template_content</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span>
+<span class="o">======</span>
+</pre></div></li>
+<li><p>Also, the function to process main template is </p></li>
+<li><p>Firstly, Ulquikit reads all templates in <code class="prettyprint">src/templates/</code>.</p></li>
+<li><p>Then, all Markdown files are read and rendered using Redcarpet.  Variable
+definition part is parsed and all variables are stored in a hash.</p></li>
+</ul>
+
+<h3 id="toc_12">Directory structure</h3>
+<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
+  <span class="n">src</span><span class="o">/</span>
+    <span class="n">images</span><span class="o">/</span>
+    <span class="n">scripts</span><span class="o">/</span>
+    <span class="n">styles</span><span class="o">/</span>
+    <span class="n">templates</span><span class="o">/</span>
+    <span class="n">config</span><span class="o">/</span>
+      <span class="n">custom</span><span class="o">-</span><span class="n">commands</span><span class="p">.</span><span class="n">rb</span>
+      <span class="n">pre</span><span class="o">-</span><span class="n">processing</span><span class="p">.</span><span class="n">rb</span>
+      <span class="n">post</span><span class="o">-</span><span class="n">processing</span><span class="p">.</span><span class="n">rb</span>
+    <span class="n">somefile</span><span class="p">.</span><span class="n">md</span>
+  <span class="n">COPYING</span>
+  <span class="n">README</span>
+</pre></div>
+<ul>
+<li><p>The above structure is completely configurable (what&#39;s the point of being
+fully hackable if it&#39;s not? (-:).  However, it&#39;s strongly advised not to
+change:</p>
+<div class="highlight"><pre><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">project</span><span class="o">-</span><span class="n">structure</span> <span class="o">===</span>
+
+<span class="k">class</span> <span class="nc">UlquiConfigSingleton</span>
+<span class="kp">attr_accessor</span> <span class="ss">:project_structure</span>
+
+<span class="n">project_structure</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="ss">:main_dirs</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">&#39;src&#39;</span><span class="p">,</span>
+    <span class="ss">:build</span>       <span class="o">=&gt;</span> <span class="s1">&#39;build&#39;</span><span class="p">,</span>
+  <span class="p">}</span>
+
+  <span class="ss">:template</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:path</span>        <span class="o">=&gt;</span> <span class="s1">&#39;src/templates&#39;</span><span class="p">,</span>
+    <span class="ss">:default</span>     <span class="o">=&gt;</span> <span class="s1">&#39;main.html&#39;</span>
+    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="ss">:read_template_html</span><span class="p">)</span>
+  <span class="p">}</span>
+
+  <span class="ss">:images</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">&#39;images&#39;</span><span class="p">,</span>
+    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">&#39;img&#39;</span>
+  <span class="p">},</span>
+
+  <span class="ss">:js</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">&#39;scripts&#39;</span><span class="p">,</span>
+    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">&#39;js&#39;</span><span class="p">,</span>
+    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="ss">:compile_js</span><span class="p">),</span>
+    <span class="ss">:file_regex</span>  <span class="o">=&gt;</span> <span class="sr">/\.js$/</span>
+  <span class="p">},</span>
+
+  <span class="ss">:css</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">&#39;styles&#39;</span><span class="p">,</span>
+    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">&#39;css&#39;</span><span class="p">,</span>
+    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="ss">:compile_css</span><span class="p">),</span>
+    <span class="ss">:file_regex</span>  <span class="o">=&gt;</span> <span class="sr">/\.css$/</span>
+  <span class="p">},</span>
+
+  <span class="ss">:md</span> <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
+    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">&#39;./&#39;</span><span class="p">,</span>
+    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="o">.</span><span class="n">method</span><span class="p">(</span><span class="ss">:compile_md</span><span class="p">),</span>
+    <span class="ss">:file_regex</span>  <span class="o">=&gt;</span> <span class="sr">/\.(html|pdf|epub)$/</span>
+  <span class="p">}</span>
+
+<span class="p">}</span>
+<span class="o">======</span>
+</pre></div></li>
+</ul>
+
+<h3 id="toc_13">Emacs supporting</h3>
+
+<ul>
+<li><p>Multi-major mode</p></li>
+<li><p>Snippets</p>
+<div class="highlight"><pre><span class="o">-</span><span class="n">new</span><span class="o">-</span><span class="n">frag</span>
+<span class="o">-</span><span class="n">new</span><span class="o">-</span><span class="n">file</span>
+<span class="o">-</span><span class="n">add</span><span class="o">-</span><span class="n">frag</span>
+</pre></div></li>
+<li><p>Code navigation based on pattern</p></li>
+</ul>
+
+    
+  </body>
+</html>
