@@ -167,7 +167,7 @@ gem install -V pygments redcarpet nokogiri
       %{css}
     </head>
     <body>
-      %{contents}
+      %{content}
       %{js}
     </body>
   </html>
@@ -182,47 +182,24 @@ gem install -V pygments redcarpet nokogiri
 * Then, all Markdown files are read and rendered using Redcarpet.  Variable
   definition part is parsed and all variables are stored in a hash.
 
+
 ### Directory structure
 
 ```
-project/
+<project-name>/
   src/
     images/
     scripts/
     styles/
     templates/
-    main.md
-
-  build/
-    img/
-    js/
-    css/
-    src/
-
-  README.md
-  ...
+    config/
+      custom-commands.rb
+      pre-processing.rb
+      post-processing.rb
+    somefile.md
+  COPYING
+  README
 ```
-
-Some special directories to note:
-
-* The `src/` directory:
-  - `scripts/` includes JavaScript scripts to be compiled to JavaScript to use
-    in the HTML output of the document.
-  - `styles/` includes CSS or files to be compiled to CSS to use in the HTML
-    output of the document.
-  - `templates/` includes basic template for Markdown documents.  This
-    directory exists in Ulquikit and is optional.
-
-* `build/` contains the result of the build process by Ulquikit:
-  - The directory itself contains HTML and/or PDF output.
-  - `img/` is a copy of `images/`.
-  - `js/` contains all JavaScript from or generated from `src/scripts/`.
-    Unless specified in the config, JavaScript are added using their names in
-    *alphabetical order*.
-  - `css/` contains all CSS from or generated from `src/styles/`.  Unless
-    specified in the config, styles are added using their names in
-    *alphabetical order*.
-  - `src/` contains the source code generated from the docs.
 
 * The above structure is completely configurable (what's the point of being
   fully hackable if it's not? (-:).  However, it's strongly advised not to
