@@ -20,7 +20,7 @@
 require 'pygments'
 
 BOOTSTRAP_DIR = File.dirname File.expand_path(__FILE__)
-PROJECT_DIR   = File.expand_path "#{BOOTSTRAP_DIR}../../"
+PROJECT_DIR   = File.expand_path "#{BOOTSTRAP_DIR}../../../"
 
 BOOTSTRAP_TEMPLATE_DIR  = "#{BOOTSTRAP_DIR}/templates"
 BOOTSTRAP_CSS_DIR       = "#{BOOTSTRAP_DIR}/css"
