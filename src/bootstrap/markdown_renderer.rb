@@ -113,35 +113,27 @@ class RendererSingleton
     FileUtils.cp source, destination
   end
 
-  def get_css_destination_path(filename)
-    "#{BUILD_CSS_DIR}/#{filename}"
-  end
-
-  def get_js_destination_path(filename)
-    "#{BUILD_JS_DIR}/#{filename}"
-  end
-
   def build_css
-    build_assets(:extension                => '.css',
-                 :source_path              => BOOTSTRAP_CSS_DIR,
-                 :get_destination_path_fn  => method(:get_css_destination_path),
-                 :tag_format               => CSS_TAG)
+    build_assets(:extension         => '.css',
+                 :source_path       => BOOTSTRAP_CSS_DIR,
+                 :destination_path  => BUILD_CSS_DIR,
+                 :tag_format        => CSS_TAG)
   end
 
   def build_js
-    build_assets(:extension                => '.js',
-                 :source_path              => BOOTSTRAP_JS_DIR,
-                 :get_destination_path_fn  => method(:get_js_destination_path),
-                 :tag_format               => JS_TAG)
+    build_assets(:extension         => '.js',
+                 :source_path       => BOOTSTRAP_JS_DIR,
+                 :destination_path  => BUILD_JS_DIR,
+                 :tag_format        => JS_TAG)
   end
 
   # Public: Building assets by copying all assets files from the bootstrap/
   # dirs to BUILD_DOCS_DIR
   def build_assets(args)
-    extension                = args[:extension]
-    src_path                 = args[:source_path]
-    get_destination_path_fn  = args[:get_destination_path_fn]
-    tag_format               = args[:tag_format]
+    extension         = args[:extension]
+    src_path          = args[:source_path]
+    destination_path  = args[:destination_path]
+    tag_format        = args[:tag_format]
 
     return "" if !File.exists?(src_path)
 
@@ -151,7 +143,7 @@ class RendererSingleton
       if file.end_with? extension
         filename    = File.basename file
 
-        destination = get_destination_path_fn.call filename
+        destination = "#{destination_path}/#{filename}"
         source      = "#{src_path}/#{filename}"
 
         result << tag_format % { :src => destination }
