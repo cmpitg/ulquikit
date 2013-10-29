@@ -17,8 +17,16 @@
 # Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+require 'pygments'
+
+BOOTSTRAP_DIR = File.dirname File.expand_path(__FILE__)
+PROJECT_DIR   = File.expand_path "#{BOOTSTRAP_DIR}../../"
+
 SOURCE_DIRS = %w[scripts/ styles/ images/]
 BUILD_DIRS = %w[img/ js/ css/]
+
+BUILD_SRC_DIR   = "#{PROJECT_DIR}/build_src"
+BUILD_DOCS_DIR  = "#{PROJECT_DIR}/build_doc"
 
 CSSSourceDir = "styles"
 JSSourceDir  = "scripts"
