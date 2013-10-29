@@ -260,7 +260,7 @@ themes/<theme-name>
   no template, the default one is used:
 
   ```html
-  <!doctype html>
+  <!DOCTYPE html>
   <html>
     <head>
       <title>%{title}</title>
