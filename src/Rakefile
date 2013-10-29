@@ -34,19 +34,12 @@ require_relative 'bootstrap/config'
 require_relative 'bootstrap/markdown_renderer'
 require 'pygments'
 
-Dir.ensure_dirs *SOURCE_DIRS
-
 task :clean do
-  FileUtils.remove_paths *Dir.glob('*.html')
-  FileUtils.remove_paths File.expand_path("../build")
+  FileUtils.remove_paths File.expand_path(BUILD_SRC_DIR)
+  FileUtils.remove_paths File.expand_path(BUILD_DOCS_DIR)
 end
 
-task :nuke => [:clean] do
-  FileUtils.remove_paths *Dir.glob("styles/pygments.css")
-  FileUtils.remove_paths File.expand_path("templates/main.html")
-end
-
-task :default => [:gen_pygments_css, :gen_default_template] do
+task :default do
   BUILD_DIRS.each { |dir|
     Dir.ensure_dirs File.expand_path("../build/#{dir}")
   }
@@ -56,22 +49,6 @@ task :default => [:gen_pygments_css, :gen_default_template] do
   }
 end
 
-task :gen_pygments_css => 'styles/pygments.css'
-
-task :gen_default_template => 'templates/main.html'
-
-file 'templates/main.html' do |t|
-  puts "Generating main template: #{t.name}"
-
-  File.open(t.name, 'w') { |file|
-    file.write DEFAULT_TEMPLATE
-  }
-end
-
-file 'styles/pygments.css' do |t|
-  puts "Generating Pygments styles: #{t.name}"
-  File.open(t.name, 'w') { |file|
-    # file.write Pygments.css(:style => "monokai")
-    file.write Pygments.css
-  }
+task :gen_pygments_css do
+  File.write_file "#{BOOTSTRAP_DIR}/css/pygments.css", Pygments.css
 end

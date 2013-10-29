@@ -19,9 +19,6 @@
 
 [
  :default,
- :nuke,
- :gen_pygments_css,
- :gen_default_template,
  :clean,
 ].each do |task_name|
   task task_name do
