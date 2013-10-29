@@ -64,14 +64,13 @@ Output is one of the following items:
     [Pygments](http://pygments.org/) syntax highlighter.
   - [redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
   - [nokogiri](http://nokogiri.org/) for HTML/XML processing.
-  - [markaby](https://github.com/markaby/markaby) for templating.
 
 #### Installation command
 
 (TODO)
 
 ```sh
-gem install -V pygments redcarpet
+gem install -V pygments redcarpet nokogiri
 ```
 
 ### Concepts
