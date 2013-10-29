@@ -41,10 +41,11 @@ end
 
 task :default do
   Dir.ensure_dirs BUILD_SRC_DIR, BUILD_DOCS_DIR
-
   ASSETS.each { |asset|
     Dir.ensure_dirs asset[:destination]
   }
+
+  Renderer = RendererSingleton.instance
 
   Dir.glob("*.md") { |file|
     Renderer::render_file File.basename(file, ".md")
