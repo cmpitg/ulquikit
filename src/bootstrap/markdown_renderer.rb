@@ -40,12 +40,15 @@ class RendererSingleton
 
   def initialize
     @html_render       = HTMLWithPygments.new MarkdownExtensions
+
     @default_renderer  = Redcarpet::Markdown.new(@html_render,
                                                  RendererOptions)
+
     @toc_renderer      = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC,
                                                  RendererOptions)
-    @css_list          = get_css
-    @js_list           = get_js
+
+    @css_list  = build_css
+    @js_list   = build_js
   end
 
   def render_file(path,
@@ -109,46 +112,53 @@ class RendererSingleton
     FileUtils.cp file, "../build/#{dest}"
   end
 
-  def css_dest(filename)
-    "#{CSSDestDir}/#{filename}"
+  def get_css_destination_path(filename)
+    "#{BUILD_CSS_DIR}/#{filename}"
   end
 
-  def js_dest(filename)
-    "#{JSDestDir}/#{filename}"
+  def get_js_destination_path(filename)
+    "#{BUILD_JS_DIR}/#{filename}"
   end
 
-  def get_css(path=CSSSourceDir)
-    get_assets(:extension => '.css',
-               :source_path => CSSSourceDir,
-               :dest_format => :css_dest,
-               :tag_format => CSSTag)
+  def build_css
+    build_assets(:extension                => '.css',
+                 :source_path              => BOOTSTRAP_CSS_DIR,
+                 :get_destination_path_fn  => method(:get_css_destination_path),
+                 :tag_format               => CSS_TAG)
   end
 
-  def get_js(path=JSSourceDir)
-    get_assets(:extension => '.js',
-               :source_path => JSSourceDir,
-               :dest_format => :js_dest,
-               :tag_format => JSTag)
+  def build_js
+    build_assets(:extension                => '.js',
+                 :source_path              => BOOTSTRAP_JS_DIR,
+                 :get_destination_path_fn  => method(:get_js_destination_path),
+                 :tag_format               => JS_TAG)
   end
 
-  def get_assets(args)
-    extension    = args[:extension]
-    src_path     = args[:source_path]
-    dest_format  = method args[:dest_format]
-    tag_format   = args[:tag_format]
+  # Public: Building assets by copying all assets files from the bootstrap/
+  # dirs to BUILD_DOCS_DIR
+  def build_assets(args)
+    extension                = args[:extension]
+    src_path                 = args[:source_path]
+    get_destination_path_fn  = args[:get_destination_path_fn]
+    tag_format               = args[:tag_format]
+
+    return "" if !File.exists?(src_path)
 
     result = []
 
     Find.find(src_path) { |file|
       if file.end_with? extension
-        dest = dest_format.call File.basename(file)
-        result << tag_format % { :src => dest }
-        create_built_file file, dest
+        filename    = File.basename file
+
+        destination = get_destination_path_fn.call filename
+        source      = "#{src_path}/#{filename}"
+
+        result << tag_format % { :src => destination }
+
+        create_asset filename, source, destination
       end
     }
 
     result.join "\n"
   end
 end
-
-Renderer = RendererSingleton.instance
