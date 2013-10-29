@@ -267,6 +267,7 @@ themes/<theme-name>
       %{css}
     </head>
     <body>
+      %{toc}
       %{content}
       %{js}
     </body>
@@ -332,7 +333,9 @@ By default:
     `themes/<theme-name>/css/`, *in alphabetical order*.
 
   - `%{js}` will be replaced by the list of JavaScript files produced in
-    `themes/<theme-name>/js/`
+    `themes/<theme-name>/js/`.
+
+  - `%{toc}` will be replaced by the document's table of contents.
 
   - `%{content}` will be replaced by HTML produced from your Markdown document(s).
 
