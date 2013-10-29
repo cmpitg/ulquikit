@@ -40,8 +40,10 @@ task :clean do
 end
 
 task :default do
-  BUILD_DIRS.each { |dir|
-    Dir.ensure_dirs File.expand_path("../build/#{dir}")
+  Dir.ensure_dirs BUILD_SRC_DIR, BUILD_DOCS_DIR
+
+  ASSETS.each { |asset|
+    Dir.ensure_dirs asset[:destination]
   }
 
   Dir.glob("*.md") { |file|
