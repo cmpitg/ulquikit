@@ -27,7 +27,7 @@ BOOTSTRAP_CSS_DIR       = "#{BOOTSTRAP_DIR}/css"
 BOOTSTRAP_JS_DIR        = "#{BOOTSTRAP_DIR}/js"
 
 BUILD_SRC_DIR   = "#{PROJECT_DIR}/build_src"
-BUILD_DOCS_DIR  = "#{PROJECT_DIR}/build_doc"
+BUILD_DOCS_DIR  = "#{PROJECT_DIR}/build_docs"
 BUILD_CSS_DIR   = "#{BUILD_DOCS_DIR}/css"
 BUILD_JS_DIR    = "#{BUILD_DOCS_DIR}/js"
 
