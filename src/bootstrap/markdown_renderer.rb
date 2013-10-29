@@ -51,26 +51,26 @@ class RendererSingleton
     @js_list   = build_js
   end
 
-  def render_file(path,
-                  template_path=DEFAULT_TEMPLATE_PATH,
-                  rd=@default_renderer)
-    templates = File.read_file "#{template_path}"
-    content = File.read_file "#{path}.md"
+  def render_file(file_basename,
+                  rd = @default_renderer)
+    template          = File.read_file "#{BOOTSTRAP_TEMPLATE_DIR}/main.html"
+    markdown_content  = File.read_file "#{file_basename}.md"
 
     # Strip and capture variable part
-    vars_str, prerendered_content = String.strip_vars content
+    vars_str, prerendered_content = String.strip_vars markdown_content
 
     content = rd.render prerendered_content
     toc     = @toc_renderer.render prerendered_content
+    vars    = parse_vars vars_str
 
-    File.open("../build/#{path}.html", 'w') { |file|
-      file.write templates % {
+    File.open("#{BUILD_DOCS_DIR}/#{file_basename}.html", 'w') { |file|
+      file.write template % {
         :title    => "",
         :content  => content,
         :toc      => toc,
         :css      => @css_list,
         :js       => @js_list,
-      }.merge(parse_vars vars_str)
+      }.merge(vars)
     }
   end
 
