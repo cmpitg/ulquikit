@@ -40,7 +40,10 @@ class RendererSingleton
 
   def initialize
     @html_render       = HTMLWithPygments.new MarkdownExtensions
-    @default_renderer  = Redcarpet::Markdown.new @html_render, RendererOptions
+    @default_renderer  = Redcarpet::Markdown.new(@html_render,
+                                                 RendererOptions)
+    @toc_renderer      = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC,
+                                                 RendererOptions)
     @css_list          = get_css
     @js_list           = get_js
   end
@@ -52,14 +55,18 @@ class RendererSingleton
     content = File.read_file "#{path}.md"
 
     # Strip and capture variable part
-    vars_str, content = String.strip_vars content
+    vars_str, prerendered_content = String.strip_vars content
+
+    content = rd.render prerendered_content
+    toc     = @toc_renderer.render prerendered_content
 
     File.open("../build/#{path}.html", 'w') { |file|
       file.write templates % {
-        :title => "",
-        :content => rd.render(content),
-        :css => @css_list,
-        :js => @js_list,
+        :title    => "",
+        :content  => content,
+        :toc      => toc,
+        :css      => @css_list,
+        :js       => @js_list,
       }.merge(parse_vars vars_str)
     }
   end

@@ -36,6 +36,7 @@ DEFAULT_TEMPLATE = """<!DOCTYPE html>
     %{css}
   </head>
   <body>
+    %{toc}
     %{content}
     %{js}
   </body>
