@@ -107,9 +107,10 @@ class RendererSingleton
     result
   end
 
-  def create_built_file(file, dest)
-    puts "Creating ../build/#{dest}"
-    FileUtils.cp file, "../build/#{dest}"
+  # Public: Copying one asset file from a bootstrap/ dir BUILD_DOCS_DIR
+  def create_asset(filename, source, destination)
+    puts "Creating #{filename} for build_docs/"
+    FileUtils.cp source, destination
   end
 
   def get_css_destination_path(filename)
