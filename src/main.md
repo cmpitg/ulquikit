@@ -60,17 +60,16 @@ Output is one of the following items:
 
 * Ruby 1.9+
 * Gems:
-  - [pygments.rb](https://github.com/tmm1/pygments.rb), wrapper for
-    [Pygments](http://pygments.org/) syntax highlighter.
-  - [redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
-  - [nokogiri](http://nokogiri.org/) for HTML/XML processing.
+  - [Rouge](https://github.com/jayferd/rouge), a syntax highlighter for Ruby.
+  - [Redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
+  - [Nokogiri](http://nokogiri.org/) for HTML/XML processing.
 
 #### Installation command
 
 (TODO)
 
 ```sh
-gem install -V pygments redcarpet nokogiri
+gem install -V rouge redcarpet nokogiri
 ```
 
 ### Concepts
