@@ -74,31 +74,31 @@
 <h2 id="toc_15">Full directory structure</h2>
 
 <p>A full Ulquikit project directory structure would look like:</p>
-<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
-  <span class="n">src</span><span class="o">/</span>
-    <span class="n">images</span><span class="o">/</span>
-    <span class="n">scripts</span><span class="o">/</span>
-    <span class="n">styles</span><span class="o">/</span>
-    <span class="n">templates</span><span class="o">/</span>
-    <span class="n">config</span><span class="o">/</span>
-      <span class="n">custom</span><span class="o">-</span><span class="n">commands</span><span class="p">.</span><span class="n">rb</span>
-      <span class="n">pre</span><span class="o">-</span><span class="n">processing</span><span class="p">.</span><span class="n">rb</span>
-      <span class="n">post</span><span class="o">-</span><span class="n">processing</span><span class="p">.</span><span class="n">rb</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">md</span>
-  <span class="n">COPYING</span>
-  <span class="n">README</span>
-</pre></div>
+<pre class="highlight plaintext">&lt;project-name&gt;/
+  src/
+    images/
+    scripts/
+    styles/
+    templates/
+    config/
+      custom-commands.rb
+      pre-processing.rb
+      post-processing.rb
+    somefile.md
+  COPYING
+  README
+</pre>
 <p>The directory names should speak for themselves.  (Please <em>drop me a line if they
 don&#39;t</em>)</p>
 
 <p>For the most part, the simplest project looks like the following, and it&#39;s
 probably <em>just</em> what people need:</p>
-<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
-  <span class="n">src</span><span class="o">/</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">md</span>
-  <span class="n">COPYING</span>
-  <span class="n">README</span><span class="p">.</span><span class="n">md</span>
-</pre></div>
+<pre class="highlight plaintext">&lt;project-name&gt;/
+  src/
+    somefile.md
+  COPYING
+  README.md
+</pre>
 <h2 id="toc_16">Typical workflows</h2>
 
 <h3 id="toc_17">Simple project</h3>
@@ -109,69 +109,69 @@ probably <em>just</em> what people need:</p>
 <li><p>Docs will be generated in <code class="prettyprint">build_docs/</code>, code will be generated in
 <code class="prettyprint">build_src/</code>.</p></li>
 </ul>
-<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
-  <span class="n">src</span><span class="o">/</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">md</span>
-  <span class="n">COPYING</span>
-  <span class="n">README</span>
-</pre></div>
+<pre class="highlight plaintext">&lt;project-name&gt;/
+  src/
+    somefile.md
+  COPYING
+  README
+</pre>
 <h3 id="toc_18">Simple project with custom commands</h3>
 
 <p>Another simple workflow with Ulquikit would be something similar to:</p>
 
 <ul>
 <li><p>Generating docs and source code:</p>
-<div class="highlight"><pre>ulqui build
-</pre></div></li>
+<pre class="highlight shell">ulqui build
+</pre></li>
 <li><p>Compile the source code:</p>
-<div class="highlight"><pre><span class="nb">cd </span>build_src/
+<pre class="highlight shell"><span class="nb">cd </span>build_src/
 
 <span class="c"># Run whatever command to compile the source code</span>
 make
 <span class="c"># rake compile</span>
-</pre></div></li>
+</pre></li>
 <li><p>Run tests or try the program:</p>
-<div class="highlight"><pre><span class="c"># Still is build_src/ perhaps, depending on your source code structure</span>
+<pre class="highlight shell"><span class="c"># Still is build_src/ perhaps, depending on your source code structure</span>
 make <span class="nb">test</span>
 <span class="c"># or</span>
 <span class="c"># rake test</span>
 
 <span class="c"># To run</span>
 /path/to/executable
-</pre></div></li>
+</pre></li>
 </ul>
 
 <p>This is a repeated process and might be very troublesome, thus users might
 want to <em>define one command to rule them all</em>:</p>
-<div class="highlight"><pre><span class="c"># Generate docs and source code, then compile, and run tests all at once</span>
+<pre class="highlight shell"><span class="c"># Generate docs and source code, then compile, and run tests all at once</span>
 ulqui build_all_then_test
-</pre></div>
+</pre>
 <p>This is when the project structure looks like:</p>
-<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
-  <span class="n">src</span><span class="o">/</span>
-    <span class="n">config</span><span class="o">/</span>
-      <span class="n">custom</span><span class="o">-</span><span class="n">commands</span><span class="p">.</span><span class="n">rb</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">md</span>
-  <span class="n">COPYING</span>
-  <span class="n">README</span>
-</pre></div>
+<pre class="highlight plaintext">&lt;project-name&gt;/
+  src/
+    config/
+      custom-commands.rb
+    somefile.md
+  COPYING
+  README
+</pre>
 <p>Please refer to the <strong>Custom commands</strong> section for further information.</p>
 
 <h3 id="toc_19">Project with theme</h3>
 
 <p>In Ulquikit, document output is themeable.  A simple themed project would look
 similar to:</p>
-<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
-  <span class="n">src</span><span class="o">/</span>
-    <span class="n">images</span><span class="o">/</span>
-    <span class="n">scripts</span><span class="o">/</span>
-    <span class="n">styles</span><span class="o">/</span>
-    <span class="n">templates</span><span class="o">/</span>
-      <span class="n">main</span><span class="p">.</span><span class="n">html</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">md</span>
-  <span class="n">COPYING</span>
-  <span class="n">README</span>
-</pre></div>
+<pre class="highlight plaintext">&lt;project-name&gt;/
+  src/
+    images/
+    scripts/
+    styles/
+    templates/
+      main.html
+    somefile.md
+  COPYING
+  README
+</pre>
 <p>Structure explanation:</p>
 
 <ul>
@@ -190,7 +190,7 @@ filenames should contain alphanumberic characters, and <code class="prettyprint"
 
 <ul>
 <li><p>To create an empty theme:</p>
-<div class="highlight"><pre>ulqui theme init
+<pre class="highlight shell">ulqui theme init
 
 <span class="c"># You will then have:</span>
 <span class="c">#</span>
@@ -200,29 +200,29 @@ filenames should contain alphanumberic characters, and <code class="prettyprint"
 <span class="c">#   styles/</span>
 <span class="c">#   templates/</span>
 <span class="c">#     main.html</span>
-</pre></div>
+</pre>
 <p>See <code class="prettyprint">src/templates/main.html</code> for basic template creation, or check Ulquikit
 guide, section <strong>Theming</strong>.</p></li>
 <li><p>To create a theme based on a defined theme, you simply <em>use</em> that theme:</p>
-<div class="highlight"><pre>ulqui theme use &lt;theme-name&gt;
-</pre></div></li>
+<pre class="highlight shell">ulqui theme use &lt;theme-name&gt;
+</pre></li>
 </ul>
 
 <h3 id="toc_20">Output directories</h3>
-<div class="highlight"><pre><span class="o">&lt;</span><span class="n">project</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;/</span>
-  <span class="n">build_docs</span><span class="o">/</span>
-    <span class="n">css</span><span class="o">/</span>
-    <span class="n">img</span><span class="o">/</span>
-    <span class="n">js</span><span class="o">/</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">html</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">pdf</span>
-    <span class="n">somefile</span><span class="p">.</span><span class="n">epub</span>
-  <span class="n">build_src</span><span class="o">/</span>
-    <span class="n">file_a</span><span class="p">.</span><span class="n">rb</span>
-    <span class="n">file_b</span><span class="p">.</span><span class="n">rb</span>
-    <span class="n">file_c</span><span class="p">.</span><span class="n">rb</span>
-    <span class="n">Rakefile</span>
-</pre></div>
+<pre class="highlight plaintext">&lt;project-name&gt;/
+  build_docs/
+    css/
+    img/
+    js/
+    somefile.html
+    somefile.pdf
+    somefile.epub
+  build_src/
+    file_a.rb
+    file_b.rb
+    file_c.rb
+    Rakefile
+</pre>
 <p>Hope the file names speak for themselves.</p>
 
 <h2 id="toc_21">Document variable definition</h2>
@@ -264,14 +264,14 @@ document uses.</li>
 documents are in HTML process, they can be themed.</p>
 
 <h3 id="toc_23">Structure</h3>
-<div class="highlight"><pre><span class="n">themes</span><span class="o">/&lt;</span><span class="n">theme</span><span class="o">-</span><span class="n">name</span><span class="o">&gt;</span>
-  <span class="n">images</span><span class="o">/</span>
-  <span class="n">scripts</span><span class="o">/</span>
-  <span class="n">styles</span><span class="o">/</span>
-  <span class="n">templates</span><span class="o">/</span>
-    <span class="n">page</span><span class="p">.</span><span class="n">html</span>
-  <span class="n">info</span><span class="p">.</span><span class="n">yaml</span>
-</pre></div>
+<pre class="highlight plaintext">themes/&lt;theme-name&gt;
+  images/
+  scripts/
+  styles/
+  templates/
+    page.html
+  info.yaml
+</pre>
 <ul>
 <li><p>Images, in <code class="prettyprint">&lt;theme-name&gt;/images/</code></p></li>
 <li><p>JavaScript, or source code that compiles to JavaScript, in
@@ -280,7 +280,7 @@ documents are in HTML process, they can be themed.</p>
 <li><p><strong>Not more than one template</strong>, that is used to structure the HTML output of
 your Markdown document(s): <code class="prettyprint">&lt;theme-name&gt;/page.html</code>.  If the theme contains
 no template, the default one is used:</p>
-<div class="highlight"><pre><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<pre class="highlight html"><span class="cp">&lt;!DOCTYPE html&gt;</span>
 <span class="nt">&lt;html&gt;</span>
 <span class="nt">&lt;head&gt;</span>
   <span class="nt">&lt;title&gt;</span>%{title}<span class="nt">&lt;/title&gt;</span>
@@ -292,7 +292,7 @@ no template, the default one is used:</p>
   %{js}
 <span class="nt">&lt;/body&gt;</span>
 <span class="nt">&lt;/html&gt;</span>
-</pre></div></li>
+</pre></li>
 <li><p>Meta-information about the theme is placed in <code class="prettyprint">&lt;theme-name&gt;/info.yaml</code> in
 <a href="http://en.wikipedia.org/wiki/YAML">YAML</a> format.  The following fields are
 supported, opt-in:</p>
@@ -309,10 +309,10 @@ supported, opt-in:</p>
 </ul>
 
 <p>E.g. here are the meta-information of the <code class="prettyprint">default</code> theme:</p>
-<div class="highlight"><pre><span class="l-Scalar-Plain">name</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Github-like</span>
-<span class="l-Scalar-Plain">authors</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">Duong H. Nguyen (@cmpitg)</span>
-<span class="l-Scalar-Plain">license</span><span class="p-Indicator">:</span> <span class="l-Scalar-Plain">GPL v3</span>
-</pre></div></li>
+<pre class="highlight yaml"><span class="s">name</span><span class="pi">:</span> <span class="s">Github-like</span>
+<span class="s">authors</span><span class="pi">:</span> <span class="s">Duong H. Nguyen (@cmpitg)</span>
+<span class="s">license</span><span class="pi">:</span> <span class="s">GPL v3</span>
+</pre></li>
 </ul>
 
 <h3 id="toc_24">Creating a theme</h3>
@@ -321,14 +321,14 @@ supported, opt-in:</p>
 put it into <code class="prettyprint">themes/&lt;theme-name&gt;</code>.  A theme name <em>should</em> only contain
 alphanumberic characters and/or <code class="prettyprint">_</code> and/or <code class="prettyprint">-</code>.  The skeleton of a theme could
 be created with the command:</p>
-<div class="highlight"><pre>ulqui theme new &lt;theme-name&gt;
-</pre></div>
+<pre class="highlight shell">ulqui theme new &lt;theme-name&gt;
+</pre>
 <h3 id="toc_25">Use a theme</h3>
 
 <p>Simple copy all the contents from <code class="prettyprint">themes/&lt;theme-name&gt;/</code> to <code class="prettyprint">src/</code>, or use
 the built-in command:</p>
-<div class="highlight"><pre>ulqui theme use &lt;theme-name&gt;
-</pre></div>
+<pre class="highlight shell">ulqui theme use &lt;theme-name&gt;
+</pre>
 <p>If the theme name doesn&#39;t exist, nothing will change.</p>
 
 <h2 id="toc_26">Templating</h2>
@@ -359,73 +359,73 @@ document(s).</li>
 
 <ul>
 <li><p>Good convention: Main argument(s) go first, options go later:</p>
-<div class="highlight"><pre><span class="c"># Do this</span>
+<pre class="highlight shell"><span class="c"># Do this</span>
 ulqui theme show-info foo-bar --field demo_url
 
-<span class="c"># Don&#39;t do this</span>
+<span class="c"># Don't do this</span>
 ulqui theme show-info --field demo_url foo-bar
-</pre></div></li>
+</pre></li>
 </ul>
 
 <h3 id="toc_28">General commands</h3>
 
 <ul>
 <li><p>To invoke help:</p>
-<div class="highlight"><pre>ulqui <span class="nb">help</span>
-</pre></div></li>
+<pre class="highlight shell">ulqui <span class="nb">help</span>
+</pre></li>
 <li><p>To invoke help on a specific command:</p>
-<div class="highlight"><pre>ulqui <span class="nb">help</span> &lt;<span class="nb">command</span>&gt;
-</pre></div>
+<pre class="highlight shell">ulqui <span class="nb">help</span> &lt;<span class="nb">command</span>&gt;
+</pre>
 <p>or</p>
-<div class="highlight"><pre>ulqui &lt;<span class="nb">command</span>&gt; --help
-</pre></div></li>
+<pre class="highlight shell">ulqui &lt;<span class="nb">command</span>&gt; --help
+</pre></li>
 </ul>
 
 <h3 id="toc_29">Project management</h3>
 
 <ul>
 <li><p>To initialize a Ulquikit project:</p>
-<div class="highlight"><pre>ulqui init &lt;project-name&gt;
-</pre></div>
+<pre class="highlight shell">ulqui init &lt;project-name&gt;
+</pre>
 <p>This will create an empty project structure with default theme.  Or you may
 want to initialize the project right inside the current directory:</p>
-<div class="highlight"><pre>ulqui init .
-</pre></div></li>
+<pre class="highlight shell">ulqui init .
+</pre></li>
 <li><p>To build documentation:</p>
-<div class="highlight"><pre>ulqui build docs
-</pre></div></li>
+<pre class="highlight shell">ulqui build docs
+</pre></li>
 <li><p>To extract source code:</p>
-<div class="highlight"><pre>ulqui build <span class="nb">source</span>
-</pre></div></li>
+<pre class="highlight shell">ulqui build <span class="nb">source</span>
+</pre></li>
 <li><p>To build both docs and source code:</p>
-<div class="highlight"><pre>ulqui build
-</pre></div>
+<pre class="highlight shell">ulqui build
+</pre>
 <p>which is equivalent to:</p>
-<div class="highlight"><pre>ulqui build docs
+<pre class="highlight shell">ulqui build docs
 ulqui build <span class="nb">source</span>
-</pre></div></li>
+</pre></li>
 </ul>
 
 <h3 id="toc_30">Theme management</h3>
 
 <ul>
 <li><p>To create a new theme:</p>
-<div class="highlight"><pre>ulqui theme new &lt;theme-name&gt;
-</pre></div></li>
+<pre class="highlight shell">ulqui theme new &lt;theme-name&gt;
+</pre></li>
 <li><p>To add a new theme from a URL (current supported Github):</p>
-<div class="highlight"><pre>ulqui theme add &lt;theme-name&gt;
+<pre class="highlight shell">ulqui theme add &lt;theme-name&gt;
 ulqui theme add github.com/&lt;user&gt;/&lt;project&gt;
-</pre></div></li>
+</pre></li>
 <li><p>To remove a theme:</p>
-<div class="highlight"><pre>ulqui theme remove &lt;theme-name&gt;
-</pre></div></li>
+<pre class="highlight shell">ulqui theme remove &lt;theme-name&gt;
+</pre></li>
 <li><p>To use a theme:</p>
-<div class="highlight"><pre>ulqui theme use &lt;theme-name&gt;
-</pre></div></li>
+<pre class="highlight shell">ulqui theme use &lt;theme-name&gt;
+</pre></li>
 <li><p>To save the current theme as a theme stored in your local Ulquikit setting,
 if the theme name has already existed, a prompt will ask if you want to
 override.  You can also force overriding old theme using <code class="prettyprint">--override</code>.</p>
-<div class="highlight"><pre><span class="c"># Run interactively</span>
+<pre class="highlight shell"><span class="c"># Run interactively</span>
 ulqui theme save
 
 <span class="c"># Or</span>
@@ -433,30 +433,30 @@ ulqui theme save &lt;theme-name&gt;
 
 <span class="c"># Force overriding</span>
 ulqui theme save &lt;theme-name&gt; --override
-</pre></div></li>
+</pre></li>
 <li><p>To show information of a theme:</p>
-<div class="highlight"><pre><span class="c"># Interatively ask for a theme name</span>
+<pre class="highlight shell"><span class="c"># Interatively ask for a theme name</span>
 ulqui theme show-info
 
 <span class="c"># Or specify yourself</span>
 ulqui theme show-info &lt;theme-name&gt;
-</pre></div>
+</pre>
 <p>The output would look like:</p>
-<div class="highlight"><pre><span class="n">Name</span><span class="o">:</span> <span class="n">foo</span><span class="o">-</span><span class="n">bar</span>
-<span class="n">Human</span><span class="o">-</span><span class="n">readable</span> <span class="n">name</span><span class="o">:</span> <span class="n">Foo</span> <span class="n">Bar</span> <span class="n">Github</span><span class="o">-</span><span class="n">style</span>
-<span class="n">Authors</span><span class="o">:</span> <span class="n">John</span> <span class="n">Doe</span> <span class="o">&lt;</span><span class="n">jdoe</span><span class="err">@</span><span class="n">example</span><span class="o">.</span><span class="na">com</span><span class="o">&gt;,</span> <span class="n">Jane</span> <span class="n">Unknown</span> <span class="o">&lt;</span><span class="n">jane</span><span class="err">@</span><span class="n">example</span><span class="o">.</span><span class="na">com</span><span class="o">&gt;</span>
-<span class="n">License</span><span class="o">:</span> <span class="n">GPL</span> <span class="n">v3</span>
-<span class="n">URL</span><span class="o">:</span> <span class="n">https</span><span class="o">://</span><span class="n">github</span><span class="o">.</span><span class="na">com</span><span class="sr">/example/</span><span class="n">test</span>
-<span class="n">Demo</span> <span class="n">URL</span><span class="o">:</span> <span class="n">http</span><span class="o">://</span><span class="n">example</span><span class="o">.</span><span class="na">com</span><span class="sr">/ulquikit-themes/foo-bar/</span>
-<span class="n">Fetch</span> <span class="n">command</span><span class="o">:</span> <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="o">://</span><span class="n">github</span><span class="o">.</span><span class="na">com</span><span class="sr">/example/</span><span class="n">test</span><span class="o">.</span><span class="na">git</span>
-<span class="n">Update</span> <span class="n">command</span><span class="o">:</span> <span class="n">git</span> <span class="n">pull</span>
-<span class="n">Version</span><span class="o">:</span> <span class="mf">0.1</span><span class="o">.</span><span class="mi">0</span>
-<span class="n">Local</span> <span class="n">path</span><span class="o">:</span> <span class="sr">/home/johndoe/.config/ulquikit/themes/</span><span class="n">foo</span><span class="o">-</span><span class="n">bar</span>
-</pre></div>
-<p>Or to show only one field about the theme:</p>
-<div class="highlight"><pre>ulqui theme show-info foo-bar --field demo_url
+<pre class="highlight plaintext">Name: foo-bar
+Human-readable name: Foo Bar Github-style
+Authors: John Doe &lt;jdoe@example.com&gt;, Jane Unknown &lt;jane@example.com&gt;
+License: GPL v3
+URL: https://github.com/example/test
 Demo URL: http://example.com/ulquikit-themes/foo-bar/
-</pre></div></li>
+Fetch command: git clone https://github.com/example/test.git
+Update command: git pull
+Version: 0.1.0
+Local path: /home/johndoe/.config/ulquikit/themes/foo-bar
+</pre>
+<p>Or to show only one field about the theme:</p>
+<pre class="highlight shell">ulqui theme show-info foo-bar --field demo_url
+Demo URL: http://example.com/ulquikit-themes/foo-bar/
+</pre></li>
 </ul>
 
     

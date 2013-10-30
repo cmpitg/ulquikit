@@ -19,7 +19,8 @@
 
 
 require 'redcarpet'
-require 'pygments'
+require 'rouge'
+require 'rouge/plugins/redcarpet'
 require 'find'
 require 'singleton'
 
@@ -27,10 +28,8 @@ require_relative 'utils'
 require_relative 'config'
 require_relative 'markdown_renderer_config'
 
-class HTMLWithPygments < Redcarpet::Render::HTML
-  def block_code(code, language)
-    Pygments.highlight code, :lexer => language
-  end
+class HTMLWithRouge < Redcarpet::Render::HTML
+  include Rouge::Plugins::Redcarpet
 end
 
 class RendererSingleton
@@ -39,7 +38,7 @@ class RendererSingleton
   attr_accessor :html_render, :default_renderer, :css_list, :js_list
 
   def initialize
-    @html_render       = HTMLWithPygments.new MarkdownExtensions
+    @html_render       = HTMLWithRouge.new MarkdownExtensions
 
     @default_renderer  = Redcarpet::Markdown.new(@html_render,
                                                  RendererOptions)
