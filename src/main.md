@@ -131,7 +131,7 @@ gem install -V rouge redcarpet nokogiri
   }
 
   @snippet_add_regex = /-{ ([^ ]+) }-$/
-  ===
+  ======
   ```
 
 ### The Markdown language
