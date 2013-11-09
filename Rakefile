@@ -20,6 +20,8 @@
 [
  :default,
  :clean,
+ :gen_doc,
+ :gen_code
 ].each do |task_name|
   task task_name do
     sh "cd src; rake #{task_name}"

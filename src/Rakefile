@@ -54,6 +54,9 @@ task :gen_doc do
   }
 end
 
+task :gen_code do
+end
+
 task :gen_pygments_css do
   File.write_file "#{BOOTSTRAP_DIR}/css/pygments.css", Pygments.css
 end
