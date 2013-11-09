@@ -39,12 +39,14 @@ task :clean do
   FileUtils.remove_paths BUILD_DOCS_DIR
 end
 
-task :default do
+task :default => :gen_doc do
   Dir.ensure_dirs BUILD_SRC_DIR, BUILD_DOCS_DIR
   ASSETS.each { |asset|
     Dir.ensure_dirs asset[:destination]
   }
+end
 
+task :gen_doc do
   Renderer = RendererSingleton.instance
 
   Dir.glob("*.md") { |file|
