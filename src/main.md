@@ -249,6 +249,7 @@ gem install -V rouge redcarpet nokogiri
       }
 
     }
+  end
   ======
 
   ```
