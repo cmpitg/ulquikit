@@ -24,7 +24,7 @@
 #
 # Write docs:
 # * [done] Create a dir
-# * Remove dirs recursively
+# * [done] Remove dirs recursively
 # * Check if a file/dir exists
 # * Functional-style apply method
 # * Glob
