@@ -26,8 +26,8 @@
 # * [done] Create a dir
 # * [done] Remove dirs recursively
 # * [done] Check if a file/dir exists
-# * Functional-style apply method
-# * Glob
+# * [done] Functional-style apply method
+# * [done] Glob
 #
 
 require_relative 'bootstrap/config'
