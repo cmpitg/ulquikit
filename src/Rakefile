@@ -55,6 +55,45 @@ task :gen_doc do
 end
 
 task :gen_code do
+  snippet_def_regex = {
+    :begin  => /=== ([^ ]+) ===$/,
+    :end    => /======$/
+  }
+
+  file_def_regex = {
+    :begin  => /_____ file: ([^ ]+) _____$/,
+    :end    => /__________$/
+  }
+
+  snippet_add_regex = /-{ ([^ ]+) }-$/
+
+  Dir.glob("*.md") { |file|
+    content = File.read_file(file)
+
+    snippets         = {}
+    current_snippet  = nil
+
+    content.each_line { |line|
+      line_without_newline = line[0..-2]
+
+      case
+      when snippet_def_regex[:end] =~ line_without_newline
+        current_snippet = nil
+
+      when snippet_def_regex[:begin] =~ line
+        current_snippet = snippet_def_regex[:begin].match(line_without_newline)[1].to_sym
+        snippets[current_snippet] = []
+
+      when current_snippet
+        snippets[current_snippet] << line_without_newline
+      end
+    }
+
+    snippets.each { |key, val|
+      puts "--- #{key} ---"
+      puts val
+    }
+  }
 end
 
 task :gen_pygments_css do
