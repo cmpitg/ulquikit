@@ -70,22 +70,25 @@ task :gen_code do
   Dir.glob("*.md") { |file|
     content = File.read_file(file)
 
-    snippets         = {}
-    current_snippet  = nil
+    snippets                 = {}
+    current_snippet          = nil
+    redundant_spaces_length  = 0
 
     content.each_line { |line|
-      line_without_newline = line[0..-2]
+      line_without_newline     = line[0..-2]
 
       case
       when snippet_def_regex[:end] =~ line_without_newline
         current_snippet = nil
 
       when snippet_def_regex[:begin] =~ line
-        current_snippet = snippet_def_regex[:begin].match(line_without_newline)[1].to_sym
+        current_snippet           = snippet_def_regex[:begin].match(line_without_newline)[1].to_sym
+        redundant_spaces          = /^( +)[^ ]/.match(line_without_newline)
+        redundant_spaces_length   = redundant_spaces[1].length if redundant_spaces
         snippets[current_snippet] = []
 
       when current_snippet
-        snippets[current_snippet] << line_without_newline
+        snippets[current_snippet] << (line_without_newline[redundant_spaces_length..-1])
       end
     }
 
