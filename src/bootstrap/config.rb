@@ -38,3 +38,8 @@ ASSETS = [{
 
 CSS_TAG = "<link rel='stylesheet' type='text/css' href='%{src}' />"
 JS_TAG  = "<script type='text/javascript' src='%{src}'></script>"
+
+SNIPPET_DEF_REGEXP = {
+  :begin  => /=== ([^ ]+) ===$/,
+  :end    => /======$/
+}
