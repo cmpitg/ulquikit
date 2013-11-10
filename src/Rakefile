@@ -54,11 +54,15 @@ task :gen_doc do
   }
 end
 
-# Public: get snippet from the current line. Arguments:
-# * line - current line
-# * :snippets - current collected snippets
-# * :current_snippet - current snippet name
-# * :snippet_spaces_length - current padding space at the beginning
+# Public: get snippet from the current line.
+#
+# line                    - current line
+# :snippets               - current collected snippets
+# :current_snippet        - current snippet name
+# :snippet_spaces_length  - current padding space at the beginning
+#
+# Returns a hash containing the last 3 arguments for further processing.
+#
 def get_snippet (line, opts)
   snippet_def_regex = {
     :begin  => /=== ([^ ]+) ===$/,
