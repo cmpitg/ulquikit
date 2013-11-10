@@ -58,7 +58,7 @@ end
 #
 # line                    - current line
 # :snippets               - current collected snippets
-# :current_snippet        - current snippet name
+# :current_snippet_name   - current snippet name
 # :snippet_spaces_length  - current padding space at the beginning
 #
 # Returns a hash containing the last 3 arguments for further processing.
@@ -70,27 +70,27 @@ def get_snippet (line, opts)
   }
 
   snippets               = opts[:snippets] || {}
-  current_snippet        = opts[:current_snippet] || nil
+  current_snippet_name   = opts[:current_snippet_name] || nil
   snippet_spaces_length  = opts[:snippet_spaces_length] || 0
 
   case
   when snippet_def_regex[:end] =~ line
-    current_snippet = nil
+    current_snippet_name = nil
 
   when snippet_def_regex[:begin] =~ line
-    current_snippet        = snippet_def_regex[:begin].match(line)[1].to_sym
+    current_snippet_name   = snippet_def_regex[:begin].match(line)[1].to_sym
     redundant_spaces       = /^( +)[^ ]/.match(line)
     snippet_spaces_length  = redundant_spaces[1].length if redundant_spaces
 
-    snippets[current_snippet] = []
-  when current_snippet
-    snippets[current_snippet] << (line[snippet_spaces_length..-1])
+    snippets[current_snippet_name] = []
+  when current_snippet_name
+    snippets[current_snippet_name] << (line[snippet_spaces_length..-1])
   end
 
   {
-    :snippets => snippets,
-    :current_snippet => current_snippet,
-    :snippet_spaces_length => snippet_spaces_length,
+    :snippets               => snippets,
+    :current_snippet_name   => current_snippet_name,
+    :snippet_spaces_length  => snippet_spaces_length,
   }
 end
 
@@ -106,18 +106,18 @@ task :gen_code do
     content = File.read_file(file)
 
     snippets               = {}
-    current_snippet        = nil
+    current_snippet_name   = nil
     snippet_spaces_length  = 0
 
     content.each_line { |line|
       line_without_newline  = line[0..-2]
       updated_snippets      = get_snippet line_without_newline,
                                           :snippets => snippets,
-                                          :current_snippet => current_snippet,
+                                          :current_snippet_name => current_snippet_name,
                                           :snippet_spaces_length => snippet_spaces_length
-      snippets              = updated_snippets[:snippets]
-      current_snippet       = updated_snippets[:current_snippet]
-      snippet_spaces_length = updated_snippets[:snippet_spaces_length]
+      snippets               = updated_snippets[:snippets]
+      current_snippet_name   = updated_snippets[:current_snippet_name]
+      snippet_spaces_length  = updated_snippets[:snippet_spaces_length]
     }
 
     snippets.each { |key, val|
