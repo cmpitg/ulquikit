@@ -32,6 +32,8 @@
 
 require_relative 'bootstrap/config'
 require_relative 'bootstrap/markdown_renderer'
+require_relative 'bootstrap/snippet_utils'
+
 require 'pygments'
 
 task :clean do
@@ -51,41 +53,6 @@ task :gen_doc do
 
   Dir.glob("*.md") { |file|
     Renderer::render_file File.basename(file, ".md")
-  }
-end
-
-# Public: get snippet from the current line.
-#
-# line                    - current line
-# :snippets               - current collected snippets
-# :current_snippet_name   - current snippet name
-# :snippet_spaces_length  - current padding space at the beginning
-#
-# Returns a hash containing the last 3 arguments for further processing.
-#
-def get_snippet (line, opts)
-  snippets               = opts[:snippets] || {}
-  current_snippet_name   = opts[:current_snippet_name] || nil
-  snippet_spaces_length  = opts[:snippet_spaces_length] || 0
-
-  case
-  when SNIPPET_DEF_REGEXP[:end] =~ line
-    current_snippet_name = nil
-
-  when SNIPPET_DEF_REGEXP[:begin] =~ line
-    current_snippet_name   = SNIPPET_DEF_REGEXP[:begin].match(line)[1].to_sym
-    redundant_spaces       = /^( +)[^ ]/.match(line)
-    snippet_spaces_length  = redundant_spaces[1].length if redundant_spaces
-
-    snippets[current_snippet_name] = []
-  when current_snippet_name
-    snippets[current_snippet_name] << (line[snippet_spaces_length..-1])
-  end
-
-  {
-    :snippets               => snippets,
-    :current_snippet_name   => current_snippet_name,
-    :snippet_spaces_length  => snippet_spaces_length,
   }
 end
 
