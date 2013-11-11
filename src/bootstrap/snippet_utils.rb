@@ -30,9 +30,9 @@ require_relative "config"
 #
 def get_snippet (line, opts)
   extract_snippet_from_doc(SNIPPET_DEF_REGEXP[:begin],
-                          SNIPPET_DEF_REGEXP[:end],
-                          line,
-                          opts)
+                           SNIPPET_DEF_REGEXP[:end],
+                           line,
+                           opts)
 end
 
 def extract_snippet_from_doc(regexp_begin,
