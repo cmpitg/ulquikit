@@ -29,16 +29,26 @@ require_relative "config"
 # Returns a hash containing the last 3 arguments for further processing.
 #
 def get_snippet (line, opts)
+  extract_snippet_from_doc(SNIPPET_DEF_REGEXP[:begin],
+                          SNIPPET_DEF_REGEXP[:end],
+                          line,
+                          opts)
+end
+
+def extract_snippet_from_doc(regexp_begin,
+                             regexp_end,
+                             line,
+                             opts)
   snippets               = opts[:snippets] || {}
   current_snippet_name   = opts[:current_snippet_name] || nil
   snippet_spaces_length  = opts[:snippet_spaces_length] || 0
 
   case
-  when SNIPPET_DEF_REGEXP[:end] =~ line
+  when regexp_end =~ line
     current_snippet_name = nil
 
-  when SNIPPET_DEF_REGEXP[:begin] =~ line
-    current_snippet_name   = SNIPPET_DEF_REGEXP[:begin].match(line)[1].to_sym
+  when regexp_begin =~ line
+    current_snippet_name   = regexp_begin.match(line)[1].to_sym
     redundant_spaces       = /^( +)[^ ]/.match(line)
     snippet_spaces_length  = redundant_spaces[1].length if redundant_spaces
 
