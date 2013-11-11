@@ -30,17 +30,17 @@ require_relative "config"
 #
 # TODO: example
 #
-def get_code_snippet (line, opts)
-  extract_snippet_from_doc(SNIPPET_DEF_REGEXP[:begin],
-                           SNIPPET_DEF_REGEXP[:end],
-                           line,
-                           opts)
+def extract_code_snippet_from_line (line, opts)
+  extract_snippet_from_line(SNIPPET_DEF_REGEXP[:begin],
+                            SNIPPET_DEF_REGEXP[:end],
+                            line,
+                            opts)
 end
 
-def extract_snippet_from_doc(regexp_begin,
-                             regexp_end,
-                             line,
-                             opts)
+def extract_snippet_from_line(regexp_begin,
+                              regexp_end,
+                              line,
+                              opts)
   snippets               = opts[:snippets] || {}
   current_snippet_name   = opts[:current_snippet_name] || nil
   snippet_spaces_length  = opts[:snippet_spaces_length] || 0
