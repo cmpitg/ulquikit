@@ -19,7 +19,7 @@
 
 require_relative "config"
 
-# Public: get snippet from the current line.
+# Public: get `code` snippet from the current line.
 #
 # line                    - current line
 # :snippets               - current collected snippets
@@ -28,7 +28,9 @@ require_relative "config"
 #
 # Returns a hash containing the last 3 arguments for further processing.
 #
-def get_snippet (line, opts)
+# TODO: example
+#
+def get_code_snippet (line, opts)
   extract_snippet_from_doc(SNIPPET_DEF_REGEXP[:begin],
                            SNIPPET_DEF_REGEXP[:end],
                            line,
