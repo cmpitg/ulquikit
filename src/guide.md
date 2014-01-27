@@ -26,8 +26,7 @@ A full Ulquikit project directory structure would look like:
   README
 ```
 
-The directory names should speak for themselves.  (Please *drop me a line if they
-don't*)
+The directory names should speak for themselves.
 
 For the most part, the simplest project looks like the following, and it's
 probably *just* what people need:
