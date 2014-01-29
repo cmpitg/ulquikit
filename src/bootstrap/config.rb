@@ -34,6 +34,10 @@ BUILD_JS_DIR    = "#{BUILD_DOCS_DIR}/js"
 ASSETS = [{
             :source       => BOOTSTRAP_CSS_DIR,
             :destination  => BUILD_CSS_DIR,
+          },
+          {
+            :source       => BOOTSTRAP_JS_DIR,
+            :destination  => BUILD_JS_DIR,
           }]
 
 CSS_TAG = "<link rel='stylesheet' type='text/css' href='%{src}' />"
