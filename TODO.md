@@ -3,7 +3,7 @@
 * [x] Assets are added using relative paths
 
 * Complete bootstrap part:
-  - Generate fragments and store them
+  - [x] Generate fragments and store them: 
   - Recognize filenames
   - Generate files
 
