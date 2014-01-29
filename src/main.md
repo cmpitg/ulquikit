@@ -4,7 +4,6 @@ authors: Duong H. Nguyen <cmpitg AT gmailDOTcom>
 title: Ulquikit
 short_description: A simple literate programming tool in Ruby
 version: 0.0.1
-
 ---
 
 # Ulquikit
@@ -133,6 +132,8 @@ gem install -V rouge redcarpet nokogiri
   @snippet_add_regex = /-{ ([^ ]+) }-$/
   ======
   ```
+
+  *File snippets* has `build_src/` as their default directory.
 
 ### The Markdown language
 
