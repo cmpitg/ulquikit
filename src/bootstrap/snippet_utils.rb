@@ -59,7 +59,8 @@ def extract_snippet_from_line(regexp_begin,
     snippet_spaces_length  = redundant_spaces[1].length if redundant_spaces
 
     if file_path
-      snippets[current_snippet_name] = ["## #{get_reference_to_source_file(file_path)}:#{line_number}"]
+      snippets[current_snippet_name] = \
+        ["#{get_comment_syntax} #{get_reference_to_source_file(file_path)}:#{line_number}"]
     else
       snippets[current_snippet_name] = []
     end
@@ -80,4 +81,9 @@ def get_reference_to_source_file(path)
   puts BUILD_SRC_DIR
   # TODO: Document me
   Pathname.new(path).relative_path_from(Pathname.new(BUILD_SRC_DIR)).to_s
+end
+
+def get_comment_syntax
+  # TODO: Define list of comment syntax (comment_start and comment_end)
+  "##"
 end
