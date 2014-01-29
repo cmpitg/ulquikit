@@ -97,7 +97,7 @@ Output is one of the following items:
     include Singleton
 
     -{ config-project-structure             }-
-    -{ config-define-snippet-regex          }-
+    -{ config-define-snippet-regexps        }-
     -{ config-default-template              }-
   end
 
@@ -109,20 +109,20 @@ Output is one of the following items:
   the document looks clean and uncluttered:
 
   ```ruby
-  === config-define-snippet-regex ===
-  attr_accessor :snippet_def_regex, :file_def_regex, :snippet_add_regex
+  === config-define-snippet-regexps ===
+  attr_accessor :snippet_def_regexp, :file_def_regexp, :snippet_add_regexp
 
-  @snippet_def_regex = {
+  @snippet_def_regexp = {
     :begin  => /=== ([^ ]+) ===$/,
     :end    => /======$/
   }
 
-  @file_def_regex = {
+  @file_def_regexp = {
     :begin  => /_____ file: ([^ ]+) _____$/,
     :end    => /__________$/
   }
 
-  @snippet_add_regex = /-{ ([^ ]+) }-$/
+  @snippet_add_regexp = /-{ ([^ ]+) }-$/
   ======
   ```
 
@@ -206,40 +206,40 @@ Output is one of the following items:
 
     project_structure = {
       :main_dirs => {
-        :src         => 'src',
-        :build       => 'build',
+        :src          => 'src',
+        :build        => 'build',
       }
 
-      :template => {
-        :path        => 'src/templates',
-        :default     => 'main.html'
-        :action      => Producer.method(:read_template_html)
+      :template       => {
+        :path         => 'src/templates',
+        :default      => 'main.html'
+        :action       => Producer.method(:read_template_html)
       }
 
-      :images => {
-        :src         => 'images',
-        :output      => 'img'
+      :images         => {
+        :src          => 'images',
+        :output       => 'img'
       },
 
-      :js => {
-        :src         => 'scripts',
-        :output      => 'js',
-        :action      => Producer.method(:compile_js),
-        :file_regex  => /\.js$/
+      :js             => {
+        :src          => 'scripts',
+        :output       => 'js',
+        :action       => Producer.method(:compile_js),
+        :file_regexp  => /\.js$/
       },
 
-      :css => {
-        :src         => 'styles',
-        :output      => 'css',
-        :action      => Producer.method(:compile_css),
-        :file_regex  => /\.css$/
+      :css            => {
+        :src          => 'styles',
+        :output       => 'css',
+        :action       => Producer.method(:compile_css),
+        :file_regexp  => /\.css$/
       },
 
-      :md => {
-        :src         => './',
-        :output      => './',
-        :action      => Producer.method(:compile_md),
-        :file_regex  => /\.(html|pdf|epub)$/
+      :md             => {
+        :src          => './',
+        :output       => './',
+        :action       => Producer.method(:compile_md),
+        :file_regexp  => /\.(html|pdf|epub)$/
       }
 
     }
