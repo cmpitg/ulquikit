@@ -145,7 +145,9 @@ class RendererSingleton
         destination = "#{destination_path}/#{filename}"
         source      = "#{src_path}/#{filename}"
 
-        result << tag_format % { :src => destination }
+        result << tag_format % {
+          :src => Pathname.new(destination).relative_path_from(Pathname.new(BUILD_DOCS_DIR)).to_s
+        }
 
         create_asset filename, source, destination
       end
