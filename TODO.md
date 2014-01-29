@@ -11,7 +11,14 @@
 
 * Better code example @ `README.md`
 
-* Support multiple docs
+* Support multiple docs:
+  - There should be some convention to refer to snippets in another doc:
+    * `doc-filename:snippet-name`?
+    * Or snippets are global?
+      - What about combining several projects into one?
+        * Though unlikely to happen, it's possible
+        * It's best to develop good convention from the beginning
+          - Let's not think about it now, we're still bootstraping
 
 * Should multiple-HTML output be supported?
 
