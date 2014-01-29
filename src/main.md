@@ -43,13 +43,12 @@ Output is one of the following items:
 
 * Output syntax highlighting
 
-* Convention over configuration
-
 * Generated source code has references to original documentation with the
   formats:
 
   - `/path/to/docs:line_number`
   - `/path/to/docs:line_number_from:line_number_to`
+  - `/path/to/docs:line_number:number_of_lines`
   - `/path/to/docs:/pattern/`
   - `/path/to/docs:/pattern_from/,/pattern_to/`
 
@@ -58,23 +57,17 @@ Output is one of the following items:
 ### Requirements
 
 * Ruby 1.9+
+
 * Gems:
   - [Rouge](https://github.com/jayferd/rouge), a syntax highlighter for Ruby.
   - [Redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
   - [Nokogiri](http://nokogiri.org/) for HTML/XML processing.
 
-#### Installation command
-
-(TODO)
-
-```sh
-gem install -V rouge redcarpet nokogiri
-```
-
 ### Concepts
 
 * Snippets refer to *code snippets* that are used to structure source code.
-  Each snippet has a unique name and either:
+  Each snippet (TODO: for each file? or in the whole project?)has a unique
+  name and either:
 
   - defines a potion of code, or
   - defines the structure of a code
