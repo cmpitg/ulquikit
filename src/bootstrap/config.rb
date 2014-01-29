@@ -51,3 +51,8 @@ SNIPPET_DEF_REGEXP = {
   :begin  => /=== ([^ ]+) ===$/,
   :end    => /======$/
 }
+
+FILE_DEF_REGEXP = {
+  :begin  => /_____ file: ([^ ]+) _____$/,
+  :end    => /__________$/
+}

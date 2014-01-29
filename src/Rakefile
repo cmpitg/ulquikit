@@ -59,11 +59,6 @@ task :gen_doc => :create_build_dirs do
 end
 
 task :gen_code do
-  file_def_regex = {
-    :begin  => /_____ file: ([^ ]+) _____$/,
-    :end    => /__________$/
-  }
-
   snippet_add_regex = /-{ ([^ ]+) }-$/
 
   Dir.glob("*.md") { |file|
