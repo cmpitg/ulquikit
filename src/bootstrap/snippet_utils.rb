@@ -17,8 +17,6 @@
 # Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-require 'pathname'
-
 require_relative "config"
 
 # Public: get `code` snippet from the current line.
@@ -77,14 +75,6 @@ def extract_snippet_from_line(regexp_begin,
     :current_snippet_name   => current_snippet_name,
     :snippet_spaces_length  => snippet_spaces_length,
   }
-end
-
-def get_reference_to_source_file(path)
-  path = File.expand_path("./#{path}")
-  puts path
-  puts BUILD_SRC_DIR
-  # TODO: Document me
-  Pathname.new(path).relative_path_from(Pathname.new(BUILD_SRC_DIR)).to_s
 end
 
 def get_comment_syntax
