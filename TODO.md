@@ -7,6 +7,10 @@
   - Recognize filenames
   - Generate files
 
+* HTML output:
+  - Better layout with Twitter Bootstrap
+  - Each snippet has its own style
+
 * Support different theme set
 
 * Better code example @ `README.md`
@@ -20,7 +24,7 @@
         * It's best to develop good convention from the beginning
           - Let's not think about it now, we're still bootstraping
 
-* Should multiple-HTML output be supported?
+* Should multiple-HTML output be supported? Yes!
 
 * Rakefile: specify file prerequisites for `gen` tasks
   - Avoid regenerating generated files
