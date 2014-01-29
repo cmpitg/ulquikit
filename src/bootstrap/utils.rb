@@ -84,8 +84,6 @@ end
 
 def get_reference_to_source_file(path)
   path = File.expand_path("./#{path}")
-  puts path
-  puts BUILD_SRC_DIR
   # TODO: Document me
   Pathname.new(path).relative_path_from(Pathname.new(BUILD_SRC_DIR)).to_s
 end
