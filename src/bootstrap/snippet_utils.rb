@@ -44,6 +44,8 @@ def extract_snippet_from_line(regexp_begin,
   snippets               = opts[:snippets] || {}
   current_snippet_name   = opts[:current_snippet_name] || nil
   snippet_spaces_length  = opts[:snippet_spaces_length] || 0
+  line_number            = opts[:line_number] || 0
+  file_path              = opts[:file_path] || ""
 
   case
   when regexp_end =~ line
@@ -54,7 +56,11 @@ def extract_snippet_from_line(regexp_begin,
     redundant_spaces       = /^( +)[^ ]/.match(line)
     snippet_spaces_length  = redundant_spaces[1].length if redundant_spaces
 
-    snippets[current_snippet_name] = []
+    if file_path
+      snippets[current_snippet_name] = ["## #{file_path}:#{line_number}"]
+    else
+      snippets[current_snippet_name] = []
+    end
   when current_snippet_name
     snippets[current_snippet_name] << (line[snippet_spaces_length..-1])
   end

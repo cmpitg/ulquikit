@@ -70,14 +70,19 @@ task :gen_code do
     snippets               = {}
     current_snippet_name   = nil
     snippet_spaces_length  = 0
+    line_number            = 0
 
     content.each_line { |line|
       line_without_newline  = line[0..-2]
-      updated_snippets      = extract_code_snippet_from_line \
-                                  line_without_newline,
-                                  :snippets => snippets,
-                                  :current_snippet_name => current_snippet_name,
-                                  :snippet_spaces_length => snippet_spaces_length
+      updated_snippets      = \
+        extract_code_snippet_from_line(line_without_newline,
+                                       :snippets => snippets,
+                                       :current_snippet_name => current_snippet_name,
+                                       :snippet_spaces_length => snippet_spaces_length,
+                                       :line_number => line_number,
+                                       :file_path => file)
+                                  
+
       snippets               = updated_snippets[:snippets]
       current_snippet_name   = updated_snippets[:current_snippet_name]
       snippet_spaces_length  = updated_snippets[:snippet_spaces_length]
