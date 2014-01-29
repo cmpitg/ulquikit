@@ -60,7 +60,11 @@ def extract_snippet_from_line(regexp_begin,
 
     if file_path
       snippets[current_snippet_name] = \
-        ["#{get_comment_syntax} #{get_reference_to_source_file(file_path)}:#{line_number}"]
+        [BUILT_SRC_TO_SRC_REF_SYNTAX % {
+           :comment     => get_comment_syntax,
+           :source_file => get_reference_to_source_file(file_path),
+           :line_number => line_number
+         }]
     else
       snippets[current_snippet_name] = []
     end

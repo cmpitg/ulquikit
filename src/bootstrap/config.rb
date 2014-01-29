@@ -39,6 +39,10 @@ ASSETS = [{
 CSS_TAG = "<link rel='stylesheet' type='text/css' href='%{src}' />"
 JS_TAG  = "<script type='text/javascript' src='%{src}'></script>"
 
+# TODO: Add me to documentation
+BUILT_SRC_TO_SRC_REF_SYNTAX = \
+  "%{comment} %{source_file}:%{line_number}"
+
 SNIPPET_DEF_REGEXP = {
   :begin  => /=== ([^ ]+) ===$/,
   :end    => /======$/
