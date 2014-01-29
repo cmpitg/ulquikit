@@ -1,4 +1,6 @@
-* Add Twitter Bootstrap theme
+* [x] Add Twitter Bootstrap theme
+
+* Assets are added with relative paths
 
 * Complete bootstrap part:
   - Generate fragments and store them
