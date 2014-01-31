@@ -248,6 +248,24 @@ Output is one of the following items:
 
   ```
 
+### Fragmented: Source code generating process ###
+
+Source code generating process could be described is the flow below:
+
+```ruby
+____ file: ./gen_source_code.rb ____
+
+-{ gen-src/requires }
+
+-{ gen-src/extract-snippets    }-
+-{ gen-src/inserting-snippets  }-
+-{ gen-src/create-files        }-
+__________
+```
+
+The regular expression for defining file snippet might not look nice, you can
+always change it (TODO: Make reference to `file_def_regexp` part).
+
 ### Emacs supporting
 
 * Multi-major mode
