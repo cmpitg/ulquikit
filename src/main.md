@@ -170,7 +170,7 @@ Output is one of the following items:
 
 * Also, the function to process main template is 
 
-* Firstly, Ulquikit reads all templates in `src/templates/`.
+* Ulquikit reads all templates in `src/templates/`.
 
 * Then, all Markdown files are read and rendered using Redcarpet.  Variable
   definition part is parsed and all variables are stored in a hash.
