@@ -78,7 +78,6 @@ task :gen_code do
                                        :snippet_spaces_length => snippet_spaces_length,
                                        :line_number => line_number,
                                        :file_path => file)
-                                  
 
       snippets               = updated_snippets[:snippets]
       current_snippet_name   = updated_snippets[:current_snippet_name]
