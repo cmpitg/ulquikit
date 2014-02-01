@@ -19,9 +19,9 @@ Ulquikit started as a collection of Ruby scripts to:
 * Generate source code from a
   [Markdown](http://en.wikipedia.org/wiki/Markdown) document
 
-* Build the software using the generated source code
+* Build software using the generated source code
 
-* Build the documentation from Markdown documents
+* Build documentation from Markdown documents
 
 * Build and run tests
 
@@ -62,6 +62,14 @@ Output is one of the following items:
   - [Rouge](https://github.com/jayferd/rouge), a syntax highlighter for Ruby.
   - [Redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
   - [Nokogiri](http://nokogiri.org/) for HTML/XML processing.
+
+### Notations ###
+
+Aside from usual notation (preformatted text for source code, different text
+style for headings and quotes, ...), this document adds a few more notations:
+
+* Concepts that are valid in Ulquikit (and probably have different meanings
+  outside) are italicized.
 
 ### Concepts ###
 
