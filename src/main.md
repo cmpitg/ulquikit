@@ -6,13 +6,13 @@ short_description: A simple literate programming tool in Ruby
 version: 0.0.1
 ---
 
-# Ulquikit
+# Ulquikit #
 
 This is full documentation and source code about Ulquikit.  Ulquikit is
 written using Ulquikit itself.  On how to use Ulquikit in your project, see
 [Ulquikit guide](guide.html).
 
-## Introduction
+## Introduction ##
 
 Ulquikit started as a collection of Ruby scripts to:
 
@@ -33,7 +33,7 @@ Output is one of the following items:
 
 * An ePub file
 
-### Features
+### Features ###
 
 * **Fully hackable** source code
 
@@ -54,7 +54,7 @@ Output is one of the following items:
 
   Editors can make use of this pattern to implement code/doc navigation.
 
-### Requirements
+### Requirements ###
 
 * Ruby 1.9+
 
@@ -63,7 +63,7 @@ Output is one of the following items:
   - [Redcarpet](https://github.com/vmg/redcarpet) for markdown processing.
   - [Nokogiri](http://nokogiri.org/) for HTML/XML processing.
 
-### Concepts
+### Concepts ###
 
 * Snippets refer to *code snippets* that are used to structure source code.
   Each snippet (TODO: for each file? or in the whole project?)has a unique
@@ -72,7 +72,7 @@ Output is one of the following items:
   - defines a potion of code, or
   - defines the structure of a code
 
-### Constraints
+### Constraints ###
 
 * Filename contains no space and `:`.
 
@@ -84,7 +84,7 @@ Output is one of the following items:
   used to define snippets, their corresponding regular expressions in config
   should be redefined.
 
-### Configuration
+### Configuration ###
 
 * All configuration is managed by a singleton named `UlquiConfig`:
 
@@ -128,9 +128,9 @@ Output is one of the following items:
 
   *File snippets* has `build_src/` as their default directory.
 
-### The Markdown language
+### The Markdown language ###
 
-#### How it works
+#### How it works ####
 
 * With HTML as Ulquikit's output, it needs a basic template which defines the
   structure of the HTML file.  The template is stored in `src/templates/`
@@ -139,7 +139,7 @@ Output is one of the following items:
 * A Markdown processor is used to render the Markdown file as the `<body>` of
   the result.
 
-#### Process
+#### Process ####
 
 * Firstly, Ulquikit determines which template is used for the final single
   HTML file.  If it finds `templates/main.html`, it would read the content of
@@ -176,7 +176,7 @@ Output is one of the following items:
   definition part is parsed and all variables are stored in a hash.
 
 
-### Directory structure
+### Directory structure ###
 
 ```
 <project-name>/
