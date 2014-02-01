@@ -73,12 +73,15 @@ style for headings and quotes, ...), this document adds a few more notations:
 
 ### Concepts ###
 
-* Snippets refer to *code snippets* that are used to structure source code.
-  Each snippet (TODO: for each file? or in the whole project?)has a unique
+* *Snippets* refer to *code snippets* that are used to structure source code.
+  Each snippet (TODO: for each file? or in the whole project?) has a unique
   name and either:
 
-  - defines a potion of code, or
-  - defines the structure of a code
+  - defines a potion of code (refered to as *code snippets*), or
+  - defines a file (refered to as *file snippets*)
+
+<a name="concept-source-doc"></a>
+* *Source doc* is a literate document
 
 ### Constraints ###
 
@@ -137,6 +140,35 @@ style for headings and quotes, ...), this document adds a few more notations:
   *File snippets* has `build_src/` as their default directory.
 
 ### The Markdown language ###
+
+Ulquikit supports standard Markdown syntax, and with the help of
+[Redcarpet](https://github.com/vmg/redcarpet), it brings additional features
+for Markdown documents to have better semantics.
+
+#### Additional features to original Markdown ####
+
+* Named anchor:
+
+  - Standard syntax:
+
+    ```html
+    <a name="some-name">Text</a>
+    <a name="some-name"></a> Text
+    ```
+
+  - Ulquikit syntax:
+
+    ```
+    (:named-anchor "some-name" "Text")
+    (:named-anchor "some-name") Text
+    ```
+
+  - Ulquikit's escape syntax:
+
+    ```
+    \(:named-anchor "some-name" "Text")
+    \(:named-anchor "some-name") Text
+    ```
 
 #### How it works ####
 
@@ -206,6 +238,8 @@ style for headings and quotes, ...), this document adds a few more notations:
   fully hackable if it's not? (-:).  However, it's strongly advised not to
   change:
 
+  TODO: Review the following part
+
   ```ruby
   === config-project-structure ===
 
@@ -273,6 +307,10 @@ __________
 
 The regular expression for defining file snippet might not look nice, you can
 always change it (TODO: Make reference to `file_def_regexp` part).
+
+#### Extracting snippets ####
+
+Snippets are read from all Markdown determine by the list of  `UlquiConfig[:]`
 
 ### Custom project structure ###
 
