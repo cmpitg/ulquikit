@@ -266,6 +266,21 @@ __________
 The regular expression for defining file snippet might not look nice, you can
 always change it (TODO: Make reference to `file_def_regexp` part).
 
+### Custom project structure ###
+
+Useful for projects such an an Emacs Lisp or Racket package, the project structure is
+mostly flattened.
+
+Ulquikit supports customizing project structure in your `./config.json` (TODO:
+Make reference to the section describing `config.json`) file.
+
+```json
+{
+  "output-source": "./",
+  "output-doc":    "./"
+}
+```
+
 ### Emacs supporting
 
 * Multi-major mode
