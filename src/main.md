@@ -159,15 +159,15 @@ for Markdown documents to have better semantics.
   - Ulquikit syntax:
 
     ```
-    (:named-anchor "some-name" "Text")
-    (:named-anchor "some-name") Text
+    @{some-name}Text
+    @{some-name} Text
     ```
 
   - Ulquikit's escape syntax:
 
     ```
-    \(:named-anchor "some-name" "Text")
-    \(:named-anchor "some-name") Text
+    \@{some-name}Text
+    \@{some-name} Text
     ```
 
 #### How it works ####
