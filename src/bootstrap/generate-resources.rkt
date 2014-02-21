@@ -62,12 +62,13 @@
          [sources     (drop-right paths 1)])
     (for ([source sources])
       (let* ([name-only        (get-name-from-path source)]
-             [full-destination (string-append destination name-only)])
+             [full-destination (expand-path (string-append destination name-only))]
+             [source           (expand-path source)])
         (when (or (file-exists? full-destination)
                   (directory-exists? full-destination))
           (displayln (~a "-> Deleting: " full-destination))
           (delete-directory/files full-destination))
-        (displayln (~a "-> Copying " source " to " destination))
+        (displayln (~a "-> Copying " source " to " full-destination))
         (copy-directory/files source full-destination)))))
 
 (define (main)
