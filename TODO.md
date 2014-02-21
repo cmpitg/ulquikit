@@ -19,6 +19,8 @@
 
 * [ ] Insert code snippet into their appropriate place (`-{ snippet-name }-`).
 
+* [ ] Command line argument passing.
+
 ### Questions? ###
 
 ### Design decisions ###
