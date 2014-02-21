@@ -28,7 +28,6 @@ ulquikit/
     bootstrap/
       css/
       js/
-      templates/
     config.yaml
     internals.md
     guide.md
@@ -36,8 +35,14 @@ ulquikit/
 
 Explanation:
 
-* `generated_docs/` contains *generated docs*.
-* `generated_src/` contains *generated source*.
+| **Path**           | **Description**                                                             |
+|--------------------|-----------------------------------------------------------------------------|
+| `generated_docs/`  | *generated docs*                                                            |
+| `generated_src/`   | *generated source*                                                          |
+| `src/bootstrap/`   | resources for *generated docs* in HTML format                               |
+| `src/config.yaml`  | Ulquikit configuration                                                      |
+| `src/internals.md` | Literate source of this document, describing how Ulquikit works internally. |
+| `src/guide.md`     | Literate source document, a guide on how to use Ulquikit                    |
 
 ## Notes ##
 
