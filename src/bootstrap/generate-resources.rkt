@@ -22,6 +22,9 @@
 (require srfi/1)
 (require racket/runtime-path)
 
+(module+ test
+  (require rackunit))
+
 (define-runtime-path +current-dir+ "./")
 
 ;;
@@ -31,6 +34,11 @@
   (~> path
     (string-split "/")
     last))
+
+(module+ test
+  (check-equal? (get-name-from-path "/mnt/")        "mnt")
+  (check-equal? (get-name-from-path "/mnt")         "mnt")
+  (check-equal? (get-name-from-path "/mnt/abc.rkt") "abc.rkt"))
 
 ;;
 ;; Copy files or directories, overwrite older versions.
