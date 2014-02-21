@@ -25,16 +25,6 @@
 
 ### Design decisions ###
 
-* Definitions:
-  - *Documents* or *original documents* refer to your literate documents.
-  - *Built docs* are the generated HTML/PDF/ePub outputs from your literate
-    documents.
-  - *Built source* is the extracted source code from your literate documents.
-  - *File snippets* are snippets which define source files in your literate
-    documents.
-  - *Code snippets* are snippets which define a piece of code in your literate
-    documents.
-
 * References from source code files in *built source* to *original documents*
   are relative paths to prevent path conflict between different machines.
 
