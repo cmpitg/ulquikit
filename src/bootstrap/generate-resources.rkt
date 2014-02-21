@@ -24,7 +24,15 @@
 (define-runtime-path +current-dir+ "./")
 
 ;;
-;; Return all but last elements of a list
+;; Retrieve only file name or last directory name from a path.
+;;
+(define (get-name-from-path path)
+  (~> path
+    (string-split "/")
+    last))
+
+;;
+;; Return all but last elements of a list.
 ;;
 (define (but-last a-list)
   (~> a-list
