@@ -19,6 +19,7 @@
 
 #lang rackjure
 
+(require srfi/1)
 (require racket/runtime-path)
 
 (define-runtime-path +current-dir+ "./")
@@ -32,20 +33,11 @@
     last))
 
 ;;
-;; Return all but last elements of a list.
-;;
-(define (but-last a-list)
-  (~> a-list
-    reverse
-    rest
-    reverse))
-
-;;
 ;; Copy files or directories, overwrite older versions.
 ;;
 (define (copy-and-overwrite . paths)
   (let* ([destination (last paths)]
-         [sources     (but-last paths)])
+         [sources     (drop-right paths 1)])
     (for ([source sources])
       (let* ([name-only (get-name-from-path source)])
         (delete-directory/files (string-join destination name-only)
