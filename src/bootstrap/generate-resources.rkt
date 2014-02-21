@@ -53,10 +53,13 @@
   (let* ([destination (last paths)]
          [sources     (drop-right paths 1)])
     (for ([source sources])
-      (let* ([name-only (get-name-from-path source)])
-        (delete-directory/files (string-join destination name-only)
+      (let* ([name-only        (get-name-from-path source)]
+             [full-destination (string-append destination name-only)])
+        (displayln (~a "-> Deleting: " (string-append destination name-only)))
+        (delete-directory/files full-destination
                                 #:must-exist? #f)
-        (copy-directory/files source destination)))))
+        (displayln (~a "-> Copying " source " to " destination))
+        (copy-directory/files source full-destination)))))
 
 (define (main)
   (make-directory* (string-append (this-directory) "../generated_docs/"))
