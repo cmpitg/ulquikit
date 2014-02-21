@@ -47,6 +47,14 @@
   (check-equal? (get-name-from-path "/mnt/abc.rkt") "abc.rkt"))
 
 ;;
+;; Expand and simplify path and convert it to string
+;;
+(define (expand-path path)
+  (~> (expand-user-path path)
+    simplify-path
+    path->string))
+
+;;
 ;; Copy files or directories, overwrite older versions.
 ;;
 (define (copy-and-overwrite . paths)
