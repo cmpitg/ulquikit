@@ -57,7 +57,6 @@ class RendererSingleton
 
   def render_document
     content = ARGF.read
-    puts content
     toc     = @toc_renderer.render content
     puts @renderer.render content
   end
