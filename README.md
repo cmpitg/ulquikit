@@ -81,6 +81,37 @@ ideas about Knuth's work as well.
 
 ## Examples ##
 
+## Installation (not yet available) ##
+
+For Debian-based system
+
+Racket:
+
+```sh
+aptitude install racket
+raco install ulquikit
+```
+
+Ruby 1.9.3+:
+
+```sh
+# Best to install with RVM, visit https://rvm.io/
+# Single-user installation
+\curl -sSL https://get.rvm.io | bash -s stable
+# For Bash
+echo "source $HOME/.rvm/scripts/rvm" >> ~/.bash_profile
+# For Zsh
+echo "source $HOME/.rvm/scripts/rvm" >> ~/.zshrc
+source $HOME/.rvm/scripts/rvm
+rvm install 1.9
+```
+
+Gem dependencies:
+
+```sh
+ulqui install-ruby-dependencies
+```
+
 ## Trivia ##
 
 * Ulquikit is named after
