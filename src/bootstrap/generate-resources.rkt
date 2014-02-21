@@ -28,6 +28,12 @@
 (define-runtime-path +current-dir+ "./")
 
 ;;
+;; Return directory of current file
+;;
+(define (this-directory)
+  (path->string +current-dir+))
+
+;;
 ;; Retrieve only file name or last directory name from a path.
 ;;
 (define (get-name-from-path path)
@@ -53,7 +59,9 @@
         (copy-directory/files source destination)))))
 
 (define (main)
-  (make-directory* (string-join +current-dir+ "../generated_docs/"))
-  (copy-and-overwrite (string-join +current-dir+ "css")
-                      (string-join +current-dir+ "js")
-                      (string-join +current-dir+ "../generated_docs/")))
+  (make-directory* (string-append (this-directory) "../generated_docs/"))
+  (copy-and-overwrite (string-append (this-directory) "css")
+                      (string-append (this-directory) "js")
+                      (string-append (this-directory) "../generated_docs/")))
+
+(main)
