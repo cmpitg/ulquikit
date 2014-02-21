@@ -47,7 +47,7 @@ class RendererSingleton
     :footnotes            => true,
   }
 
-  attr_accessor :html_render, :renderer, :css_list, :js_list
+  attr_accessor :html_render, :renderer
 
   def initialize
     @html_render   = HTMLWithRouge.new MarkdownExtensions
@@ -55,7 +55,7 @@ class RendererSingleton
     @toc_renderer  = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC, RendererOptions)
   end
 
-  def render_file
+  def render_document
     content = ARGF.read
     puts content
     toc     = @toc_renderer.render content
@@ -63,5 +63,4 @@ class RendererSingleton
   end
 end
 
-
-RendererSingleton.instance.render_file
+RendererSingleton.instance.render_document
