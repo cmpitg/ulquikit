@@ -3,66 +3,66 @@
   <head>
     <title> Ulquikit Guide
 </title>
-    <link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/bootstrap.min.css' />
-<link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/github.css' />
-<link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/pygments.css' />
+    <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css' />
+<link rel='stylesheet' type='text/css' href='css/github.css' />
+<link rel='stylesheet' type='text/css' href='css/pygments.css' />
   </head>
   <body>
     <ul>
 <li>
-<a href="#toc_14">Ulquikit Guide</a>
+<a href="#toc_17">Ulquikit Guide</a>
 <ul>
 <li>
-<a href="#toc_15">Full directory structure</a>
+<a href="#toc_18">Full directory structure</a>
 </li>
 <li>
-<a href="#toc_16">Typical workflows</a>
+<a href="#toc_19">Typical workflows</a>
 <ul>
 <li>
-<a href="#toc_17">Simple project</a>
+<a href="#toc_20">Simple project</a>
 </li>
 <li>
-<a href="#toc_18">Simple project with custom commands</a>
+<a href="#toc_21">Simple project with custom commands</a>
 </li>
 <li>
-<a href="#toc_19">Project with theme</a>
+<a href="#toc_22">Project with theme</a>
 </li>
 <li>
-<a href="#toc_20">Output directories</a>
+<a href="#toc_23">Output directories</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_21">Document variable definition</a>
+<a href="#toc_24">Document variable definition</a>
 </li>
 <li>
-<a href="#toc_22">Theming</a>
+<a href="#toc_25">Theming</a>
 <ul>
 <li>
-<a href="#toc_23">Structure</a>
+<a href="#toc_26">Structure</a>
 </li>
 <li>
-<a href="#toc_24">Creating a theme</a>
+<a href="#toc_27">Creating a theme</a>
 </li>
 <li>
-<a href="#toc_25">Use a theme</a>
+<a href="#toc_28">Use a theme</a>
 </li>
 </ul>
 </li>
 <li>
-<a href="#toc_26">Templating</a>
+<a href="#toc_29">Templating</a>
 </li>
 <li>
-<a href="#toc_27">Command line references</a>
+<a href="#toc_30">Command line references</a>
 <ul>
 <li>
-<a href="#toc_28">General commands</a>
+<a href="#toc_31">General commands</a>
 </li>
 <li>
-<a href="#toc_29">Project management</a>
+<a href="#toc_32">Project management</a>
 </li>
 <li>
-<a href="#toc_30">Theme management</a>
+<a href="#toc_33">Theme management</a>
 </li>
 </ul>
 </li>
@@ -70,9 +70,9 @@
 </li>
 </ul>
 
-    <h1 id="toc_14">Ulquikit Guide</h1>
+    <h1 id="toc_17">Ulquikit Guide</h1>
 
-<h2 id="toc_15">Full directory structure</h2>
+<h2 id="toc_18">Full directory structure</h2>
 
 <p>A full Ulquikit project directory structure would look like:</p>
 <pre class="highlight plaintext">&lt;project-name&gt;/
@@ -99,9 +99,9 @@ probably <em>just</em> what people need:</p>
   COPYING
   README.md
 </pre>
-<h2 id="toc_16">Typical workflows</h2>
+<h2 id="toc_19">Typical workflows</h2>
 
-<h3 id="toc_17">Simple project</h3>
+<h3 id="toc_20">Simple project</h3>
 
 <ul>
 <li><p>Write code and doc straightforward by writing Markdown in <code class="prettyprint">src/</code>.</p></li>
@@ -115,7 +115,7 @@ probably <em>just</em> what people need:</p>
   COPYING
   README
 </pre>
-<h3 id="toc_18">Simple project with custom commands</h3>
+<h3 id="toc_21">Simple project with custom commands</h3>
 
 <p>Another simple workflow with Ulquikit would be something similar to:</p>
 
@@ -157,7 +157,7 @@ ulqui build_all_then_test
 </pre>
 <p>Please refer to the <strong>Custom commands</strong> section for further information.</p>
 
-<h3 id="toc_19">Project with theme</h3>
+<h3 id="toc_22">Project with theme</h3>
 
 <p>In Ulquikit, document output is themeable.  A simple themed project would look
 similar to:</p>
@@ -208,7 +208,7 @@ guide, section <strong>Theming</strong>.</p></li>
 </pre></li>
 </ul>
 
-<h3 id="toc_20">Output directories</h3>
+<h3 id="toc_23">Output directories</h3>
 <pre class="highlight plaintext">&lt;project-name&gt;/
   build_docs/
     css/
@@ -225,7 +225,7 @@ guide, section <strong>Theming</strong>.</p></li>
 </pre>
 <p>Hope the file names speak for themselves.</p>
 
-<h2 id="toc_21">Document variable definition</h2>
+<h2 id="toc_24">Document variable definition</h2>
 
 <ul>
 <li><p>Format:</p>
@@ -258,12 +258,12 @@ document uses.</li>
 <li><p>User-defined variables (TODO).</p></li>
 </ul>
 
-<h2 id="toc_22">Theming</h2>
+<h2 id="toc_25">Theming</h2>
 
 <p>The first compilation process produces <em>documents</em> and <em>source code</em>.  If the
 documents are in HTML process, they can be themed.</p>
 
-<h3 id="toc_23">Structure</h3>
+<h3 id="toc_26">Structure</h3>
 <pre class="highlight plaintext">themes/&lt;theme-name&gt;
   images/
   scripts/
@@ -315,7 +315,7 @@ supported, opt-in:</p>
 </pre></li>
 </ul>
 
-<h3 id="toc_24">Creating a theme</h3>
+<h3 id="toc_27">Creating a theme</h3>
 
 <p>To create a theme, simply create the directory structure mentioned above and
 put it into <code class="prettyprint">themes/&lt;theme-name&gt;</code>.  A theme name <em>should</em> only contain
@@ -323,7 +323,7 @@ alphanumberic characters and/or <code class="prettyprint">_</code> and/or <code 
 be created with the command:</p>
 <pre class="highlight shell">ulqui theme new &lt;theme-name&gt;
 </pre>
-<h3 id="toc_25">Use a theme</h3>
+<h3 id="toc_28">Use a theme</h3>
 
 <p>Simple copy all the contents from <code class="prettyprint">themes/&lt;theme-name&gt;/</code> to <code class="prettyprint">src/</code>, or use
 the built-in command:</p>
@@ -331,7 +331,7 @@ the built-in command:</p>
 </pre>
 <p>If the theme name doesn&#39;t exist, nothing will change.</p>
 
-<h2 id="toc_26">Templating</h2>
+<h2 id="toc_29">Templating</h2>
 
 <p>A template is used to insert the result of the compilation process of your
 Markdown documents.</p>
@@ -353,7 +353,7 @@ document(s).</li>
 </ul></li>
 </ul>
 
-<h2 id="toc_27">Command line references</h2>
+<h2 id="toc_30">Command line references</h2>
 
 <p>Notes:</p>
 
@@ -367,7 +367,7 @@ ulqui theme show-info --field demo_url foo-bar
 </pre></li>
 </ul>
 
-<h3 id="toc_28">General commands</h3>
+<h3 id="toc_31">General commands</h3>
 
 <ul>
 <li><p>To invoke help:</p>
@@ -381,7 +381,7 @@ ulqui theme show-info --field demo_url foo-bar
 </pre></li>
 </ul>
 
-<h3 id="toc_29">Project management</h3>
+<h3 id="toc_32">Project management</h3>
 
 <ul>
 <li><p>To initialize a Ulquikit project:</p>
@@ -406,7 +406,7 @@ ulqui build <span class="nb">source</span>
 </pre></li>
 </ul>
 
-<h3 id="toc_30">Theme management</h3>
+<h3 id="toc_33">Theme management</h3>
 
 <ul>
 <li><p>To create a new theme:</p>
@@ -459,6 +459,6 @@ Demo URL: http://example.com/ulquikit-themes/foo-bar/
 </pre></li>
 </ul>
 
-    <script type='text/javascript' src='/mnt/Workspace/src/ulquikit/build_docs/js/bootstrap.min.js'></script>
+    <script type='text/javascript' src='js/bootstrap.min.js'></script>
   </body>
 </html>

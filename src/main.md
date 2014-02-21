@@ -73,6 +73,8 @@ style for headings and quotes, ...), this document adds a few more notations:
 
 ### Concepts ###
 
+<a name="concept"></a>
+
 * *Snippets* refer to *code snippets* that are used to structure source code.
   Each snippet (TODO: for each file? or in the whole project?) has a unique
   name and either:
@@ -81,7 +83,17 @@ style for headings and quotes, ...), this document adds a few more notations:
   - defines a file (refered to as *file snippets*)
 
 <a name="concept-source-doc"></a>
-* *Source doc* is a literate document
+
+* *Source doc* is a literate document that is used to generate source code and
+  documentation.
+
+<a name="concept-gen-doc"></a>
+
+* *Generated doc* is the generated documentation from *source doc*.
+
+<a name="concept-gen-code"></a>
+
+* *Generated code* is the generated source code from *source doc*.
 
 ### Constraints ###
 
@@ -166,8 +178,8 @@ for Markdown documents to have better semantics.
   - Ulquikit's escape syntax:
 
     ```
-    \@{some-name}Text
-    \@{some-name} Text
+    '@{some-name}Text
+    '@{some-name} Text
     ```
 
 #### How it works ####

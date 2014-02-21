@@ -3,46 +3,42 @@
   <head>
     <title> Ulquikit
 </title>
-    <link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/bootstrap.min.css' />
-<link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/github.css' />
-<link rel='stylesheet' type='text/css' href='/mnt/Workspace/src/ulquikit/build_docs/css/pygments.css' />
+    <link rel='stylesheet' type='text/css' href='css/bootstrap.min.css' />
+<link rel='stylesheet' type='text/css' href='css/github.css' />
+<link rel='stylesheet' type='text/css' href='css/pygments.css' />
   </head>
   <body>
     <ul>
 <li>
-<a href="#toc_0"></a>
-</li>
-</ul>
-</li>
-<li>
-<a href="#toc_1">Ulquikit</a>
+<a href="#toc_0">Ulquikit</a>
 <ul>
 <li>
-<a href="#toc_2">Introduction</a>
+<a href="#toc_1">Introduction</a>
 <ul>
 <li>
-<a href="#toc_3">Features</a>
+<a href="#toc_2">Features</a>
 </li>
 <li>
-<a href="#toc_4">Requirements</a>
+<a href="#toc_3">Requirements</a>
+</li>
+<li>
+<a href="#toc_4">Notations</a>
+</li>
+<li>
+<a href="#toc_5">Concepts</a>
+</li>
+<li>
+<a href="#toc_6">Constraints</a>
+</li>
+<li>
+<a href="#toc_7">Configuration</a>
+</li>
+<li>
+<a href="#toc_8">The Markdown language</a>
 <ul>
 <li>
-<a href="#toc_5">Installation command</a>
+<a href="#toc_9">Additional features to original Markdown</a>
 </li>
-</ul>
-</li>
-<li>
-<a href="#toc_6">Concepts</a>
-</li>
-<li>
-<a href="#toc_7">Constraints</a>
-</li>
-<li>
-<a href="#toc_8">Configuration</a>
-</li>
-<li>
-<a href="#toc_9">The Markdown language</a>
-<ul>
 <li>
 <a href="#toc_10">How it works</a>
 </li>
@@ -55,29 +51,40 @@
 <a href="#toc_12">Directory structure</a>
 </li>
 <li>
-<a href="#toc_13">Emacs supporting</a>
+<a href="#toc_13">Fragmented: Source code generating process</a>
+<ul>
+<li>
+<a href="#toc_14">Extracting snippets</a>
+</li>
+</ul>
+</li>
+<li>
+<a href="#toc_15">Custom project structure</a>
+</li>
+<li>
+<a href="#toc_16">Emacs supporting</a>
+</li>
+</ul>
 </li>
 </ul>
 </li>
 </ul>
 
-    <h2 id="toc_0"></h2>
-
-<h1 id="toc_1">Ulquikit</h1>
+    <h1 id="toc_0">Ulquikit</h1>
 
 <p>This is full documentation and source code about Ulquikit.  Ulquikit is
 written using Ulquikit itself.  On how to use Ulquikit in your project, see
 <a href="guide.html">Ulquikit guide</a>.</p>
 
-<h2 id="toc_2">Introduction</h2>
+<h2 id="toc_1">Introduction</h2>
 
 <p>Ulquikit started as a collection of Ruby scripts to:</p>
 
 <ul>
 <li><p>Generate source code from a
 <a href="http://en.wikipedia.org/wiki/Markdown">Markdown</a> document</p></li>
-<li><p>Build the software using the generated source code</p></li>
-<li><p>Build the documentation from Markdown documents</p></li>
+<li><p>Build software using the generated source code</p></li>
+<li><p>Build documentation from Markdown documents</p></li>
 <li><p>Build and run tests</p></li>
 </ul>
 
@@ -89,20 +96,20 @@ written using Ulquikit itself.  On how to use Ulquikit in your project, see
 <li><p>An ePub file</p></li>
 </ul>
 
-<h3 id="toc_3">Features</h3>
+<h3 id="toc_2">Features</h3>
 
 <ul>
 <li><p><strong>Fully hackable</strong> source code</p></li>
 <li><p><a href="http://en.wikipedia.org/wiki/Convention_over_configuration">Convention over configuration</a></p></li>
 <li><p>&quot;Visually pleased&quot;</p></li>
 <li><p>Output syntax highlighting</p></li>
-<li><p>Convention over configuration</p></li>
 <li><p>Generated source code has references to original documentation with the
 formats:</p>
 
 <ul>
 <li><code class="prettyprint">/path/to/docs:line_number</code></li>
 <li><code class="prettyprint">/path/to/docs:line_number_from:line_number_to</code></li>
+<li><code class="prettyprint">/path/to/docs:line_number:number_of_lines</code></li>
 <li><code class="prettyprint">/path/to/docs:/pattern/</code></li>
 <li><code class="prettyprint">/path/to/docs:/pattern_from/,/pattern_to/</code></li>
 </ul>
@@ -110,11 +117,11 @@ formats:</p>
 <p>Editors can make use of this pattern to implement code/doc navigation.</p></li>
 </ul>
 
-<h3 id="toc_4">Requirements</h3>
+<h3 id="toc_3">Requirements</h3>
 
 <ul>
-<li>Ruby 1.9+</li>
-<li>Gems:
+<li><p>Ruby 1.9+</p></li>
+<li><p>Gems:</p>
 
 <ul>
 <li><a href="https://github.com/jayferd/rouge">Rouge</a>, a syntax highlighter for Ruby.</li>
@@ -123,24 +130,51 @@ formats:</p>
 </ul></li>
 </ul>
 
-<h4 id="toc_5">Installation command</h4>
+<h3 id="toc_4">Notations</h3>
 
-<p>(TODO)</p>
-<pre class="highlight shell">gem install -V rouge redcarpet nokogiri
-</pre>
-<h3 id="toc_6">Concepts</h3>
+<p>Aside from usual notation (preformatted text for source code, different text
+style for headings and quotes, ...), this document adds a few more notations:</p>
 
 <ul>
-<li><p>Snippets refer to <em>code snippets</em> that are used to structure source code.
-Each snippet has a unique name and either:</p>
+<li>Concepts that are valid in Ulquikit (and probably have different meanings
+outside) are italicized.</li>
+</ul>
+
+<h3 id="toc_5">Concepts</h3>
+
+<p><a name="concept"></a></p>
 
 <ul>
-<li>defines a potion of code, or</li>
-<li>defines the structure of a code</li>
+<li><p><em>Snippets</em> refer to <em>code snippets</em> that are used to structure source code.
+Each snippet (TODO: for each file? or in the whole project?) has a unique
+name and either:</p>
+
+<ul>
+<li>defines a potion of code (refered to as <em>code snippets</em>), or</li>
+<li>defines a file (refered to as <em>file snippets</em>)</li>
 </ul></li>
 </ul>
 
-<h3 id="toc_7">Constraints</h3>
+<p><a name="concept-source-doc"></a></p>
+
+<ul>
+<li><em>Source doc</em> is a literate document that is used to generate source code and
+documentation.</li>
+</ul>
+
+<p><a name="concept-gen-doc"></a></p>
+
+<ul>
+<li><em>Generated doc</em> is the generated documentation from <em>source doc</em>.</li>
+</ul>
+
+<p><a name="concept-gen-code"></a></p>
+
+<ul>
+<li><em>Generated code</em> is the generated source code from <em>source doc</em>.</li>
+</ul>
+
+<h3 id="toc_6">Constraints</h3>
 
 <ul>
 <li><p>Filename contains no space and <code class="prettyprint">:</code>.</p></li>
@@ -151,7 +185,7 @@ used to define snippets, their corresponding regular expressions in config
 should be redefined.</p></li>
 </ul>
 
-<h3 id="toc_8">Configuration</h3>
+<h3 id="toc_7">Configuration</h3>
 
 <ul>
 <li><p>All configuration is managed by a singleton named <code class="prettyprint">UlquiConfig</code>:</p></li>
@@ -162,7 +196,7 @@ placing a YAML file in the <code class="prettyprint">src/</code> directory.</p>
 <span class="kp">include</span> <span class="no">Singleton</span>
 
 <span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">project</span><span class="o">-</span><span class="n">structure</span>             <span class="p">}</span><span class="o">-</span>
-<span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">define</span><span class="o">-</span><span class="n">snippet</span><span class="o">-</span><span class="n">regex</span>          <span class="p">}</span><span class="o">-</span>
+<span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">define</span><span class="o">-</span><span class="n">snippet</span><span class="o">-</span><span class="n">regexps</span>        <span class="p">}</span><span class="o">-</span>
 <span class="o">-</span><span class="p">{</span> <span class="n">config</span><span class="o">-</span><span class="n">default</span><span class="o">-</span><span class="n">template</span>              <span class="p">}</span><span class="o">-</span>
 <span class="k">end</span>
 
@@ -171,25 +205,55 @@ placing a YAML file in the <code class="prettyprint">src/</code> directory.</p>
 </pre></li>
 <li><p>By default, all regular expressions are defined so that source code part of
 the document looks clean and uncluttered:</p>
-<pre class="highlight ruby"><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">define</span><span class="o">-</span><span class="n">snippet</span><span class="o">-</span><span class="n">regex</span> <span class="o">===</span>
-<span class="kp">attr_accessor</span> <span class="ss">:snippet_def_regex</span><span class="p">,</span> <span class="ss">:file_def_regex</span><span class="p">,</span> <span class="ss">:snippet_add_regex</span>
+<pre class="highlight ruby"><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">define</span><span class="o">-</span><span class="n">snippet</span><span class="o">-</span><span class="n">regexps</span> <span class="o">===</span>
+<span class="kp">attr_accessor</span> <span class="ss">:snippet_def_regexp</span><span class="p">,</span> <span class="ss">:file_def_regexp</span><span class="p">,</span> <span class="ss">:snippet_add_regexp</span>
 
-<span class="vi">@snippet_def_regex</span> <span class="o">=</span> <span class="p">{</span>
+<span class="vi">@snippet_def_regexp</span> <span class="o">=</span> <span class="p">{</span>
 <span class="ss">:begin</span>  <span class="o">=&gt;</span> <span class="sr">/=== ([^ ]+) ===$/</span><span class="p">,</span>
 <span class="ss">:end</span>    <span class="o">=&gt;</span> <span class="sr">/======$/</span>
 <span class="p">}</span>
 
-<span class="vi">@file_def_regex</span> <span class="o">=</span> <span class="p">{</span>
+<span class="vi">@file_def_regexp</span> <span class="o">=</span> <span class="p">{</span>
 <span class="ss">:begin</span>  <span class="o">=&gt;</span> <span class="sr">/_____ file: ([^ ]+) _____$/</span><span class="p">,</span>
 <span class="ss">:end</span>    <span class="o">=&gt;</span> <span class="sr">/__________$/</span>
 <span class="p">}</span>
 
-<span class="vi">@snippet_add_regex</span> <span class="o">=</span> <span class="sr">/-{ ([^ ]+) }-$/</span>
+<span class="vi">@snippet_add_regexp</span> <span class="o">=</span> <span class="sr">/-{ ([^ ]+) }-$/</span>
 <span class="o">======</span>
-</pre></li>
+</pre>
+<p><em>File snippets</em> has <code class="prettyprint">build_src/</code> as their default directory.</p></li>
 </ul>
 
-<h3 id="toc_9">The Markdown language</h3>
+<h3 id="toc_8">The Markdown language</h3>
+
+<p>Ulquikit supports standard Markdown syntax, and with the help of
+<a href="https://github.com/vmg/redcarpet">Redcarpet</a>, it brings additional features
+for Markdown documents to have better semantics.</p>
+
+<h4 id="toc_9">Additional features to original Markdown</h4>
+
+<ul>
+<li><p>Named anchor:</p>
+
+<ul>
+<li>Standard syntax:</li>
+</ul>
+<pre class="highlight html"><span class="nt">&lt;a</span> <span class="na">name=</span><span class="s">&quot;some-name&quot;</span><span class="nt">&gt;</span>Text<span class="nt">&lt;/a&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">name=</span><span class="s">&quot;some-name&quot;</span><span class="nt">&gt;&lt;/a&gt;</span> Text
+</pre>
+<ul>
+<li>Ulquikit syntax:</li>
+</ul>
+<pre class="highlight plaintext">@{some-name}Text
+@{some-name} Text
+</pre>
+<ul>
+<li>Ulquikit&#39;s escape syntax:</li>
+</ul>
+<pre class="highlight plaintext">\@{some-name}Text
+\@{some-name} Text
+</pre></li>
+</ul>
 
 <h4 id="toc_10">How it works</h4>
 
@@ -229,7 +293,7 @@ that file as its main template; otherwise, simple template is used
 <span class="o">======</span>
 </pre></li>
 <li><p>Also, the function to process main template is </p></li>
-<li><p>Firstly, Ulquikit reads all templates in <code class="prettyprint">src/templates/</code>.</p></li>
+<li><p>Ulquikit reads all templates in <code class="prettyprint">src/templates/</code>.</p></li>
 <li><p>Then, all Markdown files are read and rendered using Redcarpet.  Variable
 definition part is parsed and all variables are stored in a hash.</p></li>
 </ul>
@@ -253,6 +317,8 @@ definition part is parsed and all variables are stored in a hash.</p></li>
 <li><p>The above structure is completely configurable (what&#39;s the point of being
 fully hackable if it&#39;s not? (-:).  However, it&#39;s strongly advised not to
 change:</p>
+
+<p>TODO: Review the following part</p>
 <pre class="highlight ruby"><span class="o">===</span> <span class="n">config</span><span class="o">-</span><span class="n">project</span><span class="o">-</span><span class="n">structure</span> <span class="o">===</span>
 
 <span class="k">class</span> <span class="nc">UlquiConfigSingleton</span>
@@ -260,40 +326,40 @@ change:</p>
 
 <span class="n">project_structure</span> <span class="o">=</span> <span class="p">{</span>
   <span class="ss">:main_dirs</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">'src'</span><span class="p">,</span>
-    <span class="ss">:build</span>       <span class="o">=&gt;</span> <span class="s1">'build'</span><span class="p">,</span>
+    <span class="ss">:src</span>          <span class="o">=&gt;</span> <span class="s1">'src'</span><span class="p">,</span>
+    <span class="ss">:build</span>        <span class="o">=&gt;</span> <span class="s1">'build'</span><span class="p">,</span>
   <span class="p">}</span>
 
-  <span class="ss">:template</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:path</span>        <span class="o">=&gt;</span> <span class="s1">'src/templates'</span><span class="p">,</span>
-    <span class="ss">:default</span>     <span class="o">=&gt;</span> <span class="s1">'main.html'</span>
-    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:read_template_html</span><span class="p">)</span>
+  <span class="ss">:template</span>       <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:path</span>         <span class="o">=&gt;</span> <span class="s1">'src/templates'</span><span class="p">,</span>
+    <span class="ss">:default</span>      <span class="o">=&gt;</span> <span class="s1">'main.html'</span>
+    <span class="ss">:action</span>       <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:read_template_html</span><span class="p">)</span>
   <span class="p">}</span>
 
-  <span class="ss">:images</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">'images'</span><span class="p">,</span>
-    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">'img'</span>
+  <span class="ss">:images</span>         <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>          <span class="o">=&gt;</span> <span class="s1">'images'</span><span class="p">,</span>
+    <span class="ss">:output</span>       <span class="o">=&gt;</span> <span class="s1">'img'</span>
   <span class="p">},</span>
 
-  <span class="ss">:js</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">'scripts'</span><span class="p">,</span>
-    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">'js'</span><span class="p">,</span>
-    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:compile_js</span><span class="p">),</span>
-    <span class="ss">:file_regex</span>  <span class="o">=&gt;</span> <span class="sr">/\.js$/</span>
+  <span class="ss">:js</span>             <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>          <span class="o">=&gt;</span> <span class="s1">'scripts'</span><span class="p">,</span>
+    <span class="ss">:output</span>       <span class="o">=&gt;</span> <span class="s1">'js'</span><span class="p">,</span>
+    <span class="ss">:action</span>       <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:compile_js</span><span class="p">),</span>
+    <span class="ss">:file_regexp</span>  <span class="o">=&gt;</span> <span class="sr">/\.js$/</span>
   <span class="p">},</span>
 
-  <span class="ss">:css</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">'styles'</span><span class="p">,</span>
-    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">'css'</span><span class="p">,</span>
-    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:compile_css</span><span class="p">),</span>
-    <span class="ss">:file_regex</span>  <span class="o">=&gt;</span> <span class="sr">/\.css$/</span>
+  <span class="ss">:css</span>            <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>          <span class="o">=&gt;</span> <span class="s1">'styles'</span><span class="p">,</span>
+    <span class="ss">:output</span>       <span class="o">=&gt;</span> <span class="s1">'css'</span><span class="p">,</span>
+    <span class="ss">:action</span>       <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:compile_css</span><span class="p">),</span>
+    <span class="ss">:file_regexp</span>  <span class="o">=&gt;</span> <span class="sr">/\.css$/</span>
   <span class="p">},</span>
 
-  <span class="ss">:md</span> <span class="o">=&gt;</span> <span class="p">{</span>
-    <span class="ss">:src</span>         <span class="o">=&gt;</span> <span class="s1">'./'</span><span class="p">,</span>
-    <span class="ss">:output</span>      <span class="o">=&gt;</span> <span class="s1">'./'</span><span class="p">,</span>
-    <span class="ss">:action</span>      <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:compile_md</span><span class="p">),</span>
-    <span class="ss">:file_regex</span>  <span class="o">=&gt;</span> <span class="sr">/\.(html|pdf|epub)$/</span>
+  <span class="ss">:md</span>             <span class="o">=&gt;</span> <span class="p">{</span>
+    <span class="ss">:src</span>          <span class="o">=&gt;</span> <span class="s1">'./'</span><span class="p">,</span>
+    <span class="ss">:output</span>       <span class="o">=&gt;</span> <span class="s1">'./'</span><span class="p">,</span>
+    <span class="ss">:action</span>       <span class="o">=&gt;</span> <span class="no">Producer</span><span class="p">.</span><span class="nf">method</span><span class="p">(</span><span class="ss">:compile_md</span><span class="p">),</span>
+    <span class="ss">:file_regexp</span>  <span class="o">=&gt;</span> <span class="sr">/\.(html|pdf|epub)$/</span>
   <span class="p">}</span>
 
 <span class="p">}</span>
@@ -303,7 +369,38 @@ change:</p>
 </pre></li>
 </ul>
 
-<h3 id="toc_13">Emacs supporting</h3>
+<h3 id="toc_13">Fragmented: Source code generating process</h3>
+
+<p>Source code generating process could be described is the flow below:</p>
+<pre class="highlight ruby"><span class="n">____</span> <span class="ss">file: </span><span class="p">.</span><span class="nf">/</span><span class="n">gen_source_code</span><span class="p">.</span><span class="nf">rb</span> <span class="n">____</span>
+
+<span class="o">-</span><span class="p">{</span> <span class="n">gen</span><span class="o">-</span><span class="n">src</span><span class="o">/</span><span class="n">requires</span> <span class="p">}</span>
+
+<span class="o">-</span><span class="p">{</span> <span class="n">gen</span><span class="o">-</span><span class="n">src</span><span class="o">/</span><span class="n">extract</span><span class="o">-</span><span class="n">snippets</span>    <span class="p">}</span><span class="o">-</span>
+<span class="o">-</span><span class="p">{</span> <span class="n">gen</span><span class="o">-</span><span class="n">src</span><span class="o">/</span><span class="n">inserting</span><span class="o">-</span><span class="n">snippets</span>  <span class="p">}</span><span class="o">-</span>
+<span class="o">-</span><span class="p">{</span> <span class="n">gen</span><span class="o">-</span><span class="n">src</span><span class="o">/</span><span class="n">create</span><span class="o">-</span><span class="n">files</span>        <span class="p">}</span><span class="o">-</span>
+<span class="n">__________</span>
+</pre>
+<p>The regular expression for defining file snippet might not look nice, you can
+always change it (TODO: Make reference to <code class="prettyprint">file_def_regexp</code> part).</p>
+
+<h4 id="toc_14">Extracting snippets</h4>
+
+<p>Snippets are read from all Markdown determine by the list of  <code class="prettyprint">UlquiConfig[:]</code></p>
+
+<h3 id="toc_15">Custom project structure</h3>
+
+<p>Useful for projects such an an Emacs Lisp or Racket package, the project structure is
+mostly flattened.</p>
+
+<p>Ulquikit supports customizing project structure in your <code class="prettyprint">./config.json</code> (TODO:
+Make reference to the section describing <code class="prettyprint">config.json</code>) file.</p>
+<pre class="highlight json"><span class="p">{</span><span class="w">
+  </span><span class="s2">&quot;output-source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;./&quot;</span><span class="p">,</span><span class="w">
+  </span><span class="s2">&quot;output-doc&quot;</span><span class="p">:</span><span class="w">    </span><span class="s2">&quot;./&quot;</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></pre>
+<h3 id="toc_16">Emacs supporting</h3>
 
 <ul>
 <li><p>Multi-major mode</p></li>
@@ -315,6 +412,6 @@ change:</p>
 <li><p>Code navigation based on pattern</p></li>
 </ul>
 
-    <script type='text/javascript' src='/mnt/Workspace/src/ulquikit/build_docs/js/bootstrap.min.js'></script>
+    <script type='text/javascript' src='js/bootstrap.min.js'></script>
   </body>
 </html>
