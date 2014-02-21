@@ -21,6 +21,8 @@
 
 * [ ] Command line argument passing.
 
+* [x] Write Ruby script to render Markdown.
+
 ### Questions? ###
 
 * How to support multiple HTML theme?
