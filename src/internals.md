@@ -15,3 +15,8 @@ itself.  For how to use Ulquikit in your project, see
 ## Concepts and definitions used in Ulquikit ##
 
 Please see [Ulquikit guide](guide.html#concepts).
+
+## License ##
+
+Ulquikit is distributed under the terms of the GNU General Public License v3.
+See [`COPYING`](COPYING) for further information.
