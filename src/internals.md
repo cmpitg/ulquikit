@@ -16,6 +16,34 @@ itself.  For how to use Ulquikit in your project, see
 
 Please see [Ulquikit guide](guide.html#concepts).
 
+## How Ulquikit bootstraps itself ##
+
+Ulquikit's project structure:
+
+```
+ulquikit/
+  generated_docs/
+  generated_src/
+  src/
+    bootstrap/
+      css/
+      js/
+      templates/
+    config.yaml
+    internals.md
+    guide.md
+```
+
+Explanation:
+
+* `generated_docs/` contains *generated docs*.
+* `generated_src/` contains *generated source*.
+
+## Notes ##
+
+* All CSS and JavaScript files are minified with
+  [Node Minify](https://github.com/srod/node-minify).
+
 ## License ##
 
 Ulquikit is distributed under the terms of the GNU General Public License v3.
