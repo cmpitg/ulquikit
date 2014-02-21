@@ -1,3 +1,44 @@
+## Racket ##
+
+* [ ] Define convention for simple project structure.
+
+* [ ] Use basic Twitter Bootstrap theme with Github style.
+
+* [ ] Read custom variable at the beginning of a document.
+
+* [ ] Render document using Ruby's Redcarpet library.
+
+* [ ] Write wrapper to call external process and wait for it to finish.
+
+* [ ] Extract code snippet and store them in a hash.
+
+* [ ] Extract file snippet, store them in a hash, and them to their
+  corresponding files.
+
+* [ ] Extract line number of code snippet from the docs. (`;; ../relative/path/`).
+
+* [ ] Insert code snippet into their appropriate place (`-{ snippet-name }-`).
+
+* [ ] Command line argument passing.
+
+* [x] Write Ruby script to render Markdown.
+
+### Questions? ###
+
+* How to support multiple HTML theme?
+
+### Design decisions ###
+
+* References from source code files in *built source* to *original documents*
+  are relative paths to prevent path conflict between different machines.
+
+* *Code snippets* must have *project-wide* unique names, since a snippet could
+  be added from different *document*.
+
+---
+
+## Old and outdated ##
+
 * [x] Add Twitter Bootstrap theme
 
 * [x] Assets are added using relative paths
