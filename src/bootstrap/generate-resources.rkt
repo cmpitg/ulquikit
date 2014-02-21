@@ -23,8 +23,20 @@
 
 (define-runtime-path +current-dir+ "./")
 
+;;
+;; Copy files or directories, overwrite older versions.
+;;
+(define (copy-and-overwrite . paths)
+  (let* ([destination (last paths)]
+         [sources     (but-last paths)])
+    (for ([source sources])
+      (let* ([name-only (get-name-from-path source)])
+        (delete-directory/files (string-join destination name-only)
+                                #:must-exist? #f)
+        (copy-directory/files source destination)))))
+
 (define (main)
-  (create-dir (string-join +current-dir+ "../generated_docs/"))
-  (copy-files (string-join +current-dir+ "css")
-              (string-join +current-dir+ "js")
-              (string-join +current-dir+ "../generated_docs/")))
+  (make-directory* (string-join +current-dir+ "../generated_docs/"))
+  (copy-and-overwrite (string-join +current-dir+ "css")
+                      (string-join +current-dir+ "js")
+                      (string-join +current-dir+ "../generated_docs/")))
