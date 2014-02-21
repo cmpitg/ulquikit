@@ -1,10 +1,10 @@
-# Ulquikit
+# Ulquikit #
 
 Yet another
 [literate programming](http://en.wikipedia.org/wiki/Literate_programming)
 tool.
 
-## Literate programming at a glance
+## Literate programming at a glance ##
 
 Literate programming is a term coined by
 prof. [Donald E. Knuth](http://en.wikipedia.org/wiki/Donald_Knuth) in 1984,
@@ -18,7 +18,7 @@ In literate programming:
 
 * A program is a real *flow* of words and text.
 
-## Misunderstandings
+## Misunderstandings ##
 
 Some tools like [Docco](http://jashkenas.github.io/docco/) and its *partners
 in crime* are **not** literate programming tools.
@@ -39,7 +39,7 @@ the art of it, they spread the wrong idea about Knuth's work as well.
 Tools are supposed to get the job done, but please respect the orginal author.
 Name them your way.
 
-## Why literate programming?
+## Why literate programming? ##
 
 * Don't you like
   [Qt-style tutorials](http://qt-project.org/doc/qt-5.0/qtdoc/qtexamplesandtutorials.html)?
@@ -54,7 +54,7 @@ Name them your way.
 
 * Programs are more well-constructed.
 
-## Why *not* literate programming?
+## Why *not* literate programming? ##
 
 * Harder to debug using traditional tools.
 
@@ -63,7 +63,7 @@ Name them your way.
 
 * Write doc, write doc, and write doc.
 
-## Why Ulquikit?
+## Why Ulquikit? ##
 
 * Using [Markdown](http://en.wikipedia.org/wiki/Markdown) as its markup
   language, rather than [LaTeX](http://en.wikipedia.org/wiki/LaTeX) the
@@ -73,9 +73,9 @@ Name them your way.
 
 * Making literate programming fun and productive again.
 
-## Examples
+## Examples ##
 
-## Trivia
+## Trivia ##
 
 * Ulquikit is named after
   [Ulquiorra Schiffer](http://en.wikipedia.org/wiki/Ulquiorra#Ulquiorra_Schiffer),
@@ -85,11 +85,11 @@ Name them your way.
 * Ulquikit is written in literate programming itself using some small scripts
   to bootstrap residing in `src/bootstrap` directory.
 
-## License
+## License ##
 
 This project is distributed under the terms of the GNU General Public
 License v3.  See `COPYING` for further information.
 
-## Copyright
+## Copyright ##
 
-Copyright 2013 © Duong H. Nguyen <cmpitg AT gmailDOTcom>
+Copyright 2013-2014 © Duong H. Nguyen <cmpitg AT gmailDOTcom>
