@@ -57,7 +57,7 @@
              [full-destination (string-append destination name-only)])
         (when (or (file-exists? full-destination)
                   (directory-exists? full-destination))
-          (displayln (~a "-> Deleting: " (string-append destination name-only)))
+          (displayln (~a "-> Deleting: " full-destination))
           (delete-directory/files full-destination))
         (displayln (~a "-> Copying " source " to " destination))
         (copy-directory/files source full-destination)))))
