@@ -24,6 +24,15 @@
 (define-runtime-path +current-dir+ "./")
 
 ;;
+;; Return all but last elements of a list
+;;
+(define (but-last a-list)
+  (~> a-list
+    reverse
+    rest
+    reverse))
+
+;;
 ;; Copy files or directories, overwrite older versions.
 ;;
 (define (copy-and-overwrite . paths)
