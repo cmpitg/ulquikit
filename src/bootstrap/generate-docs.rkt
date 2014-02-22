@@ -60,7 +60,20 @@
 ;; ;; => "# Main content"
 ;;
 (define (strip-header-vars text)
-  (values "" text))
+  (let ([lines (string-split text "\n")])
+    (cond [(not (string=? "---" (first lines))) ; First line is not `---` =>
+                                        ; no vars
+           (values "" text)]
+
+          [else
+           (define var-part (take-while (λ (ele)
+                                          (not (string=? "---" ele)))
+                                        (rest lines)))
+           (define content-part (drop-while (λ (ele)
+                                              (not (string=? "---" ele)))
+                                            (rest lines)))
+           (values var-part (string-join (rest content-part) "\n"))])))
+
 (module+ test
   (local [(define content  "---\nHellow world\nWorld hello\n---\naoeuaoeu\naoeuaoeu")
           (define-values (var-part content-part) (strip-header-vars content))]
