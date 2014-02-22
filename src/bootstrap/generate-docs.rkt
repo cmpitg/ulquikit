@@ -39,10 +39,17 @@
 ;; Return file content as string
 ;;
 (define (read-file path)
-  (file->string #:mode 'text))
+  (file->string path #:mode 'text))
+
+(define (strip-header-vars text)
+  (values "" text))
 
 (define (main)
   (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path "internals.md")))))
+    (strip-header-vars (read-file (get-doc-path "internals.md"))))
+  (displayln "-> Var part:")
+  (displayln vars)
+  (displayln "-> Content part:")
+  (displayln content))
 
-;; (main)
+(main)
