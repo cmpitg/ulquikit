@@ -61,6 +61,16 @@
 ;;
 (define (strip-header-vars text)
   (values "" text))
+(module+ test
+  (local [(define content  "---\nHellow world\nWorld hello\n---\naoeuaoeu\naoeuaoeu")
+          (define-values (var-part content-part) (strip-header-vars content))]
+    (check-equal? var-part      '("Hellow world" "World hello"))
+    (check-equal? content-part  "aoeuaoeu\naoeuaoeu"))
+
+  (local [(define content "---\nfirst-value: 10\nsecond-value: 'hello-world\n---\n# Main content")
+          (define-values (var-list main-content) (strip-header-vars content))]
+    (check-equal? var-list      '("first-value: 10" "second-value: 'hello-world"))
+    (check-equal? main-content  "# Main content")))
 
 (define (main)
   (define-values (vars content)
