@@ -30,6 +30,7 @@
 (define +doc-location+ (expand-path (string-append (this-dir) "/../")))
 
 (define (main)
-  )
+  (define-values (vars content)
+    (strip-header-vars (read-file (expand-path (string-append +doc-location+ "internal.md"))))))
 
 (main)
