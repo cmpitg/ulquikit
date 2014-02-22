@@ -19,10 +19,14 @@
 
 #lang rackjure
 
+(require srfi/1)
 (require racket/runtime-path)
 (require "utils-path.rkt")
 
 (define-runtime-path +current-dir+ ".")
+
+(module+ test
+  (require rackunit))
 
 (define (this-dir)
   (expand-path +current-dir+))
@@ -41,6 +45,20 @@
 (define (read-file path)
   (file->string path #:mode 'text))
 
+;;
+;; Strip header which contains variables in a content, delimitered by 2 `---`
+;; lines.  Return values of var part and content part, respectively.  Var part
+;; is a list of lines, content part is string.
+;;
+;; E.g.
+;;
+;; (define content "---\nfirst-value: 10\nsecond-value: 'hello-world\n---\n# Main content")
+;; (define-values (var-list main-content) (strip-header-vars content))
+;; (displayln var-list)
+;; ;; => '("first-value: 10" "second-value: 'hello-world")
+;; (displayln main-content)
+;; ;; => "# Main content"
+;;
 (define (strip-header-vars text)
   (values "" text))
 
