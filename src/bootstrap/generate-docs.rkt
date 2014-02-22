@@ -89,4 +89,4 @@
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path "internals.md")))))
 
-(main)
+;; (main)
