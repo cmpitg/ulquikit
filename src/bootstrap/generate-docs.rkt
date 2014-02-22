@@ -74,10 +74,6 @@
 
 (define (main)
   (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path "internals.md"))))
-  (displayln "-> Var part:")
-  (displayln vars)
-  (displayln "-> Content part:")
-  (displayln content))
+    (strip-header-vars (read-file (get-doc-path "internals.md")))))
 
 (main)
