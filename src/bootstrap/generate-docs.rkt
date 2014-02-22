@@ -35,9 +35,14 @@
 (define (get-doc-path file)
   (expand-path (string-append +doc-location+ file)))
 
+;;
+;; Return file content as string
+;;
+(define (read-file path)
+  (file->string #:mode 'text))
+
 (define (main)
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path "internals.md")))))
 
 ;; (main)
-
