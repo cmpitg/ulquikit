@@ -21,6 +21,8 @@
 
 * [ ] Command line argument passing.
 
+* [ ] Strip header which contains variables from literate documents.
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
