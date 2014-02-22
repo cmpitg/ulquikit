@@ -23,6 +23,10 @@
 
 * [x] Write Ruby script to render Markdown.
 
+* [x] Generate resources by copying from `./src/bootstrap/css` and
+  `./src/bootstrap/js` to `./generate-docs/`:
+  `./src/bootstrap/generated-resources.rkt`
+
 ### Questions? ###
 
 * How to support multiple HTML theme?
