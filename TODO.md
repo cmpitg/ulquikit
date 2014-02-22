@@ -27,7 +27,7 @@
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
   `./src/bootstrap/js` to `./generate-docs/`:
-  `./src/bootstrap/generated-resources.rkt`
+  `./src/bootstrap/generate-resources.rkt`
 
 ### Questions? ###
 
