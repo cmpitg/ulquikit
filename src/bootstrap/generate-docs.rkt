@@ -29,8 +29,15 @@
 
 (define +doc-location+ (expand-path (string-append (this-dir) "/../")))
 
+;;
+;; Return full path to a literate document of Ulquikit
+;;
+(define (get-doc-path file)
+  (expand-path (string-append +doc-location+ file)))
+
 (define (main)
   (define-values (vars content)
-    (strip-header-vars (read-file (expand-path (string-append +doc-location+ "internal.md"))))))
+    (strip-header-vars (read-file (get-doc-path "internals.md")))))
 
-(main)
+;; (main)
+
