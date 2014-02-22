@@ -19,11 +19,8 @@
 
 #lang rackjure
 
-(require srfi/1)
 (require racket/runtime-path)
-
-(module+ test
-  (require rackunit))
+(require "utils-path.rkt")
 
 (define-runtime-path +current-dir+ "./")
 
@@ -33,38 +30,10 @@
 (define (this-directory)
   (path->string +current-dir+))
 
-;;
-;; Retrieve only file name or last directory name from a path.
-;;
-(define (get-name-from-path path)
-  (~> path
-    (string-split "/")
-    last))
-
-(module+ test
-  (check-equal? (get-name-from-path "/mnt/")        "mnt")
-  (check-equal? (get-name-from-path "/mnt")         "mnt")
-  (check-equal? (get-name-from-path "/mnt/abc.rkt") "abc.rkt"))
-
-;;
-;; Copy files or directories, overwrite older versions.
-;;
-(define (copy-and-overwrite . paths)
-  (let* ([destination (last paths)]
-         [sources     (drop-right paths 1)])
-    (for ([source sources])
-      (let* ([name-only        (get-name-from-path source)]
-             [full-destination (string-append destination name-only)])
-        (displayln (~a "-> Deleting: " (string-append destination name-only)))
-        (delete-directory/files full-destination
-                                #:must-exist? #f)
-        (displayln (~a "-> Copying " source " to " destination))
-        (copy-directory/files source full-destination)))))
-
 (define (main)
-  (make-directory* (string-append (this-directory) "../generated_docs/"))
+  (make-directory* (string-append (this-directory) "../generated-docs/"))
   (copy-and-overwrite (string-append (this-directory) "css")
                       (string-append (this-directory) "js")
-                      (string-append (this-directory) "../generated_docs/")))
+                      (string-append (this-directory) "../generated-docs/")))
 
 (main)

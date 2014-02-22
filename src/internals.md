@@ -22,8 +22,8 @@ Ulquikit's project structure:
 
 ```
 ulquikit/
-  generated_docs/
-  generated_src/
+  generated-docs/
+  generated-src/
   src/
     bootstrap/
       css/
@@ -37,8 +37,8 @@ Explanation:
 
 | **Path**           | **Description**                                                             |
 |--------------------|-----------------------------------------------------------------------------|
-| `generated_docs/`  | *generated docs*                                                            |
-| `generated_src/`   | *generated source*                                                          |
+| `generated-docs/`  | *generated docs*                                                            |
+| `generated-src/`   | *generated source*                                                          |
 | `src/bootstrap/`   | resources for *generated docs* in HTML format                               |
 | `src/config.yaml`  | Ulquikit configuration                                                      |
 | `src/internals.md` | Literate source of this document, describing how Ulquikit works internally. |

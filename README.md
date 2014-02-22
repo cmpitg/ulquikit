@@ -83,14 +83,12 @@ ideas about Knuth's work as well.
 
 ## Installation (not yet available) ##
 
-For Debian-based system
+For Debian-based system, using `sudo` instead of `su`
 
-Racket 5.93+
+Racket 5.3+
 
 ```sh
-# Currently, you need to install Racket 5.93 from source or download it from
-# Racket website
-# Then
+sudo aptitude install racket
 raco install ulquikit
 ```
 
