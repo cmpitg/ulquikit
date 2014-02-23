@@ -31,8 +31,11 @@
 (define (this-dir)
   (expand-path +current-dir+))
 
-(define +docs-location+ (expand-path (string-append (this-dir) "/../")))
+(define +docs-location+
+  (expand-path (string-append (this-dir) "/../")))
 
+(define +generated-docs-location+
+  (expand-path (string-append (this-dir) "/../../generated-docs/")))
 ;;
 ;; Return full path to a literate document of Ulquikit
 ;;
@@ -137,7 +140,8 @@
 ;; Return path for the output file corresponding to its literate file.
 ;;
 (define (get-output-doc-path file)
-  (get-doc-path "../generated-docs/" (replace-file-extension file "html")))
+  (expand-path (string-append +generated-docs-location+
+                              (replace-file-extension file "html"))))
 
 ;;
 ;; Generate doc file from its literate source into its appropriate path.
