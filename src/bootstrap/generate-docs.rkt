@@ -36,8 +36,8 @@
 ;;
 ;; Return full path to a literate document of Ulquikit
 ;;
-(define (get-doc-path file)
-  (expand-path (string-append +doc-location+ file)))
+(define (get-doc-path . files)
+  (expand-path (apply string-append +doc-location+ files)))
 
 ;;
 ;; Return file content as string
