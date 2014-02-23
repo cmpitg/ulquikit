@@ -31,13 +31,13 @@
 (define (this-dir)
   (expand-path +current-dir+))
 
-(define +doc-location+ (expand-path (string-append (this-dir) "/../")))
+(define +docs-location+ (expand-path (string-append (this-dir) "/../")))
 
 ;;
 ;; Return full path to a literate document of Ulquikit
 ;;
 (define (get-doc-path . files)
-  (expand-path (apply string-append +doc-location+ files)))
+  (expand-path (apply string-append +docs-location+ files)))
 
 ;;
 ;; Return file content as string
