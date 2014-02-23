@@ -31,9 +31,9 @@
   (path->string +current-dir+))
 
 (define (main)
-  (make-directory* (string-append (this-directory) "../generated-docs/"))
+  (make-directory* (string-append (this-directory) "../../generated-docs/"))
   (copy-and-overwrite (string-append (this-directory) "css")
                       (string-append (this-directory) "js")
-                      (string-append (this-directory) "../generated-docs/")))
+                      (string-append (this-directory) "../../generated-docs/")))
 
 (main)

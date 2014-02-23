@@ -31,13 +31,16 @@
 (define (this-dir)
   (expand-path +current-dir+))
 
-(define +doc-location+ (expand-path (string-append (this-dir) "/../")))
+(define +docs-location+
+  (expand-path (string-append (this-dir) "/../")))
 
+(define +generated-docs-location+
+  (expand-path (string-append (this-dir) "/../../generated-docs/")))
 ;;
 ;; Return full path to a literate document of Ulquikit
 ;;
-(define (get-doc-path file)
-  (expand-path (string-append +doc-location+ file)))
+(define (get-doc-path . files)
+  (expand-path (apply string-append +docs-location+ files)))
 
 ;;
 ;; Return file content as string
@@ -85,8 +88,74 @@
     (check-equal? var-list      '("first-value: 10" "second-value: 'hello-world"))
     (check-equal? main-content  "# Main content")))
 
-(define (main)
-  (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path "internals.md")))))
+;;
+;; Create a temporary file with `content` as its content and return the file
+;; path.  Overwrite existing file.
+;;
+(define (create-temp-file content)
+  (define path (make-temporary-file))
+  (display-to-file content path
+                   #:mode 'text
+                   #:exists 'update)
+  path)
 
-;; (main)
+;;
+;; Replace file extension.
+;;
+;; E.g.
+;;
+;; (replace-file-extension "hello.md" "html")
+;; ;; => "hello.html"
+;; (replace-file-extension "/tmp/hello.md" "html")
+;; ;; => "/tmp/hello.html"
+;; (replace-file-extension "/tmp/hello." "html")
+;; ;; => "/tmp/hello.html"
+;; (replace-file-extension "/tmp/hello" "html")
+;; ;; => "/tmp/hello.html"
+;;
+(define (replace-file-extension path new-extension)
+  (define char-list (reverse (string->list path)))
+  (define ensure-dot
+    (let ([try-removing-dot (drop-while (lambda (ele)
+                                          (and (not (char=? #\. ele))
+                                               (not (char=? #\/ ele))))
+                                        char-list)])
+      (if (or (empty? try-removing-dot)
+              (char=? #\/ (first try-removing-dot)))
+          (cons #\. char-list)
+          char-list)))
+  (define after-removing-dot (drop-while (lambda (ele) (not (char=? ele #\.)))
+                                         ensure-dot))
+  (~> (reverse after-removing-dot)
+    list->string
+    (string-append new-extension)))
+
+(module+ test
+  (check-equal? (replace-file-extension "hello.md" "html") "hello.html")
+  (check-equal? (replace-file-extension "/tmp/hello.md" "html") "/tmp/hello.html")
+  (check-equal? (replace-file-extension "/tmp/hello." "html") "/tmp/hello.html")
+  (check-equal? (replace-file-extension "/tmp/hello" "html") "/tmp/hello.html"))
+
+;;
+;; Return path for the output file corresponding to its literate file.
+;;
+(define (get-output-doc-path file)
+  (expand-path (string-append +generated-docs-location+
+                              (replace-file-extension file "html"))))
+
+;;
+;; Generate doc file from its literate source into its appropriate path.
+;;
+(define (generate-doc literate-doc-file)
+  (define-values (vars content)
+    (strip-header-vars (read-file (get-doc-path literate-doc-file))))
+  (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
+  (define temp-file-path (create-temp-file content))
+  (void (system (format "./render-markdown.rb < ~a > ~a"
+                        temp-file-path
+                        (get-output-doc-path literate-doc-file)))))
+
+(define (main)
+  (generate-doc "internals.md"))
+
+(main)
