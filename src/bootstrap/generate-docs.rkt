@@ -19,6 +19,8 @@
 
 #lang rackjure
 
+(provide main)
+
 (require srfi/1)
 (require racket/runtime-path)
 (require "utils-path.rkt")
@@ -155,7 +157,13 @@
                         temp-file-path
                         (get-output-doc-path literate-doc-file)))))
 
-(define (main)
-  (generate-doc "internals.md"))
+(define (generate-docs)
+  (~>> (directory-list +docs-location+)
+    (filter (λ (path)
+              (and (file-exists? (get-doc-path (path->string path)))
+                   (regexp-match #rx"\\.md$" path))))
+    (map (λ (path) (~> (path->string path)
+                     generate-doc)))))
 
-(main)
+(define (main)
+  (void (generate-docs)))
