@@ -85,13 +85,21 @@
     (check-equal? var-list      '("first-value: 10" "second-value: 'hello-world"))
     (check-equal? main-content  "# Main content")))
 
+;;
+;; Create a temporary file with `content` as its content and return the file
+;; path.  Overwrite existing file.
+;;
+(define (create-temp-file content)
+  (define path (make-temporary-file))
+  (display-to-file content path
+                   #:mode 'text
+                   #:exists 'update)
+  path)
+
 (define (main)
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path "internals.md"))))
-  (define temp-file-path (make-temporary-file))
-  (display-to-file content temp-file-path
-                   #:mode 'text
-                   #:exists 'update)
+  (define temp-file-path (create-temp-file content))
   (displayln (~a "-> Generating " (get-doc-path "../generated-docs/internal.html")))
   (void (system (format "./render-markdown.rb < ~a > ~a"
                         temp-file-path
