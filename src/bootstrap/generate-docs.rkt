@@ -96,6 +96,27 @@
                    #:exists 'update)
   path)
 
+;;
+;; Replace file extension.
+;;
+;; E.g.
+;;
+;; (replace-file-extension "hello.md" "html")
+;; ;; => "hello.html"
+;; (replace-file-extension "/tmp/hello.md" "html")
+;; ;; => "/tmp/hello.html"
+;; (replace-file-extension "/tmp/hello." "html")
+;; ;; => "/tmp/hello.html"
+;; (replace-file-extension "/tmp/hello" "html")
+;; ;; => "/tmp/hello.html"
+;;
+
+(module+ test
+  (check-equal? (replace-file-extension "hello.md" "html") "hello.html")
+  (check-equal? (replace-file-extension "/tmp/hello.md" "html") "/tmp/hello.html")
+  (check-equal? (replace-file-extension "/tmp/hello." "html") "/tmp/hello.html")
+  (check-equal? (replace-file-extension "/tmp/hello" "html") "/tmp/hello.html"))
+
 (define (main)
   (define literate-doc-file "internals.md")
   (define-values (vars content)
