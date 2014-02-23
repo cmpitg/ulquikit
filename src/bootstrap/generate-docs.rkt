@@ -101,9 +101,13 @@
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
   (define temp-file-path (create-temp-file content))
-  (displayln (~a "-> Generating " (get-doc-path "../generated-docs/" "internal.html")))
+  (displayln (~a "-> Generating " (get-doc-path "../generated-docs/"
+                                                (replace-file-extension literate-doc-file
+                                                                        "html"))))
   (void (system (format "./render-markdown.rb < ~a > ~a"
                         temp-file-path
-                        (get-doc-path "../generated-docs/" "internal.html")))))
+                        (get-doc-path "../generated-docs/"
+                                      (replace-file-extension literate-doc-file
+                                                              "html"))))))
 
 (main)
