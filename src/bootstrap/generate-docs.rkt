@@ -110,6 +110,22 @@
 ;; (replace-file-extension "/tmp/hello" "html")
 ;; ;; => "/tmp/hello.html"
 ;;
+(define (replace-file-extension path new-extension)
+  (define char-list (reverse (string->list path)))
+  (define ensure-dot
+    (let ([try-removing-dot (drop-while (lambda (ele)
+                                          (and (not (char=? #\. ele))
+                                               (not (char=? #\/ ele))))
+                                        char-list)])
+      (if (or (empty? try-removing-dot)
+              (char=? #\/ (first try-removing-dot)))
+          (cons #\. char-list)
+          char-list)))
+  (define after-removing-dot (drop-while (lambda (ele) (not (char=? ele #\.)))
+                                         ensure-dot))
+  (~> (reverse after-removing-dot)
+    list->string
+    (string-append new-extension)))
 
 (module+ test
   (check-equal? (replace-file-extension "hello.md" "html") "hello.html")
