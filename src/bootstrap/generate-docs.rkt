@@ -143,8 +143,8 @@
   (define literate-doc-file "internals.md")
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
-  (define temp-file-path (create-temp-file content))
   (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
+  (define temp-file-path (create-temp-file content))
   (void (system (format "./render-markdown.rb < ~a > ~a"
                         temp-file-path
                         (get-output-doc-path literate-doc-file)))))
