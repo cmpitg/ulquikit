@@ -139,8 +139,10 @@
 (define (get-output-doc-path file)
   (get-doc-path "../generated-docs/" (replace-file-extension file "html")))
 
-(define (main)
-  (define literate-doc-file "internals.md")
+;;
+;; Generate doc file from its literate source into its appropriate path.
+;;
+(define (generate-doc literate-doc-file)
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
   (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
@@ -148,5 +150,9 @@
   (void (system (format "./render-markdown.rb < ~a > ~a"
                         temp-file-path
                         (get-output-doc-path literate-doc-file)))))
+
+(define (main)
+  (define literate-doc-file "internals.md")
+  (generate-doc literate-doc-file))
 
 (main)
