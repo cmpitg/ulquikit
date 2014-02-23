@@ -156,7 +156,6 @@
                         (get-output-doc-path literate-doc-file)))))
 
 (define (main)
-  (define literate-doc-file "internals.md")
-  (generate-doc literate-doc-file))
+  (generate-doc "internals.md"))
 
 (main)
