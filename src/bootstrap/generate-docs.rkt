@@ -97,8 +97,9 @@
   path)
 
 (define (main)
+  (define literate-doc-file "internals.md")
   (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path "internals.md"))))
+    (strip-header-vars (read-file (get-doc-path literate-doc-file))))
   (define temp-file-path (create-temp-file content))
   (displayln (~a "-> Generating " (get-doc-path "../generated-docs/internal.html")))
   (void (system (format "./render-markdown.rb < ~a > ~a"
