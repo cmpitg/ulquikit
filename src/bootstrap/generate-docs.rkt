@@ -87,6 +87,14 @@
 
 (define (main)
   (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path "internals.md")))))
+    (strip-header-vars (read-file (get-doc-path "internals.md"))))
+  (define temp-file-path (make-temporary-file))
+  (display-to-file content temp-file-path
+                   #:mode 'text
+                   #:exists 'update)
+  (displayln (~a "-> Generating " (get-doc-path "../generated-docs/internal.html")))
+  (void (system (format "./render-markdown.rb < ~a > ~a"
+                        temp-file-path
+                        (get-doc-path "../generated-docs/internal.html")))))
 
-;; (main)
+(main)
