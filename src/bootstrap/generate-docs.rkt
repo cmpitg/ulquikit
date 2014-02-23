@@ -133,15 +133,20 @@
   (check-equal? (replace-file-extension "/tmp/hello." "html") "/tmp/hello.html")
   (check-equal? (replace-file-extension "/tmp/hello" "html") "/tmp/hello.html"))
 
+;;
+;; Return path for the output file corresponding to its literate file.
+;;
+(define (get-output-doc-path file)
+  (get-doc-path "../generated-docs/" (replace-file-extension file "html")))
+
 (define (main)
   (define literate-doc-file "internals.md")
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
   (define temp-file-path (create-temp-file content))
-  (define output-file (replace-file-extension literate-doc-file "html"))
-  (displayln (~a "-> Generating " (get-doc-path "../generated-docs/" output-file)))
+  (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
   (void (system (format "./render-markdown.rb < ~a > ~a"
                         temp-file-path
-                        (get-doc-path "../generated-docs/" output-file)))))
+                        (get-output-doc-path literate-doc-file)))))
 
 (main)
