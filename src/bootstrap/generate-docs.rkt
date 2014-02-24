@@ -22,22 +22,11 @@
 (provide main)
 
 (require srfi/1)
-(require racket/runtime-path)
 (require "utils-path.rkt")
-
-(define-runtime-path +current-dir+ ".")
 
 (module+ test
   (require rackunit))
 
-(define (this-dir)
-  (expand-path +current-dir+))
-
-(define +docs-location+
-  (expand-path (string-append (this-dir) "/../")))
-
-(define +generated-docs-location+
-  (expand-path (string-append (this-dir) "/../../generated-docs/")))
 ;;
 ;; Return full path to a literate document of Ulquikit
 ;;
@@ -153,7 +142,8 @@
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
   (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
   (define temp-file-path (create-temp-file content))
-  (void (system (format "./render-markdown.rb < ~a > ~a"
+  (void (system (format "~a/render-markdown.rb < ~a > ~a"
+                        (get-bootstrap-dir)
                         temp-file-path
                         (get-output-doc-path literate-doc-file)))))
 

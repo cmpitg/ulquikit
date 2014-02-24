@@ -20,10 +20,16 @@
 #lang rackjure
 
 (require srfi/1)
+(require racket/runtime-path)
 
 (provide get-name-from-path
          expand-path
-         copy-and-overwrite)
+         copy-and-overwrite
+
+         (rename-out [this-dir get-bootstrap-dir])
+
+         +docs-location+
+         +generated-docs-location+)
 
 (module+ test
   (require rackunit))
@@ -65,3 +71,18 @@
           (delete-directory/files full-destination))
         (displayln (~a "-> Copying " source " to " full-destination))
         (copy-directory/files source full-destination)))))
+
+;;
+;; Other constants
+;;
+
+(define-runtime-path +current-dir+ ".")
+
+(define (this-dir)
+  (expand-path +current-dir+))
+
+(define +docs-location+
+  (expand-path (string-append (this-dir) "/../")))
+
+(define +generated-docs-location+
+  (expand-path (string-append (this-dir) "/../../generated-docs/")))
