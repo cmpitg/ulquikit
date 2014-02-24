@@ -29,6 +29,16 @@
   `./src/bootstrap/js` to `./generate-docs/`:
   `./src/bootstrap/generate-resources.rkt`
 
+### Dependencies ###
+
+```racket
+#lang racket
+
+(require rackjure)
+(require terminal-color)
+(require (planet neil/html-template:2:2))
+```
+
 ### Questions? ###
 
 * How to support multiple HTML theme?

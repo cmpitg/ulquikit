@@ -19,7 +19,7 @@
 
 #lang rackjure
 
-(provide main)
+(provide (all-defined-out))
 
 (require srfi/1)
 (require "utils-file.rkt")
@@ -72,25 +72,59 @@
     (check-equal? main-content  "# Main content")))
 
 ;;
-;; Generate doc file from its literate source into its appropriate path.
+;; Render table of contents from a markdown document.
 ;;
-(define (generate-doc literate-doc-file)
-  (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path literate-doc-file))))
-  (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
+(define (render-toc literate-doc-content)
+  (define-values (vars content) (strip-header-vars literate-doc-content))
   (define temp-file-path (create-temp-file content))
-  (void (system (format "~a/render-markdown.rb < ~a > ~a"
-                        (get-bootstrap-dir)
-                        temp-file-path
-                        (get-output-doc-path literate-doc-file)))))
+  (with-output-to-string
+    (λ ()
+      (system (format "~a/render-markdown-toc.rb < ~a"
+                      (get-bootstrap-dir)
+                      temp-file-path)))))
+
+;;
+;; Render a Markdown document and return the generated HTML.
+;;
+;; Sample usage:
+;;
+;; (render-doc "# Hello World\n## An h2")
+;; ;; => "<h1>Hello World</h1>\n</h2>An h2</h2>"
+;;
+(define (render-doc literate-doc-content)
+  (define-values (vars content) (strip-header-vars literate-doc-content))
+  (define temp-file-path (create-temp-file content))
+  (with-output-to-string
+    (λ ()
+      (system (format "~a/render-markdown.rb < ~a"
+                      (get-bootstrap-dir)
+                      temp-file-path)))))
 
 (define (generate-docs)
   (~>> (directory-list +docs-location+)
     (filter (λ (path)
               (and (file-exists? (get-doc-path (path->string path)))
                    (regexp-match #rx"\\.md$" path))))
-    (map (λ (path) (~> (path->string path)
-                     generate-doc)))))
+    (map (λ (relative-path)
+           (define filename        (path->string relative-path))
+           (define doc-path        (get-doc-path filename))
+           (define output-doc-path (get-output-doc-path filename))
+
+           (displayln (~a "-> Processing " doc-path))
+           (define content         (read-file doc-path))
+
+           (displayln "   Generating table of contents...")
+           (define toc             (render-toc content))
+
+           (displayln "   Generating main content...")
+           (define html            (render-doc content))
+
+           (displayln (~a "   Writing " output-doc-path))
+           (display-to-file (string-append toc
+                                           html)
+                            output-doc-path
+                            #:mode 'text
+                            #:exists 'update)))))
 
 (define (main)
   (void (generate-docs)))
