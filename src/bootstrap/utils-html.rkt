@@ -21,7 +21,9 @@
 
 (require (planet neil/html-template:2:2))
 
-(provide generate-html)
+(provide generate-html
+         (rename-out [js html/js]
+                     [css html/css]))
 
 (module+ test
   (require rackunit))
