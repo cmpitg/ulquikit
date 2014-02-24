@@ -113,11 +113,13 @@
 
            (displayln (~a "-> Processing " doc-path))
 
+           (displayln "   Generating table of contents...")
            (~> (render-toc content)
              (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'truncate))
 
+           (displayln "   Generating main content...")
            (~> (render-doc content)
              (display-to-file output-doc-path
                               #:mode 'text
