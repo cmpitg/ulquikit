@@ -56,3 +56,20 @@
                                "Div content")))
               (div "OMG!")
               (div (%format "~a" some-var)))))
+
+(define (css path)
+  `(link (@ (rel "stylesheet")
+            (type "text/css")
+            (href ,path))))
+
+(define (js path)
+  `(script (@ (type "text/javascript")
+              (src ,path))))
+
+(module+ test
+  (displayln (generate-html
+              (html (head (%sxml (css "src/styles.css")))
+                    (body "Something")
+                    (%sxml (js "src/jquery.css"))))))
+
+;; <link rel="stylesheet" type="text/css" href="mystyles.css" media="screen" />
