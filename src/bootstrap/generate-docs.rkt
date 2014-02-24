@@ -77,6 +77,9 @@
 ;; (define (generate-toc-from-markdown markdown-content)
 ;;   ())
 
+(define (generate-toc _)
+  "TOC")
+
 ;;
 ;; Generate doc file from its literate source into its appropriate path.
 ;;
@@ -96,11 +99,16 @@
     (filter (λ (path)
               (and (file-exists? (get-doc-path (path->string path)))
                    (regexp-match #rx"\\.md$" path))))
-    (map (λ (path) (~> (path->string path)
-                     generate-doc
-                     (write-to-file (get-output-doc-path (path->string path))
-                                    #:mode 'text
-                                    #:exists 'update))))))
+    (map (λ (path-string)
+           (define path (path->string path-string))
+           (~> (generate-toc path)
+             (display-to-file (get-output-doc-path path)
+                              #:mode 'text
+                              #:exists 'truncate))
+           (~> (generate-doc path)
+             (display-to-file (get-output-doc-path path)
+                              #:mode 'text
+                              #:exists 'append))))))
 
 (define (main)
   (void (generate-docs)))
