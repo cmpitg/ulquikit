@@ -25,6 +25,9 @@
 (require "utils-file.rkt")
 (require "utils-path.rkt")
 
+(provide (except-out (all-defined-out)
+                     main))
+
 (module+ test
   (require rackunit))
 
