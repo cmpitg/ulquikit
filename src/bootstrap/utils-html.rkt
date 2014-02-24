@@ -22,6 +22,7 @@
 (require (planet neil/html-template:2:2))
 
 (provide generate-html
+         generate-html-from-template
          (rename-out [js html/js]
                      [css html/css]))
 
