@@ -29,12 +29,6 @@
   (require rackunit))
 
 ;;
-;; Return file content as string
-;;
-(define (read-file path)
-  (file->string path #:mode 'text))
-
-;;
 ;; Strip header which contains variables in a content, delimitered by 2 `---`
 ;; lines.  Return values of var part and content part, respectively.  Var part
 ;; is a list of lines, content part is string.

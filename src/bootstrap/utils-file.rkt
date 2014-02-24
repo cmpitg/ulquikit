@@ -73,3 +73,9 @@
   (check-equal? (replace-file-extension "/tmp/hello.md" "html") "/tmp/hello.html")
   (check-equal? (replace-file-extension "/tmp/hello." "html") "/tmp/hello.html")
   (check-equal? (replace-file-extension "/tmp/hello" "html") "/tmp/hello.html"))
+
+;;
+;; Return file content as string
+;;
+(define (read-file path)
+  (file->string path #:mode 'text))
