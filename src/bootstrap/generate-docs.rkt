@@ -109,21 +109,22 @@
            (define filename        (path->string relative-path))
            (define doc-path        (get-doc-path filename))
            (define output-doc-path (get-output-doc-path filename))
-           (define content         (read-file doc-path))
 
            (displayln (~a "-> Processing " doc-path))
+           (define content         (read-file doc-path))
 
            (displayln "   Generating table of contents...")
-           (~> (render-toc content)
-             (display-to-file output-doc-path
-                              #:mode 'text
-                              #:exists 'truncate))
+           (define toc             (render-toc content))
 
            (displayln "   Generating main content...")
-           (~> (render-doc content)
-             (display-to-file output-doc-path
-                              #:mode 'text
-                              #:exists 'append))))))
+           (define html            (render-doc content))
+
+           (displayln (~a "   Writing " output-doc-path))
+           (display-to-file (string-append toc
+                                           html)
+                            output-doc-path
+                            #:mode 'text
+                            #:exists 'update)))))
 
 (define (main)
   (void (generate-docs)))
