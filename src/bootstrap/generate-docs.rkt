@@ -72,9 +72,9 @@
     (check-equal? main-content  "# Main content")))
 
 ;;
-;; Generate table of contents from a markdown document.
+;; Render table of contents from a markdown document.
 ;;
-(define (generate-toc literate-doc-content)
+(define (render-toc literate-doc-content)
   (define-values (vars content) (strip-header-vars literate-doc-content))
   (define temp-file-path (create-temp-file content))
   (with-output-to-string
@@ -84,8 +84,14 @@
                       temp-file-path)))))
 
 ;;
+;; Render a Markdown document and return the generated HTML.
 ;;
-(define (generate-doc literate-doc-content)
+;; Sample usage:
+;;
+;; (render-doc "# Hello World\n## An h2")
+;; ;; => "<h1>Hello World</h1>\n</h2>An h2</h2>"
+;;
+(define (render-doc literate-doc-content)
   (define-values (vars content) (strip-header-vars literate-doc-content))
   (define temp-file-path (create-temp-file content))
   (with-output-to-string
@@ -107,12 +113,12 @@
 
            (displayln (~a "-> Processing " doc-path))
 
-           (~> (generate-toc content)
+           (~> (render-toc content)
              (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'truncate))
 
-           (~> (generate-doc content)
+           (~> (render-doc content)
              (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'append))))))
