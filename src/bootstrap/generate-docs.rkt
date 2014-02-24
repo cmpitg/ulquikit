@@ -19,34 +19,17 @@
 
 #lang rackjure
 
+(provide main)
+
 (require srfi/1)
-(require racket/runtime-path)
+(require "utils-file.rkt")
 (require "utils-path.rkt")
 
-(define-runtime-path +current-dir+ ".")
+(provide (except-out (all-defined-out)
+                     main))
 
 (module+ test
   (require rackunit))
-
-(define (this-dir)
-  (expand-path +current-dir+))
-
-(define +docs-location+
-  (expand-path (string-append (this-dir) "/../")))
-
-(define +generated-docs-location+
-  (expand-path (string-append (this-dir) "/../../generated-docs/")))
-;;
-;; Return full path to a literate document of Ulquikit
-;;
-(define (get-doc-path . files)
-  (expand-path (apply string-append +docs-location+ files)))
-
-;;
-;; Return file content as string
-;;
-(define (read-file path)
-  (file->string path #:mode 'text))
 
 ;;
 ;; Strip header which contains variables in a content, delimitered by 2 `---`
@@ -89,61 +72,6 @@
     (check-equal? main-content  "# Main content")))
 
 ;;
-;; Create a temporary file with `content` as its content and return the file
-;; path.  Overwrite existing file.
-;;
-(define (create-temp-file content)
-  (define path (make-temporary-file))
-  (display-to-file content path
-                   #:mode 'text
-                   #:exists 'update)
-  path)
-
-;;
-;; Replace file extension.
-;;
-;; E.g.
-;;
-;; (replace-file-extension "hello.md" "html")
-;; ;; => "hello.html"
-;; (replace-file-extension "/tmp/hello.md" "html")
-;; ;; => "/tmp/hello.html"
-;; (replace-file-extension "/tmp/hello." "html")
-;; ;; => "/tmp/hello.html"
-;; (replace-file-extension "/tmp/hello" "html")
-;; ;; => "/tmp/hello.html"
-;;
-(define (replace-file-extension path new-extension)
-  (define char-list (reverse (string->list path)))
-  (define ensure-dot
-    (let ([try-removing-dot (drop-while (lambda (ele)
-                                          (and (not (char=? #\. ele))
-                                               (not (char=? #\/ ele))))
-                                        char-list)])
-      (if (or (empty? try-removing-dot)
-              (char=? #\/ (first try-removing-dot)))
-          (cons #\. char-list)
-          char-list)))
-  (define after-removing-dot (drop-while (lambda (ele) (not (char=? ele #\.)))
-                                         ensure-dot))
-  (~> (reverse after-removing-dot)
-    list->string
-    (string-append new-extension)))
-
-(module+ test
-  (check-equal? (replace-file-extension "hello.md" "html") "hello.html")
-  (check-equal? (replace-file-extension "/tmp/hello.md" "html") "/tmp/hello.html")
-  (check-equal? (replace-file-extension "/tmp/hello." "html") "/tmp/hello.html")
-  (check-equal? (replace-file-extension "/tmp/hello" "html") "/tmp/hello.html"))
-
-;;
-;; Return path for the output file corresponding to its literate file.
-;;
-(define (get-output-doc-path file)
-  (expand-path (string-append +generated-docs-location+
-                              (replace-file-extension file "html"))))
-
-;;
 ;; Generate doc file from its literate source into its appropriate path.
 ;;
 (define (generate-doc literate-doc-file)
@@ -151,11 +79,18 @@
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
   (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
   (define temp-file-path (create-temp-file content))
-  (void (system (format "./render-markdown.rb < ~a > ~a"
+  (void (system (format "~a/render-markdown.rb < ~a > ~a"
+                        (get-bootstrap-dir)
                         temp-file-path
                         (get-output-doc-path literate-doc-file)))))
 
-(define (main)
-  (generate-doc "internals.md"))
+(define (generate-docs)
+  (~>> (directory-list +docs-location+)
+    (filter (λ (path)
+              (and (file-exists? (get-doc-path (path->string path)))
+                   (regexp-match #rx"\\.md$" path))))
+    (map (λ (path) (~> (path->string path)
+                     generate-doc)))))
 
-(main)
+(define (main)
+  (void (generate-docs)))

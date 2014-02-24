@@ -25,17 +25,8 @@ require 'redcarpet'
 require 'rouge'
 require 'rouge/plugins/redcarpet'
 
-class HTMLWithRouge < Redcarpet::Render::HTML
-  include Rouge::Plugins::Redcarpet
-end
-
-class RendererSingleton
+class TOCRendererSingleton
   include Singleton
-
-  MarkdownExtensions = {
-    :with_toc_data  => true,
-    :prettify       => true,
-  }
 
   RendererOptions = {
     :autolink             => true,
@@ -50,14 +41,13 @@ class RendererSingleton
   attr_accessor :html_render, :renderer
 
   def initialize
-    @html_render   = HTMLWithRouge.new MarkdownExtensions
-    @renderer      = Redcarpet::Markdown.new(@html_render, RendererOptions)
+    @toc_renderer  = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC, RendererOptions)
   end
 
   def render_document
     content = ARGF.read
-    puts @renderer.render content
+    puts @toc_renderer.render content
   end
 end
 
-RendererSingleton.instance.render_document
+TOCRendererSingleton.instance.render_document
