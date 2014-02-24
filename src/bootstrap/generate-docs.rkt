@@ -22,16 +22,11 @@
 (provide main)
 
 (require srfi/1)
+(require "utils-file.rkt")
 (require "utils-path.rkt")
 
 (module+ test
   (require rackunit))
-
-;;
-;; Return full path to a literate document of Ulquikit
-;;
-(define (get-doc-path . files)
-  (expand-path (apply string-append +docs-location+ files)))
 
 ;;
 ;; Return file content as string
@@ -78,61 +73,6 @@
           (define-values (var-list main-content) (strip-header-vars content))]
     (check-equal? var-list      '("first-value: 10" "second-value: 'hello-world"))
     (check-equal? main-content  "# Main content")))
-
-;;
-;; Create a temporary file with `content` as its content and return the file
-;; path.  Overwrite existing file.
-;;
-(define (create-temp-file content)
-  (define path (make-temporary-file))
-  (display-to-file content path
-                   #:mode 'text
-                   #:exists 'update)
-  path)
-
-;;
-;; Replace file extension.
-;;
-;; E.g.
-;;
-;; (replace-file-extension "hello.md" "html")
-;; ;; => "hello.html"
-;; (replace-file-extension "/tmp/hello.md" "html")
-;; ;; => "/tmp/hello.html"
-;; (replace-file-extension "/tmp/hello." "html")
-;; ;; => "/tmp/hello.html"
-;; (replace-file-extension "/tmp/hello" "html")
-;; ;; => "/tmp/hello.html"
-;;
-(define (replace-file-extension path new-extension)
-  (define char-list (reverse (string->list path)))
-  (define ensure-dot
-    (let ([try-removing-dot (drop-while (lambda (ele)
-                                          (and (not (char=? #\. ele))
-                                               (not (char=? #\/ ele))))
-                                        char-list)])
-      (if (or (empty? try-removing-dot)
-              (char=? #\/ (first try-removing-dot)))
-          (cons #\. char-list)
-          char-list)))
-  (define after-removing-dot (drop-while (lambda (ele) (not (char=? ele #\.)))
-                                         ensure-dot))
-  (~> (reverse after-removing-dot)
-    list->string
-    (string-append new-extension)))
-
-(module+ test
-  (check-equal? (replace-file-extension "hello.md" "html") "hello.html")
-  (check-equal? (replace-file-extension "/tmp/hello.md" "html") "/tmp/hello.html")
-  (check-equal? (replace-file-extension "/tmp/hello." "html") "/tmp/hello.html")
-  (check-equal? (replace-file-extension "/tmp/hello" "html") "/tmp/hello.html"))
-
-;;
-;; Return path for the output file corresponding to its literate file.
-;;
-(define (get-output-doc-path file)
-  (expand-path (string-append +generated-docs-location+
-                              (replace-file-extension file "html"))))
 
 ;;
 ;; Generate doc file from its literate source into its appropriate path.

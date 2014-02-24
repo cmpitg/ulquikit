@@ -22,9 +22,14 @@
 (require srfi/1)
 (require racket/runtime-path)
 
+(require "utils-file.rkt")
+
 (provide get-name-from-path
          expand-path
          copy-and-overwrite
+
+         get-doc-path
+         get-output-doc-path
 
          (rename-out [this-dir get-bootstrap-dir])
 
@@ -71,6 +76,19 @@
           (delete-directory/files full-destination))
         (displayln (~a "-> Copying " source " to " full-destination))
         (copy-directory/files source full-destination)))))
+
+;;
+;; Return full path to a literate document of Ulquikit
+;;
+(define (get-doc-path . files)
+  (expand-path (apply string-append +docs-location+ files)))
+
+;;
+;; Return path for the output file corresponding to its literate file.
+;;
+(define (get-output-doc-path file)
+  (expand-path (string-append +generated-docs-location+
+                              (replace-file-extension file "html"))))
 
 ;;
 ;; Other constants
