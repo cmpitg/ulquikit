@@ -27,8 +27,7 @@
 (require "utils-html.rkt")
 
 (provide (except-out (all-defined-out)
-                     main
-                     get-default-html-template))
+                     main))
 
 (module+ test
   (require rackunit))
