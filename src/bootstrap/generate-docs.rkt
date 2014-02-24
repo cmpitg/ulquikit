@@ -72,17 +72,24 @@
     (check-equal? main-content  "# Main content")))
 
 ;;
+;; Generate table of contents from a markdown document.
+;;
+;; (define (generate-toc-from-markdown markdown-content)
+;;   ())
+
+;;
 ;; Generate doc file from its literate source into its appropriate path.
 ;;
 (define (generate-doc literate-doc-file)
   (define-values (vars content)
     (strip-header-vars (read-file (get-doc-path literate-doc-file))))
-  (displayln (~a "-> Generating " (get-output-doc-path literate-doc-file)))
+  (displayln (~a "-> Processing " literate-doc-file))
   (define temp-file-path (create-temp-file content))
-  (void (system (format "~a/render-markdown.rb < ~a > ~a"
-                        (get-bootstrap-dir)
-                        temp-file-path
-                        (get-output-doc-path literate-doc-file)))))
+  (with-output-to-string
+    (λ ()
+      (system (format "~a/render-markdown.rb < ~a"
+                      (get-bootstrap-dir)
+                      temp-file-path)))))
 
 (define (generate-docs)
   (~>> (directory-list +docs-location+)
@@ -90,7 +97,10 @@
               (and (file-exists? (get-doc-path (path->string path)))
                    (regexp-match #rx"\\.md$" path))))
     (map (λ (path) (~> (path->string path)
-                     generate-doc)))))
+                     generate-doc
+                     (write-to-file (get-output-doc-path (path->string path))
+                                    #:mode 'text
+                                    #:exists 'update))))))
 
 (define (main)
   (void (generate-docs)))
