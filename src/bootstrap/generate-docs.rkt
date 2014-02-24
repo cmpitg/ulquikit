@@ -99,14 +99,14 @@
     (filter (λ (path)
               (and (file-exists? (get-doc-path (path->string path)))
                    (regexp-match #rx"\\.md$" path))))
-    (map (λ (path-string)
-           (define path (path->string path-string))
-           (~> (generate-toc path)
-             (display-to-file (get-output-doc-path path)
+    (map (λ (relative-path)
+           (define filename (path->string relative-path))
+           (~> (generate-toc filename)
+             (display-to-file (get-output-doc-path filename)
                               #:mode 'text
                               #:exists 'truncate))
-           (~> (generate-doc path)
-             (display-to-file (get-output-doc-path path)
+           (~> (generate-doc filename)
+             (display-to-file (get-output-doc-path filename)
                               #:mode 'text
                               #:exists 'append))))))
 
