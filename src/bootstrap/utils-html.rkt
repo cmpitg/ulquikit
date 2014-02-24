@@ -59,6 +59,27 @@
               (div "OMG!")
               (div (%format "~a" some-var)))))
 
+(define (generate-html-from-template . args)
+  (generate-html (%sxml args)))
+
+(module+ test
+  (let* ([first-template `(html (head ,(css "src/first-file.css")
+                                      ,(css "src/second-file.css"))
+                                (body (h1 "It's the beginning")
+                                      (h2 "Say something buddy!")
+                                      ,(js "src/first-file.js")
+                                      ,(js "src/second-file.js")))]
+
+         [list-of-js-files '("src/one-place.js"
+                             "src-original/second-place.js"
+                             "the-third-file.js")]
+         [second-template `(html (body (h1 "It's the beginning")
+                                       (h2 "Say something buddy!")
+                                       ,@(map (λ (js-file) (js js-file))
+                                              list-of-js-files)))])
+    (displayln (generate-html-from-template first-template
+                                            second-template))))
+
 (define (css path)
   `(link (@ (rel "stylesheet")
             (type "text/css")
