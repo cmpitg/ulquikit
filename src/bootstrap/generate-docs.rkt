@@ -74,14 +74,16 @@
 ;;
 ;; Generate table of contents from a markdown document.
 ;;
-;; (define (generate-toc-from-markdown markdown-content)
-;;   ())
-
-(define (generate-toc _)
-  "TOC")
+(define (generate-toc literate-doc-content)
+  (define-values (vars content) (strip-header-vars literate-doc-content))
+  (define temp-file-path (create-temp-file content))
+  (with-output-to-string
+    (λ ()
+      (system (format "~a/render-markdown-toc.rb < ~a"
+                      (get-bootstrap-dir)
+                      temp-file-path)))))
 
 ;;
-;; Generate doc file from its literate source into its appropriate path.
 ;;
 (define (generate-doc literate-doc-content)
   (define-values (vars content) (strip-header-vars literate-doc-content))
