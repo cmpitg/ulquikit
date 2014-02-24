@@ -83,10 +83,8 @@
 ;;
 ;; Generate doc file from its literate source into its appropriate path.
 ;;
-(define (generate-doc literate-doc-file)
-  (define-values (vars content)
-    (strip-header-vars (read-file literate-doc-file)))
-  (displayln (~a "-> Processing " literate-doc-file))
+(define (generate-doc literate-doc-content)
+  (define-values (vars content) (strip-header-vars literate-doc-content))
   (define temp-file-path (create-temp-file content))
   (with-output-to-string
     (λ ()
@@ -103,12 +101,16 @@
            (define filename        (path->string relative-path))
            (define doc-path        (get-doc-path filename))
            (define output-doc-path (get-output-doc-path filename))
-           ;; (define content         (read-file filename))
-           (~> (generate-toc doc-path)
+           (define content         (read-file doc-path))
+
+           (displayln (~a "-> Processing " doc-path))
+
+           (~> (generate-toc content)
              (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'truncate))
-           (~> (generate-doc doc-path)
+
+           (~> (generate-doc content)
              (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'append))))))
