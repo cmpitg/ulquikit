@@ -100,15 +100,16 @@
               (and (file-exists? (get-doc-path (path->string path)))
                    (regexp-match #rx"\\.md$" path))))
     (map (λ (relative-path)
-           (define filename (path->string relative-path))
-           (define doc-path (get-doc-path filename))
-           ;; (define content  (read-file filename))
+           (define filename        (path->string relative-path))
+           (define doc-path        (get-doc-path filename))
+           (define output-doc-path (get-output-doc-path filename))
+           ;; (define content         (read-file filename))
            (~> (generate-toc doc-path)
-             (display-to-file (get-output-doc-path filename)
+             (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'truncate))
            (~> (generate-doc doc-path)
-             (display-to-file (get-output-doc-path filename)
+             (display-to-file output-doc-path
                               #:mode 'text
                               #:exists 'append))))))
 
