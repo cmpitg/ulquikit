@@ -85,7 +85,7 @@
 ;;
 (define (generate-doc literate-doc-file)
   (define-values (vars content)
-    (strip-header-vars (read-file (get-doc-path literate-doc-file))))
+    (strip-header-vars (read-file literate-doc-file)))
   (displayln (~a "-> Processing " literate-doc-file))
   (define temp-file-path (create-temp-file content))
   (with-output-to-string
@@ -101,11 +101,13 @@
                    (regexp-match #rx"\\.md$" path))))
     (map (λ (relative-path)
            (define filename (path->string relative-path))
-           (~> (generate-toc filename)
+           (define doc-path (get-doc-path filename))
+           ;; (define content  (read-file filename))
+           (~> (generate-toc doc-path)
              (display-to-file (get-output-doc-path filename)
                               #:mode 'text
                               #:exists 'truncate))
-           (~> (generate-doc filename)
+           (~> (generate-doc doc-path)
              (display-to-file (get-output-doc-path filename)
                               #:mode 'text
                               #:exists 'append))))))
