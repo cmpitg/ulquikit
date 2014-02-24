@@ -19,7 +19,7 @@
 
 #lang rackjure
 
-(provide main)
+(provide (all-defined-out))
 
 (require srfi/1)
 (require "utils-file.rkt")
