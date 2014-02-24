@@ -74,6 +74,20 @@
     (check-equal? main-content  "# Main content")))
 
 ;;
+;; Return all filenames of all CSS files in `./css/`.
+;;
+(define (get-css-filenames)
+  (~>> (directory-list (string-append (get-bootstrap-dir) "css/"))
+    (map path->string)))
+
+;;
+;; Return all filenames of all CSS files in `./css/`.
+;;
+(define (get-js-filenames)
+  (~>> (directory-list (string-append (get-bootstrap-dir) "js/"))
+    (map path->string)))
+
+;;
 ;; Return a quasiquoted list as HTML template to be used with
 ;; `generate-html-from-template`.  This function generate a basic HTML
 ;; template with all CSS files from `./css` and JS files from `./js`.  CSS and
@@ -94,12 +108,12 @@
 ;;
 (define (generate-html-template content toc
                                 #:title [title ""])
-  `(html (head ,@(~>> get-css-filenames
+  `(html (head ,@(~>> (get-css-filenames)
                    (map (λ (filename) (html/css (string-append "css/" filename)))))
                (title ,title))
          (body ,toc
                ,content
-               ,@(~>> get-js-filenames
+               ,@(~>> (get-js-filenames)
                    (map (λ (filename) (html/js (string-append "js/" filename))))))))
 
 ;;
