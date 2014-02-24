@@ -43,11 +43,8 @@
 ;;             (div (%format "~a" some-var))))
 ;;
 (define-syntax-rule (generate-html args ...)
-  (call-with-output-string
-   (λ (output)
-     (html-template #:port output
-                    args
-                    ...))))
+  (with-output-to-string
+   (λ () (html-template args ...))))
 
 (module+ test
   (define some-var 1202020)
