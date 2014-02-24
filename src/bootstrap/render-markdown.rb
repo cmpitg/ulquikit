@@ -52,12 +52,10 @@ class RendererSingleton
   def initialize
     @html_render   = HTMLWithRouge.new MarkdownExtensions
     @renderer      = Redcarpet::Markdown.new(@html_render, RendererOptions)
-    @toc_renderer  = Redcarpet::Markdown.new(Redcarpet::Render::HTML_TOC, RendererOptions)
   end
 
   def render_document
     content = ARGF.read
-    toc     = @toc_renderer.render content
     puts @renderer.render content
   end
 end
