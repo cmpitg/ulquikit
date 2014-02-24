@@ -79,3 +79,7 @@
 ;;
 (define (read-file path)
   (file->string path #:mode 'text))
+
+(module+ test
+  (check-equal? "Hello World" (read-file (create-temp-file "Hello World")))
+  (check-equal? "Hello World\n" (read-file (create-temp-file "Hello World\n"))))
