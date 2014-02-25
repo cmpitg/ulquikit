@@ -20,6 +20,19 @@ short_description: The Ulquikit guide
 - *Code snippets* are snippets which define a piece of code in your literate
   documents.
 
+## Notes ##
+
+* If first part of an *original document* has the following format:
+
+  ```
+  ---
+  Some text here
+  ---
+  ```
+
+  Then that part is interpreted as the document's metadata.  `Some text here`
+  should be valid [YAML](http://en.wikipedia.org/wiki/YAML).
+
 ---
 
 ## Full directory structure
@@ -288,7 +301,6 @@ themes/<theme-name>
     </body>
   </html>
   ```
-
 * Meta-information about the theme is placed in `<theme-name>/info.yaml` in
   [YAML](http://en.wikipedia.org/wiki/YAML) format.  The following fields are
   supported, opt-in:
