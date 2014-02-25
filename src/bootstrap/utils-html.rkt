@@ -61,7 +61,7 @@
               (div (%format "~a" some-var)))))
 
 (define (generate-html-from-template . args)
-  (generate-html (%sxml args)))
+  (generate-html (%verbatim args)))
 
 (module+ test
   (let* ([first-template `(html (head ,(css "src/first-file.css")
@@ -82,13 +82,13 @@
                                             second-template))))
 
 (define (css path)
-  `(link (@ (rel "stylesheet")
-            (type "text/css")
-            (href ,path))))
+  (generate-html (%sxml `(link (@ (rel "stylesheet")
+                                  (type "text/css")
+                                  (href ,path))))))
 
 (define (js path)
-  `(script (@ (type "text/javascript")
-              (src ,path))))
+  (generate-html (%sxml `(script (@ (type "text/javascript")
+                                    (src ,path))))))
 
 (module+ test
   (displayln (generate-html
