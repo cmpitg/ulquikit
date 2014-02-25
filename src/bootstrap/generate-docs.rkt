@@ -162,8 +162,7 @@
            (define html            (render-doc content))
 
            (displayln (~a "   Writing " output-doc-path))
-           (display-to-file (string-append toc
-                                           html)
+           (display-to-file (generate-html-from-template (generate-html-template html toc))
                             output-doc-path
                             #:mode 'text
                             #:exists 'truncate)))))
