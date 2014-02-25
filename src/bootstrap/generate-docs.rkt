@@ -141,12 +141,17 @@
       (system (format "~a/render-markdown.rb < ~a"
                       (get-bootstrap-dir)
                       temp-file-path)))))
-
-(define (generate-docs)
+;;
+;; Return filenames of all literate documents from +docs-location+.
+;;
+(define (list-doc-filenames)
   (~>> (directory-list +docs-location+)
     (filter (λ (path)
               (and (file-exists? (get-doc-path (path->string path)))
-                   (regexp-match #rx"\\.md$" path))))
+                   (regexp-match #rx"\\.md$" path))))))
+
+(define (generate-docs)
+  (~>> (list-doc-filenames)
     (map (λ (relative-path)
            (define filename        (path->string relative-path))
            (define doc-path        (get-doc-path filename))
