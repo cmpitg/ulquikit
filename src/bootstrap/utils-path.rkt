@@ -31,6 +31,8 @@
          get-doc-path
          get-output-doc-path
 
+         list-doc-filenames
+
          (rename-out [this-dir get-bootstrap-dir])
 
          +docs-location+
@@ -89,6 +91,15 @@
 (define (get-output-doc-path file)
   (expand-path (string-append +generated-docs-location+
                               (replace-file-extension file "html"))))
+
+;;
+;; Return filenames of all literate documents from +docs-location+.
+;;
+(define (list-doc-filenames)
+  (~>> (directory-list +docs-location+)
+    (filter (λ (path)
+              (and (file-exists? (get-doc-path (path->string path)))
+                   (regexp-match #rx"\\.md$" path))))))
 
 ;;
 ;; Other constants
