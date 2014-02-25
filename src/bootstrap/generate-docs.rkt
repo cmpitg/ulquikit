@@ -166,7 +166,7 @@
                                            html)
                             output-doc-path
                             #:mode 'text
-                            #:exists 'update)))))
+                            #:exists 'truncate)))))
 
 (define (main)
   (void (generate-docs)))
