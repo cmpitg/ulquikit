@@ -33,6 +33,15 @@ short_description: The Ulquikit guide
   Then that part is interpreted as the document's metadata.  `Some text here`
   should be valid [YAML](http://en.wikipedia.org/wiki/YAML).
 
+### Design decisions ###
+
+* References from source code files in *generated source* to *original
+  documents* are relative paths to prevent path conflict between different
+  machines.
+
+* *Code snippets* must have *project-wide* unique names, since a snippet could
+  be added from different *document*.
+
 ---
 
 ## Full directory structure

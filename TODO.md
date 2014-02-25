@@ -43,14 +43,6 @@
 
 * How to support multiple HTML theme?
 
-### Design decisions ###
-
-* References from source code files in *built source* to *original documents*
-  are relative paths to prevent path conflict between different machines.
-
-* *Code snippets* must have *project-wide* unique names, since a snippet could
-  be added from different *document*.
-
 ---
 
 ## Old and outdated ##
