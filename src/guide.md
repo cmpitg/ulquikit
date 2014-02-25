@@ -10,11 +10,12 @@ short_description: The Ulquikit guide
 
 ## Concepts and definitions ##
 
-- *Documents* or *original documents* refer to your literate documents.
+- *Documents* or *original documents* or *literate source* refers to your
+  literate documents.
 - *Generated docs* are the generated HTML/PDF/ePub outputs from your literate
   documents.
-- *Generated source* is the extracted source code from your literate
-  documents.
+- *Generated source* or *generated code* is the extracted source code from
+  your literate documents.
 - *File snippets* are snippets which define source files in your literate
   documents.
 - *Code snippets* are snippets which define a piece of code in your literate
