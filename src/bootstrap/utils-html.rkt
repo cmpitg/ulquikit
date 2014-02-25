@@ -92,8 +92,8 @@
 
 (module+ test
   (displayln (generate-html
-              (html (head (%sxml (css "src/styles.css")))
+              (html (head (%verbatim (css "src/styles.css")))
                     (body "Something")
-                    (%sxml (js "src/jquery.css"))))))
+                    (%verbatim (js "src/jquery.css"))))))
 
 ;; <link rel="stylesheet" type="text/css" href="mystyles.css" media="screen" />
