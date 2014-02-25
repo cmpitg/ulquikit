@@ -34,6 +34,29 @@ short_description: The Ulquikit guide
   Then that part is interpreted as the document's metadata.  `Some text here`
   should be valid [YAML](http://en.wikipedia.org/wiki/YAML).
 
+* Defining snippets:
+
+  - *Code snippet*:
+
+    ```language
+    --> snippet-global-unique-name <--
+    Snippet content
+    ```
+
+  - *File snippet*:
+
+    ```
+    ___ /relative/path/to/file ___
+    ```
+
+  - Including *code snippets*:
+
+    ```language
+    -{ snippet-global-unique-name }-
+    ```
+
+  - The syntax used to denote and include snippets is customizable.
+
 ### Design decisions ###
 
 * References from source code files in *generated source* to *original
