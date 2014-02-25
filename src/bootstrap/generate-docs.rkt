@@ -107,10 +107,11 @@
   `(html (head ,@(~>> (get-css-filenames)
                    (map (λ (filename) (html/css (string-append "css/" filename)))))
                (title ,title))
-         (body ,toc
-               ,content
+         (body (%verbatim ,toc)
+               (%verbatim ,content)
                ,@(~>> (get-js-filenames)
-                   (map (λ (filename) (html/js (string-append "js/" filename))))))))
+                   (map (λ (filename) (html/js (string-append "js/" filename)))))
+               )))
 
 ;;
 ;; Render table of contents from a markdown document.
