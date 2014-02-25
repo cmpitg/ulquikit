@@ -19,14 +19,12 @@
 
 #lang rackjure
 
-(provide (all-defined-out))
-
 (require srfi/1)
 (require "utils-file.rkt")
 (require "utils-path.rkt")
+(require "utils-html.rkt")
 
-(provide (except-out (all-defined-out)
-                     main))
+(provide (all-defined-out))
 
 (module+ test
   (require rackunit))
@@ -70,6 +68,50 @@
           (define-values (var-list main-content) (strip-header-vars content))]
     (check-equal? var-list      '("first-value: 10" "second-value: 'hello-world"))
     (check-equal? main-content  "# Main content")))
+
+;;
+;; Return all filenames of all CSS files in `./css/`.
+;;
+(define (get-css-filenames)
+  (~>> (directory-list (string-append (get-bootstrap-dir) "css/"))
+    (map path->string)))
+
+;;
+;; Return all filenames of all CSS files in `./css/`.
+;;
+(define (get-js-filenames)
+  (~>> (directory-list (string-append (get-bootstrap-dir) "js/"))
+    (map path->string)))
+
+;;
+;; Return a quasiquoted list as HTML template to be used with
+;; `generate-html-from-template`.  This function generate a basic HTML
+;; template with all CSS files from `./css` and JS files from `./js`.  CSS and
+;; JS are included as relative paths: `css/file-name.css` and
+;; `js/file-name.css`.  This template is used to generate HTML for all
+;; literate documents.
+;;
+;; E.g.
+;;
+;; (generate-html-template "CONTENT" "TABLE-OF-CONTENT" #:title "TITLE")
+;; ;; => '(html (head (link (@ (rel "stylesheet")
+;; ;;                          (type "text/css")
+;; ;;                          (href "css/styles.css")))
+;; ;;                 (title "TITLE"))
+;; ;;           (body "TABLE-OF-CONTENT"
+;; ;;                 "CONTENT"
+;; ;;                 (script (@ (src "js/jquery.js")))))
+;;
+(define (generate-html-template content toc
+                                #:title [title ""])
+  `(html (head ,@(~>> (get-css-filenames)
+                   (map (λ (filename) (html/css (string-append "css/" filename)))))
+               (title ,title))
+         (body (%verbatim ,toc)
+               (%verbatim ,content)
+               ,@(~>> (get-js-filenames)
+                   (map (λ (filename) (html/js (string-append "js/" filename)))))
+               )))
 
 ;;
 ;; Render table of contents from a markdown document.
@@ -120,11 +162,10 @@
            (define html            (render-doc content))
 
            (displayln (~a "   Writing " output-doc-path))
-           (display-to-file (string-append toc
-                                           html)
+           (display-to-file (generate-html-from-template (generate-html-template html toc))
                             output-doc-path
                             #:mode 'text
-                            #:exists 'update)))))
+                            #:exists 'truncate)))))
 
 (define (main)
   (void (generate-docs)))
