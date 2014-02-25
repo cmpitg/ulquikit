@@ -98,8 +98,8 @@
 ;; ;;                          (type "text/css")
 ;; ;;                          (href "css/styles.css")))
 ;; ;;                 (title "TITLE"))
-;; ;;           (body "TABLE-OF-CONTENT"
-;; ;;                 "CONTENT"
+;; ;;           (body (%verbatim "TABLE-OF-CONTENT")
+;; ;;                 (%verbatim "CONTENT")
 ;; ;;                 (script (@ (src "js/jquery.js")))))
 ;;
 (define (generate-html-template content toc
