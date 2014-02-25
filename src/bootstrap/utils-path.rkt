@@ -99,7 +99,8 @@
   (~>> (directory-list +docs-location+)
     (filter (λ (path)
               (and (file-exists? (get-doc-path (path->string path)))
-                   (regexp-match #rx"\\.md$" path))))))
+                   (regexp-match #rx"\\.md$" path))))
+    (map path->string)))
 
 ;;
 ;; Other constants

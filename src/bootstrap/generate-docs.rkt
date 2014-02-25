@@ -145,7 +145,7 @@
 (define (generate-docs)
   (~>> (list-doc-filenames)
     (map (λ (relative-path)
-           (define filename        (path->string relative-path))
+           (define filename        relative-path)
            (define doc-path        (get-doc-path filename))
            (define output-doc-path (get-output-doc-path filename))
 
