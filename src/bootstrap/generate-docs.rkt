@@ -19,15 +19,12 @@
 
 #lang rackjure
 
-(provide (all-defined-out))
-
 (require srfi/1)
 (require "utils-file.rkt")
 (require "utils-path.rkt")
 (require "utils-html.rkt")
 
-(provide (except-out (all-defined-out)
-                     main))
+(provide (all-defined-out))
 
 (module+ test
   (require rackunit))
