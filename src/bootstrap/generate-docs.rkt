@@ -98,8 +98,8 @@
 ;; ;;                          (type "text/css")
 ;; ;;                          (href "css/styles.css")))
 ;; ;;                 (title "TITLE"))
-;; ;;           (body "TABLE-OF-CONTENT"
-;; ;;                 "CONTENT"
+;; ;;           (body (%verbatim "TABLE-OF-CONTENT")
+;; ;;                 (%verbatim "CONTENT")
 ;; ;;                 (script (@ (src "js/jquery.js")))))
 ;;
 (define (generate-html-template content toc
@@ -143,12 +143,9 @@
                       temp-file-path)))))
 
 (define (generate-docs)
-  (~>> (directory-list +docs-location+)
-    (filter (λ (path)
-              (and (file-exists? (get-doc-path (path->string path)))
-                   (regexp-match #rx"\\.md$" path))))
+  (~>> (list-doc-filenames)
     (map (λ (relative-path)
-           (define filename        (path->string relative-path))
+           (define filename        relative-path)
            (define doc-path        (get-doc-path filename))
            (define output-doc-path (get-output-doc-path filename))
 
