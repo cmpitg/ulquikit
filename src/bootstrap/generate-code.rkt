@@ -111,6 +111,12 @@
   snippets)
 
 ;;
+;; Determine if a snippet is a file snippet.
+;;
+(define (is-file-snippet? snippet)
+  (eq? 'file (snippet 'type)))
+
+;;
 ;; This functions takes the hash that contains all snippets, include all code
 ;; snippet into their appropriate places in file snippets, and return the hash
 ;; of file snippets afterward.
