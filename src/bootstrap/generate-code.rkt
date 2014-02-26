@@ -75,9 +75,9 @@
                       (hash-ref! snippets
                                  snippet-name
                                  {'type        'code
-                                  'content     ""
-                                  'source-file filename
-                                  'source-line (hash-ref info 'line-number)}))]
+                                               'content     ""
+                                               'source-file filename
+                                               'source-line (hash-ref info 'line-number)}))]
 
                    [ ;; Begining of file snippet
                     (regexp-match +file-snippet-regexp+ line)
@@ -92,9 +92,9 @@
                       (hash-ref! snippets
                                  snippet-name
                                  {'type        'file
-                                  'content     ""
-                                  'source-file filename
-                                  'source-line (hash-ref info 'line-number)}))]
+                                               'content     ""
+                                               'source-file filename
+                                               'source-line (hash-ref info 'line-number)}))]
 
                    [ ;; End of snippet
                     (regexp-match +end-of-snippet-regexp+ line)
@@ -114,9 +114,10 @@
                         (hash-update! snippets
                                       snippet-name
                                       (λ (snippet)
-                                        (snippet 'content (string-append (snippet 'content)
-                                                                         "\n"
-                                                                         code-line))))))])
+                                        (let ([new-content (string-append (snippet 'content)
+                                                                          "\n"
+                                                                          code-line)])
+                                          (snippet 'content new-content))))))])
 
              ;; Next loop
              (hash-update! info 'line-number add1)
