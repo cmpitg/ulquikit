@@ -79,6 +79,23 @@
                                   'source-file filename
                                   'source-line (hash-ref info 'line-number)}))]
 
+                   [ ;; Begining of file snippet
+                    (regexp-match +file-snippet-regexp+ line)
+
+                    (let* ([matches       (regexp-match +file-snippet-regexp+ line)]
+                           [indent-length (string-length (list-ref matches 1))]
+                           [snippet-name  (list-ref matches 2)])
+                      (hash-set! info 'inside-snippet       #t)
+                      (hash-set! info 'current-snippet-name snippet-name)
+                      (hash-set! info 'indent-length        indent-length)
+
+                      (hash-ref! snippets
+                                 snippet-name
+                                 {'type        'file
+                                  'content     ""
+                                  'source-file filename
+                                  'source-line (hash-ref info 'line-number)}))]
+
                    [ ;; End of snippet
                     (regexp-match +end-of-snippet-regexp+ line)
 
