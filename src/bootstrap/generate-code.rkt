@@ -20,6 +20,10 @@
 ;;;
 ;;; Generate source code for Ulquikit from snippets residing at ./src/
 ;;;
+;;; In functional programming, data structure should all be immutable.
+;;; However, some operations in this module are performed upon mutable data
+;;; structure.  This is for only performance reason.
+;;;
 
 #lang rackjure
 
