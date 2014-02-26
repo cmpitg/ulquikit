@@ -110,10 +110,19 @@
                           (indent-length        . 0)))))
   snippets)
 
+;;
+;; This functions takes the hash that contains all snippets, include all code
+;; snippet into their appropriate places in file snippets, and return the hash
+;; of file snippets afterward.
+;;
+(define (include-code-snippets-into-file-snippets snippets)
+  (define file-snippets (make-hasheq)))
+
 (define (generate-code)
   (~>> (list-doc-filenames)
     (map (λ (filename) (get-doc-path filename)))
     (foldl extract-code-snippet-from-file (make-hasheq))
+    include-code-snippets-into-file-snippets
 
     hash->list
     (map (λ (pair)
