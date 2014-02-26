@@ -53,3 +53,28 @@ Explanation:
 
 Ulquikit is distributed under the terms of the GNU General Public License v3.
 See [`COPYING`](COPYING) for further information.
+
+---
+
+* Write down something to test
+
+  ```racket
+  --> some-snippet-just-to-test <--
+  #lang racket
+
+  (define (hello-world)
+    (displayln "¡Hola mundo!"))
+
+  (define (main)
+    (hello-world))
+
+  (main)
+  ```
+
+* And other stuff
+
+  ```racket
+  === main.rkt ===
+
+  -{ some-snippet-just-to-test }-
+  ```

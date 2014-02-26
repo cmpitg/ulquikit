@@ -139,13 +139,17 @@
 ;; of file snippets afterward.
 ;;
 (define (include-code-snippets-into-file-snippets snippets)
-  (define file-snippets (make-hasheq)))
+  (define file-snippets (make-hasheq))
+  (hash-map snippets
+            (λ (snippet)
+              (when (is-file-snippet? snippet)
+                #t))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
     (map (λ (filename) (get-doc-path filename)))
     (foldl extract-code-snippet-from-file (make-hasheq))
-    include-code-snippets-into-file-snippets
+    ;; include-code-snippets-into-file-snippets
 
     hash->list
     (map (λ (pair)
