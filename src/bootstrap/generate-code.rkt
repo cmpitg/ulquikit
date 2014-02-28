@@ -250,9 +250,14 @@
               content))]
     (hash-map snippets-hash
               (λ (snippet-name snippet)
-                (process-snippet-content (snippet 'content)
-                                 #:source-path "/tmp/file"
-                                 #:literate-path (snippet 'literate-path))))))
+                (let* ([content (snippet 'content)]
+                       [new-content (if (contains-include-instruction? content)
+                                        (process-snippet-content
+                                         (snippet 'content)
+                                         #:source-path "/tmp/file"
+                                         #:literate-path (snippet 'literate-path))
+                                        content)])
+                  (cons snippet-name (snippet 'content new-content)))))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
@@ -260,18 +265,14 @@
     (foldl extract-code-snippet-from-file (make-hash))
 
     include-code-snippets
-    (map (λ (str)
-           (displayln "---")
-           (displayln str)))
 
-    ;; hash->list
-    ;; (map (λ (pair)
-    ;;        (pretty-display "---")
-    ;;        (pretty-display (~a "Name: |" (car pair) "|"))
-    ;;        (pretty-display (~a "Type: " ((cdr pair) 'type)))
-    ;;        (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
-    ;;        (pretty-display ((cdr pair) 'content))
-    ;;        (newline)))
+    (map (λ (pair)
+           (pretty-display "---")
+           (pretty-display (~a "Name: " (car pair) ""))
+           (pretty-display (~a "Type: " ((cdr pair) 'type)))
+           (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
+           (pretty-display ((cdr pair) 'content))
+           (newline)))
     ))
 
 (define (main)
