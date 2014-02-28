@@ -153,6 +153,13 @@
                            (map (λ (line) (string-append indentation line))))
                          "\n"))
 
+          (define (get-snippet-indentation line)
+            (let* ([matches       (regexp-match +include-regexp+ line)]
+                   [indentation   (if matches
+                                      (list-ref matches 1)
+                                      "")])
+              indentation))
+
           (define (replace-line-with-snippet line snippet)
             (let* ([matches       (regexp-match +include-regexp+ line)]
                    [indentation   (list-ref matches 1)]
