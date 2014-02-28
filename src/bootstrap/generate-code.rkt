@@ -147,12 +147,48 @@
 ;; snippet into their appropriate places in file snippets, and return the hash
 ;; of file snippets afterward.
 ;;
-(define (include-code-snippets-into-file-snippets snippets)
-  (define file-snippets (make-hasheq))
-  (hash-map snippets
-            (λ (snippet)
-              (when (is-file-snippet? snippet)
-                #t))))
+(define (include-code-snippets snippets)
+  (local [(define (indent-code code indentation)
+            (string-join (~>> (string-split code "\n")
+                           (map (λ (line) (string-append indentation line))))
+                         "\n"))
+
+          (define (replace-line-with-snippet line snippet)
+            (let* ([matches       (regexp-match +include-regexp+ line)]
+                   [indentation   (list-ref matches 1)]
+                   [snippet-name  (list-ref matches 2)])
+              (displayln (~a "-> Replacing " line
+                             " -> with: " (if (snippets snippet-name)
+                                              ((snippets snippet-name) 'content)
+                                              "{{ No snippet defined }}")))
+              (indent-code (if (snippets snippet-name)
+                               ((snippets snippet-name) 'content)
+                               "{{ No snippet defined }}")
+                           indentation)))
+          ;;
+          ;; Find all lines that match +include-regexp+ and replace them with
+          ;; the appropriate snippet.
+          ;;
+          ;; `current-file` is used to calculate the relative path of the
+          ;; generated code that would refer back to its literate doc.
+          ;;
+          ;; Note that one-line snippets are not supported, so a line that has
+          ;; multiple include instructions is not supported.
+          ;;
+          (define (process-snippet snippet
+                                   #:current-file file)
+            (let ([lines (~> (snippet 'content)
+                           (string-split "\n"))])
+              (~> (map (λ (line)
+                         (if (regexp-match? +include-regexp+ line)
+                             (replace-line-with-snippet line snippet)
+                             line))
+                       lines)
+                (string-join "\n"))))]
+    (hash-map snippets
+              (λ (snippet-name snippet)
+                (process-snippet snippet
+                                 #:current-file "/tmp/file")))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
