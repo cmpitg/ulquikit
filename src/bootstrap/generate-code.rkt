@@ -69,10 +69,10 @@
               ;; Add snippet to the hash of snippets
               (hash-ref! snippets-hash
                          snippet-name
-                         {'type        type
-                          'content     #f
-                          'literate-path filename
-                          'line-number line-number})
+                         {'type           type
+                          'content        #f
+                          'literate-path  filename
+                          'line-number    line-number})
 
               ;; Return new snippet info
               {'current-snippet-name snippet-name
