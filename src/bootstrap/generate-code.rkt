@@ -202,21 +202,26 @@
           ;; multiple include instructions is not supported.
           ;;
           (define (process-snippet snippet
-                                   #:source-path source-path
+                                   #:source-path   source-path
                                    #:literate-path literate-path)
-            (let ([lines (~> (snippet 'content)
-                           (string-split "\n"))])
-              (~> (map (λ (line)
-                         (if (regexp-match? +include-regexp+ line)
-                             (~>> (replace-line-with-snippet line snippet)
-                               (string-append (get-ref-to-literate-doc
-                                               #:source-path   source-path
-                                               #:literate-path literate-path
-                                               #:line-number   (snippet 'line-number)
-                                               #:indentation   (get-snippet-indentation line))))
-                             line))
-                       lines)
-                (string-join "\n"))))]
+            (let* ([lines (~> (snippet 'content)
+                            (string-split "\n"))]
+                   [content 
+                    (~> (map (λ (line)
+                               (let ([processed-line
+                                      (if (regexp-match? +include-regexp+ line)
+                                          (~>> (replace-line-with-snippet line snippet)
+                                            (string-append (get-ref-to-literate-doc
+                                                            #:source-path   source-path
+                                                            #:literate-path literate-path
+                                                            #:line-number   (snippet 'line-number)
+                                                            #:indentation   (get-snippet-indentation line))))
+                                          line)])
+                                 ;; (when (contains-include-instruction? processed-line))
+                                 processed-line))
+                             lines)
+                      (string-join "\n"))])
+              content))]
     (hash-map snippets-hash
               (λ (snippet-name snippet)
                 (process-snippet snippet
