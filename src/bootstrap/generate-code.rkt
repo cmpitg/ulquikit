@@ -34,11 +34,13 @@
 
 (current-curly-dict hash)
 
-(define +code-snippet-regexp+   #rx"^( *)--> ([a-zA-Z0-9_/.-]+) <-- *$")
-(define +file-snippet-regexp+   #rx"^( *)___ ([a-zA-Z0-9_/.-]+) ___ *$")
-(define +end-of-snippet-regexp+ #rx"^ *``` *$")
-(define +comment-syntax+        ";;")
-(define +include-regexp+        #rx"^( *)-{ +([a-zA-Z0-9_/.-]+) +}- *$")
+(define +code-snippet-regexp+     #rx"^( *)--> ([a-zA-Z0-9_/.-]+) <-- *$")
+(define +file-snippet-regexp+     #rx"^( *)___ ([a-zA-Z0-9_/.-]+) ___ *$")
+(define +end-of-snippet-regexp+   #rx"^ *``` *$")
+(define +include-regexp+          #rx"^( *)-{ +([a-zA-Z0-9_/.-]+) +}- *$")
+(define +include-regexp-for-text+ #rx"-{ +[a-zA-Z0-9_/.-]+ +}-")
+
+(define +comment-syntax+          ";;")
 
 (module+ test
   (require rackunit))
@@ -69,10 +71,10 @@
               ;; Add snippet to the hash of snippets
               (hash-ref! snippets-hash
                          snippet-name
-                         {'type        type
-                          'content     #f
-                          'literate-path filename
-                          'line-number line-number})
+                         {'type           type
+                          'content        #f
+                          'literate-path  filename
+                          'line-number    line-number})
 
               ;; Return new snippet info
               {'current-snippet-name snippet-name
@@ -180,37 +182,39 @@
                                "{{ No snippet defined }}")
                            indentation)))
 
-          (define (get-ref-to-literate-doc #:source-path   source-path
-                                           #:literate-path literate-path
-                                           #:line-number   line-number
-                                           #:indentation   indentation)
+          (define (get-ref-to-literate-doc #:generated-code-path generated-code-path
+                                           #:literate-path       literate-path
+                                           #:line-number         line-number
+                                           #:indentation         indentation)
             (string-append indentation
                            +comment-syntax+
                            " "
-                           (~> (find-relative-path (expand-path literate-path)
-                                                   (expand-path source-path))
+                           (~> (find-relative-path (expand-path generated-code-path)
+                                                   (expand-path literate-path))
                              path->string
                              (string-append ":"
                                             (number->string line-number)
                                             "\n"))))
 
           (define (contains-include-instruction? text)
-            (regexp-match? +include-regexp+ text))
+            (or (regexp-match? +include-regexp-for-text+ text)
+                (regexp-match? +include-regexp+ text)))
 
           (define (process-line line
-                                #:source-path source-path
-                                #:literate-path literate-path)
+                                #:generated-code-path generated-code-path)
             (if (contains-include-instruction? line)
                 (let* ([new-line                 (replace-line-with-snippet line)]
                        [indentation              (get-snippet-indentation line)]
                        [included-snippet-name    (get-included-snippet-name line)]
                        [included-snippet         (snippets-hash included-snippet-name)]
-                       [literate-doc-line-number (included-snippet 'line-number)])
+
+                       [literate-doc-line-number (included-snippet 'line-number)]
+                       [literate-path            (included-snippet 'literate-path)])
                   (string-append (get-ref-to-literate-doc
-                                  #:source-path   source-path
-                                  #:literate-path literate-path
-                                  #:line-number   literate-doc-line-number
-                                  #:indentation   indentation)
+                                  #:generated-code-path generated-code-path
+                                  #:literate-path       literate-path
+                                  #:line-number         literate-doc-line-number
+                                  #:indentation         indentation)
                                  new-line))
                 line))
 
@@ -218,8 +222,8 @@
           ;; Find all lines that match +include-regexp+ and replace them with
           ;; the appropriate snippet.
           ;;
-          ;; If the result snippet still contains other include instructions,
-          ;; process with recursion.
+          ;; If the result snippet content still contains other include
+          ;; instructions, process with recursion.
           ;;
           ;; This function returns the content of the snippet after all
           ;; replacements.
@@ -230,26 +234,30 @@
           ;; Note that one-line snippets are not supported, so a line that has
           ;; multiple include instructions is not supported.
           ;;
-          (define (process-snippet snippet
-                                   #:source-path   source-path
-                                   #:literate-path literate-path)
-            (let* ([lines (~> (snippet 'content)
-                            (string-split "\n"))]
+          (define (process-snippet-content content
+                                           #:generated-code-path generated-code-path)
+            (let* ([lines (string-split content "\n")]
                    [content
                     (~> (map (λ (line)
-                               (let ([processed-line (process-line line
-                                                                   #:source-path source-path
-                                                                   #:literate-path literate-path)])
-                                 ;; (when (contains-include-instruction? processed-line))
-                                 processed-line))
+                               (let ([processed-line
+                                      (process-line line
+                                                    #:generated-code-path generated-code-path)])
+                                 (if (contains-include-instruction? processed-line)
+                                   (process-snippet-content processed-line
+                                                            #:generated-code-path generated-code-path)
+                                   processed-line)))
                              lines)
                       (string-join "\n"))])
               content))]
     (hash-map snippets-hash
               (λ (snippet-name snippet)
-                (process-snippet snippet
-                                 #:source-path "/tmp/file"
-                                 #:literate-path (snippet 'literate-path))))))
+                (let* ([content (snippet 'content)]
+                       [new-content (if (contains-include-instruction? content)
+                                        (process-snippet-content
+                                         (snippet 'content)
+                                         #:generated-code-path "/tmp/file")
+                                        content)])
+                  (cons snippet-name (snippet 'content new-content)))))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
@@ -257,18 +265,14 @@
     (foldl extract-code-snippet-from-file (make-hash))
 
     include-code-snippets
-    (map (λ (str)
-           (displayln "---")
-           (displayln str)))
 
-    ;; hash->list
-    ;; (map (λ (pair)
-    ;;        (pretty-display "---")
-    ;;        (pretty-display (~a "Name: |" (car pair) "|"))
-    ;;        (pretty-display (~a "Type: " ((cdr pair) 'type)))
-    ;;        (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
-    ;;        (pretty-display ((cdr pair) 'content))
-    ;;        (newline)))
+    (map (λ (pair)
+           (pretty-display "---")
+           (pretty-display (~a "Name: " (car pair) ""))
+           (pretty-display (~a "Type: " ((cdr pair) 'type)))
+           (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
+           (pretty-display ((cdr pair) 'content))
+           (newline)))
     ))
 
 (define (main)
