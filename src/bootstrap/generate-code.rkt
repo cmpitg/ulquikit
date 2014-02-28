@@ -160,7 +160,7 @@
     (map (λ (pair)
            (pretty-display "---")
            (pretty-display (~a "Name: " (car pair)))
-           (pretty-display (~a "Type: "((cdr pair) 'type)))
+           (pretty-display (~a "Type: " ((cdr pair) 'type)))
            (pretty-display (~a "Path: " ((cdr pair) 'source-file) ":" ((cdr pair) 'source-line)))
            (pretty-display ((cdr pair) 'content))
            (newline)))))
