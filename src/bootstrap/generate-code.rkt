@@ -182,14 +182,14 @@
                                "{{ No snippet defined }}")
                            indentation)))
 
-          (define (get-ref-to-literate-doc #:source-path   source-path
-                                           #:literate-path literate-path
-                                           #:line-number   line-number
-                                           #:indentation   indentation)
+          (define (get-ref-to-literate-doc #:generated-code-path generated-code-path
+                                           #:literate-path       literate-path
+                                           #:line-number         line-number
+                                           #:indentation         indentation)
             (string-append indentation
                            +comment-syntax+
                            " "
-                           (~> (find-relative-path (expand-path source-path)
+                           (~> (find-relative-path (expand-path generated-code-path)
                                                    (expand-path literate-path))
                              path->string
                              (string-append ":"
@@ -201,7 +201,7 @@
                 (regexp-match? +include-regexp+ text)))
 
           (define (process-line line
-                                #:source-path source-path)
+                                #:generated-code-path generated-code-path)
             (if (contains-include-instruction? line)
                 (let* ([new-line                 (replace-line-with-snippet line)]
                        [indentation              (get-snippet-indentation line)]
@@ -211,10 +211,10 @@
                        [literate-doc-line-number (included-snippet 'line-number)]
                        [literate-path            (included-snippet 'literate-path)])
                   (string-append (get-ref-to-literate-doc
-                                  #:source-path   source-path
-                                  #:literate-path literate-path
-                                  #:line-number   literate-doc-line-number
-                                  #:indentation   indentation)
+                                  #:generated-code-path generated-code-path
+                                  #:literate-path       literate-path
+                                  #:line-number         literate-doc-line-number
+                                  #:indentation         indentation)
                                  new-line))
                 line))
 
@@ -235,16 +235,16 @@
           ;; multiple include instructions is not supported.
           ;;
           (define (process-snippet-content content
-                                           #:source-path source-path)
+                                           #:generated-code-path generated-code-path)
             (let* ([lines (string-split content "\n")]
                    [content
                     (~> (map (λ (line)
                                (let ([processed-line
                                       (process-line line
-                                                    #:source-path source-path)])
+                                                    #:generated-code-path generated-code-path)])
                                  ;; (if (contains-include-instruction? processed-line)
                                  ;;   (process-snippet-content process-line
-                                 ;;                            #:source-path   source-path))
+                                 ;;                            #:generated-code-path   generated-code-path))
                                  processed-line))
                              lines)
                       (string-join "\n"))])
@@ -255,7 +255,7 @@
                        [new-content (if (contains-include-instruction? content)
                                         (process-snippet-content
                                          (snippet 'content)
-                                         #:source-path "/tmp/file")
+                                         #:generated-code-path "/tmp/file")
                                         content)])
                   (cons snippet-name (snippet 'content new-content)))))))
 
