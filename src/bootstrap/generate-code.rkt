@@ -196,19 +196,26 @@
           ;; multiple include instructions is not supported.
           ;;
           (define (process-snippet snippet
-                                   #:current-file file)
+                                   #:source-path source-path
+                                   #:literate-path literate-path)
             (let ([lines (~> (snippet 'content)
                            (string-split "\n"))])
               (~> (map (λ (line)
                          (if (regexp-match? +include-regexp+ line)
-                             (replace-line-with-snippet line snippet)
+                             (~>> (replace-line-with-snippet line snippet)
+                               (string-append (get-ref-to-literate-doc
+                                               #:source-path   source-path
+                                               #:literate-path literate-path
+                                               #:line-number   (snippet 'line-number)
+                                               #:indentation   (get-snippet-indentation line))))
                              line))
                        lines)
                 (string-join "\n"))))]
     (hash-map snippets
               (λ (snippet-name snippet)
                 (process-snippet snippet
-                                 #:current-file "/tmp/file")))))
+                                 #:source-path "/tmp/file"
+                                 #:literate-path (snippet 'literate-path))))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
