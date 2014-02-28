@@ -189,6 +189,12 @@
           ;; Find all lines that match +include-regexp+ and replace them with
           ;; the appropriate snippet.
           ;;
+          ;; If the result snippet still contains other include instructions,
+          ;; process with recursion.
+          ;;
+          ;; This function returns the content of the snippet after all
+          ;; replacements.
+          ;;
           ;; `current-file` is used to calculate the relative path of the
           ;; generated code that would refer back to its literate doc.
           ;;
