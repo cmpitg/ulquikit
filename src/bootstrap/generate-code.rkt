@@ -20,10 +20,6 @@
 ;;;
 ;;; Generate source code for Ulquikit from snippets residing at ./src/
 ;;;
-;;; In functional programming, data structure should all be immutable.
-;;; However, some operations in this module are performed upon mutable data
-;;; structure.  This is for only performance reason.
-;;;
 
 #lang rackjure
 
@@ -36,12 +32,13 @@
 
 (provide (all-defined-out))
 
-(current-curly-dict hasheq)
+(current-curly-dict hash)
 
-(define +code-snippet-regexp+ #rx"^( *)--> ([a-zA-Z0-9_/ -]+) <-- *$")
-(define +file-snippet-regexp+ #rx"^( *)=== ([a-zA-Z0-9_/ -]+) === *$")
+(define +code-snippet-regexp+   #rx"^( *)--> ([a-zA-Z0-9_/.-]+) <-- *$")
+(define +file-snippet-regexp+   #rx"^( *)___ ([a-zA-Z0-9_/.-]+) ___ *$")
 (define +end-of-snippet-regexp+ #rx"^ *``` *$")
-(define +comment-syntax+ ";;")
+(define +comment-syntax+        ";;")
+(define +include-regexp+        #rx"^( *)-{ +([a-zA-Z0-9_/.-]+) +}- *$")
 
 (module+ test
   (require rackunit))
@@ -53,80 +50,97 @@
 ;; Each snippet is a hash with the following keys:
 ;; * `type`: type of snippet, either `code` or `file`
 ;; * `content`: content of the snippet
-;; * `source-file`: full path to the literate source file that defines the
+;; * `literate-path`: full path to the literate source file that defines the
 ;;   snippet
-;; * `source-line`: the line number at which the snippet is defined in
-;;   `source-file`
+;; * `line-number`: the line number at which the snippet is defined in
+;;   `literate-path`
 ;;
-(define (extract-code-snippet-from-file filename snippets)
-  (define doc-content (read-file filename))
-  (~>> (string-split doc-content "\n")
-    (foldl (λ (line snippet-info)
-             (cond [ ;; Begining of code snippet
-                    (regexp-match +code-snippet-regexp+ line)
+(define (extract-code-snippet-from-file filename snippets-hash)
+  (local [(define doc-content (read-file filename))
 
-                    (let* ([matches       (regexp-match +code-snippet-regexp+ line)]
-                           [indent-length (string-length (list-ref matches 1))]
-                           [snippet-name  (list-ref matches 2)])
-                      (hash-set! snippet-info 'inside-snippet       #t)
-                      (hash-set! snippet-info 'current-snippet-name snippet-name)
-                      (hash-set! snippet-info 'indent-length        indent-length)
+          (define (extract-snippet snippet-regexp
+                                   #:line line
+                                   #:line-number line-number
+                                   #:type type)
+            (let* ([matches       (regexp-match snippet-regexp line)]
+                   [indent-length (string-length (list-ref matches 1))]
+                   [snippet-name  (list-ref matches 2)])
 
-                      (hash-ref! snippets
-                                 snippet-name
-                                 {'type        'code
-                                  'content     ""
-                                  'source-file filename
-                                  'source-line (hash-ref snippet-info 'line-number)}))]
+              ;; Add snippet to the hash of snippets
+              (hash-ref! snippets-hash
+                         snippet-name
+                         {'type        type
+                          'content     #f
+                          'literate-path filename
+                          'line-number line-number})
 
-                   [ ;; Begining of file snippet
-                    (regexp-match +file-snippet-regexp+ line)
+              ;; Return new snippet info
+              {'current-snippet-name snippet-name
+               'inside-snippet       #t
+               'indent-length        indent-length}))
 
-                    (let* ([matches       (regexp-match +file-snippet-regexp+ line)]
-                           [indent-length (string-length (list-ref matches 1))]
-                           [snippet-name  (list-ref matches 2)])
-                      (hash-set! snippet-info 'inside-snippet       #t)
-                      (hash-set! snippet-info 'current-snippet-name snippet-name)
-                      (hash-set! snippet-info 'indent-length        indent-length)
+          (define (close-snippet)
+            {'inside-snippet       #f
+             'current-snippet-name ""
+             'indent-length        0})
 
-                      (hash-ref! snippets
-                                 snippet-name
-                                 {'type        'file
-                                  'content     ""
-                                  'source-file filename
-                                  'source-line (hash-ref snippet-info 'line-number)}))]
+          (define (update-current-snippet snippet-info
+                                          #:line line)
+            (let* ([snippet-name  (snippet-info 'current-snippet-name)]
+                   [indent-length (snippet-info 'indent-length)]
+                   [code-line     (if (>= (string-length line) indent-length)
+                                      (substring line indent-length)
+                                      line)])
+              (hash-update! snippets-hash
+                            snippet-name
+                            (λ (snippet)
+                              (let* ([current-content (snippet 'content)]
+                                     [new-content (if current-content
+                                                      (string-append current-content
+                                                                     "\n"
+                                                                     code-line)
+                                                      code-line)])
+                                (snippet 'content new-content))))))]
 
-                   [ ;; End of snippet
-                    (regexp-match +end-of-snippet-regexp+ line)
+    (~>> (string-split doc-content "\n")
+      (foldl (λ (line snippet-info)
+               (let ([old-line-number (snippet-info 'line-number)]
+                     [snippet-info
+                      (cond [ ;; Begining of code snippet
+                             (regexp-match? +code-snippet-regexp+ line)
+                             (extract-snippet +code-snippet-regexp+
+                                              #:line line
+                                              #:line-number (snippet-info 'line-number)
+                                              #:type 'code)]
 
-                    (hash-set! snippet-info 'inside-snippet       #f)
-                    (hash-set! snippet-info 'current-snippet-name "")
-                    (hash-set! snippet-info 'indent-length        0)]
+                            [ ;; Begining of file snippet
+                             (regexp-match? +file-snippet-regexp+ line)
+                             (extract-snippet +file-snippet-regexp+
+                                              #:line line
+                                              #:line-number (snippet-info 'line-number)
+                                              #:type 'file)]
 
-                   [else
+                            [ ;; End of snippet
+                             (regexp-match? +end-of-snippet-regexp+ line)
+                             (close-snippet)]
 
-                    (when (hash-ref snippet-info 'inside-snippet)
-                      (let* ([snippet-name  (hash-ref snippet-info 'current-snippet-name)]
-                             [indent-length (hash-ref snippet-info 'indent-length)]
-                             [code-line     (if (>= (string-length line) indent-length)
-                                                (substring line indent-length)
-                                                line)])
-                        (hash-update! snippets
-                                      snippet-name
-                                      (λ (snippet)
-                                        (let ([new-content (string-append (snippet 'content)
-                                                                          "\n"
-                                                                          code-line)])
-                                          (snippet 'content new-content))))))])
-
-             ;; Next loop
-             (hash-update! snippet-info 'line-number add1)
-             snippet-info)
-           (make-hasheq `((line-number          . 1)
-                          (inside-snippet       . #f)
-                          (current-snippet-name . "")
-                          (indent-length        . 0)))))
-  snippets)
+                            [else
+                             (when (hash-ref snippet-info 'inside-snippet)
+                               (update-current-snippet snippet-info
+                                                       #:line line))
+                             snippet-info])])
+                 (snippet-info 'line-number (add1 old-line-number))))
+             {'line-number          0   ; Should be counted from 1, as we when
+                                        ; we generate reference back to
+                                        ; literate doc, the Markdown code
+                                        ; block fence should be counted.  The
+                                        ; beginning of the code block is the
+                                        ; previous line of the line containing
+                                        ; snippet name
+              'inside-snippet       #f
+              'current-snippet-name ""
+              'indent-length        0})))
+  snippets-hash)
 
 ;;
 ;; Determine if a snippet is a file snippet.
@@ -139,27 +153,123 @@
 ;; snippet into their appropriate places in file snippets, and return the hash
 ;; of file snippets afterward.
 ;;
-(define (include-code-snippets-into-file-snippets snippets)
-  (define file-snippets (make-hasheq))
-  (hash-map snippets
-            (λ (snippet)
-              (when (is-file-snippet? snippet)
-                #t))))
+(define (include-code-snippets snippets-hash)
+  (local [(define (indent-code code indentation)
+            (string-join (~>> (string-split code "\n")
+                           (map (λ (line) (string-append indentation line))))
+                         "\n"))
+
+          (define (get-snippet-indentation line)
+            (let* ([matches       (regexp-match +include-regexp+ line)]
+                   [indentation   (if matches
+                                      (list-ref matches 1)
+                                      "")])
+              indentation))
+
+          (define (get-included-snippet-name text)
+            (if (contains-include-instruction? text)
+                (list-ref (regexp-match +include-regexp+ text) 2)
+                ""))
+
+          (define (replace-line-with-snippet line)
+            (let* ([indentation   (get-snippet-indentation line)]
+                   [snippet-name  (get-included-snippet-name line)])
+              (displayln (~a "-> Replacing " line))
+              (indent-code (if (snippets-hash snippet-name)
+                               ((snippets-hash snippet-name) 'content)
+                               "{{ No snippet defined }}")
+                           indentation)))
+
+          (define (get-ref-to-literate-doc #:source-path   source-path
+                                           #:literate-path literate-path
+                                           #:line-number   line-number
+                                           #:indentation   indentation)
+            (string-append indentation
+                           +comment-syntax+
+                           " "
+                           (~> (find-relative-path (expand-path literate-path)
+                                                   (expand-path source-path))
+                             path->string
+                             (string-append ":"
+                                            (number->string line-number)
+                                            "\n"))))
+
+          (define (contains-include-instruction? text)
+            (regexp-match? +include-regexp+ text))
+
+          (define (process-line line
+                                #:source-path source-path
+                                #:literate-path literate-path)
+            (if (contains-include-instruction? line)
+                (let* ([new-line                 (replace-line-with-snippet line)]
+                       [indentation              (get-snippet-indentation line)]
+                       [included-snippet-name    (get-included-snippet-name line)]
+                       [included-snippet         (snippets-hash included-snippet-name)]
+                       [literate-doc-line-number (included-snippet 'line-number)])
+                  (string-append (get-ref-to-literate-doc
+                                  #:source-path   source-path
+                                  #:literate-path literate-path
+                                  #:line-number   literate-doc-line-number
+                                  #:indentation   indentation)
+                                 new-line))
+                line))
+
+          ;;
+          ;; Find all lines that match +include-regexp+ and replace them with
+          ;; the appropriate snippet.
+          ;;
+          ;; If the result snippet still contains other include instructions,
+          ;; process with recursion.
+          ;;
+          ;; This function returns the content of the snippet after all
+          ;; replacements.
+          ;;
+          ;; `current-file` is used to calculate the relative path of the
+          ;; generated code that would refer back to its literate doc.
+          ;;
+          ;; Note that one-line snippets are not supported, so a line that has
+          ;; multiple include instructions is not supported.
+          ;;
+          (define (process-snippet snippet
+                                   #:source-path   source-path
+                                   #:literate-path literate-path)
+            (let* ([lines (~> (snippet 'content)
+                            (string-split "\n"))]
+                   [content
+                    (~> (map (λ (line)
+                               (let ([processed-line (process-line line
+                                                                   #:source-path source-path
+                                                                   #:literate-path literate-path)])
+                                 ;; (when (contains-include-instruction? processed-line))
+                                 processed-line))
+                             lines)
+                      (string-join "\n"))])
+              content))]
+    (hash-map snippets-hash
+              (λ (snippet-name snippet)
+                (process-snippet snippet
+                                 #:source-path "/tmp/file"
+                                 #:literate-path (snippet 'literate-path))))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
     (map (λ (filename) (get-doc-path filename)))
-    (foldl extract-code-snippet-from-file (make-hasheq))
-    ;; include-code-snippets-into-file-snippets
+    (foldl extract-code-snippet-from-file (make-hash))
 
-    hash->list
-    (map (λ (pair)
-           (pretty-display "---")
-           (pretty-display (~a "Name: " (car pair)))
-           (pretty-display (~a "Type: "((cdr pair) 'type)))
-           (pretty-display (~a "Path: " ((cdr pair) 'source-file) ":" ((cdr pair) 'source-line)))
-           (pretty-display ((cdr pair) 'content))
-           (newline)))))
+    include-code-snippets
+    (map (λ (str)
+           (displayln "---")
+           (displayln str)))
+
+    ;; hash->list
+    ;; (map (λ (pair)
+    ;;        (pretty-display "---")
+    ;;        (pretty-display (~a "Name: |" (car pair) "|"))
+    ;;        (pretty-display (~a "Type: " ((cdr pair) 'type)))
+    ;;        (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
+    ;;        (pretty-display ((cdr pair) 'content))
+    ;;        (newline)))
+    ))
 
 (define (main)
   (void (generate-code)))
