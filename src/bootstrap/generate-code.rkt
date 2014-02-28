@@ -164,10 +164,7 @@
             (let* ([matches       (regexp-match +include-regexp+ line)]
                    [indentation   (list-ref matches 1)]
                    [snippet-name  (list-ref matches 2)])
-              (displayln (~a "-> Replacing " line
-                             " -> with: " (if (snippets-hash snippet-name)
-                                              ((snippets-hash snippet-name) 'content)
-                                              "{{ No snippet defined }}")))
+              (displayln (~a "-> Replacing " line))
               (indent-code (if (snippets-hash snippet-name)
                                ((snippets-hash snippet-name) 'content)
                                "{{ No snippet defined }}")
