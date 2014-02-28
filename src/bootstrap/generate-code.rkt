@@ -172,6 +172,19 @@
                                ((snippets snippet-name) 'content)
                                "{{ No snippet defined }}")
                            indentation)))
+
+          (define (get-ref-to-literate-doc #:source-path   source-path
+                                           #:literate-path literate-path
+                                           #:line-number   line-number
+                                           #:indentation   indentation)
+            (string-append indentation
+                           +comment-syntax+
+                           " "
+                           (~> (find-relative-path (expand-path literate-path)
+                                                   (expand-path source-path))
+                             path->string
+                             (string-append "\n"))))
+
           ;;
           ;; Find all lines that match +include-regexp+ and replace them with
           ;; the appropriate snippet.
