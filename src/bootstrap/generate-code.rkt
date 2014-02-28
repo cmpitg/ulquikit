@@ -226,17 +226,21 @@
 (define (generate-code)
   (~>> (list-doc-filenames)
     (map (λ (filename) (get-doc-path filename)))
-    (foldl extract-code-snippet-from-file (make-hasheq))
-    ;; include-code-snippets-into-file-snippets
+    (foldl extract-code-snippet-from-file (make-hash))
 
-    hash->list
-    (map (λ (pair)
-           (pretty-display "---")
-           (pretty-display (~a "Name: |" (car pair) "|"))
-           (pretty-display (~a "Type: " ((cdr pair) 'type)))
-           (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
-           (pretty-display ((cdr pair) 'content))
-           (newline)))
+    include-code-snippets
+    (map (λ (str)
+           (displayln "---")
+           (displayln str)))
+
+    ;; hash->list
+    ;; (map (λ (pair)
+    ;;        (pretty-display "---")
+    ;;        (pretty-display (~a "Name: |" (car pair) "|"))
+    ;;        (pretty-display (~a "Type: " ((cdr pair) 'type)))
+    ;;        (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
+    ;;        (pretty-display ((cdr pair) 'content))
+    ;;        (newline)))
     ))
 
 (define (main)
