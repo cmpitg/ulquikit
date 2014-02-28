@@ -218,8 +218,8 @@
           ;; Find all lines that match +include-regexp+ and replace them with
           ;; the appropriate snippet.
           ;;
-          ;; If the result snippet still contains other include instructions,
-          ;; process with recursion.
+          ;; If the result snippet content still contains other include
+          ;; instructions, process with recursion.
           ;;
           ;; This function returns the content of the snippet after all
           ;; replacements.
@@ -230,16 +230,16 @@
           ;; Note that one-line snippets are not supported, so a line that has
           ;; multiple include instructions is not supported.
           ;;
-          (define (process-snippet snippet
-                                   #:source-path   source-path
-                                   #:literate-path literate-path)
-            (let* ([lines (~> (snippet 'content)
-                            (string-split "\n"))]
+          (define (process-snippet-content content
+                                           #:source-path   source-path
+                                           #:literate-path literate-path)
+            (let* ([lines (string-split content "\n")]
                    [content
                     (~> (map (λ (line)
-                               (let ([processed-line (process-line line
-                                                                   #:source-path source-path
-                                                                   #:literate-path literate-path)])
+                               (let ([processed-line
+                                      (process-line line
+                                                    #:source-path source-path
+                                                    #:literate-path literate-path)])
                                  ;; (when (contains-include-instruction? processed-line))
                                  processed-line))
                              lines)
@@ -247,7 +247,7 @@
               content))]
     (hash-map snippets-hash
               (λ (snippet-name snippet)
-                (process-snippet snippet
+                (process-snippet-content (snippet 'content)
                                  #:source-path "/tmp/file"
                                  #:literate-path (snippet 'literate-path))))))
 
