@@ -34,10 +34,11 @@
 
 (current-curly-dict hasheq)
 
-(define +code-snippet-regexp+   #rx"^( *)--> ([a-zA-Z0-9_/ -]+) <-- *$")
-(define +file-snippet-regexp+   #rx"^( *)=== ([a-zA-Z0-9_/ -]+) === *$")
+(define +code-snippet-regexp+   #rx"^( *)--> ([a-zA-Z0-9_/.-]+) <-- *$")
+(define +file-snippet-regexp+   #rx"^( *)___ ([a-zA-Z0-9_/.-]+) ___ *$")
 (define +end-of-snippet-regexp+ #rx"^ *``` *$")
 (define +comment-syntax+        ";;")
+(define +include-regexp+        #rx"^ *-{ +([a-zA-Z0-9_/.-]+) +}- *$")
 
 (module+ test
   (require rackunit))
