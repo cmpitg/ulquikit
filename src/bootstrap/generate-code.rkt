@@ -55,7 +55,7 @@
 ;; * `line-number`: the line number at which the snippet is defined in
 ;;   `literate-path`
 ;;
-(define (extract-code-snippet-from-file filename snippets)
+(define (extract-code-snippet-from-file filename snippets-hash)
   (local [(define doc-content (read-file filename))
 
           (define (extract-snippet snippet-regexp
@@ -67,7 +67,7 @@
                    [snippet-name  (list-ref matches 2)])
 
               ;; Add snippet to the hash of snippets
-              (hash-ref! snippets
+              (hash-ref! snippets-hash
                          snippet-name
                          {'type        type
                           'content     #f
@@ -91,7 +91,7 @@
                    [code-line     (if (>= (string-length line) indent-length)
                                       (substring line indent-length)
                                       line)])
-              (hash-update! snippets
+              (hash-update! snippets-hash
                             snippet-name
                             (λ (snippet)
                               (let* ([current-content (snippet 'content)]
@@ -134,7 +134,7 @@
               'inside-snippet       #f
               'current-snippet-name ""
               'indent-length        0})))
-  snippets)
+  snippets-hash)
 
 ;;
 ;; Determine if a snippet is a file snippet.
@@ -147,7 +147,7 @@
 ;; snippet into their appropriate places in file snippets, and return the hash
 ;; of file snippets afterward.
 ;;
-(define (include-code-snippets snippets)
+(define (include-code-snippets snippets-hash)
   (local [(define (indent-code code indentation)
             (string-join (~>> (string-split code "\n")
                            (map (λ (line) (string-append indentation line))))
@@ -165,11 +165,11 @@
                    [indentation   (list-ref matches 1)]
                    [snippet-name  (list-ref matches 2)])
               (displayln (~a "-> Replacing " line
-                             " -> with: " (if (snippets snippet-name)
-                                              ((snippets snippet-name) 'content)
+                             " -> with: " (if (snippets-hash snippet-name)
+                                              ((snippets-hash snippet-name) 'content)
                                               "{{ No snippet defined }}")))
-              (indent-code (if (snippets snippet-name)
-                               ((snippets snippet-name) 'content)
+              (indent-code (if (snippets-hash snippet-name)
+                               ((snippets-hash snippet-name) 'content)
                                "{{ No snippet defined }}")
                            indentation)))
 
@@ -217,7 +217,7 @@
                              line))
                        lines)
                 (string-join "\n"))))]
-    (hash-map snippets
+    (hash-map snippets-hash
               (λ (snippet-name snippet)
                 (process-snippet snippet
                                  #:source-path "/tmp/file"
