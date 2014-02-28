@@ -190,7 +190,9 @@
                            (~> (find-relative-path (expand-path literate-path)
                                                    (expand-path source-path))
                              path->string
-                             (string-append "\n"))))
+                             (string-append ":"
+                                            (number->string line-number)
+                                            "\n"))))
 
           (define (contains-include-instruction? text)
             (regexp-match? +include-regexp+ text))
