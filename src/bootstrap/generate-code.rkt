@@ -70,7 +70,7 @@
               (hash-ref! snippets
                          snippet-name
                          {'type        type
-                          'content     ""
+                          'content     #f
                           'source-file filename
                           'source-line line-number})
 
@@ -94,9 +94,12 @@
               (hash-update! snippets
                             snippet-name
                             (λ (snippet)
-                              (let ([new-content (string-append (snippet 'content)
-                                                                "\n"
-                                                                code-line)])
+                              (let* ([current-content (snippet 'content)]
+                                     [new-content (if current-content
+                                                      (string-append current-content
+                                                                     "\n"
+                                                                     code-line)
+                                                      code-line)])
                                 (snippet 'content new-content))))))]
 
     (~>> (string-split doc-content "\n")
