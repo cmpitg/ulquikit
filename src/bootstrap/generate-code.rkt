@@ -103,21 +103,21 @@
                (let ([old-line-number (snippet-info 'line-number)]
                      [snippet-info
                       (cond [ ;; Begining of code snippet
-                             (regexp-match +code-snippet-regexp+ line)
+                             (regexp-match? +code-snippet-regexp+ line)
                              (extract-snippet +code-snippet-regexp+
                                               #:line line
                                               #:line-number (snippet-info 'line-number)
                                               #:type 'code)]
 
                             [ ;; Begining of file snippet
-                             (regexp-match +file-snippet-regexp+ line)
+                             (regexp-match? +file-snippet-regexp+ line)
                              (extract-snippet +file-snippet-regexp+
                                               #:line line
                                               #:line-number (snippet-info 'line-number)
                                               #:type 'file)]
 
                             [ ;; End of snippet
-                             (regexp-match +end-of-snippet-regexp+ line)
+                             (regexp-match? +end-of-snippet-regexp+ line)
                              (close-snippet)]
 
                             [else
