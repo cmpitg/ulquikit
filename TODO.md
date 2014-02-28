@@ -43,6 +43,10 @@
 
 * How to support multiple HTML theme?
 
+* Circular snippet dependency:
+  - Snippet `A` includes `B`
+  - And `B` includes `A`
+
 ---
 
 ## Old and outdated ##
