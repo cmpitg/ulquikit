@@ -197,7 +197,8 @@
                                             "\n"))))
 
           (define (contains-include-instruction? text)
-            (regexp-match? +include-regexp+ text))
+            (or (regexp-match? +include-regexp-for-text+ text)
+                (regexp-match? +include-regexp+ text)))
 
           (define (process-line line
                                 #:source-path source-path
