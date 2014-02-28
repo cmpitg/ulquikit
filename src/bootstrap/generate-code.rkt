@@ -50,10 +50,10 @@
 ;; Each snippet is a hash with the following keys:
 ;; * `type`: type of snippet, either `code` or `file`
 ;; * `content`: content of the snippet
-;; * `source-file`: full path to the literate source file that defines the
+;; * `literate-path`: full path to the literate source file that defines the
 ;;   snippet
-;; * `source-line`: the line number at which the snippet is defined in
-;;   `source-file`
+;; * `line-number`: the line number at which the snippet is defined in
+;;   `literate-path`
 ;;
 (define (extract-code-snippet-from-file filename snippets)
   (local [(define doc-content (read-file filename))
