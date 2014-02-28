@@ -60,59 +60,73 @@
 ;;
 (define (extract-code-snippet-from-file filename snippets)
   (local [(define doc-content (read-file filename))
-          (define (extract-snippet snippet-info snippet-regexp line type)
+          (define (extract-snippet snippet-regexp line line-number type)
             (let* ([matches       (regexp-match snippet-regexp line)]
                    [indent-length (string-length (list-ref matches 1))]
                    [snippet-name  (list-ref matches 2)])
-              (hash-set! snippet-info 'inside-snippet       #t)
-              (hash-set! snippet-info 'current-snippet-name snippet-name)
-              (hash-set! snippet-info 'indent-length        indent-length)
 
+              ;; Add snippet to the hash of snippets
               (hash-ref! snippets
                          snippet-name
                          {'type        type
                           'content     ""
                           'source-file filename
-                          'source-line (hash-ref snippet-info 'line-number)})))]
+                          'source-line line-number})
+
+              ;; Return new snippet info
+              {'current-snippet-name snippet-name
+               'inside-snippet       #t
+               'indent-length        indent-length}))]
     (~>> (string-split doc-content "\n")
       (foldl (λ (line snippet-info)
-               (cond [ ;; Begining of code snippet
-                      (regexp-match +code-snippet-regexp+ line)
-                      (extract-snippet snippet-info +code-snippet-regexp+ line 'code)
-                      ]
+               (let ([old-line-number (snippet-info 'line-number)]
+                     [snippet-info
+                      (cond [ ;; Begining of code snippet
+                             (regexp-match +code-snippet-regexp+ line)
+                             (extract-snippet +code-snippet-regexp+
+                                              line
+                                              (snippet-info 'line-number)
+                                              'code)]
 
-                     [ ;; Begining of file snippet
-                      (regexp-match +file-snippet-regexp+ line)
-                      (extract-snippet snippet-info +file-snippet-regexp+ line 'file)]
+                            [ ;; Begining of file snippet
+                             (regexp-match +file-snippet-regexp+ line)
+                             (extract-snippet +file-snippet-regexp+
+                                              line
+                                              (snippet-info 'line-number)
+                                              'file)]
 
-                     [ ;; End of snippet
-                      (regexp-match +end-of-snippet-regexp+ line)
-                      (hash-set! snippet-info 'inside-snippet       #f)
-                      (hash-set! snippet-info 'current-snippet-name "")
-                      (hash-set! snippet-info 'indent-length        0)]
+                            [ ;; End of snippet
+                             (regexp-match +end-of-snippet-regexp+ line)
+                             {'inside-snippet       #f
+                              'current-snippet-name ""
+                              'indent-length        0}]
 
-                     [else
-                      (when (hash-ref snippet-info 'inside-snippet)
-                        (let* ([snippet-name  (hash-ref snippet-info 'current-snippet-name)]
-                               [indent-length (hash-ref snippet-info 'indent-length)]
-                               [code-line     (if (>= (string-length line) indent-length)
-                                                  (substring line indent-length)
-                                                  line)])
-                          (hash-update! snippets
-                                        snippet-name
-                                        (λ (snippet)
-                                          (let ([new-content (string-append (snippet 'content)
-                                                                            "\n"
-                                                                            code-line)])
-                                            (snippet 'content new-content))))))])
-
-               ;; Next loop
-               (hash-update! snippet-info 'line-number add1)
-               snippet-info)
-             (make-hasheq `((line-number          . 1)
-                            (inside-snippet       . #f)
-                            (current-snippet-name . "")
-                            (indent-length        . 0))))))
+                            [else
+                             (when (hash-ref snippet-info 'inside-snippet)
+                               (let* ([snippet-name  (hash-ref snippet-info 'current-snippet-name)]
+                                      [indent-length (hash-ref snippet-info 'indent-length)]
+                                      [code-line     (if (>= (string-length line) indent-length)
+                                                         (substring line indent-length)
+                                                         line)])
+                                 (hash-update! snippets
+                                               snippet-name
+                                               (λ (snippet)
+                                                 (let ([new-content (string-append (snippet 'content)
+                                                                                   "\n"
+                                                                                   code-line)])
+                                                   (snippet 'content new-content))))))
+                             snippet-info])])
+                 ;; Next loop
+                 (snippet-info 'line-number (add1 old-line-number))))
+             {'line-number           1
+              'inside-snippet       #f
+              'current-snippet-name ""
+              'indent-length        0}
+             ;; (make-hasheq `((line-number          . 1)
+             ;;                (inside-snippet       . #f)
+             ;;                (current-snippet-name . "")
+             ;;                (indent-length        . 0)))
+             )))
   snippets)
 
 ;;
