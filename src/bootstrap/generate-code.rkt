@@ -71,8 +71,8 @@
                          snippet-name
                          {'type        type
                           'content     #f
-                          'source-file filename
-                          'source-line line-number})
+                          'literate-path filename
+                          'line-number line-number})
 
               ;; Return new snippet info
               {'current-snippet-name snippet-name
@@ -199,11 +199,12 @@
     hash->list
     (map (λ (pair)
            (pretty-display "---")
-           (pretty-display (~a "Name: " (car pair)))
+           (pretty-display (~a "Name: |" (car pair) "|"))
            (pretty-display (~a "Type: " ((cdr pair) 'type)))
-           (pretty-display (~a "Path: " ((cdr pair) 'source-file) ":" ((cdr pair) 'source-line)))
+           (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
            (pretty-display ((cdr pair) 'content))
-           (newline)))))
+           (newline)))
+    ))
 
 (define (main)
   (void (generate-code)))
