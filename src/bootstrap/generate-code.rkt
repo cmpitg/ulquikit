@@ -75,7 +75,11 @@
               ;; Return new snippet info
               {'current-snippet-name snippet-name
                'inside-snippet       #t
-               'indent-length        indent-length}))]
+               'indent-length        indent-length}))
+          (define (close-snippet)
+            {'inside-snippet       #f
+             'current-snippet-name ""
+             'indent-length        0})]
     (~>> (string-split doc-content "\n")
       (foldl (λ (line snippet-info)
                (let ([old-line-number (snippet-info 'line-number)]
@@ -96,9 +100,7 @@
 
                             [ ;; End of snippet
                              (regexp-match +end-of-snippet-regexp+ line)
-                             {'inside-snippet       #f
-                              'current-snippet-name ""
-                              'indent-length        0}]
+                             (close-snippet)]
 
                             [else
                              (when (hash-ref snippet-info 'inside-snippet)
