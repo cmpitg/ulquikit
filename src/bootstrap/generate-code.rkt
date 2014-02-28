@@ -242,10 +242,10 @@
                                (let ([processed-line
                                       (process-line line
                                                     #:generated-code-path generated-code-path)])
-                                 ;; (if (contains-include-instruction? processed-line)
-                                 ;;   (process-snippet-content process-line
-                                 ;;                            #:generated-code-path   generated-code-path))
-                                 processed-line))
+                                 (if (contains-include-instruction? processed-line)
+                                   (process-snippet-content processed-line
+                                                            #:generated-code-path generated-code-path)
+                                   processed-line)))
                              lines)
                       (string-join "\n"))])
               content))]
