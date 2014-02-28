@@ -130,7 +130,13 @@
                                                        #:line line))
                              snippet-info])])
                  (snippet-info 'line-number (add1 old-line-number))))
-             {'line-number           1
+             {'line-number          0   ; Should be counted from 1, as we when
+                                        ; we generate reference back to
+                                        ; literate doc, the Markdown code
+                                        ; block fence should be counted.  The
+                                        ; beginning of the code block is the
+                                        ; previous line of the line containing
+                                        ; snippet name
               'inside-snippet       #f
               'current-snippet-name ""
               'indent-length        0})))
