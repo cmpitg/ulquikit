@@ -104,8 +104,8 @@
 
                             [else
                              (when (hash-ref snippet-info 'inside-snippet)
-                               (let* ([snippet-name  (hash-ref snippet-info 'current-snippet-name)]
-                                      [indent-length (hash-ref snippet-info 'indent-length)]
+                               (let* ([snippet-name  (snippet-info 'current-snippet-name)]
+                                      [indent-length (snippet-info 'indent-length)]
                                       [code-line     (if (>= (string-length line) indent-length)
                                                          (substring line indent-length)
                                                          line)])
