@@ -197,6 +197,23 @@
           (define (contains-include-instruction? text)
             (regexp-match? +include-regexp+ text))
 
+          (define (process-line line
+                                #:source-path source-path
+                                #:literate-path literate-path)
+            (if (contains-include-instruction? line)
+                (let* ([new-line                 (replace-line-with-snippet line)]
+                       [indentation              (get-snippet-indentation line)]
+                       [included-snippet-name    (get-included-snippet-name line)]
+                       [included-snippet         (snippets-hash included-snippet-name)]
+                       [literate-doc-line-number (included-snippet 'line-number)])
+                  (string-append (get-ref-to-literate-doc
+                                  #:source-path   source-path
+                                  #:literate-path literate-path
+                                  #:line-number   literate-doc-line-number
+                                  #:indentation   indentation)
+                                 new-line))
+                line))
+
           ;;
           ;; Find all lines that match +include-regexp+ and replace them with
           ;; the appropriate snippet.
