@@ -164,6 +164,10 @@
             (let* ([matches       (regexp-match +include-regexp+ line)]
                    [indentation   (list-ref matches 1)]
                    [snippet-name  (list-ref matches 2)])
+          (define (get-included-snippet-name text)
+            (if (contains-include-instruction? text)
+                (list-ref (regexp-match +include-regexp+ text) 2)
+                ""))
               (displayln (~a "-> Replacing " line))
               (indent-code (if (snippets-hash snippet-name)
                                ((snippets-hash snippet-name) 'content)
