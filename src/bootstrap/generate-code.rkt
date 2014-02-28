@@ -56,6 +56,7 @@
 ;;
 (define (extract-code-snippet-from-file filename snippets)
   (local [(define doc-content (read-file filename))
+
           (define (extract-snippet snippet-regexp
                                    #:line line
                                    #:line-number line-number
@@ -76,10 +77,27 @@
               {'current-snippet-name snippet-name
                'inside-snippet       #t
                'indent-length        indent-length}))
+
           (define (close-snippet)
             {'inside-snippet       #f
              'current-snippet-name ""
-             'indent-length        0})]
+             'indent-length        0})
+
+          (define (update-current-snippet snippet-info
+                                          #:line line)
+            (let* ([snippet-name  (snippet-info 'current-snippet-name)]
+                   [indent-length (snippet-info 'indent-length)]
+                   [code-line     (if (>= (string-length line) indent-length)
+                                      (substring line indent-length)
+                                      line)])
+              (hash-update! snippets
+                            snippet-name
+                            (λ (snippet)
+                              (let ([new-content (string-append (snippet 'content)
+                                                                "\n"
+                                                                code-line)])
+                                (snippet 'content new-content))))))]
+
     (~>> (string-split doc-content "\n")
       (foldl (λ (line snippet-info)
                (let ([old-line-number (snippet-info 'line-number)]
@@ -104,20 +122,9 @@
 
                             [else
                              (when (hash-ref snippet-info 'inside-snippet)
-                               (let* ([snippet-name  (snippet-info 'current-snippet-name)]
-                                      [indent-length (snippet-info 'indent-length)]
-                                      [code-line     (if (>= (string-length line) indent-length)
-                                                         (substring line indent-length)
-                                                         line)])
-                                 (hash-update! snippets
-                                               snippet-name
-                                               (λ (snippet)
-                                                 (let ([new-content (string-append (snippet 'content)
-                                                                                   "\n"
-                                                                                   code-line)])
-                                                   (snippet 'content new-content))))))
+                               (update-current-snippet snippet-info
+                                                       #:line line))
                              snippet-info])])
-                 ;; Next loop
                  (snippet-info 'line-number (add1 old-line-number))))
              {'line-number           1
               'inside-snippet       #f
