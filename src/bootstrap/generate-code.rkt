@@ -32,7 +32,7 @@
 
 (provide (all-defined-out))
 
-(current-curly-dict hasheq)
+(current-curly-dict hash)
 
 (define +code-snippet-regexp+   #rx"^( *)--> ([a-zA-Z0-9_/.-]+) <-- *$")
 (define +file-snippet-regexp+   #rx"^( *)___ ([a-zA-Z0-9_/.-]+) ___ *$")
