@@ -182,6 +182,9 @@
                              path->string
                              (string-append "\n"))))
 
+          (define (contains-include-instruction? text)
+            (regexp-match? +include-regexp+ text))
+
           ;;
           ;; Find all lines that match +include-regexp+ and replace them with
           ;; the appropriate snippet.
