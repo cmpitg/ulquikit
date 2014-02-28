@@ -235,17 +235,11 @@
                                    #:literate-path literate-path)
             (let* ([lines (~> (snippet 'content)
                             (string-split "\n"))]
-                   [content 
+                   [content
                     (~> (map (λ (line)
-                               (let ([processed-line
-                                      (if (regexp-match? +include-regexp+ line)
-                                          (~>> (replace-line-with-snippet line snippet)
-                                            (string-append (get-ref-to-literate-doc
-                                                            #:source-path   source-path
-                                                            #:literate-path literate-path
-                                                            #:line-number   (snippet 'line-number)
-                                                            #:indentation   (get-snippet-indentation line))))
-                                          line)])
+                               (let ([processed-line (process-line line
+                                                                   #:source-path source-path
+                                                                   #:literate-path literate-path)])
                                  ;; (when (contains-include-instruction? processed-line))
                                  processed-line))
                              lines)
