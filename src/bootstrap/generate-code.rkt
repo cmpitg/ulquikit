@@ -56,7 +56,10 @@
 ;;
 (define (extract-code-snippet-from-file filename snippets)
   (local [(define doc-content (read-file filename))
-          (define (extract-snippet snippet-regexp line line-number type)
+          (define (extract-snippet snippet-regexp
+                                   #:line line
+                                   #:line-number line-number
+                                   #:type type)
             (let* ([matches       (regexp-match snippet-regexp line)]
                    [indent-length (string-length (list-ref matches 1))]
                    [snippet-name  (list-ref matches 2)])
@@ -80,16 +83,16 @@
                       (cond [ ;; Begining of code snippet
                              (regexp-match +code-snippet-regexp+ line)
                              (extract-snippet +code-snippet-regexp+
-                                              line
-                                              (snippet-info 'line-number)
-                                              'code)]
+                                              #:line line
+                                              #:line-number (snippet-info 'line-number)
+                                              #:type 'code)]
 
                             [ ;; Begining of file snippet
                              (regexp-match +file-snippet-regexp+ line)
                              (extract-snippet +file-snippet-regexp+
-                                              line
-                                              (snippet-info 'line-number)
-                                              'file)]
+                                              #:line line
+                                              #:line-number (snippet-info 'line-number)
+                                              #:type 'file)]
 
                             [ ;; End of snippet
                              (regexp-match +end-of-snippet-regexp+ line)
