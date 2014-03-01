@@ -47,6 +47,11 @@
   - Snippet `A` includes `B`
   - And `B` includes `A`
 
+### Optimization ###
+
+* Using mutable hashes instead of immutable hashes?
+* Only re-generate newer versions
+
 ---
 
 ## Old and outdated ##
