@@ -271,21 +271,43 @@
                                              content)])
                (cons snippet-name (snippet 'content new-content))))))))
 
+;;
+;; Create file from file snippets.  `snippets` is an alist of the following
+;; format: `(snippet-name . snippet)`, where `snippet` is a hash which has the
+;; following keys:
+;;
+;; * `'type`: `file`, there isn't code snippet anymore, not used in this
+;;   function
+;; * `literate-path`: path to its literate doc, not used in this function
+;; * `line-number`: its line number in the literate doc, not used in this
+;;   function
+;; * `content`: its content
+;;
+;; As stated in the explanation, we only care about its `'content` value.
+;;
+;; This function reads all file snippets and creates their appropriate files
+;; in `./generated-src/`directory
+;;
+(define (create-files snippets)
+  (make-directory* +generated-src-location+)
+
+  (map (λ (snippet)
+         (let ([file-path (get-output-src-path (car snippet))]
+               [content   ((cdr snippet) 'content)])
+           (displayln (~a "-> Generating " file-path))
+           (call-with-output-file file-path
+             (λ (out)
+               (displayln content out))
+             #:mode 'text
+             #:exists 'truncate)))
+       snippets))
+
 (define (generate-code)
   (~>> (list-doc-filenames)
     (map (λ (filename) (get-doc-path filename)))
     (foldl extract-code-snippet-from-file (make-hash))
-
     include-code-snippets
-
-    (map (λ (pair)
-           (pretty-display "---")
-           (pretty-display (~a "Name: " (car pair) ""))
-           (pretty-display (~a "Type: " ((cdr pair) 'type)))
-           (pretty-display (~a "Path: " ((cdr pair) 'literate-path) ":" ((cdr pair) 'line-number)))
-           (pretty-display ((cdr pair) 'content))
-           (newline)))
-    ))
+    create-files))
 
 (define (main)
   (void (generate-code)))
