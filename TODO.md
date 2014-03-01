@@ -23,6 +23,8 @@
 
 * [ ] Strip header which contains variables from literate documents.
 
+* [ ] Terminal colors
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
@@ -46,6 +48,11 @@
 * Circular snippet dependency:
   - Snippet `A` includes `B`
   - And `B` includes `A`
+
+### Optimization ###
+
+* Using mutable hashes instead of immutable hashes?
+* Only re-generate newer versions
 
 ---
 

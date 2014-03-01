@@ -1,3 +1,5 @@
+#!/usr/bin/env racket
+
 ;;
 ;; This file is part of Ulquikit project.
 ;;
@@ -19,21 +21,24 @@
 
 #lang rackjure
 
-(provide main)
-
-(require racket/runtime-path)
-(require "utils-path.rkt")
-
-(define-runtime-path +current-dir+ "./")
-
-;;
-;; Return directory of current file
-;;
-(define (this-directory)
-  (path->string +current-dir+))
+(require (rename-in "generate-resources.rkt"
+                    [main generate/resources])
+         (rename-in "generate-docs.rkt"
+                    [main generate/docs])
+         (rename-in "generate-code.rkt"
+                    [main generate/code]))
 
 (define (main)
-  (make-directory* +generated-docs-location+)
-  (copy-and-overwrite (string-append (this-directory) "css")
-                      (string-append (this-directory) "js")
-                      +generated-docs-location+))
+  (displayln "--- Generating resources ---")
+  (generate/resources)
+  (newline)
+
+  (displayln "--- Generating docs ---")
+  (generate/docs)
+  (newline)
+
+  (displayln "--- Generating code ---")
+  (generate/code)
+  (newline))
+
+(main)
