@@ -65,6 +65,8 @@ See [`COPYING`](COPYING) for further information.
   (define (hello-world)
     (displayln "¡Hola mundo!"))
 
+  -{ some-comment-here }-
+
   (define (main)
     (hello-world))
 
@@ -74,7 +76,16 @@ See [`COPYING`](COPYING) for further information.
 * And other stuff
 
   ```racket
-  === main.rkt ===
+  ___ ./main.rkt ___
+  (begin)
+    -{ some-snippet-just-to-test }-
+  (end)
+  ```
 
-  -{ some-snippet-just-to-test }-
+* And just some comment
+
+  ```racket
+  --> some-comment-here <--
+  ;; Really
+  ;; It's just some random comments
   ```
