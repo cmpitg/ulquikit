@@ -243,21 +243,27 @@
                                       (process-line line
                                                     #:generated-code-path generated-code-path)])
                                  (if (contains-include-instruction? processed-line)
-                                   (process-snippet-content processed-line
-                                                            #:generated-code-path generated-code-path)
-                                   processed-line)))
+                                     (process-snippet-content processed-line
+                                                              #:generated-code-path generated-code-path)
+                                     processed-line)))
                              lines)
                       (string-join "\n"))])
               content))]
-    (hash-map snippets-hash
-              (λ (snippet-name snippet)
-                (let* ([content (snippet 'content)]
-                       [new-content (if (contains-include-instruction? content)
-                                        (process-snippet-content
-                                         (snippet 'content)
-                                         #:generated-code-path "/tmp/file")
-                                        content)])
-                  (cons snippet-name (snippet 'content new-content)))))))
+    (~>> (hash-map snippets-hash (λ (snippet-name snippet)
+                                   (cons snippet-name snippet)))
+      (filter (λ (snippet-and-name)
+                (eq? 'file ((cdr snippet-and-name) 'type))))
+      (map (λ (snippet-and-name)
+             (let* ([snippet-name        (car snippet-and-name)]
+                    [snippet             (cdr snippet-and-name)]
+                    [generated-code-path (expand-path (get-output-src-path snippet-name))]
+                    [content             (snippet 'content)]
+                    [new-content         (if (contains-include-instruction? content)
+                                             (process-snippet-content
+                                              content
+                                              #:generated-code-path generated-code-path)
+                                             content)])
+               (cons snippet-name (snippet 'content new-content))))))))
 
 (define (generate-code)
   (~>> (list-doc-filenames)
