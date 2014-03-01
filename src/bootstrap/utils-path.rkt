@@ -97,9 +97,7 @@
 ;; Return path for the generated code file to its literate file.
 ;;
 (define (get-output-src-path path)
-  (expand-path (string-append +generated-src-location+
-                              (replace-file-extension path "html"))))
-
+  (expand-path (string-append +generated-src-location+ path)))
 
 ;;
 ;; Return filenames of all literate documents from +docs-location+.
