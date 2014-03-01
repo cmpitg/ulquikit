@@ -1,8 +1,8 @@
 ---
 project_name: Ulquikit
-authors: Duong H. Nguyen <cmpitg AT gmailDOTcom>
+authors: Duong H. Nguyen <cmpitg AT gmailDOTcom>, Hoang Minh Thang <p AT banphimDOTnet>
 title: Ulquikit
-short_description: A simple literate programming tool in Ruby
+short_description: Another literate programming tool in Racket
 version: 0.0.1
 ---
 
