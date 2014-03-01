@@ -37,6 +37,7 @@
          (rename-out [this-dir get-bootstrap-dir])
 
          +docs-location+
+         +generated-src-location+
          +generated-docs-location+)
 
 (module+ test
