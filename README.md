@@ -52,7 +52,7 @@ ideas about Knuth's work as well.
 * Great help in **understanding, maintaining, extending** programs.
 
 * Bugs that start from designing and thinking process are easier to detect and
-  fixed.
+  fix.
 
 * Programs are more well-constructed.
 
