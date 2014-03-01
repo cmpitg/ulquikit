@@ -248,7 +248,12 @@
                                      processed-line)))
                              lines)
                       (string-join "\n"))])
-              content))]
+              content))
+
+          (define (get-directory generated-code-path)
+            (let-values ([(dir _ __) (split-path generated-code-path)])
+              (path->string dir)))]
+
     (~>> (hash-map snippets-hash (λ (snippet-name snippet)
                                    (cons snippet-name snippet)))
       (filter (λ (snippet-and-name)
