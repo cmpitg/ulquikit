@@ -261,7 +261,8 @@
       (map (λ (snippet-and-name)
              (let* ([snippet-name        (car snippet-and-name)]
                     [snippet             (cdr snippet-and-name)]
-                    [generated-code-path (expand-path (get-output-src-path snippet-name))]
+                    [generated-code-path (get-directory (expand-path
+                                                         (get-output-src-path snippet-name)))]
                     [content             (snippet 'content)]
                     [new-content         (if (contains-include-instruction? content)
                                              (process-snippet-content
