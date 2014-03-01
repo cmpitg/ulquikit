@@ -30,6 +30,7 @@
 
          get-doc-path
          get-output-doc-path
+         get-output-src-path
 
          list-doc-filenames
 
@@ -88,9 +89,15 @@
 ;;
 ;; Return path for the output file corresponding to its literate file.
 ;;
-(define (get-output-doc-path file)
+(define (get-output-doc-path path)
   (expand-path (string-append +generated-docs-location+
-                              (replace-file-extension file "html"))))
+                              (replace-file-extension path "html"))))
+
+;;
+;; Return path for the generated code file to its literate file.
+;;
+(define (get-output-src-path path)
+  (expand-path (string-append +generated-src-location+ path)))
 
 ;;
 ;; Return filenames of all literate documents from +docs-location+.
@@ -116,3 +123,6 @@
 
 (define +generated-docs-location+
   (expand-path (string-append (this-dir) "/../../generated-docs/")))
+
+(define +generated-src-location+
+  (expand-path (string-append (this-dir) "/../../generated-src/")))
