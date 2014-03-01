@@ -176,7 +176,7 @@
           (define (replace-line-with-snippet line)
             (let* ([indentation   (get-snippet-indentation line)]
                    [snippet-name  (get-included-snippet-name line)])
-              (displayln (~a "-> Replacing " line))
+              ;; (displayln (~a "-> Replacing " line))
               (indent-code (if (snippets-hash snippet-name)
                                ((snippets-hash snippet-name) 'content)
                                "{{ No snippet defined }}")
