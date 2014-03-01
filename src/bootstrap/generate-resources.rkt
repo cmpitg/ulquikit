@@ -19,6 +19,8 @@
 
 #lang rackjure
 
+(provide main)
+
 (require racket/runtime-path)
 (require "utils-path.rkt")
 
@@ -31,9 +33,7 @@
   (path->string +current-dir+))
 
 (define (main)
-  (make-directory* (string-append (this-directory) "../../generated-docs/"))
+  (make-directory* +generated-docs-location+)
   (copy-and-overwrite (string-append (this-directory) "css")
                       (string-append (this-directory) "js")
-                      (string-append (this-directory) "../../generated-docs/")))
-
-(main)
+                      +generated-docs-location+))
