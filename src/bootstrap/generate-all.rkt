@@ -28,7 +28,7 @@
          (rename-in "generate-code.rkt"
                     [main generate/code]))
 
-(define (main)
+(module+ main
   (displayln "--- Generating resources ---")
   (generate/resources)
   (newline)
@@ -40,5 +40,3 @@
   (displayln "--- Generating code ---")
   (generate/code)
   (newline))
-
-(main)
