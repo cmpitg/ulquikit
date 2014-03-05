@@ -27,7 +27,23 @@ ulquikit/
   src/
     bootstrap/
       css/
+        bootstrap.min.css
+        github.css
+        pygments.css
+        custom.css
       js/
+        bootstrap.min.js
+        custom.js
+      generate-all.rkt
+      generate-code.rkt
+      generate-docs.rkt
+      generate-resources.rkt
+      render-markdown-toc.rb
+      render-markdown.rb
+      utils-alist.rkt
+      utils-file.rkt
+      utils-html.rkt
+      utils-path.rkt
     config.yaml
     internals.md
     guide.md
@@ -43,6 +59,8 @@ Explanation:
 | `src/config.yaml`  | Ulquikit configuration                                                      |
 | `src/internals.md` | Literate source of this document, describing how Ulquikit works internally. |
 | `src/guide.md`     | Literate source document, a guide on how to use Ulquikit                    |
+
+
 
 ## Notes ##
 
