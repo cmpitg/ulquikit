@@ -27,6 +27,10 @@
 
 * [ ] Support for Unicode characters in snippet name.
 
+* [ ] Option to exclude `--> ... <---` and `___ ... ___` not as snippet names.
+
+* [ ] Customizing snippet regexp.
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
