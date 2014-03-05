@@ -27,7 +27,23 @@ ulquikit/
   src/
     bootstrap/
       css/
+        bootstrap.min.css
+        github.css
+        pygments.css
+        custom.css
       js/
+        bootstrap.min.js
+        custom.js
+      generate-all.rkt
+      generate-code.rkt
+      generate-docs.rkt
+      generate-resources.rkt
+      render-markdown-toc.rb
+      render-markdown.rb
+      utils-alist.rkt
+      utils-file.rkt
+      utils-html.rkt
+      utils-path.rkt
     config.yaml
     internals.md
     guide.md
@@ -39,10 +55,41 @@ Explanation:
 |--------------------|-----------------------------------------------------------------------------|
 | `generated-docs/`  | *generated docs*                                                            |
 | `generated-src/`   | *generated source*                                                          |
-| `src/bootstrap/`   | resources for *generated docs* in HTML format                               |
+| `src/bootstrap/`   | Racket's bootstrap code                                                     |
 | `src/config.yaml`  | Ulquikit configuration                                                      |
 | `src/internals.md` | Literate source of this document, describing how Ulquikit works internally. |
 | `src/guide.md`     | Literate source document, a guide on how to use Ulquikit                    |
+
+* `src/bootstrap/css` and `src/bootstrap/js` are CSS and JavaScript files that
+  will be included in the HTML format of *generated docs*.  Currently,
+  Ulquikit uses [Twitter Bootstrap 3](http://getbootstrap.com/) with Github
+  style.  Contents of these 2 directories would be automatically copied to
+  `generated-docs/` by `src/bootstrap/generate-resources.rkt`.
+
+* Snippets (both *code snippets* and *file snippets*) are read, included, and
+  extracted to their appropriate places by `src/bootstrap/generate-code.rkt`.
+
+* Markdown files are rendered into HTML format by
+  `src/bootstrap/generate-docs.rkt`.
+
+* Other files speak for themselves.
+
+### Snippet definition ###
+
+* All snippet definitions are the first line of code block definition in
+  Markdown.
+
+* Snippet names are globally unique in the project.
+
+* Snippet names can only contain alphanumeric , `_`, `/`, `.`, or `-` characters.
+
+* A *code snippet* is defined by one line of format: `--> snippet-name <--`.
+
+* A *file snippet* is defined by one line of format: `___ file-path-relative
+  ___`.
+
+* An instruction to include a code snippet to the current place: `-{
+  snippet-name }-`.
 
 ## Notes ##
 
