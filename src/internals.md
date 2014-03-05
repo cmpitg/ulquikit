@@ -74,6 +74,23 @@ Explanation:
 
 * Other files speak for themselves.
 
+### Snippet definition ###
+
+* All snippet definitions are the first line of code block definition in
+  Markdown.
+
+* Snippet names are globally unique in the project.
+
+* Snippet names can only contain alphanumeric , `_`, `/`, `.`, or `-` characters.
+
+* A *code snippet* is defined by one line of format: `--> snippet-name <--`.
+
+* A *file snippet* is defined by one line of format: `___ file-path-relative
+  ___`.
+
+* An instruction to include a code snippet to the current place: `-{
+  snippet-name }-`.
+
 ## Notes ##
 
 * All CSS and JavaScript files are minified with
