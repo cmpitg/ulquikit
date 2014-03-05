@@ -25,6 +25,8 @@
 
 * [ ] Terminal colors
 
+* [ ] Support for Unicode characters in snippet name.
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
