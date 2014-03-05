@@ -55,12 +55,24 @@ Explanation:
 |--------------------|-----------------------------------------------------------------------------|
 | `generated-docs/`  | *generated docs*                                                            |
 | `generated-src/`   | *generated source*                                                          |
-| `src/bootstrap/`   | resources for *generated docs* in HTML format                               |
+| `src/bootstrap/`   | Racket's bootstrap code                                                     |
 | `src/config.yaml`  | Ulquikit configuration                                                      |
 | `src/internals.md` | Literate source of this document, describing how Ulquikit works internally. |
 | `src/guide.md`     | Literate source document, a guide on how to use Ulquikit                    |
 
+* `src/bootstrap/css` and `src/bootstrap/js` are CSS and JavaScript files that
+  will be included in the HTML format of *generated docs*.  Currently,
+  Ulquikit uses [Twitter Bootstrap 3](http://getbootstrap.com/) with Github
+  style.  Contents of these 2 directories would be automatically copied to
+  `generated-docs/` by `src/bootstrap/generate-resources.rkt`.
 
+* Snippets (both *code snippets* and *file snippets*) are read, included, and
+  extracted to their appropriate places by `src/bootstrap/generate-code.rkt`.
+
+* Markdown files are rendered into HTML format by
+  `src/bootstrap/generate-docs.rkt`.
+
+* Other files speak for themselves.
 
 ## Notes ##
 
