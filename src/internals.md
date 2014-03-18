@@ -103,6 +103,8 @@ See [`COPYING`](COPYING) for further information.
 
 ---
 
+From this line on, text is used for testing purposes only
+
 * Write down something to test
 
   ```racket
