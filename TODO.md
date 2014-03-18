@@ -31,6 +31,9 @@
 
 * [ ] Customizing snippet regexp.
 
+* [ ] Customizing locations to generate code and docs (rationale: supporting
+  projects that use their root directories for other purposes).
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
