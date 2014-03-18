@@ -34,6 +34,8 @@
 * [ ] Customizing locations to generate code and docs (rationale: supporting
   projects that use their root directories for other purposes).
 
+* [ ] Supporting other markup languages like reStructuredText and ASCIIDoc.
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
