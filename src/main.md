@@ -16,19 +16,7 @@ written using Ulquikit itself.  On how to use Ulquikit in your project, see
 
 * Convention over configuration.
 
-## Configuration ##
 
-Some environment variables:
-
-* `ULQUI_CONFIG` is the path to your local configuration directory of
-  Ulquikit.  If it's empty, your local config dir is `$HOME/.config/ulquikit`
-  by default.
-
-## Subcommands ##
-
-Ulquikit subcommands are an executables residing in either
-`$ULQUI_HOME/subcommands/` or `$ULQUI_CONFIG/subcommands/<subcommand-name>`
-directory.
 
 ## Extracting code snippet ##
 
