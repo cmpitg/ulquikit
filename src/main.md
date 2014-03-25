@@ -16,6 +16,7 @@ written using Ulquikit itself.  On how to use Ulquikit in your project, see
 
 * Convention over configuration.
 
+* Everything is hackable.
 
 
 ## Extracting code snippet ##
