@@ -36,6 +36,8 @@
 
 * [ ] Supporting other markup languages like reStructuredText and ASCIIDoc.
 
+* [ ] Think of a good way to exclude snippet. **[critical]**
+
 * [x] Write Ruby script to render Markdown.
 
 * [x] Generate resources by copying from `./src/bootstrap/css` and
