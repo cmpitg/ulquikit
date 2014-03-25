@@ -166,3 +166,6 @@
 
 (define (main)
   (void (generate-docs)))
+
+(module+ main
+  (main))
