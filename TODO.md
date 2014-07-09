@@ -1,3 +1,18 @@
+## Emacs Lisp ##
+
+* [x] Write file with just this:
+
+  ```racket
+  ;; %%file: /tmp/base.rkt
+
+  (displayln "Hello World")
+  ```
+
+  Supported patterns:
+  - `;; /path/to/file`
+  - `;; %%path /path/to/file`
+  - `;; %write-to-file /path/to/file`
+
 ## Racket ##
 
 * [ ] Define convention for simple project structure.

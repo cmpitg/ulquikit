@@ -22,6 +22,7 @@
 (require srfi/1)
 (require racket/runtime-path)
 
+(require "config.rkt")
 (require "utils-file.rkt")
 
 (provide get-name-from-path
@@ -38,7 +39,7 @@
 
          +docs-location+
          +generated-src-location+
-         +generated-docs-location+)
+         +generated-docs-default-path+)
 
 (module+ test
   (require rackunit))
@@ -91,7 +92,7 @@
 ;; Return path for the output file corresponding to its literate file.
 ;;
 (define (get-output-doc-path path)
-  (expand-path (string-append +generated-docs-location+
+  (expand-path (string-append +generated-docs-default-path+
                               (replace-file-extension path "html"))))
 
 ;;
@@ -111,6 +112,13 @@
     (map path->string)))
 
 ;;
+;; Return absolute path for generated docs
+;;
+(define (generated-docs-path)
+  (or (+config+ 'generated-docs-path)
+      +generated-src-location+))
+
+;;
 ;; Other constants
 ;;
 
@@ -122,8 +130,8 @@
 (define +docs-location+
   (expand-path (string-append (this-dir) "/../")))
 
-(define +generated-docs-location+
-  (expand-path (string-append (this-dir) "/../../generated-docs/")))
+(define +generated-docs-default-path+
+  (expand-path (string-append (this-dir) "/../generated-docs/")))
 
 (define +generated-src-location+
-  (expand-path (string-append (this-dir) "/../../generated-src/")))
+  (expand-path (string-append (this-dir) "/../generated-src/")))

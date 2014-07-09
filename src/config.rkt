@@ -19,24 +19,4 @@
 
 #lang rackjure
 
-(provide main)
-
-(require racket/runtime-path)
-(require "utils-path.rkt")
-
-(define-runtime-path +current-dir+ "./")
-
-;;
-;; Return directory of current file
-;;
-(define (this-directory)
-  (path->string +current-dir+))
-
-(define (main)
-  (make-directory* +generated-docs-default-path+)
-  (copy-and-overwrite (string-append (this-directory) "css")
-                      (string-append (this-directory) "js")
-                      +generated-docs-default-path+))
-
-(module+ main
-  (main))
+(define ulqui:*config* (make-parameter))
