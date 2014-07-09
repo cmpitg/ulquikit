@@ -1,0 +1,10 @@
+= Ulquikit
+
+Ulquikit is written in literate programming itself with a small bootstrap
+code.  This document contains everything about Ulquikit, from documentation to
+full source code.
+
+The best way to learn about Ulquikit is to start from this document, section
+<<getting-started,Getting started>>
+
+
