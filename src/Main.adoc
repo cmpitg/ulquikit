@@ -103,4 +103,7 @@ are very short and simple.
   ++<chunk-name>++s are ignored.
 
 * Finally, for each code block with file name, writes its contents to the
-  corresponding file.
+  corresponding file in +ulquikit/generated-src+.
+
++bootstrap/generate-docs.rkt+ simply uses AsciiDoctor to generate docs to
++ulquikit/generated-docs+.
