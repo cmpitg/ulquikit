@@ -22,16 +22,15 @@ Ulquikit makes use of a typical project structure:
 +
 ----
 project-name/
-  generated-docs/
-  generated-src/
-  src/
+  generated-docs/  <1>
+  generated-src/   <2>
+  src/             <3>
     Main.adoc
   README.md
 ----
-
-  ** +src/+ contains (literate) source code
-  ** +generated-docs/+ contains generated documents
-  ** +generated-src/+ contains generated source code
+<1> generated documents
+<2> generated source code
+<3> your (literate) source code
 +
 Ulquikit could be used without making any change to your current project
 structure.  By default, it detects literate source code with +.adoc+ or +.txt+
@@ -78,3 +77,28 @@ ulqui generate-docs --from source --to documents
 ----
 
 === For developers
+
+== How it works
+
+=== Requirements
+
+* http://asciidoctor.org[AsciiDoctor]
+* http://racket-lang.org[Racket]
+
+=== In-depth
+
+To generate docs and source code from this file, two Racket scripts are used:
++bootstrap/generate-docs.rkt+ and +bootstrap/generate-src.rkt+.  These 2 files
+are very short and simple.  They do just one thing as their names suggest by:
+
+* Looking for and save all AsciiDoc code blocks
+  ** If a code block starts with +file::+ it's a file name
+  ** If a code block starts with +snippet::+: it's a code chunk name
+  ** Otherwise, ignore the code block.
+
+* For each code block, looking for +;; include::<chunk-name>+ and replacing
+  that line with the corresponding chunk.  Proper indentation is inserted.
+  Invalid ++<chunk-name>++s are ignored.
+
+* Finally, for each code block with file name, write its contents to the
+  corresponding file.
