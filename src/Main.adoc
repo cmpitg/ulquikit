@@ -89,16 +89,18 @@ ulqui generate-docs --from source --to documents
 
 To generate docs and source code from this file, two Racket scripts are used:
 +bootstrap/generate-docs.rkt+ and +bootstrap/generate-src.rkt+.  These 2 files
-are very short and simple.  They do just one thing as their names suggest by:
+are very short and simple.
 
-* Looking for and save all AsciiDoc code blocks
++bootstrap/generate-src.rkt+
+
+* Looks for and saves all AsciiDoc code blocks
   ** If a code block starts with +file::+ it's a file name
   ** If a code block starts with +snippet::+: it's a code chunk name
   ** Otherwise, ignore the code block.
 
-* For each code block, looking for +;; include::<chunk-name>+ and replacing
-  that line with the corresponding chunk.  Proper indentation is inserted.
-  Invalid ++<chunk-name>++s are ignored.
+* For each code block, looks for +;; include::<chunk-name>+ and replaces that
+  line with the corresponding chunk.  Proper indentation is inserted.  Invalid
+  ++<chunk-name>++s are ignored.
 
-* Finally, for each code block with file name, write its contents to the
+* Finally, for each code block with file name, writes its contents to the
   corresponding file.
