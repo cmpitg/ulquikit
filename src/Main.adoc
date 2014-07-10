@@ -7,4 +7,74 @@ full source code.
 The best way to learn about Ulquikit is to start from this document, section
 <<getting-started,Getting started>>
 
+[[getting-started]]
+== Getting started
 
+NOTE: Unless specifically noted, all commands are executed in your project
+root directory.
+
+=== For users
+
+[[project-structure]]
+* Project structure:
++
+Ulquikit makes use of a typical project structure:
++
+----
+project-name/
+  generated-docs/
+  generated-src/
+  src/
+    Main.adoc
+  README.md
+----
+
+  ** +src/+ contains (literate) source code
+  ** +generated-docs/+ contains generated documents
+  ** +generated-src/+ contains generated source code
++
+Ulquikit could be used without making any change to your current project
+structure.  By default, it detects literate source code with +.adoc+ or +.txt+
+extension in +src/+ directory to produce corresponding documents and source
+code.
++
+
+* Generating source code:
++
+Generated source code resides in +<project-root>/generated-src/+.
++
+To generate source code:
++
+[source,sh]
+----
+ulqui generate-src
+----
++
+You could also specify your own source and destination:
++
+[source,sh]
+----
+# Uses literate source code from source/ and outputs to generated-source/
+ulqui generate-src --from source --to generated-source
+----
+
+* Generating documents:
++
+Generated documents reside in +<project-root>/generated-docs/+.
++
+To generate documents:
++
+[source,sh]
+----
+ulqui generate-docs
+----
++
+You could also specify your source and destination:
++
+[source,sh]
+----
+# Uses literate source code from source/ and outputs to documents/
+ulqui generate-docs --from source --to documents
+----
+
+=== For developers
