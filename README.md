@@ -77,6 +77,8 @@ ideas about Knuth's work as well.
   Why not Markdown?  AsciiDoc is more of a semantic markup language and its
   features are more sophisticated.
 
+* APIs are **designed for human**, not machines.
+
 * Fully hackable and extensible.
 
 * Making literate programming fun and productive again.
