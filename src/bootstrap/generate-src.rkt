@@ -19,8 +19,43 @@
 ;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 
-
-#lang racket
+#lang rackjure
 
 (module+ main
-  (displayln "Hello World"))
+  (let* ([source-file (get-relative-path +this-file+ "../Main.adoc")]
+         [content     (read-file source-file)]
+         [position    1])
+    (process-string content
+      ;; Continuously look for "[source" block and extract code blocks
+      (let search-and-update-blocks
+          []
+        (when (look-for "[source")
+          (goto-next "[source")
+          (next-line)
+
+          (unless (code-block-begins? (get-line))
+            (let* ([title   (trim (get-line))]
+                   [name    (get-code-block-name title)]
+                   [type    (get-code-block-type title)]
+
+                   ;; Positions
+                   [start    (begin
+                               (next-line)
+                               (next-line)
+                               (to-beginning-of-line)
+                               (get-position))]
+                   [end      (begin
+                               (goto-next "----")
+                               (prev-line)
+                               (to-end-of-line)
+                               (get-position))]
+
+                   [content  (get-substring #:from start
+                                            #:to   end)])
+              (update-blocks #:content content
+                             #:name    name
+                             #:type    type))))
+
+        (if (look-for "[source")
+            (search-and-update-blocks)
+            (get-blocks))))))
