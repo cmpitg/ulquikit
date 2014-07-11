@@ -34,11 +34,14 @@
 #lang rackjure
 
 (require racket/path)
+(require racket/splicing)
 
 (require racket/runtime-path)
 (define-runtime-path +this-directory+ ".")
 
-;; Code blocks
+(module+ test
+  (require rackunit))
+
 (define *code-blocks* (make-parameter {}))
 
 (define get-relative-path #λ(apply build-path %&))
