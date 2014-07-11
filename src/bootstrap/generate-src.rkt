@@ -45,6 +45,25 @@
 
 (define read-file #λ(call-with-input-file % port->string))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; process-string
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; All functions in this section must be called within the effect of
+;; process-string.  Otherwise, unexpected behaviors will occur.
+
+(define _string_   (make-parameter ""))
+(define _position_ (make-parameter 0))
+
+(define-syntax-rule (process-string str body ...)
+  (parameterize ([_string_    str]
+                 [_position_  0])
+    body ...))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main program
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (module+ main
   (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
          [content     (read-file source-file)])
