@@ -60,6 +60,16 @@
                  [_position_  0])
     body ...))
 
+(define (get-string)
+  (_string_))
+
+(define (get-position)
+  (_position_))
+
+(define (look-for str)
+  (let* ([pattern (regexp str)])
+    (regexp-match? pattern _string_ _position_)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
