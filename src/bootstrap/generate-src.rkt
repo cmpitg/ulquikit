@@ -69,48 +69,69 @@
 (define (get-position)
   (_position_))
 
+(define (set-position new-position)
+  (_position_ new-position))
+
+(module+ test
+  (process-string "hello world"
+    (check-equal? (get-string)   "hello world")
+    (check-equal? (get-position) 0)
+
+    (set-position                10)
+    (check-equal? (get-position) 10)))
+
 (define (look-for str)
-  (let* ([pattern (regexp str)])
-    (regexp-match? pattern _string_ _position_)))
+  (let* ([pattern (regexp-quote str)])
+    (regexp-match? pattern (_string_) (_position_))))
+
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    (check-equal? (look-for "[source") #t)
+
+    (set-position 15)
+    (check-equal? (look-for "[source") #t)
+
+    (set-position 29)
+    (check-equal? (look-for "[source") #f)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(module+ main
-  (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
-         [content     (read-file source-file)])
-    (process-string content
-      ;; Continuously look for "[source" block and extract code blocks
-      (let search-and-update-blocks
-          []
-        (when (look-for "[source")
-          (goto-next "[source")
-          (next-line)
+;; (module+ main
+;;   (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
+;;          [content     (read-file source-file)])
+;;     (process-string content
+;;       ;; Continuously look for "[source" block and extract code blocks
+;;       (let search-and-update-blocks
+;;           []
+;;         (when (look-for "[source")
+;;           (goto-next "[source")
+;;           (next-line)
 
-          (unless (code-block-begins? (get-line))
-            (let* ([title   (trim (get-line))]
-                   [name    (get-code-block-name title)]
-                   [type    (get-code-block-type title)]
+;;           (unless (code-block-begins? (get-line))
+;;             (let* ([title   (trim (get-line))]
+;;                    [name    (get-code-block-name title)]
+;;                    [type    (get-code-block-type title)]
 
-                   ;; Positions
-                   [start    (begin
-                               (next-line)
-                               (next-line)
-                               (to-beginning-of-line)
-                               (get-position))]
-                   [end      (begin
-                               (goto-next "----")
-                               (prev-line)
-                               (to-end-of-line)
-                               (get-position))]
+;;                    ;; Positions
+;;                    [start    (begin
+;;                                (next-line)
+;;                                (next-line)
+;;                                (to-beginning-of-line)
+;;                                (get-position))]
+;;                    [end      (begin
+;;                                (goto-next "----")
+;;                                (prev-line)
+;;                                (to-end-of-line)
+;;                                (get-position))]
 
-                   [content  (get-substring #:from start
-                                            #:to   end)])
-              (update-blocks #:content content
-                             #:name    name
-                             #:type    type))))
+;;                    [content  (get-substring #:from start
+;;                                             #:to   end)])
+;;               (update-blocks #:content content
+;;                              #:name    name
+;;                              #:type    type))))
 
-        (if (look-for "[source")
-            (search-and-update-blocks)
-            (get-blocks))))))
+;;         (if (look-for "[source")
+;;             (search-and-update-blocks)
+;;             (get-blocks))))))
