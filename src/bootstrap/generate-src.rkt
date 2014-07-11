@@ -33,11 +33,17 @@
 
 #lang rackjure
 
+(require racket/path)
+
 (require racket/runtime-path)
 (define-runtime-path +this-directory+ ".")
 
 ;; Code blocks
 (define *code-blocks* (make-parameter {}))
+
+(define get-relative-path #λ(apply build-path %&))
+
+(define read-file #λ(call-with-input-file % port->string))
 
 (module+ main
   (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
