@@ -33,10 +33,15 @@
 
 #lang rackjure
 
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
+
+;; Code blocks
+(define *code-blocks* (make-parameter {}))
+
 (module+ main
-  (let* ([source-file (get-relative-path +this-file+ "../Main.adoc")]
-         [content     (read-file source-file)]
-         [position    1])
+  (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
+         [content     (read-file source-file)])
     (process-string content
       ;; Continuously look for "[source" block and extract code blocks
       (let search-and-update-blocks
