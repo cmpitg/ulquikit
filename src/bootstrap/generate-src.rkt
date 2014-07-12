@@ -173,6 +173,28 @@
     (goto-backward "-")
     (check-equal? (get-position) 0)))
 
+(define (prev-line)
+  (goto-backward "\n")
+  (goto-backward "\n")
+  (when (equal? #\newline (string-ref (get-string) (get-position)))
+    (set-position (+ 1 (get-position)))))
+
+(module+ test
+  (process-string "hello world\n[source\ncode[source\na"
+    (prev-line)
+    (check-equal? (get-position) 0)
+
+    (set-position (- (string-length (get-string)) 1))
+
+    (prev-line)
+    (check-equal? (get-position) 20)
+
+    (prev-line)
+    (check-equal? (get-position) 12)
+
+    (prev-line)
+    (check-equal? (get-position) 0)))
+
 (define (to-beginning-of-line)
   (goto-backward "\n")
   (when (equal? (~> (get-string)
