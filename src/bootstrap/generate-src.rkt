@@ -327,3 +327,9 @@
   (check-equal? (trim "     ") "")
   (check-equal? (trim "  -  ") "-"))
 
+(define (get-code-block-name title)
+  (list-ref (string-split title "::") 1))
+
+(define (get-code-block-type title)
+  (string->symbol (list-ref (string-split title "::") 0)))
+
