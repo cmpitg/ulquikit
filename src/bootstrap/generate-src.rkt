@@ -331,14 +331,15 @@
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (display-code-block block)
+  (displayln (~a "[[ " (block 'name) " -> " (block 'indentation) " ]]"))
+  (displayln "-->")
+  (displayln (block 'content))
+  (displayln "<--") 
+  (newline))
+
 (define (display-code-blocks)
-  (hash-map (*code-blocks*)
-            (λ (name block)
-              (displayln (~a "[[ " (block 'name) " -> " (block 'indentation) " ]]"))
-              (displayln "-->")
-              (displayln (block 'content))
-              (displayln "<--") 
-              (newline))))
+  (hash-map (*code-blocks*) #λ(display-code-block %2)))
 
 (define (extract-blocks)
   (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
