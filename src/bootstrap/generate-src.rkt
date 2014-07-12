@@ -331,6 +331,15 @@
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (display-code-blocks)
+  (hash-map (*code-blocks*)
+            (λ (name block)
+              (displayln (~a "[[ " (block 'name) " -> " (block 'indentation) " ]]"))
+              (displayln "-->")
+              (displayln (block 'content))
+              (displayln "<--") 
+              (newline))))
+
 (define (extract-blocks)
   (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
          [content     (read-file source-file)])
@@ -368,7 +377,8 @@
                              #:indentation indentation))))
 
         (when (look-for "[source")
-          (search-and-update-blocks))))))
+          (search-and-update-blocks)))))
+  (display-code-blocks))
 
 (module+ main
   (extract-blocks))
