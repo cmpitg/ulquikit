@@ -92,7 +92,36 @@
     (check-equal? (look-for "[source") #t)
 
     (set-position 29)
-    (check-equal? (look-for "[source") #f)))
+    (check-equal? (look-for "[source") #f))
+
+  (process-string "hello world\n[source\ncode[source"
+    (check-equal? (look-for "h") #f)))
+
+(define (goto-next str)
+  (let ([pattern (regexp-quote str)])
+    (set-position (if (look-for str)
+                      (~> (regexp-match-positions pattern
+                                                  (_string_)
+                                                  (+ 1 (_position_)))
+                        first
+                        car)
+                      (~> (_string_)
+                        string-length
+                        (- 1))))))
+
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    (goto-next "h")
+    (check-equal? (get-position) 30))
+
+  (process-string "hello world\n[source\ncode[source"
+    (goto-next "e")
+    (check-equal? (get-position) 1)
+
+    (goto-next "world")
+    (check-equal? (get-position) 6)))
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
