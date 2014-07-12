@@ -337,3 +337,6 @@
 (define (code-block-begins? str)
   (regexp-match? #rx"----" str))
 
+(define (get-blocks)
+  (*code-blocks*))
+
