@@ -35,6 +35,7 @@
 
 (require racket/path)
 (require racket/splicing)
+(require racket/pretty)
 
 (require srfi/1)
 
@@ -275,43 +276,6 @@
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (module+ main
-;;   (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
-;;          [content     (read-file source-file)])
-;;     (process-string content
-;;       ;; Continuously look for "[source" block and extract code blocks
-;;       (let search-and-update-blocks
-;;           []
-;;         (when (look-for "[source")
-;;           (goto-next "[source")
-;;           (next-line)
-
-;;           (unless (code-block-begins? (get-line))
-;;             (let* ([title   (trim (get-line))]
-;;                    [name    (get-code-block-name title)]
-;;                    [type    (get-code-block-type title)]
-
-;;                    ;; Positions
-;;                    [start    (begin
-;;                                (next-line)
-;;                                (next-line)
-;;                                (to-beginning-of-line)
-;;                                (get-position))]
-;;                    [end      (begin
-;;                                (goto-next "----")
-;;                                (prev-line)
-;;                                (to-end-of-line)
-;;                                (get-position))]
-
-;;                    [content  (get-substring #:from start
-;;                                             #:to   end)])
-;;               (update-blocks #:content content
-;;                              #:name    name
-;;                              #:type    type))))
-
-;;         (if (look-for "[source")
-;;             (search-and-update-blocks)
-;;             (get-blocks))))))
 (define (trim str)
   (let* ([str/list                  (string->list str)]
          [str/list/trim-begin       (drop-while #λ(equal? % #\space)
@@ -360,6 +324,41 @@
 (define (code-block-begins? str)
   (regexp-match? #rx"----" str))
 
-(define (get-blocks)
-  (*code-blocks*))
+(module+ main
+  (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
+         [content     (read-file source-file)])
+    (process-string content
+      ;; Continuously look for "[source" block and extract code blocks
+      (let search-and-update-blocks
+          []
+        (when (look-for "[source")
+          (goto-next "[source")
+          (next-line)
 
+          (unless (code-block-begins? (get-line))
+            (let* ([title       (trim (get-line))]
+                   [name        (get-code-block-name title)]
+                   [type        (get-code-block-type title)]
+                   [indentation (get-indentation (get-line))]
+
+                   ;; Positions
+                   [start    (begin
+                               (next-line)
+                               (next-line)
+                               (to-beginning-of-line)
+                               (get-position))]
+                   [end      (begin
+                               (goto-next "----")
+                               (prev-line)
+                               (to-end-of-line)
+                               (get-position))]
+
+                   [content  (get-substring #:from start
+                                            #:to   (+ 1 end))])
+              (update-blocks #:content content
+                             #:name    name
+                             #:type    type
+                             #:indentation indentation))))
+
+        (when (look-for "[source")
+          (search-and-update-blocks))))))
