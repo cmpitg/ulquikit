@@ -383,7 +383,7 @@
                                (get-position))]
 
                    [content  (get-substring #:from start
-                                            #:to   (+ 1 end))])
+                                            #:to   (inc end))])
               (update-blocks #:content content
                              #:name    name
                              #:type    type
