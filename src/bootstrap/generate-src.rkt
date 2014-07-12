@@ -268,6 +268,9 @@
     (next-line)
     (check-equal? (get-line) "code[source")))
 
+(define (get-substring #:from from #:to to)
+  (substring (get-string) from to))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
