@@ -136,6 +136,26 @@
     (next-line)
     (check-equal? (get-position) (- (string-length (get-string)) 1))))
 
+(define (goto-backward)
+  ())
+
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    ;; End of string
+    (set-position (- (string-length (get-string)) 1))
+
+    (goto-backward "c")
+    (check-equal? (get-position) 29)
+
+    (goto-backward "[")
+    (check-equal? (get-position) 24)
+
+    (goto-backward "[")
+    (check-equal? (get-position) 12)
+
+    (goto-backward "-")
+    (check-equal? (get-position) 0)))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
