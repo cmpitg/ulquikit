@@ -36,6 +36,8 @@
 (require racket/path)
 (require racket/splicing)
 
+(require srfi/1)
+
 (require racket/runtime-path)
 (define-runtime-path +this-directory+ ".")
 
