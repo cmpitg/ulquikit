@@ -333,3 +333,7 @@
 (define (get-code-block-type title)
   (string->symbol (list-ref (string-split title "::") 0)))
 
+
+(define (code-block-begins? str)
+  (regexp-match? #rx"----" str))
+
