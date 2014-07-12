@@ -81,8 +81,8 @@
     (check-equal? (get-position) 10)))
 
 (define (look-for str)
-  (let* ([pattern (regexp-quote str)])
-    (regexp-match? pattern (_string_) (_position_))))
+  (let ([pattern (regexp-quote str)])
+    (regexp-match? pattern (_string_) (+ 1 (_position_)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
