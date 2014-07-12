@@ -136,10 +136,24 @@
     (next-line)
     (check-equal? (get-position) (- (string-length (get-string)) 1))))
 
-(define (goto-backward)
-  ())
+(define (goto-backward str)
+  (let* ([length (string-length (get-string))]
+         [current-position (get-position)])
+    (set-position (- length (process-string (~> (get-string)
+                                              string->list
+                                              reverse
+                                              list->string)
+                              (set-position (- length current-position 1))
+                              (goto-next str)
+                              (get-position))
+                     1))))
 
 (module+ test
+  (process-string "ab"
+    (set-position 1)
+    (goto-backward "a")
+    (check-equal? (get-position) 0))
+  
   (process-string "hello world\n[source\ncode[source"
     ;; End of string
     (set-position (- (string-length (get-string)) 1))
