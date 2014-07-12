@@ -312,3 +312,13 @@
 ;;         (if (look-for "[source")
 ;;             (search-and-update-blocks)
 ;;             (get-blocks))))))
+(define (trim str)
+  (let* ([str/list                  (string->list str)]
+         [str/list/trim-begin       (drop-while #λ(equal? % #\space)
+                                                str/list)]
+         [str/list/reversed         (reverse str/list/trim-begin)]
+         [str/list/reversed/trimmed (drop-while #λ(equal? % #\space)
+                                                str/list/reversed)])
+    (~> str/list/reversed/trimmed
+      reverse
+      list->string)))
