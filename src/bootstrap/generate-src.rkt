@@ -322,3 +322,8 @@
     (~> str/list/reversed/trimmed
       reverse
       list->string)))
+
+(module+ test
+  (check-equal? (trim "     ") "")
+  (check-equal? (trim "  -  ") "-"))
+
