@@ -216,30 +216,32 @@
     (to-end-of-line)
     (check-equal? (get-position) 30)))
 
-;; (define (get-line)
-;;   (let* ([current-position (get-position)]
-;;          [line-start       (begin
-;;                              (to-beginning-of-line)
-;;                              (get-position))]
-;;          [line-end         (begin
-;;                              (to-end-of-line)
-;;                              (get-position))]
-;;          [line             (substring (get-string line-start line-end))])
-;;     (set-position current-position)
-;;     line))
+(define (get-line)
+  (let* ([current-position (get-position)]
+         [line-start       (begin
+                             (to-beginning-of-line)
+                             (get-position))]
+         [line-end         (begin
+                             (to-end-of-line)
+                             (get-position))]
+         [line             (substring (get-string)
+                                      line-start
+                                      (+ 1 line-end))])
+    (set-position current-position)
+    line))
 
-;; (module+ test
-;;   (process-string "hello world\n[source\ncode[source"
-;;     (check-equal? (get-line) "hello world")
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    (check-equal? (get-line) "hello world")
 
-;;     (next-line)
-;;     (check-equal? (get-line) "[source")
+    (next-line)
+    (check-equal? (get-line) "[source")
 
-;;     (next-line)
-;;     (check-equal? (get-line) "code[source")
+    (next-line)
+    (check-equal? (get-line) "code[source")
 
-;;     (next-line)
-;;     (check-equal? (get-line) "code[source")))
+    (next-line)
+    (check-equal? (get-line) "code[source")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
