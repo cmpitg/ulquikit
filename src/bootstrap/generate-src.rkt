@@ -180,14 +180,14 @@
   (goto-backward "\n")
   (goto-backward "\n")
   (when (equal? #\newline (string-ref (get-string) (get-position)))
-    (set-position (+ 1 (get-position)))))
+    (set-position (inc (get-position)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source\na"
     (prev-line)
     (check-equal? (get-position) 0)
 
-    (set-position (- (string-length (get-string)) 1))
+    (set-position (dec (get-string-length)))
 
     (prev-line)
     (check-equal? (get-position) 20)
@@ -203,7 +203,7 @@
   (when (equal? (~> (get-string)
                   (string-ref (get-position)))
                 #\newline)
-    (set-position (+ 1 (get-position)))))
+    (set-position (inc (get-position)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
