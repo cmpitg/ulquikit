@@ -333,6 +333,17 @@
 (define (get-code-block-type title)
   (string->symbol (list-ref (string-split title "::") 0)))
 
+(define (get-indentation str)
+  (~>> (string->list str)
+    (take-while #λ(equal? #\space %))
+    length))
+
+(module+ test
+  (check-equal? (get-indentation "a") 0)
+  (check-equal? (get-indentation " a") 1)
+  (check-equal? (get-indentation "  a") 2)
+  (check-equal? (get-indentation "   a") 3)
+  (check-equal? (get-indentation "    a") 4))
 
 (define (code-block-begins? str)
   (regexp-match? #rx"----" str))
