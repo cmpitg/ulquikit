@@ -345,6 +345,18 @@
   (check-equal? (get-indentation "   a") 3)
   (check-equal? (get-indentation "    a") 4))
 
+(define (update-blocks #:content content
+                       #:name    name
+                       #:type    type
+                       #:indentation indentation)
+  (let* ([block {'type type
+                 'name name
+                 'content content
+                 'indentation indentation}])
+    (if (eq? type 'file)
+        (*file-blocks* ((*file-blocks*) name block))
+        (*code-blocks* ((*code-blocks*) name block)))))
+
 (define (code-block-begins? str)
   (regexp-match? #rx"----" str))
 
