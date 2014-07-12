@@ -170,30 +170,52 @@
     (goto-backward "-")
     (check-equal? (get-position) 0)))
 
-(define (get-line)
-  (let* ([current-position (get-position)]
-         [line-start       (begin
-                             (to-beginning-of-line)
-                             (get-position))]
-         [line-end         (begin
-                             (to-end-of-line)
-                             (get-position))]
-         [line             (substring (get-string line-start line-end))])
-    (set-position current-position)
-    line))
+(define (to-beginning-of-line)
+  (goto-backward "\n")
+  (when (equal? (~> (get-string)
+                  (string-ref (get-position)))
+                #\newline)
+    (set-position (+ 1 (get-position)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
-    (check-equal? (get-line) "hello world")
+    (to-beginning-of-line)
+    (check-equal? (get-position) 0)
 
     (next-line)
-    (check-equal? (get-line) "[source")
+    (set-position (+ (get-position) 3))
+    (to-beginning-of-line)
+    (check-equal? (get-position) 12)
 
     (next-line)
-    (check-equal? (get-line) "code[source")
+    (set-position (+ (get-position) 3))
+    (to-beginning-of-line)
+    (check-equal? (get-position) 20)))
 
-    (next-line)
-    (check-equal? (get-line) "code[source")))
+;; (define (get-line)
+;;   (let* ([current-position (get-position)]
+;;          [line-start       (begin
+;;                              (to-beginning-of-line)
+;;                              (get-position))]
+;;          [line-end         (begin
+;;                              (to-end-of-line)
+;;                              (get-position))]
+;;          [line             (substring (get-string line-start line-end))])
+;;     (set-position current-position)
+;;     line))
+
+;; (module+ test
+;;   (process-string "hello world\n[source\ncode[source"
+;;     (check-equal? (get-line) "hello world")
+
+;;     (next-line)
+;;     (check-equal? (get-line) "[source")
+
+;;     (next-line)
+;;     (check-equal? (get-line) "code[source")
+
+;;     (next-line)
+;;     (check-equal? (get-line) "code[source")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
