@@ -89,7 +89,7 @@
 
 (define (look-for str)
   (let ([pattern (regexp-quote str)])
-    (regexp-match? pattern (_string_) (+ 1 (_position_)))))
+    (regexp-match? pattern (get-string) (inc (get-position)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
@@ -108,13 +108,13 @@
   (let ([pattern (regexp-quote str)])
     (set-position (if (look-for str)
                       (~> (regexp-match-positions pattern
-                                                  (_string_)
-                                                  (+ 1 (_position_)))
+                                                  (get-string)
+                                                  (inc (get-position)))
                         first
                         car)
                       (~> (_string_)
                         string-length
-                        (- 1))))))
+                        dec)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
@@ -130,9 +130,9 @@
 
 (define (next-line)
   (goto-next "\n")
-  (when (< (+ 1 (get-position))
+  (when (< (inc (get-position))
            (string-length (get-string)))
-    (set-position (+ 1 (get-position)))))
+    (set-position (inc (get-position)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
@@ -141,7 +141,7 @@
     (next-line)
     (check-equal? (get-position) 20)
     (next-line)
-    (check-equal? (get-position) (- (string-length (get-string)) 1))))
+    (check-equal? (get-position) (dec (string-length (get-string))))))
 
 (define (goto-backward str)
   (let* ([length (string-length (get-string))]
@@ -255,7 +255,7 @@
                              (get-position))]
          [line             (substring (get-string)
                                       line-start
-                                      (+ 1 line-end))])
+                                      (inc line-end))])
     (set-position current-position)
     line))
 
@@ -278,6 +278,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define inc (partial + 1))
+(define dec #λ(- % 1))
 
 (define (trim str)
   (let* ([str/list                  (string->list str)]
