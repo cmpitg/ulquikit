@@ -44,8 +44,8 @@
 (module+ test
   (require rackunit))
 
-(define *code-blocks* (make-parameter {'file '()
-                                       'code '()}))
+(define *code-blocks* (make-parameter {}))
+(define *file-blocks* (make-parameter {}))
 
 (define get-relative-path #λ(apply build-path %&))
 
