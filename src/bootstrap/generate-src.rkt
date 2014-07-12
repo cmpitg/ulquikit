@@ -121,7 +121,20 @@
     (goto-next "world")
     (check-equal? (get-position) 6)))
 
+(define (next-line)
+  (goto-next "\n")
+  (when (< (+ 1 (get-position))
+           (string-length (get-string)))
+    (set-position (+ 1 (get-position)))))
 
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    (next-line)
+    (check-equal? (get-position) 12)
+    (next-line)
+    (check-equal? (get-position) 20)
+    (next-line)
+    (check-equal? (get-position) (- (string-length (get-string)) 1))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
