@@ -33,6 +33,9 @@
 
 #lang rackjure
 
+;; Using hashtable with curly-dict notation
+(current-curly-dict hash)
+
 (require racket/path)
 (require racket/splicing)
 (require racket/pretty)
