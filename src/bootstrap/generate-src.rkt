@@ -354,8 +354,10 @@
   (hash-map (*file-blocks*) #λ(display-file-block %2)))
 
 (define (extract-blocks)
-  (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
-         [content     (read-file source-file)])
+  (let* ([source-file (get-relative-path +this-directory+ "../Test.adoc")]
+         [content     (string-append "\n" ; Guard, make sure blocks start at
+                                          ; least from line #2
+                                     (read-file source-file))])
     (process-string content
       ;; Continuously look for "[source" block and extract code blocks
       (let search-and-update-blocks
@@ -395,4 +397,4 @@
   (display-file-blocks))
 
 (module+ main
-  (extract-blocks))
+  (void (extract-blocks)))
