@@ -170,6 +170,19 @@
     (goto-backward "-")
     (check-equal? (get-position) 0)))
 
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    (check-equal? (get-line) "hello world")
+
+    (next-line)
+    (check-equal? (get-line) "[source")
+
+    (next-line)
+    (check-equal? (get-line) "code[source")
+
+    (next-line)
+    (check-equal? (get-line) "code[source")))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
