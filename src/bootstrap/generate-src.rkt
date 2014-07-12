@@ -76,6 +76,8 @@
 (define (get-position)
   (_position_))
 
+(define get-string-length #λ(string-length (get-string)))
+
 (define (set-position new-position)
   (_position_ new-position))
 
@@ -112,9 +114,7 @@
                                                   (inc (get-position)))
                         first
                         car)
-                      (~> (_string_)
-                        string-length
-                        dec)))))
+                      (dec (get-string-length))))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
