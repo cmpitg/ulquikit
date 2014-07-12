@@ -130,8 +130,7 @@
 
 (define (next-line)
   (goto-next "\n")
-  (when (< (inc (get-position))
-           (string-length (get-string)))
+  (when (< (inc (get-position)) (get-string-length))
     (set-position (inc (get-position)))))
 
 (module+ test
@@ -141,10 +140,10 @@
     (next-line)
     (check-equal? (get-position) 20)
     (next-line)
-    (check-equal? (get-position) (dec (string-length (get-string))))))
+    (check-equal? (get-position) (dec (get-string-length)))))
 
 (define (goto-backward str)
-  (let* ([length (string-length (get-string))]
+  (let* ([length (get-string-length)]
          [current-position (get-position)])
     (set-position (- length (process-string (~> (get-string)
                                               string->list
@@ -163,7 +162,7 @@
   
   (process-string "hello world\n[source\ncode[source"
     ;; End of string
-    (set-position (- (string-length (get-string)) 1))
+    (set-position (dec (get-string-length)))
 
     (goto-backward "c")
     (check-equal? (get-position) 29)
