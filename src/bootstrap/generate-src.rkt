@@ -37,7 +37,6 @@
 (current-curly-dict hash)
 
 (require racket/path)
-(require racket/splicing)
 (require racket/pretty)
 
 (require srfi/1)
