@@ -273,7 +273,7 @@
   (substring (get-string) from to))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Main program
+;; Utilities
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (trim str)
@@ -324,41 +324,46 @@
 (define (code-block-begins? str)
   (regexp-match? #rx"----" str))
 
-(module+ main
-  (let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
-         [content     (read-file source-file)])
-    (process-string content
-      ;; Continuously look for "[source" block and extract code blocks
-      (let search-and-update-blocks
-          []
-        (when (look-for "[source")
-          (goto-next "[source")
-          (next-line)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main program
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-          (unless (code-block-begins? (get-line))
-            (let* ([title       (trim (get-line))]
-                   [name        (get-code-block-name title)]
-                   [type        (get-code-block-type title)]
-                   [indentation (get-indentation (get-line))]
+(let* ([source-file (get-relative-path +this-directory+ "../Main.adoc")]
+       [content     (read-file source-file)])
+  (process-string content
+    ;; Continuously look for "[source" block and extract code blocks
+    (let search-and-update-blocks
+        []
+      (when (look-for "[source")
+        (goto-next "[source")
+        (next-line)
 
-                   ;; Positions
-                   [start    (begin
-                               (next-line)
-                               (next-line)
-                               (to-beginning-of-line)
-                               (get-position))]
-                   [end      (begin
-                               (goto-next "----")
-                               (prev-line)
-                               (to-end-of-line)
-                               (get-position))]
+        (unless (code-block-begins? (get-line))
+          (let* ([title       (trim (get-line))]
+                 [name        (get-code-block-name title)]
+                 [type        (get-code-block-type title)]
+                 [indentation (get-indentation (get-line))]
 
-                   [content  (get-substring #:from start
-                                            #:to   (+ 1 end))])
-              (update-blocks #:content content
-                             #:name    name
-                             #:type    type
-                             #:indentation indentation))))
+                 ;; Positions
+                 [start    (begin
+                             (next-line)
+                             (next-line)
+                             (to-beginning-of-line)
+                             (get-position))]
+                 [end      (begin
+                             (goto-next "----")
+                             (prev-line)
+                             (to-end-of-line)
+                             (get-position))]
 
-        (when (look-for "[source")
-          (search-and-update-blocks))))))
+                 [content  (get-substring #:from start
+                                          #:to   (+ 1 end))])
+            (update-blocks #:content content
+                           #:name    name
+                           #:type    type
+                           #:indentation indentation))))
+
+      (when (look-for "[source")
+        (search-and-update-blocks)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
