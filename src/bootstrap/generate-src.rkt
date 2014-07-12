@@ -192,6 +192,30 @@
     (to-beginning-of-line)
     (check-equal? (get-position) 20)))
 
+(define (to-end-of-line)
+  (goto-next "\n")
+  (when (equal? (~> (get-string)
+                  (string-ref (get-position)))
+                #\newline)
+    (set-position (- (get-position) 1))))
+
+(module+ test
+  (process-string "hello world\n[source\ncode[source"
+    (to-end-of-line)
+    (check-equal? (get-position) 10)
+
+    (next-line)
+    (to-end-of-line)
+    (check-equal? (get-position) 18)
+
+    (next-line)
+    (to-end-of-line)
+    (check-equal? (get-position) 30)
+
+    (next-line)
+    (to-end-of-line)
+    (check-equal? (get-position) 30)))
+
 ;; (define (get-line)
 ;;   (let* ([current-position (get-position)]
 ;;          [line-start       (begin
