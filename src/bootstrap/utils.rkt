@@ -17,18 +17,6 @@
 ;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 
-;;
-;; I know I know.  This file contains lots of bad practices.  However, for the
-;; purpose of keeping the code clean, simple, and human-readable, I implement
-;; it that way.  Drop me a line if you have better idea that could help.
-;;
-
-;;
-;; Rules of thumb:
-;; * Global vars are not accessed directly but through helpers
-;; * Global vars which don't have global lifespan must be parameterize'd
-;;
-
 #lang rackjure
 
 ;; Using hashtable with curly-dict notation
