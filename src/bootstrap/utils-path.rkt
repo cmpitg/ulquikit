@@ -23,6 +23,7 @@
 (current-curly-dict hash)
 
 (require racket/path)
+(require "utils-string.rkt")
 
 (provide (all-defined-out))
 
@@ -30,3 +31,6 @@
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define (get-all-adocs path)
+  (with-handlers ([exn:fail? (λ (exn) '())])
+   (find-files #λ(string-ends-with? % ".adoc") path)))
