@@ -34,3 +34,5 @@
 (define (get-all-adocs path)
   (with-handlers ([exn:fail? (λ (exn) '())])
    (find-files #λ(string-ends-with? % ".adoc") (expand-user-path path))))
+
+(define get-relative-path #λ(apply build-path %&))

@@ -54,8 +54,6 @@
 (define *code-blocks* (make-parameter {}))
 (define *file-blocks* (make-parameter {}))
 
-(define get-relative-path #λ(apply build-path %&))
-
 (define read-file #λ(call-with-input-file % port->string))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
