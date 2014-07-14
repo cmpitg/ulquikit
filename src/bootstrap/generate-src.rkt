@@ -26,6 +26,11 @@
 ;;
 
 ;;
+;; This program is supposed to be really simple, so it doesn't handle circular
+;; dependency problem of including code block.
+;;
+
+;;
 ;; Rules of thumb:
 ;; * Global vars are not accessed directly but through helpers
 ;; * Global vars which don't have global lifespan must be parameterize'd
@@ -157,9 +162,54 @@
                                #:indentation indentation))))
 
           (when (look-for "[source")
-            (search-and-update-blocks))))))
-  (display-code-blocks)
-  (display-file-blocks))
+            (search-and-update-blocks)))))))
+
+(define is-include-directive? (partial regexp-match? "include::"))
+
+(define get-included-block-name
+  #λ(~> (trim %) (string-split "include::") second))
+
+(define (include-code-block block)
+  ;; (displayln (~a "Called with: " (block 'name)))
+  ;; (displayln (~a "--> " block))
+  (let* ([content (block 'content)]
+         [name    (block 'name)]
+         [lines   (string-split content "\n")]
+         [new-content (~> (for/list ([line lines])
+                            (if (is-include-directive? line)
+                                (let* ([included-block-name (get-included-block-name line)])
+                                  (include-code-block ((*code-blocks*) included-block-name))
+                                  (((*code-blocks*) included-block-name) 'content))
+                                line))
+                        (string-join "\n"))]
+         [new-block (block 'content new-content)]
+         [new-code-block ((*code-blocks*) name new-block)])
+    (*code-blocks* new-code-block)))
+
+(define (include-code-blocks)
+  (hash-for-each (*code-blocks*) #λ(include-code-block %2)))
+
+(define (include-file-blocks)
+  (hash-for-each (*file-blocks*)
+                 (λ (name block)
+                   (let* ([content (block 'content)]
+                          [lines   (string-split content "\n")]
+                          [new-content (~> (for/list ([line lines])
+                                             (if (is-include-directive? line)
+                                                 (let* ([included-block-name (get-included-block-name line)])
+                                                   (((*code-blocks*) included-block-name) 'content))
+                                                 line))
+                                         (string-join "\n"))]
+                          [new-block (block 'content new-content)]
+                          [updated-blocks ((*file-blocks*) name new-block)])
+                     (*file-blocks* updated-blocks)))))
 
 (module+ main
-  (void (extract-blocks)))
+  (void (extract-blocks)
+        (include-code-blocks)
+        (include-file-blocks)
+
+
+        ;; (display-code-blocks)
+        (display-file-blocks)
+        ))
