@@ -183,12 +183,11 @@
 
 (define (process-code-line line #:type type)
   (let* ([included-block-name (get-included-block-name line)])
-    (when (eq? type 'code)
-      (include-block (get-block #:type type
-                                #:name included-block-name)))
-    (get-block-content #:type 'code     ; The replacement is always a code
-                                        ; block, so we must get content from
-                                        ; code blocks, not file blocks
+    ;; The replacement is always a code block, so we must get content from
+    ;; code blocks, not file blocks
+    (include-block (get-block #:type 'code
+                              #:name included-block-name))
+    (get-block-content #:type 'code
                        #:name included-block-name)))
 
 (define (include-block block)
@@ -217,9 +216,7 @@
 
 (module+ main
   (void (extract-blocks)
-        (include-blocks)
         (include-file-blocks)
-
-        ;; (display-code-blocks)
+        (display-code-blocks)
         (display-file-blocks)
         ))
