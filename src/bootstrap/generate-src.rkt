@@ -179,6 +179,7 @@
          [new-content (~> (for/list ([line lines])
                             (if (is-include-directive? line)
                                 (let* ([included-block-name (get-included-block-name line)])
+                                  (include-code-block ((*code-blocks*) included-block-name))
                                   (((*code-blocks*) included-block-name) 'content))
                                 line))
                         (string-join "\n"))])
@@ -212,6 +213,6 @@
         (include-code-blocks)
         (include-file-blocks)
 
-        ;; (display-code-blocks)
-        (display-file-blocks)
+        (display-code-blocks)
+        ;; (display-file-blocks)
         ))
