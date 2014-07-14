@@ -213,21 +213,7 @@
   (hash-for-each (*code-blocks*) #λ(include-block %2)))
 
 (define (include-file-blocks)
-  (hash-for-each (*file-blocks*)
-                 (λ (name block)
-                   (let* ([content (block 'content)]
-                          [ind     (block 'indentation)]
-                          [lines   (string-split content "\n")]
-                          [new-content (~> (for/list ([line lines])
-                                             (if (is-include-directive? line)
-                                                 (let* ([included-block-name (get-included-block-name line)])
-                                                   (((*code-blocks*) included-block-name) 'content))
-                                                 line))
-                                         (string-join "\n"))])
-                     (update-block #:content     new-content
-                                   #:name        name
-                                   #:type        'file
-                                   #:indentation ind)))))
+  (hash-for-each (*file-blocks*) #λ(include-block %2)))
 
 (module+ main
   (void (extract-blocks)
