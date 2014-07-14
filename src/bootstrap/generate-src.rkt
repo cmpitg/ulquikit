@@ -20,12 +20,6 @@
 ;;
 
 ;;
-;; I know I know.  This file contains lots of bad practices.  However, for the
-;; purpose of keeping the code clean, simple, and human-readable, I implement
-;; it that way.  Drop me a line if you have better idea that could help.
-;;
-
-;;
 ;; This program is supposed to be really simple, so it doesn't handle circular
 ;; dependency problem of including code block.
 ;;
