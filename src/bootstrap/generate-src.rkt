@@ -194,22 +194,24 @@
   (hash-for-each (*file-blocks*)
                  (λ (name block)
                    (let* ([content (block 'content)]
+                          [ind     (block 'indentation)]
                           [lines   (string-split content "\n")]
                           [new-content (~> (for/list ([line lines])
                                              (if (is-include-directive? line)
                                                  (let* ([included-block-name (get-included-block-name line)])
                                                    (((*code-blocks*) included-block-name) 'content))
                                                  line))
-                                         (string-join "\n"))]
-                          [new-block (block 'content new-content)]
-                          [updated-blocks ((*file-blocks*) name new-block)])
-                     (*file-blocks* updated-blocks)))))
+                                         (string-join "\n"))])
+                     (update-block #:content     new-content
+                                   #:name        name
+                                   #:type        'file
+                                   #:indentation ind)))))
 
 (module+ main
   (void (extract-blocks)
         (include-code-blocks)
         (include-file-blocks)
 
-        (display-code-blocks)
-        ;; (display-file-blocks)
+        ;; (display-code-blocks)
+        (display-file-blocks)
         ))
