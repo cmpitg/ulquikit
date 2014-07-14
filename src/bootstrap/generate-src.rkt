@@ -181,9 +181,7 @@
                                 (let* ([included-block-name (get-included-block-name line)])
                                   (((*code-blocks*) included-block-name) 'content))
                                 line))
-                        (string-join "\n"))]
-         [new-block (block 'content new-content)]
-         [new-code-block ((*code-blocks*) name new-block)])
+                        (string-join "\n"))])
     (update-block #:content     new-content
                   #:name        name
                   #:type        'code
