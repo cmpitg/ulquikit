@@ -166,6 +166,13 @@
 
 (define is-include-directive? (partial regexp-match? "include::"))
 
+(define (get-block #:type type
+                   #:name name)
+  (let* ([blocks (if (eq? type 'code)
+                     (*code-blocks*)
+                     (*file-blocks*))])
+    (~> blocks name)))
+
 (define (get-block-content #:type type
                            #:name name)
   (let* ([blocks (if (eq? type 'code)
@@ -187,7 +194,8 @@
          [new-content (~> (for/list ([line lines])
                             (if (is-include-directive? line)
                                 (let* ([included-block-name (get-included-block-name line)])
-                                  (include-code-block ((*code-blocks*) included-block-name))
+                                  (include-code-block (get-block #:type 'code
+                                                                 #:name included-block-name))
                                   (get-block-content #:type type
                                                      #:name included-block-name))
                                 line))
