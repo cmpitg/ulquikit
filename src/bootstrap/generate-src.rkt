@@ -208,9 +208,6 @@
                   #:type        type
                   #:indentation ind)))
 
-(define (include-blocks)
-  (hash-for-each (*code-blocks*) #λ(include-block %2)))
-
 (define (include-file-blocks)
   (hash-for-each (*file-blocks*) #λ(include-block %2)))
 
@@ -218,5 +215,4 @@
   (void (extract-blocks)
         (include-file-blocks)
         (display-code-blocks)
-        (display-file-blocks)
-        ))
+        (display-file-blocks)))
