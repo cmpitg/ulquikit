@@ -83,10 +83,10 @@
   (check-equal? (get-indentation "   a") 3)
   (check-equal? (get-indentation "    a") 4))
 
-(define (update-blocks #:content content
-                       #:name    name
-                       #:type    type
-                       #:indentation indentation)
+(define (update-block #:content content
+                      #:name    name
+                      #:type    type
+                      #:indentation indentation)
   (let* ([block {'type type
                  'name name
                  'content content
@@ -130,7 +130,7 @@
                                    (read-file source-file))])
       (process-string content
         ;; Continuously look for "[source" block and extract code blocks
-        (let search-and-update-blocks
+        (let search-and-update-block
             []
           (when (look-for "[source")
             (goto-next "[source")
@@ -156,13 +156,13 @@
 
                      [content  (get-substring #:from start
                                               #:to   (inc end))])
-                (update-blocks #:content content
+                (update-block #:content content
                                #:name    name
                                #:type    type
                                #:indentation indentation))))
 
           (when (look-for "[source")
-            (search-and-update-blocks)))))))
+            (search-and-update-block)))))))
 
 (define is-include-directive? (partial regexp-match? "include::"))
 
@@ -185,10 +185,10 @@
                         (string-join "\n"))]
          [new-block (block 'content new-content)]
          [new-code-block ((*code-blocks*) name new-block)])
-    (update-blocks #:content     new-content
-                   #:name        name
-                   #:type        'code
-                   #:indentation ind)))
+    (update-block #:content     new-content
+                  #:name        name
+                  #:type        'code
+                  #:indentation ind)))
 
 (define (include-code-blocks)
   (hash-for-each (*code-blocks*) #λ(include-code-block %2)))
