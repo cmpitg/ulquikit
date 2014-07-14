@@ -186,7 +186,9 @@
     (when (eq? type 'code)
       (include-block (get-block #:type type
                                 #:name included-block-name)))
-    (get-block-content #:type type
+    (get-block-content #:type 'code     ; The replacement is always a code
+                                        ; block, so we must get content from
+                                        ; code blocks, not file blocks
                        #:name included-block-name)))
 
 (define (include-block block)
@@ -232,6 +234,6 @@
         (include-blocks)
         (include-file-blocks)
 
-        (display-code-blocks)
-        ;; (display-file-blocks)
+        ;; (display-code-blocks)
+        (display-file-blocks)
         ))
