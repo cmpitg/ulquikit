@@ -175,6 +175,7 @@
   (let* ([content (block 'content)]
          [ind     (block 'indentation)]
          [name    (block 'name)]
+         [type    (block 'type)]
          [lines   (string-split content "\n")]
          [new-content (~> (for/list ([line lines])
                             (if (is-include-directive? line)
@@ -185,7 +186,7 @@
                         (string-join "\n"))])
     (update-block #:content     new-content
                   #:name        name
-                  #:type        'code
+                  #:type        type
                   #:indentation ind)))
 
 (define (include-code-blocks)
