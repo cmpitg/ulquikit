@@ -157,9 +157,9 @@
                      [content  (get-substring #:from start
                                               #:to   (inc end))])
                 (update-block #:content content
-                               #:name    name
-                               #:type    type
-                               #:indentation indentation))))
+                              #:name    name
+                              #:type    type
+                              #:indentation indentation))))
 
           (when (look-for "[source")
             (search-and-update-block)))))))
@@ -191,8 +191,6 @@
                        #:name included-block-name)))
 
 (define (include-block block)
-  ;; (displayln (~a "Called with: " (block 'name)))
-  ;; (displayln (~a "--> " block))
   (let* ([content (block 'content)]
          [ind     (block 'indentation)]
          [name    (block 'name)]
