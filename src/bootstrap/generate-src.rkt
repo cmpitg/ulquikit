@@ -188,12 +188,12 @@
 (define (process-code-line line #:type type)
   (let* ([included-block-name (get-included-block-name line)])
     (when (eq? type 'code)
-      (include-code-block (get-block #:type type
-                                     #:name included-block-name)))
+      (include-block (get-block #:type type
+                                #:name included-block-name)))
     (get-block-content #:type type
                        #:name included-block-name)))
 
-(define (include-code-block block)
+(define (include-block block)
   ;; (displayln (~a "Called with: " (block 'name)))
   ;; (displayln (~a "--> " block))
   (let* ([content (block 'content)]
@@ -211,8 +211,8 @@
                   #:type        type
                   #:indentation ind)))
 
-(define (include-code-blocks)
-  (hash-for-each (*code-blocks*) #λ(include-code-block %2)))
+(define (include-blocks)
+  (hash-for-each (*code-blocks*) #λ(include-block %2)))
 
 (define (include-file-blocks)
   (hash-for-each (*file-blocks*)
@@ -233,7 +233,7 @@
 
 (module+ main
   (void (extract-blocks)
-        (include-code-blocks)
+        (include-blocks)
         (include-file-blocks)
 
         (display-code-blocks)
