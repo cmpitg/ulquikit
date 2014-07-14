@@ -185,6 +185,14 @@
 (define get-included-block-name
   #λ(~> (trim %) (string-split "include::") second))
 
+(define (process-code-line line #:type type)
+  (let* ([included-block-name (get-included-block-name line)])
+    (when (eq? type 'code)
+      (include-code-block (get-block #:type type
+                                     #:name included-block-name)))
+    (get-block-content #:type type
+                       #:name included-block-name)))
+
 (define (include-code-block block)
   ;; (displayln (~a "Called with: " (block 'name)))
   ;; (displayln (~a "--> " block))
@@ -195,11 +203,7 @@
          [lines   (string-split content "\n")]
          [new-content (~> (for/list ([line lines])
                             (if (is-include-directive? line)
-                                (let* ([included-block-name (get-included-block-name line)])
-                                  (include-code-block (get-block #:type 'code
-                                                                 #:name included-block-name))
-                                  (get-block-content #:type type
-                                                     #:name included-block-name))
+                                (process-code-line line #:type type)
                                 line))
                         (string-join "\n"))])
     (update-block #:content     new-content
