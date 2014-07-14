@@ -60,6 +60,8 @@
 (define *file-blocks* (make-parameter {}))
 
 (define read-file #λ(call-with-input-file % port->string))
+(define write-file-overwrite
+  #λ(display-to-file %2 %1 #:exists 'truncate/replace))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -209,8 +211,10 @@
 (define (include-file-blocks)
   (hash-for-each (*file-blocks*) #λ(include-block %2)))
 
+(define (write-blocks-to-files)
+  (hash-for-each (*file-blocks*) #λ(write-file-overwrite %1 ('content %2))))
+
 (module+ main
   (void (extract-blocks)
         (include-file-blocks)
-        (display-code-blocks)
-        (display-file-blocks)))
+        (write-blocks-to-files)))
