@@ -173,6 +173,7 @@
   ;; (displayln (~a "Called with: " (block 'name)))
   ;; (displayln (~a "--> " block))
   (let* ([content (block 'content)]
+         [ind     (block 'indentation)]
          [name    (block 'name)]
          [lines   (string-split content "\n")]
          [new-content (~> (for/list ([line lines])
@@ -184,7 +185,10 @@
                         (string-join "\n"))]
          [new-block (block 'content new-content)]
          [new-code-block ((*code-blocks*) name new-block)])
-    (*code-blocks* new-code-block)))
+    (update-blocks #:content     new-content
+                   #:name        name
+                   #:type        'code
+                   #:indentation ind)))
 
 (define (include-code-blocks)
   (hash-for-each (*code-blocks*) #λ(include-code-block %2)))
@@ -209,7 +213,6 @@
         (include-code-blocks)
         (include-file-blocks)
 
-
-        ;; (display-code-blocks)
-        (display-file-blocks)
+        (display-code-blocks)
+        ;; (display-file-blocks)
         ))
