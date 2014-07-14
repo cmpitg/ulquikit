@@ -175,12 +175,8 @@
 
 (define (get-block-content #:type type
                            #:name name)
-  (let* ([blocks (if (eq? type 'code)
-                     (*code-blocks*)
-                     (*file-blocks*))])
-    (~> (get-block #:type type
-                   #:name name)
-      'content)))
+  ((get-block #:type type
+              #:name name) 'content))
 
 (define get-included-block-name
   #λ(~> (trim %) (string-split "include::") second))
