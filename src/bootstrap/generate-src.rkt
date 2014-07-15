@@ -84,9 +84,9 @@
                       #:type    type
                       #:indentation indentation)
   (let* ([block {'type type
-                 'name name
-                 'content content
-                 'indentation indentation}])
+                       'name name
+                       'content content
+                       'indentation indentation}])
     (if (eq? type 'file)
         (*file-blocks* ((*file-blocks*) name block))
         (*code-blocks* ((*code-blocks*) name block)))))
@@ -206,9 +206,13 @@
   (hash-for-each (*file-blocks*) #λ(include-block %2)))
 
 (define (write-blocks-to-files)
-  (hash-for-each (*file-blocks*) #λ(write-file-overwrite %1 ('content %2))))
+  (hash-for-each (*file-blocks*)
+                 (λ (name block)
+                   (displayln (~a "-> Writing to " name))
+                   (write-file-overwrite name (block 'content)))))
 
 (module+ main
-  (void (extract-blocks)
+  (void (displayln "=== Generate source ===")
+        (extract-blocks)
         (include-file-blocks)
         (write-blocks-to-files)))
