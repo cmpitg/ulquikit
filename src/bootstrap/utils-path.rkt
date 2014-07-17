@@ -51,3 +51,6 @@
 (module+ test
   (check-equal? (get-directory-path "/tmp/tmp.rkt") "/tmp/")
   (check-equal? (get-directory-path "/tmp/tmp/")    "/tmp/tmp/"))
+
+(define create-directory-tree
+  #λ(system (format (~a "mkdir -p " %))))
