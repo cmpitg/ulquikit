@@ -208,11 +208,13 @@
 (define (write-blocks-to-files)
   (hash-for-each (*file-blocks*)
                  (λ (name block)
-                   (let* ([output-path (get-relative-path
-                                        +this-directory+
-                                        (format (~a "../../generated-src/"
-                                                    name)))])
+                   (let* ([output-path (path->string
+                                        (get-relative-path
+                                         +this-directory+
+                                         (format (~a "../../generated-src/"
+                                                     name))))])
                      (displayln (~a "-> Writing to " output-path))
+                     (create-directory-tree (get-directory-path output-path))
                      (write-file-overwrite output-path (block 'content))))))
 
 (module+ main
