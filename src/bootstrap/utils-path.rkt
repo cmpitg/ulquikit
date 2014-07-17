@@ -27,6 +27,9 @@
 
 (provide (all-defined-out))
 
+(module+ test
+  (require rackunit))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -36,3 +39,15 @@
    (find-files #λ(string-ends-with? % ".adoc") (expand-user-path path))))
 
 (define get-relative-path #λ(simple-form-path (apply build-path %&)))
+
+(define get-directory-path
+  #λ(if-let [path (file-name-from-path %)]
+      (~>> path
+        path->string
+        (string-split %)
+        first)
+      %))
+
+(module+ test
+  (check-equal? (get-directory-path "/tmp/tmp.rkt") "/tmp/")
+  (check-equal? (get-directory-path "/tmp/tmp/")    "/tmp/tmp/"))
