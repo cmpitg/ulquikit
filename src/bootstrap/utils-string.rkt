@@ -242,7 +242,7 @@
   (when (equal? (~> (get-string)
                   (string-ref (get-position)))
                 #\newline)
-    (set-position (- (get-position) 1))))
+    (set-position (dec (get-position)))))
 
 (module+ test
   (process-string "hello world\n[source\ncode[source"
