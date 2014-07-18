@@ -159,9 +159,9 @@ E.g.
 ----
 
 +
-By default, +generate-src+ extracts source code from +<project-root>/src+ and
-output to +<project-root>/generated-src+, so ++generate-src++'s +run+ function
-takes 2 keyword arguments with default values like so:
+By default, +ulqui generate-src+ extracts source code from
++<project-root>/src+ and output to +<project-root>/generated-src+, so the
++run+ function takes 2 keyword arguments with default values like so:
 
 +
 * +#:from+, default to +"src"+, and
