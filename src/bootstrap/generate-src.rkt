@@ -171,18 +171,24 @@
 
 (define (get-block-content #:type type
                            #:name name)
-  ((get-block #:type type
-              #:name name) 'content))
+  (let ([block (get-block #:type type
+                          #:name name)])
+    (if (dict? block)
+        (block 'content)
+        ";; TO-BE-IMPLEMENTED")))
 
 (define get-included-block-name
   #λ(~> (trim %) (string-split "include::") second))
 
 (define (process-code-line line #:type type)
-  (let* ([included-block-name (get-included-block-name line)])
+  (let* ([included-block-name (get-included-block-name line)]
+         [block (get-block #:type 'code
+                           #:name included-block-name)])
     ;; The replacement is always a code block, so we must get content from
     ;; code blocks, not file blocks
-    (include-block (get-block #:type 'code
-                              #:name included-block-name))
+    (when (dict? block)
+      (include-block block))
+
     (get-block-content #:type 'code
                        #:name included-block-name)))
 
