@@ -132,30 +132,32 @@
             (goto-next "[source")
             (prev-line)
 
-            (unless (is-code-block-title? (get-line))
-              (let* ([title       (trim (get-line))]
-                     [name        (get-code-block-name title)]
-                     [type        (get-code-block-type title)]
-                     [indentation (get-indentation (get-line))]
+            (if (is-code-block-title? (get-line))
+                (let* ([title       (string-rest (trim (get-line)))]
+                       [name        (get-code-block-name title)]
+                       [type        (get-code-block-type title)]
+                       [indentation (get-indentation (get-line))]
 
-                     ;; Positions
-                     [start    (begin
-                                 (next-line)
-                                 (next-line)
-                                 (to-beginning-of-line)
-                                 (get-position))]
-                     [end      (begin
-                                 (goto-next "----")
-                                 (prev-line)
-                                 (to-end-of-line)
-                                 (get-position))]
+                       ;; Positions
+                       [start    (begin
+                                   (next-line)
+                                   (next-line)
+                                   (next-line)
+                                   (to-beginning-of-line)
+                                   (get-position))]
+                       [end      (begin
+                                   (goto-next "----")
+                                   (prev-line)
+                                   (to-end-of-line)
+                                   (get-position))]
 
-                     [content  (get-substring #:from start
-                                              #:to   (inc end))])
-                (update-block #:content content
-                              #:name    name
-                              #:type    type
-                              #:indentation indentation))))
+                       [content  (get-substring #:from start
+                                                #:to   (inc end))])
+                  (update-block #:content content
+                                #:name    name
+                                #:type    type
+                                #:indentation indentation))
+                (begin (next-line) (next-line))))
 
           (when (look-for "[source")
             (search-and-update-block)))))))
