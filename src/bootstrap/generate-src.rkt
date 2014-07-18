@@ -146,7 +146,7 @@
                        [end      (begin
                                    (goto-next "----")
                                    (to-beginning-of-line)
-                                   (prev-char)
+                                   (backward-char)
                                    (get-position))]
 
                        [content  (get-substring #:from start
