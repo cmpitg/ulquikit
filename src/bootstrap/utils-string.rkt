@@ -59,6 +59,19 @@
 
 (define string-ends-with? #λ(regexp-match? (regexp-quote %2) %1))
 
+(define string-rest #λ(~> (string->list %)
+                        ((λ (lst)
+                           (if (empty? lst)
+                               lst
+                               (rest lst))))
+                        list->string))
+
+(module+ test
+  (check-equal? (string-rest "") "")
+  (check-equal? (string-rest "a") "")
+  (check-equal? (string-rest "ab") "b")
+  (check-equal? (string-rest "abc") "bc"))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; process-string
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
