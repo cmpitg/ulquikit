@@ -91,8 +91,8 @@
         (*file-blocks* ((*file-blocks*) name block))
         (*code-blocks* ((*code-blocks*) name block)))))
 
-(define (code-block-begins? str)
-  (regexp-match? #rx"----" str))
+(define (is-code-block-title? str)
+  (regexp-match? #rx"\\.(file|code)::" str))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
@@ -130,9 +130,9 @@
             []
           (when (look-for "[source")
             (goto-next "[source")
-            (next-line)
+            (prev-line)
 
-            (unless (code-block-begins? (get-line))
+            (unless (is-code-block-title? (get-line))
               (let* ([title       (trim (get-line))]
                      [name        (get-code-block-name title)]
                      [type        (get-code-block-type title)]
