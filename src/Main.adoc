@@ -108,6 +108,10 @@ are very short and simple.
 
 === In-depth
 
+==== Utility functions
+
+
+
 ==== Commands
 
 * Each command is a Racket module defined in +commands/+ directory, with the
@@ -136,9 +140,20 @@ E.g.
   as documentation for that command when running from the command line with
   +ulqui command-name --help+ or +ulqui help command-name+.
 
+===== Core functions to implement commands
+
+.file::command-core.rkt
+[source,racket]
+----
+#lang rackjure
+
+(define (display-command title)
+  (displayln (str "----> " title)))
+
+----
+
 ===== Built-in commands
 
-[[command:generate-src]]
 . +generate-src+
 
 +
