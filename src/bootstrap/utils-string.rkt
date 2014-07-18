@@ -261,6 +261,25 @@
     (to-end-of-line)
     (check-equal? (get-position) 30)))
 
+(define (backward-char)
+  (unless (zero? (get-position))
+    (set-position (dec (get-position)))))
+
+(module+ test
+  (process-string "01234567"
+    (to-end-of-line)
+    (check-equal? (get-position) 7)
+
+    (backward-char)
+    (check-equal? (get-position) 6)
+
+    (backward-char)
+    (check-equal? (get-position) 5)
+
+    (to-beginning-of-line)
+    (backward-char)
+    (check-equal? (get-position) 0)))
+
 (define (get-line)
   (let* ([current-position (get-position)]
          [line-start       (begin
