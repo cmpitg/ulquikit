@@ -132,18 +132,48 @@ E.g.
 * All commands must import +command-core.rkt+ (relative to command directory:
   +../command-core.rkt+).
 
+* All commands must export a +help+ function returning a string, which serves
+  as documentation for that command when running from the command line with
+  +ulqui command-name --help+ or +ulqui help command-name+.
+
 ===== Built-in commands
 
 [[command:generate-src]]
 . +generate-src+
+
++
+.file::commands/generate-src.rkt
+[source,racket]
+----
+#lang rackjure
+
+(require "../command-core.rkt")
+
+(export run
+        help)
+
+;; include::commands/generate-src/run
+
+;; include::commands/generate-src/help
+
+----
+
++
+By default, +generate-src+ extracts source code from +<project-root>/src+ and
+output to +<project-root>/generated-src+, so ++generate-src++'s +run+ function
+takes 2 keyword arguments with default values like so:
+
++
+* +#:from+, default to +"src"+, and
+* +#:to+, default to +"generated-src"+
 
 ==== License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
 header is necessary.
 
+.code::license-header
 [source,racket]
-code::license-header
 ----
 ;;
 ;; This file is part of Ulquikit project.
