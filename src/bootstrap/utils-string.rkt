@@ -107,7 +107,9 @@
     (check-equal? (get-position) 10)))
 
 (define (look-for str)
-  (let ([pattern (regexp-quote str)])
+  (let ([pattern (if (regexp? str)
+                     str
+                     (regexp-quote str))])
     (regexp-match? pattern (get-string) (inc (get-position)))))
 
 (module+ test
@@ -124,7 +126,9 @@
     (check-equal? (look-for "h") #f)))
 
 (define (goto-next str)
-  (let ([pattern (regexp-quote str)])
+  (let ([pattern (if (regexp? str)
+                     str
+                     (regexp-quote str))])
     (set-position (if (look-for str)
                       (~> (regexp-match-positions pattern
                                                   (get-string)
