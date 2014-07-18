@@ -125,8 +125,7 @@
                                    (read-file source-file))])
       (process-string content
         ;; Continuously look for "[source" block and extract code blocks
-        (let search-and-update-block
-            []
+        (let search-and-update-block ()
           (when (look-for "[source")
             (goto-next "[source")
             (prev-line)
