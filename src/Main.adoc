@@ -85,7 +85,7 @@ ulqui generate-docs --from source --to documents
 * http://asciidoctor.org[AsciiDoctor]
 * http://racket-lang.org[Racket]
 
-=== In-depth
+=== Bootstraping
 
 To generate docs and source code from this file, two Racket scripts are used:
 +bootstrap/generate-docs.rkt+ and +bootstrap/generate-src.rkt+.  These 2 files
@@ -94,16 +94,37 @@ are very short and simple.
 +bootstrap/generate-src.rkt+
 
 * Looks for and saves all AsciiDoc code blocks
-  ** If a code block starts with +file::+ it's a file name
-  ** If a code block starts with +snippet::+: it's a code chunk name
-  ** Otherwise, ignore the code block.
+  ** If a block starts with +file::+ it's a file name
+  ** If a block starts with +code::+: it's a code block name
+  ** Otherwise, ignore the block.
 
-* For each code block, looks for +;; include::<chunk-name>+ and replaces that
-  line with the corresponding chunk.  Proper indentation is inserted.  Invalid
-  ++<chunk-name>++s are ignored.
-
-* Finally, for each code block with file name, writes its contents to the
+* For each file block, looks for +;; include::<name>+ and recursively replaces
+  that line with the corresponding block.  Proper indentation is inserted.
+  Invalid ++<name>++s are considered error.  Then writes its contents to the
   corresponding file in +ulquikit/generated-src+.
 
 +bootstrap/generate-docs.rkt+ simply uses AsciiDoctor to generate docs to
 +ulquikit/generated-docs+.
+
+=== In-depth
+
+==== Commands
+
+* Each command is a Racket module defined in +commands/+ directory, with the
+  base file name as command name.
++
+E.g. +commands/new-project.rkt+ is for +ulqui new-project+ command.
+
+* Each module implementing a command must export a function with the name
+  +run+.  Arguments passing through +run+ are actual command line arguments
+  passing to the command.
++
+Named arguments are translated into Racket's keyword arguments.
++
+E.g.
++
+  ** Executing +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
+  ** Executing +ulqui generate-src some-file+ calls
+     ++commands/generate-src++'s +(run "some-file")+.
+  ** Executing +ulqui generate-src --from file1 --to file2+ calls
+     ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
