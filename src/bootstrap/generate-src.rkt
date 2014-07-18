@@ -126,8 +126,8 @@
       (process-string content
         ;; Continuously look for "[source" block and extract code blocks
         (let search-and-update-block ()
-          (when (look-for "[source")
-            (goto-next "[source")
+          (when (look-for #rx"\\[source")
+            (goto-next #rx"\\[source")
             (prev-line)
 
             (if (is-code-block-title? (get-line))
@@ -144,7 +144,7 @@
                                    (to-beginning-of-line)
                                    (get-position))]
                        [end      (begin
-                                   (goto-next "----")
+                                   (goto-next #rx"\n----\n")
                                    (to-beginning-of-line)
                                    (backward-char)
                                    (get-position))]
@@ -157,7 +157,7 @@
                                 #:indentation indentation))
                 (begin (next-line) (next-line))))
 
-          (when (look-for "[source")
+          (when (look-for #rx"\\[source")
             (search-and-update-block)))))))
 
 (define is-include-directive? (partial regexp-match? "include::"))
@@ -226,5 +226,6 @@
 (module+ main
   (void (displayln "=== Generate source ===")
         (extract-blocks)
+        ;; (display-file-blocks)
         (include-file-blocks)
         (write-blocks-to-files)))
