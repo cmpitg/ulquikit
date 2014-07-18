@@ -1,4 +1,12 @@
 = Ulquikit
+:Author: Nguyễn Hà Dương (cmpitg)
+:Email: <cmpitg@gmail.com>
+:toc:
+:numbered:
+:icons: font
+:source-highlighter: pygments
+:pygments-css: class
+:website: http://reference-error.org/ulquikit
 
 Ulquikit is written in literate programming itself with a small bootstrap
 code.  This document contains everything about Ulquikit, from documentation to
