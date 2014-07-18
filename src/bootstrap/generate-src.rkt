@@ -61,11 +61,10 @@
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (get-code-block-name title)
-  (list-ref (string-split title "::") 1))
-
-(define (get-code-block-type title)
-  (string->symbol (list-ref (string-split title "::") 0)))
+(define get-code-block-name
+  #λ(list-ref (string-split % "::") 1))
+(define get-code-block-type
+  #λ(string->symbol (list-ref (string-split % "::") 0)))
 
 (define (get-indentation str)
   (~>> (string->list str)
