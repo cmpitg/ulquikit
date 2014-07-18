@@ -167,6 +167,19 @@ By default, +ulqui generate-src+ extracts source code from
 * +#:from+, default to +"src"+, and
 * +#:to+, default to +"generated-src"+
 
++
+.code::commands/generate-src/run
+[source,racket]
+----
+(define (run #:from [from "src"]
+             #:to   [to   "generated-src"])
+  (display-command "generate-src")
+  (~> (extract-blocks)
+    (include-file-blocks)
+    (write-blocks-to-files)))
+
+----
+
 ==== License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
