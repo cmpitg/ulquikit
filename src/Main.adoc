@@ -170,6 +170,8 @@ E.g.
 ----
 #lang rackjure
 
+;; include::license-header
+
 (require "../command-core.rkt")
 
 (export run
@@ -197,11 +199,38 @@ By default, +ulqui generate-src+ extracts source code from
 (define (run #:from [from "src"]
              #:to   [to   "generated-src"])
   (display-command "generate-src")
-  (~> (extract-blocks)
+  (~> (extract-blocks from)
     (include-file-blocks)
-    (write-blocks-to-files)))
+    (write-blocks-to-files to)))
 
 ----
+
++
++extract-blocks+ will
+
++
+* find all AsciiDoc files in a directory (argument: +dir+),
+* extract all AsciiDoc code block with titles and return them as hashes with
+  +create-block+
+
++
++create-block+
+
++
+Each is code block is stored with the following format:
+
++
+[source,racket]
+----
+{'type code-block-type          <1>
+ 'name code-block-name          <2>
+ 'content code-block-content}   <3>
+----
+<1> is either +'file+ or +'code+
+<2> is the name of the code block; e.g. block title +file::something+ has
++something+ as its name
+<3> is the content of the code block, i.e. which is surrounded by +----+ in
+AsciiDoc format
 
 ==== License header
 
