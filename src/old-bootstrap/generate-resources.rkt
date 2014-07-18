@@ -33,7 +33,10 @@
   (path->string +current-dir+))
 
 (define (main)
-  (make-directory* +generated-docs-location+)
+  (make-directory* +generated-docs-default-path+)
   (copy-and-overwrite (string-append (this-directory) "css")
                       (string-append (this-directory) "js")
-                      +generated-docs-location+))
+                      +generated-docs-default-path+))
+
+(module+ main
+  (main))

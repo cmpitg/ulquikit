@@ -1,3 +1,18 @@
+## Emacs Lisp ##
+
+* [x] Write file with just this:
+
+  ```racket
+  ;; %%file: /tmp/base.rkt
+
+  (displayln "Hello World")
+  ```
+
+  Supported patterns:
+  - `;; /path/to/file`
+  - `;; %%path /path/to/file`
+  - `;; %write-to-file /path/to/file`
+
 ## Racket ##
 
 * [ ] Define convention for simple project structure.
@@ -30,6 +45,13 @@
 * [ ] Option to exclude `--> ... <---` and `___ ... ___` not as snippet names.
 
 * [ ] Customizing snippet regexp.
+
+* [ ] Customizing locations to generate code and docs (rationale: supporting
+  projects that use their root directories for other purposes).
+
+* [ ] Supporting other markup languages like reStructuredText and ASCIIDoc.
+
+* [ ] Think of a good way to exclude snippet. **[critical]**
 
 * [x] Write Ruby script to render Markdown.
 

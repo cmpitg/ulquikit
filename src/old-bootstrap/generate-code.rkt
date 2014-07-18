@@ -311,3 +311,6 @@
 
 (define (main)
   (void (generate-code)))
+
+(module+ main
+  (main))

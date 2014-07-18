@@ -1,0 +1,261 @@
+= Ulquikit
+:Author: Nguyễn Hà Dương (cmpitg)
+:Email: <cmpitg@gmail.com>
+:toc:
+:numbered:
+:icons: font
+:source-highlighter: pygments
+:pygments-css: class
+:website: http://reference-error.org/ulquikit
+
+Ulquikit is written in literate programming itself with a small bootstrap
+code.  This document contains everything about Ulquikit, from documentation to
+full source code.
+
+The best way to learn about Ulquikit is to start from this document, section
+<<getting-started,Getting started>>
+
+[[getting-started]]
+== Getting started
+
+NOTE: Unless specifically noted, all commands are executed in your project
+root directory.
+
+=== For users
+
+[[project-structure]]
+* Project structure:
++
+Ulquikit makes use of a typical project structure:
++
+----
+project-name/
+  generated-docs/  <1>
+  generated-src/   <2>
+  src/             <3>
+    Main.adoc
+  README.md
+----
+<1> generated documents
+<2> generated source code
+<3> your (literate) source code
++
+Ulquikit could be used without making any change to your current project
+structure.  By default, it detects literate source code with +.adoc+ or +.txt+
+extension in +src/+ directory to produce corresponding documents and source
+code.
++
+
+* Generating source code:
++
+Generated source code resides in +<project-root>/generated-src/+.
++
+To generate source code:
++
+[source,sh]
+----
+ulqui generate-src
+----
++
+You could also specify your own source and destination:
++
+[source,sh]
+----
+# Uses literate source code from source/ and outputs to generated-source/
+ulqui generate-src --from source --to generated-source
+----
+
+* Generating documents:
++
+Generated documents reside in +<project-root>/generated-docs/+.
++
+To generate documents:
++
+[source,sh]
+----
+ulqui generate-docs
+----
++
+You could also specify your source and destination:
++
+[source,sh]
+----
+# Uses literate source code from source/ and outputs to documents/
+ulqui generate-docs --from source --to documents
+----
+
+=== For developers
+
+== How it works
+
+=== Requirements
+
+* http://asciidoctor.org[AsciiDoctor]
+* http://racket-lang.org[Racket]
+
+=== Bootstraping
+
+To generate docs and source code from this file, two Racket scripts are used:
++bootstrap/generate-docs.rkt+ and +bootstrap/generate-src.rkt+.  These 2 files
+are very short and simple.
+
++bootstrap/generate-src.rkt+
+
+* Looks for and saves all AsciiDoc code blocks
+  ** If a block starts with +file::+ it's a file name
+  ** If a block starts with +code::+: it's a code block name
+  ** Otherwise, ignore the block.
+
+* For each file block, looks for +;; include::<name>+ and recursively replaces
+  that line with the corresponding block.  Proper indentation is inserted.
+  Invalid ++<name>++s are considered error.  Then writes its contents to the
+  corresponding file in +ulquikit/generated-src+.
+
++bootstrap/generate-docs.rkt+ simply uses AsciiDoctor to generate docs to
++ulquikit/generated-docs+.
+
+=== In-depth
+
+==== Utility functions
+
+
+
+==== Commands
+
+* Each command is a Racket module defined in +commands/+ directory, with the
+  base file name as command name.
++
+E.g. +commands/new-project.rkt+ is for +ulqui new-project+ command.
+
+* Each module implementing a command must export a function with the name
+  +run+.  Arguments passing through +run+ are actual command line arguments
+  passing to the command.
++
+Named arguments are translated into Racket's keyword arguments.
++
+E.g.
++
+  ** Executing +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
+  ** Executing +ulqui generate-src some-file+ calls
+     ++commands/generate-src++'s +(run "some-file")+.
+  ** Executing +ulqui generate-src --from file1 --to file2+ calls
+     ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
+
+* All commands must import +command-core.rkt+ (relative to command directory:
+  +../command-core.rkt+).
+
+* All commands must export a +help+ function returning a string, which serves
+  as documentation for that command when running from the command line with
+  +ulqui command-name --help+ or +ulqui help command-name+.
+
+===== Core functions to implement commands
+
+.file::command-core.rkt
+[source,racket]
+----
+#lang rackjure
+
+(define (display-command title)
+  (displayln (str "----> " title)))
+
+----
+
+===== Built-in commands
+
+. +generate-src+
+
++
+.file::commands/generate-src.rkt
+[source,racket]
+----
+#lang rackjure
+
+;; include::license-header
+
+(require "../command-core.rkt")
+
+(export run
+        help)
+
+;; include::commands/generate-src/run
+
+;; include::commands/generate-src/help
+
+----
+
++
+By default, +ulqui generate-src+ extracts source code from
++<project-root>/src+ and output to +<project-root>/generated-src+, so the
++run+ function takes 2 keyword arguments with default values like so:
+
++
+* +#:from+, default to +"src"+, and
+* +#:to+, default to +"generated-src"+
+
++
+.code::commands/generate-src/run
+[source,racket]
+----
+(define (run #:from [from "src"]
+             #:to   [to   "generated-src"])
+  (display-command "generate-src")
+  (~> (extract-blocks from)
+    (include-file-blocks)
+    (write-blocks-to-files to)))
+
+----
+
++
++extract-blocks+ will
+
++
+* find all AsciiDoc files in a directory (argument: +dir+),
+* extract all AsciiDoc code block with titles and return them as hashes with
+  +create-block+
+
++
++create-block+
+
++
+Each is code block is stored with the following format:
+
++
+[source,racket]
+----
+{'type code-block-type          <1>
+ 'name code-block-name          <2>
+ 'content code-block-content}   <3>
+----
+<1> is either +'file+ or +'code+
+<2> is the name of the code block; e.g. block title +file::something+ has
++something+ as its name
+<3> is the content of the code block, i.e. which is surrounded by +----+ in
+AsciiDoc format
+
+==== License header
+
+Of course, since Ulquikit is distributed under the terms of GPLv3, the license
+header is necessary.
+
+.code::license-header
+[source,racket]
+----
+;;
+;; This file is part of Ulquikit project.
+;;
+;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;;
+;; Ulquikit is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation, either version 3 of the License, or (at your option)
+;; any later version.
+;;
+;; Ulquikit is distributed in the hope that it will be useful, but WITHOUT ANY
+;; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+;;
+;; You should have received a copy of the GNU General Public License along
+;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
+;;
+----

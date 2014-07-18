@@ -71,9 +71,13 @@ ideas about Knuth's work as well.
 
 ## Why Ulquikit? ##
 
-* Using [Markdown](http://en.wikipedia.org/wiki/Markdown) as its markup
-  language, rather than [LaTeX](http://en.wikipedia.org/wiki/LaTeX) the
-  complex beast.
+* Using [AsciiDoc](http://asciidoc.org/) as its markup language, rather than
+  [LaTeX](http://en.wikipedia.org/wiki/LaTeX) the complex beast:
+
+  Why not Markdown?  AsciiDoc is more of a semantic markup language and its
+  features are more sophisticated.
+
+* APIs are **designed for human**, not machines.
 
 * Fully hackable and extensible.
 
