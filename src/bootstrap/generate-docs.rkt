@@ -19,8 +19,19 @@
 ;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 
+#lang rackjure
 
-#lang racket
+(require "utils-path.rkt")
+
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
 
 (module+ main
-  (displayln "Hello World"))
+  (let* ([project-dir        (get-relative-path +this-directory+ "../../")]
+         [src-dir            (get-relative-path project-dir "./src")]
+         [generated-docs-dir (get-relative-path project-dir "./generated-docs/")])
+    (parameterize ([current-directory project-dir])
+      (for ([input-file (get-all-adocs src-dir)])
+        (render-asciidoc input-file
+                         (get-relative-path generated-docs-dir
+                                            (get-output-file input-file)))))))
