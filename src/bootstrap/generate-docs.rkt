@@ -47,7 +47,7 @@
                " -d book "
                " -o " output-file)))
 
-(module+ main
+(define (generate-docs)
   (let* ([project-dir        (get-relative-path +this-directory+ "../../")]
          [src-dir            (get-relative-path project-dir "./src")]
          [generated-docs-dir (get-relative-path project-dir "./generated-docs/")])
@@ -56,3 +56,8 @@
         (render-asciidoc input-file
                          (get-relative-path generated-docs-dir
                                             (get-output-file input-file)))))))
+
+(module+ main
+  (void (displayln "=== Gererating docs ===")
+        (generate-docs)
+        (newline)))

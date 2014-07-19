@@ -224,8 +224,8 @@
                      (write-file-overwrite output-path (block 'content))))))
 
 (module+ main
-  (void (displayln "=== Generate source ===")
+  (void (displayln "=== Generating source ===")
         (extract-blocks)
-        ;; (display-file-blocks)
         (include-file-blocks)
-        (write-blocks-to-files)))
+        (write-blocks-to-files)
+        (newline)))
