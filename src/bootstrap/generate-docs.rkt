@@ -40,12 +40,19 @@
   (check-equal? (get-output-file "/tmp/tmp.adoc") "tmp.html")
   (check-equal? (get-output-file "/tmp/d.adoc")   "d.html"))
 
-;; (module+ main
-;;   (let* ([project-dir        (get-relative-path +this-directory+ "../../")]
-;;          [src-dir            (get-relative-path project-dir "./src")]
-;;          [generated-docs-dir (get-relative-path project-dir "./generated-docs/")])
-;;     (parameterize ([current-directory project-dir])
-;;       (for ([input-file (get-all-adocs src-dir)])
-;;         (render-asciidoc input-file
-;;                          (get-relative-path generated-docs-dir
-;;                                             (get-output-file input-file)))))))
+(define (render-asciidoc input-file output-file)
+  (displayln (str "-> Rendering " input-file " to " output-file))
+  (system (str "asciidoctor "
+               input-file
+               " -d book "
+               " -o " output-file)))
+
+(module+ main
+  (let* ([project-dir        (get-relative-path +this-directory+ "../../")]
+         [src-dir            (get-relative-path project-dir "./src")]
+         [generated-docs-dir (get-relative-path project-dir "./generated-docs/")])
+    (parameterize ([current-directory project-dir])
+      (for ([input-file (get-all-adocs src-dir)])
+        (render-asciidoc input-file
+                         (get-relative-path generated-docs-dir
+                                            (get-output-file input-file)))))))
