@@ -57,6 +57,10 @@
       reverse
       list->string)))
 
+(module+ test
+  (check-equal? (trim "     ") "")
+  (check-equal? (trim "  -  ") "-"))
+
 (define string-ends-with? #λ(regexp-match? (regexp-quote %2) %1))
 
 (define string-rest #λ(~> (string->list %)
@@ -313,7 +317,3 @@
 
 (define (get-substring #:from from #:to to)
   (substring (get-string) from to))
-
-(module+ test
-  (check-equal? (trim "     ") "")
-  (check-equal? (trim "  -  ") "-"))
