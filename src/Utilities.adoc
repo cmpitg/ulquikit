@@ -7,20 +7,90 @@
 :source-highlighter: pygments
 :pygments-css: class
 
+== General-purpose utilities
+
+General-purpose utility functions.
+
+.file::utils/utils.rkt
+[source,racket]
+----
+;; include::utils/use-rackjure
+
+(provide (all-defined-out))
+
+(define inc (partial + 1))
+(define dec #λ(- % 1))
+
+----
+
+
+== String
+
+.file::utils/string.rkt
+[source,racket]
+----
+;; include::utils/use-rackjure
+
+(require srfi/1)
+
+(require "utils.rkt")
+
+(module+ test
+  (require rackunit))
+
+(provide (all-defined-out))
+
+;; include::utils/string/implementation
+----
+
+.code::utils/string/implementation
+[source,racket]
+----
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Implementation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define (trim str)
+  (let* ([str/list                  (string->list str)]
+         [str/list/trim-begin       (drop-while #λ(equal? % #\space)
+                                                str/list)]
+         [str/list/reversed         (reverse str/list/trim-begin)]
+         [str/list/reversed/trimmed (drop-while #λ(equal? % #\space)
+                                                str/list/reversed)])
+    (~> str/list/reversed/trimmed
+      reverse
+      list->string)))
+
+(module+ test
+  (check-equal? (trim "     ") "")
+  (check-equal? (trim "  -  ") "-"))
+
+(define string-ends-with? #λ(regexp-match? (regexp-quote %2) %1))
+
+(define string-rest #λ(~> (string->list %)
+                        ((λ (lst)
+                           (if (empty? lst)
+                               lst
+                               (rest lst))))
+                        list->string))
+
+(module+ test
+  (check-equal? (string-rest "") "")
+  (check-equal? (string-rest "a") "")
+  (check-equal? (string-rest "ab") "b")
+  (check-equal? (string-rest "abc") "bc"))
+
+----
+
+
 == Path
 
 .file::utils/path.rkt
 [source,racket]
 ----
-#lang rackjure
-
-;; include::license-header
-
-;; Using hashtable with curly-dict notation
-(current-curly-dict hash)
+;; include::utils/use-rackjure
 
 (require racket/path)
-
 (require "string.rkt")
 
 (provide (all-defined-out))
@@ -28,6 +98,12 @@
 (module+ test
   (require rackunit))
 
+;; include::utils/path/implementation
+----
+
+.code::utils/path/implementation
+[source,racket]
+----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,9 +131,20 @@
 
 ----
 
+== Misc
+
+.code::utils/use-rackjure
+[source,racket]
+----
+#lang rackjure
+
+;; Using hashtable with curly-dict notation
+(current-curly-dict hash)
+----
+
 == License
 
-.code::license-header
+.code::utils/license-header
 [source,racket]
 ----
 ;;
