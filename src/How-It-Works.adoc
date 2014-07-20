@@ -1,7 +1,8 @@
-= Ulquikit
+= Ulquikit - How it works
 :Author: Nguyễn Hà Dương (cmpitg)
 :Email: <cmpitg@gmail.com>
-:toc:
+:toc: left
+:toclevels: 4
 :numbered:
 :icons: font
 :source-highlighter: pygments
@@ -9,97 +10,27 @@
 :website: http://reference-error.org/ulquikit
 
 Ulquikit is written in literate programming itself with a small bootstrap
-code.  This document contains everything about Ulquikit, from documentation to
-full source code.
+code.  This document is Ulquikit's literate source code.
 
-The best way to learn about Ulquikit is to start from this document, section
-<<getting-started,Getting started>>
-
-[[getting-started]]
-== Getting started
-
-NOTE: Unless specifically noted, all commands are executed in your project
-root directory.
-
-=== For users
-
-[[project-structure]]
-* Project structure:
-+
-Ulquikit makes use of a typical project structure:
-+
-----
-project-name/
-  generated-docs/  <1>
-  generated-src/   <2>
-  src/             <3>
-    Main.adoc
-  README.md
-----
-<1> generated documents
-<2> generated source code
-<3> your (literate) source code
-+
-Ulquikit could be used without making any change to your current project
-structure.  By default, it detects literate source code with +.adoc+ or +.txt+
-extension in +src/+ directory to produce corresponding documents and source
-code.
-+
-
-* Generating source code:
-+
-Generated source code resides in +<project-root>/generated-src/+.
-+
-To generate source code:
-+
-[source,sh]
-----
-ulqui generate-src
-----
-+
-You could also specify your own source and destination:
-+
-[source,sh]
-----
-# Uses literate source code from source/ and outputs to generated-source/
-ulqui generate-src --from source --to generated-source
-----
-
-* Generating documents:
-+
-Generated documents reside in +<project-root>/generated-docs/+.
-+
-To generate documents:
-+
-[source,sh]
-----
-ulqui generate-docs
-----
-+
-You could also specify your source and destination:
-+
-[source,sh]
-----
-# Uses literate source code from source/ and outputs to documents/
-ulqui generate-docs --from source --to documents
-----
-
-=== For developers
-
-== How it works
-
-=== Requirements
+To compile _and run_ Ulquikit, the following dependencies are required:
 
 * http://asciidoctor.org[AsciiDoctor]
 * http://racket-lang.org[Racket]
 
-=== Bootstraping
+Ulquikit contains 2 parts:
 
-To generate docs and source code from this file, two Racket scripts are used:
-+bootstrap/generate-docs.rkt+ and +bootstrap/generate-src.rkt+.  These 2 files
-are very short and simple.
+* Bootstrap part: small and straightforward, consists of several Racket files
+  to extract source code and documents from all AcsciiDoc files is +src/+
+  directory of Ulquikit project.
 
-+bootstrap/generate-src.rkt+
+* Main part: this file.
+
+== Bootstrap
+
+The two most important files from Bootstrap part are +generate-src.rkt+ and
++generate-docs.rkt+.  Others are to declare utility functions.
+
+=== +bootstrap/generate-src.rkt+
 
 * Looks for and saves all AsciiDoc code blocks
   ** If a block starts with +file::+ it's a file name
@@ -111,16 +42,16 @@ are very short and simple.
   Invalid ++<name>++s are considered error.  Then writes its contents to the
   corresponding file in +ulquikit/generated-src+.
 
-+bootstrap/generate-docs.rkt+ simply uses AsciiDoctor to generate docs to
-+ulquikit/generated-docs+.
+=== +bootstrap/generate-docs.rkt+
 
-=== In-depth
+Simply uses AsciiDoctor to generate docs to +ulquikit/generated-docs+.
 
-==== Utility functions
+== Main program
 
+The best way to use Ulquikit is to start with some commands.  Let's define how
+commands work first:
 
-
-==== Commands
+=== Commands
 
 * Each command is a Racket module defined in +commands/+ directory, with the
   base file name as command name.
@@ -148,7 +79,7 @@ E.g.
   as documentation for that command when running from the command line with
   +ulqui command-name --help+ or +ulqui help command-name+.
 
-===== Core functions to implement commands
+==== Core functions to implement commands
 
 .file::command-core.rkt
 [source,racket]
@@ -158,13 +89,17 @@ E.g.
 (define (display-command title)
   (displayln (str "----> " title)))
 
+(define (run-help command)
+  (parameterize ([current-namespace (make-base-empty-namespace)])
+    (namespace-require (format "commands/~a.rkt" command))
+    (help)))
+
 ----
 
-===== Built-in commands
+==== Built-in commands
 
-. +generate-src+
+===== +generate-src+
 
-+
 .file::commands/generate-src.rkt
 [source,racket]
 ----
@@ -183,16 +118,13 @@ E.g.
 
 ----
 
-+
 By default, +ulqui generate-src+ extracts source code from
 +<project-root>/src+ and output to +<project-root>/generated-src+, so the
 +run+ function takes 2 keyword arguments with default values like so:
 
-+
 * +#:from+, default to +"src"+, and
 * +#:to+, default to +"generated-src"+
 
-+
 .code::commands/generate-src/run
 [source,racket]
 ----
@@ -205,21 +137,14 @@ By default, +ulqui generate-src+ extracts source code from
 
 ----
 
-+
 +extract-blocks+ will
 
-+
 * find all AsciiDoc files in a directory (argument: +dir+),
 * extract all AsciiDoc code block with titles and return them as hashes with
-  +create-block+
+  +create-block+.
 
-+
-+create-block+
-
-+
 Each is code block is stored with the following format:
 
-+
 [source,racket]
 ----
 {'type code-block-type          <1>
@@ -232,7 +157,25 @@ Each is code block is stored with the following format:
 <3> is the content of the code block, i.e. which is surrounded by +----+ in
 AsciiDoc format
 
-==== License header
+Thus, +create-block+ is implemented as followed:
+
+.code::create-block
+[source,racket]
+----
+(define (create-block #:type type
+                      #:name name
+                      #:content content)
+  {'type type
+   'name name
+   'content content})
+----
+
+
+=== Utility functions
+
+See link:Utilities.html[Utilities].
+
+=== License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
 header is necessary.
