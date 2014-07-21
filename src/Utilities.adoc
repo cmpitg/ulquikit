@@ -13,8 +13,10 @@
 General-purpose utility functions.
 
 .file::utils/utils.rkt
-[source,racket]
+[source,racket,linenums]
 ----
+;; include::license-header
+
 ;; include::utils/use-rackjure
 
 (provide (all-defined-out))
@@ -30,6 +32,8 @@ General-purpose utility functions.
 .file::utils/string.rkt
 [source,racket,linenums]
 ----
+;; include::license-header
+
 ;; include::utils/use-rackjure
 
 (require srfi/1)
@@ -112,8 +116,10 @@ General-purpose utility functions.
 == Path
 
 .file::utils/path.rkt
-[source,racket]
+[source,racket,linenums]
 ----
+;; include::license-header
+
 ;; include::utils/use-rackjure
 
 (require racket/path)
@@ -128,7 +134,7 @@ General-purpose utility functions.
 ----
 
 .code::utils/path/implementation
-[source,racket]
+[source,racket,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Implementation
@@ -160,35 +166,10 @@ General-purpose utility functions.
 == Misc
 
 .code::utils/use-rackjure
-[source,racket]
+[source,racket,linenums]
 ----
 #lang rackjure
 
 ;; Using hashtable with curly-dict notation
 (current-curly-dict hash)
-----
-
-== License
-
-.code::utils/license-header
-[source,racket]
-----
-;;
-;; This file is part of Ulquikit project.
-;;
-;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
-;;
-;; Ulquikit is free software: you can redistribute it and/or modify it under
-;; the terms of the GNU General Public License as published by the Free
-;; Software Foundation, either version 3 of the License, or (at your option)
-;; any later version.
-;;
-;; Ulquikit is distributed in the hope that it will be useful, but WITHOUT ANY
-;; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
-;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
-;; details.
-;;
-;; You should have received a copy of the GNU General Public License along
-;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
-;;
 ----
