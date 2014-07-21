@@ -166,20 +166,14 @@ appropriate keywords and values.
                                     current-arg)
                                   (parse-keyword current-arg))]
                [next-result-value (or (and (is-argument? current-arg)
-                                           (null? last-keyword)
-                                           (list arg/converted))
-
-                                      (and (is-argument? current-arg)
-                                           (not (null? last-keyword))
-                                           (list (list last-keyword arg/converted)))
+                                           (or (and (null? last-keyword)
+                                                    (list arg/converted))
+                                               (list (list last-keyword arg/converted))))
 
                                       (and (is-option? current-arg)
-                                           (null? last-keyword)
-                                           '())
-
-                                      (and (is-option? current-arg)
-                                           (not (null? last-keyword))
-                                           (list (list last-keyword #t))))])
+                                           (or (and (null? last-keyword)
+                                                    '())
+                                               (list (list last-keyword #t)))))])
           (parse next-keyword
                  more
                  (append result next-result-value))))))
