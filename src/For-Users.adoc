@@ -7,7 +7,7 @@
 :icons: font
 :source-highlighter: pygments
 :pygments-css: class
-:website: http://reference-error.org/ulquikit
+:website: http://reference-error.org/projects/ulquikit
 
 The best way to learn about Ulquikit is to start from this document, section
 <<getting-started,Getting started>>

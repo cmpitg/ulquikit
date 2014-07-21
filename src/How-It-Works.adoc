@@ -7,7 +7,7 @@
 :icons: font
 :source-highlighter: pygments
 :pygments-css: class
-:website: http://reference-error.org/ulquikit
+:website: http://reference-error.org/projects/ulquikit
 
 Ulquikit is written in literate programming itself with a small bootstrap
 code.  This document is Ulquikit's literate source code.
