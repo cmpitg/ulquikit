@@ -80,7 +80,17 @@ General-purpose utility functions.
   (check-equal? (string-starts-with? "abcdef" "abb") #f)
   (check-equal? (string-starts-with? "$abc" "$a") #t))
 
-(define string-ends-with? #λ(regexp-match? (regexp-quote %2) %1))
+(define string-ends-with?
+  #λ(regexp-match? (regexp (str (regexp-quote %2) "$")) %1))
+
+(module+ test
+  (check-equal? (string-ends-with? "" "") #t)
+  (check-equal? (string-ends-with? "a" "") #t)
+  (check-equal? (string-ends-with? "a" "a") #t)
+  (check-equal? (string-ends-with? "a" "b") #f)
+  (check-equal? (string-ends-with? "abcdef" "def") #t)
+  (check-equal? (string-ends-with? "abcdef" "dee") #f)
+  (check-equal? (string-ends-with? "$ab$$c" "b$$c") #t))
 
 (define string-rest #λ(~> (string->list %)
                         ((λ (lst)
