@@ -146,57 +146,59 @@ appropriate keywords and values.
   (check-equal? (parse-keyword "--help")  '#:help)
   (check-equal? (parse-keyword "---help") '#:help))
 
-;; (define (parse-command-args args)
-;;   (let parse ([last-keyword null]
-;;               [args         (string-split args " ")]
-;;               [result       '()])
-;;     (displayln (~a "Matching: " args))
-;;     (if (empty? args)
-;;         (if (null? last-keyword)
-;;             result
-;;             (append result (list* (list* last-keyword #t))))
-;;         (let* ([current-arg (first args)]
-;;                [more        (rest args)])
-;;           (cond [(is-argument? current-arg)
-;;                  (if (null? last-keyword)
-;;                      (parse null
-;;                             more
-;;                             (append result (list current-arg)))
-;;                      (parse null
-;;                             more
-;;                             (append result (list (list last-keyword current-arg)))))]
+(define (parse-command-args args)
+  (let parse ([last-keyword null]
+              [args         (string-split args " ")]
+              [result       '()])
+    (if (empty? args)
+        (if (null? last-keyword)
+            result
+            (append result (list (list last-keyword #t))))
+        (let* ([current-arg (first args)]
+               [more        (rest args)])
+          (cond [(is-argument? current-arg)
+                 (let* ([arg/converted (if-let [value (string->number current-arg)]
+                                         value
+                                         current-arg)])
+                  (if (null? last-keyword)
+                      (parse null
+                             more
+                             (append result (list arg/converted)))
+                      (parse null
+                             more
+                             (append result (list (list last-keyword arg/converted))))))]
 
-;;                 [(is-option? current-arg)
-;;                  (if (null? last-keyword)
-;;                      (parse (parse-keyword current-arg)
-;;                             more
-;;                             result)
-;;                      (parse (parse-keyword current-arg)
-;;                             more
-;;                             (append result (list (list last-keyword #t)))))])))))
+                [(is-option? current-arg)
+                 (if (null? last-keyword)
+                     (parse (parse-keyword current-arg)
+                            more
+                            result)
+                     (parse (parse-keyword current-arg)
+                            more
+                            (append result (list (list last-keyword #t)))))])))))
 
-;; (module+ test
-;;   (check-equal? (parse-command-args "") '())
+(module+ test
+  (check-equal? (parse-command-args "") '())
 
-;;   (check-equal? (parse-command-args "hello-world")
-;;                 '("hello-world"))
+  (check-equal? (parse-command-args "hello-world")
+                '("hello-world"))
 
-;;   (check-equal? (parse-command-args "hello world")
-;;                 '("hello" "world"))
+  (check-equal? (parse-command-args "hello world")
+                '("hello" "world"))
 
-;;   (check-equal? (parse-command-args "--help")
-;;                 '([#:help #t]))
+  (check-equal? (parse-command-args "--help")
+                '([#:help #t]))
 
-;;   (check-equal? (parse-command-args "hello --help")
-;;                 '("hello" [#:help #t]))
+  (check-equal? (parse-command-args "hello --help")
+                '("hello" [#:help #t]))
 
-;;   (check-equal? (parse-command-args "--help hello")
-;;                 '([#:help "hello"]))
+  (check-equal? (parse-command-args "--help hello")
+                '([#:help "hello"]))
 
-;;   (check-equal? (parse-command-args "hello world --help --set-tab 4")
-;;                 '("hello" "world"
-;;                   [#:help #t]
-;;                   [#:set-tab 4])))
+  (check-equal? (parse-command-args "hello world --help --set-tab 4")
+                '("hello" "world"
+                  [#:help #t]
+                  [#:set-tab 4])))
 
 ----
 
