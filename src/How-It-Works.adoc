@@ -99,9 +99,8 @@ E.g.
   (displayln (str "----> " title)))
 
 (define (run-help command)
-  (parameterize ([current-namespace (make-base-empty-namespace)])
-    (namespace-require (format "commands/~a.rkt" command))
-    (eval '(help))))
+  (local-require (str command ".rkt"))
+  (help))
 
 ;; include::command/parse-command-args
 
