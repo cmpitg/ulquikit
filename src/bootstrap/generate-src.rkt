@@ -98,7 +98,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define (display-code-block block)
-  (displayln (~a "[[ " (block 'name) " -> " (block 'indentation) " ]]"))
+  (displayln (~a "[[ " (block 'name) " ]]"))
   (displayln "-->")
   (displayln (block 'content))
   (displayln "<--")
