@@ -82,9 +82,14 @@ E.g.
 ==== Core functions to implement commands
 
 .file::command-core.rkt
-[source,racket]
+[source,racket,linenums]
 ----
 #lang rackjure
+
+(require "utils/string.rkt")
+
+(module+ test
+  (require rackunit))
 
 (define (display-command title)
   (displayln (str "----> " title)))
@@ -92,8 +97,98 @@ E.g.
 (define (run-help command)
   (parameterize ([current-namespace (make-base-empty-namespace)])
     (namespace-require (format "commands/~a.rkt" command))
-    (help)))
+    (eval '(help))))
 
+;; include::command/parse-command-args
+
+;; include::command/run-command
+
+----
+
+Two of the most important functions in +command-core+ module are
++run-command+ and +parse-command-args+.
+
++parse-command-args+ will transform command line arguments into a list of
+appropriate keywords and values.
+
+.code::command/parse-command-args
+[source,racket,linenums]
+----
+;; #lang racket
+
+(define is-argument? #λ(not (string-starts-with? % "-")))
+
+(module+ test
+  (check-equal? (is-argument? "")     #t)
+  (check-equal? (is-argument? "a")    #t)
+  (check-equal? (is-argument? "-a")   #f)
+  (check-equal? (is-argument? "--a")  #f)
+  (check-equal? (is-argument? "-")    #f))
+
+;; (define (parse-command-args args)
+;;   (let parse ([last-keyword null]
+;;               [args         (string-split args " ")]
+;;               [result       '()])
+;;     (displayln (~a "Matching: " args))
+;;     (if (empty? args)
+;;         (if (null? last-keyword)
+;;             result
+;;             (append result (list* (list* last-keyword #t))))
+;;         (let* ([current-arg (first args)]
+;;                [args-rest   (rest args)])
+;;           (cond [(is-argument? current-arg)
+;;                  (if (null? last-keyword)
+;;                      (parse null
+;;                             more
+;;                             (append result (list* value)))
+;;                      (parse null
+;;                             more
+;;                             (append result (list* (list* last-keyword value)))))]
+
+;;                 [(is-option? current-arg)
+;;                  (if (null? last-keyword)
+;;                      (parse (string->keyword value)
+;;                             more
+;;                             result)
+;;                      (parse (string->keyword value)
+;;                             more
+;;                             (append result (list* (list* last-keyword #t)))))])))))
+
+;; (module+ test
+;;   (check-equal? (parse-command-args "") '())
+
+;;   (check-equal? (parse-command-args "hello-world")
+;;                 '("hello-world"))
+
+;;   (check-equal? (parse-command-args "hello world")
+;;                 '("hello" "world"))
+
+;;   (check-equal? (parse-command-args "--help")
+;;                 '([#:help #t]))
+
+;;   (check-equal? (parse-command-args "hello --help")
+;;                 '("hello" [#:help #t]))
+
+;;   (check-equal? (parse-command-args "--help hello")
+;;                 '([#:help "hello"]))
+
+;;   (check-equal? (parse-command-args "hello world --help --set-tab 4")
+;;                 '("hello" "world"
+;;                   [#:help #t]
+;;                   [#:set-tab 4])))
+
+----
+
+
++run-command+ the result of parse-command-args and perform the actual call to
++run+ function of the module implementing the command.
+
+.code::command/run-command
+[source,racket,linenums]
+----
+;; (define (run-command . arguments)
+;;   (void)
+;;   )
 ----
 
 ==== Built-in commands
@@ -101,7 +196,7 @@ E.g.
 ===== +generate-src+
 
 .file::commands/generate-src.rkt
-[source,racket]
+[source,racket,linenums]
 ----
 #lang rackjure
 
@@ -126,7 +221,7 @@ By default, +ulqui generate-src+ extracts source code from
 * +#:to+, default to +"generated-src"+
 
 .code::commands/generate-src/run
-[source,racket]
+[source,racket,linenums]
 ----
 (define (run #:from [from "src"]
              #:to   [to   "generated-src"])
@@ -145,7 +240,7 @@ By default, +ulqui generate-src+ extracts source code from
 
 Each is code block is stored with the following format:
 
-[source,racket]
+[source,racket,linenums]
 ----
 {'type code-block-type          <1>
  'name code-block-name          <2>
@@ -160,7 +255,7 @@ AsciiDoc format
 Thus, +create-block+ is implemented as followed:
 
 .code::create-block
-[source,racket]
+[source,racket,linenums]
 ----
 (define (create-block #:type type
                       #:name name
