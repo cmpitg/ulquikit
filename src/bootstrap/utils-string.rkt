@@ -151,7 +151,10 @@
     (check-equal? (get-position) 1)
 
     (goto-next "world")
-    (check-equal? (get-position) 6)))
+    (check-equal? (get-position) 6)
+
+    (goto-next #rx"\n\\[source\n")
+    (check-equal? (get-position) 11)))
 
 (define (next-line)
   (goto-next "\n")
