@@ -125,6 +125,15 @@ appropriate keywords and values.
   (check-equal? (is-argument? "--a")  #f)
   (check-equal? (is-argument? "-")    #f))
 
+(define is-option? #λ(not (is-argument? %)))
+
+(module+ test
+  (check-equal? (is-option? "")     #f)
+  (check-equal? (is-option? "a")    #f)
+  (check-equal? (is-option? "-a")   #t)
+  (check-equal? (is-option? "--a")  #t)
+  (check-equal? (is-option? "-")    #t))
+
 ;; (define (parse-command-args args)
 ;;   (let parse ([last-keyword null]
 ;;               [args         (string-split args " ")]
