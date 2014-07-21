@@ -145,8 +145,6 @@
                                    (get-position))]
                        [end      (begin
                                    (goto-next #rx"\n----\n")
-                                   (to-beginning-of-line)
-                                   (backward-char)
                                    (get-position))]
 
                        [content  (get-substring #:from start
