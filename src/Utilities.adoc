@@ -27,7 +27,7 @@ General-purpose utility functions.
 == String
 
 .file::utils/string.rkt
-[source,racket]
+[source,racket,linenums]
 ----
 ;; include::utils/use-rackjure
 
@@ -41,11 +41,14 @@ General-purpose utility functions.
 (provide (all-defined-out))
 
 ;; include::utils/string/implementation
+
 ----
 
 .code::utils/string/implementation
-[source,racket]
+[source,racket,linenums]
 ----
+;; #lang racket
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -64,6 +67,18 @@ General-purpose utility functions.
 (module+ test
   (check-equal? (trim "     ") "")
   (check-equal? (trim "  -  ") "-"))
+
+(define string-starts-with?
+  #λ(regexp-match? (regexp (str "^" (regexp-quote %2))) %1))
+
+(module+ test
+  (check-equal? (string-starts-with? "" "") #t)
+  (check-equal? (string-starts-with? "a" "") #t)
+  (check-equal? (string-starts-with? "a" "a") #t)
+  (check-equal? (string-starts-with? "a" "b") #f)
+  (check-equal? (string-starts-with? "abcdef" "abc") #t)
+  (check-equal? (string-starts-with? "abcdef" "abb") #f)
+  (check-equal? (string-starts-with? "$abc" "$a") #t))
 
 (define string-ends-with? #λ(regexp-match? (regexp-quote %2) %1))
 
