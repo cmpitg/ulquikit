@@ -155,27 +155,34 @@ appropriate keywords and values.
             result
             (append result (list (list last-keyword #t))))
         (let* ([current-arg (first args)]
-               [more        (rest args)])
-          (cond [(is-argument? current-arg)
-                 (let* ([arg/converted (if-let [value (string->number current-arg)]
-                                         value
-                                         current-arg)])
-                  (if (null? last-keyword)
-                      (parse null
-                             more
-                             (append result (list arg/converted)))
-                      (parse null
-                             more
-                             (append result (list (list last-keyword arg/converted))))))]
+               [more        (rest args)]
 
-                [(is-option? current-arg)
-                 (if (null? last-keyword)
-                     (parse (parse-keyword current-arg)
-                            more
-                            result)
-                     (parse (parse-keyword current-arg)
-                            more
-                            (append result (list (list last-keyword #t)))))])))))
+               [next-keyword (if (is-argument? current-arg)
+                                 null
+                                 (parse-keyword current-arg))]
+               [arg/converted (if (is-argument? current-arg)
+                                  (if-let [value (string->number current-arg)]
+                                    value
+                                    current-arg)
+                                  (parse-keyword current-arg))]
+               [next-result-value (cond [(and (is-argument? current-arg)
+                                              (null? last-keyword))
+                                         (list arg/converted)]
+
+                                        [(and (is-argument? current-arg)
+                                              (not (null? last-keyword)))
+                                         (list (list last-keyword arg/converted))]
+
+                                        [(and (is-option? current-arg)
+                                              (null? last-keyword))
+                                         '()]
+
+                                        [(and (is-option? current-arg)
+                                              (not (null? last-keyword)))
+                                         (list (list last-keyword #t))])])
+          (parse next-keyword
+                 more
+                 (append result next-result-value))))))
 
 (module+ test
   (check-equal? (parse-command-args "") '())
