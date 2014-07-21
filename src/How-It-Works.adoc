@@ -84,6 +84,8 @@ E.g.
 .file::command-core.rkt
 [source,racket,linenums]
 ----
+;; include::license-header
+
 #lang rackjure
 
 (require srfi/1)
