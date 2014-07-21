@@ -86,6 +86,8 @@ E.g.
 ----
 #lang rackjure
 
+(require srfi/1)
+
 (require "utils/string.rkt")
 
 (module+ test
@@ -134,6 +136,16 @@ appropriate keywords and values.
   (check-equal? (is-option? "--a")  #t)
   (check-equal? (is-option? "-")    #t))
 
+(define parse-keyword
+  #λ(string->keyword (~>> (string->list %)
+                       (drop-while (λ (ch) (eq? #\- ch)))
+                       list->string)))
+
+(module+ test
+  (check-equal? (parse-keyword "-h")      '#:h)
+  (check-equal? (parse-keyword "--help")  '#:help)
+  (check-equal? (parse-keyword "---help") '#:help))
+
 ;; (define (parse-command-args args)
 ;;   (let parse ([last-keyword null]
 ;;               [args         (string-split args " ")]
@@ -144,24 +156,24 @@ appropriate keywords and values.
 ;;             result
 ;;             (append result (list* (list* last-keyword #t))))
 ;;         (let* ([current-arg (first args)]
-;;                [args-rest   (rest args)])
+;;                [more        (rest args)])
 ;;           (cond [(is-argument? current-arg)
 ;;                  (if (null? last-keyword)
 ;;                      (parse null
 ;;                             more
-;;                             (append result (list* value)))
+;;                             (append result (list current-arg)))
 ;;                      (parse null
 ;;                             more
-;;                             (append result (list* (list* last-keyword value)))))]
+;;                             (append result (list (list last-keyword current-arg)))))]
 
 ;;                 [(is-option? current-arg)
 ;;                  (if (null? last-keyword)
-;;                      (parse (string->keyword value)
+;;                      (parse (parse-keyword current-arg)
 ;;                             more
 ;;                             result)
-;;                      (parse (string->keyword value)
+;;                      (parse (parse-keyword current-arg)
 ;;                             more
-;;                             (append result (list* (list* last-keyword #t)))))])))))
+;;                             (append result (list (list last-keyword #t)))))])))))
 
 ;; (module+ test
 ;;   (check-equal? (parse-command-args "") '())
