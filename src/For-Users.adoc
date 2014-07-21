@@ -1,7 +1,8 @@
-= Ulquikit Users Guide
+= Ulquikit User Guide
 :Author: Nguyễn Hà Dương (cmpitg)
 :Email: <cmpitg@gmail.com>
-:toc:
+:toc: left
+:toclevels: 4
 :numbered:
 :icons: font
 :source-highlighter: pygments
