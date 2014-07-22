@@ -232,8 +232,8 @@ appropriate keywords and values.
 
 (require "../command-core.rkt")
 
-(export run
-        help)
+(provide run
+         help)
 
 ;; include::commands/generate-src/run
 
