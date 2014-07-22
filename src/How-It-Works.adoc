@@ -92,6 +92,8 @@ E.g.
 
 (require "utils/string.rkt")
 
+(provide (all-defined-out))
+
 (module+ test
   (require rackunit))
 
