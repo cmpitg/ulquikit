@@ -101,8 +101,8 @@ E.g.
   (displayln (str "----> " title)))
 
 (define (run-help command)
-  (local-require (str command ".rkt"))
-  (help))
+  (eval `(local-require ,(str command ".rkt")))
+  (eval '(help)))
 
 ;; include::command/parse-command-args
 
