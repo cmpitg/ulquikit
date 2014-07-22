@@ -226,14 +226,17 @@ appropriate keywords and values.
 .file::commands/generate-src.rkt
 [source,racket,linenums]
 ----
-#lang rackjure
-
 ;; include::license-header
+
+;; include::use-rackjure
 
 (require "../command-core.rkt")
 
 ;; (provide run
 ;;          help)
+
+(module+ test
+  (require rackunit))
 
 ;; include::commands/generate-src/run
 
@@ -252,6 +255,8 @@ By default, +ulqui generate-src+ extracts source code from
 [source,racket,linenums]
 ----
 ;; #lang racket
+
+;; include::create-block
 
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
@@ -292,15 +297,46 @@ Thus, +create-block+ is implemented as followed:
 (define (create-block #:type type
                       #:name name
                       #:content content)
-  {'type type
-   'name name
-   'content content})
+  (let ([type (if (symbol? type)
+                  type
+                  (string->symbol type))]
+        [name (if (symbol? name)
+                  name
+                  (string->symbol name))])
+    {'type type
+     'name name
+     'content content}))
+
+(module+ test
+  (check-equal? (create-block #:type 'file
+                              #:name 'hello-world
+                              #:content "Hmm")
+                {'type 'file
+                 'name 'hello-world
+                 'content "Hmm"})
+  (check-equal? (create-block #:type "string"
+                              #:name "string"
+                              #:content "string")
+                {'type 'string
+                 'name 'string
+                 'content "string"}))
+
 ----
 
 
 === Utility functions
 
 See link:Utilities.html[Utilities].
+
+=== Misc
+
+.code::use-rackjure
+[source,racket,linenums]
+----
+#lang rackjure
+
+(current-curly-dict hash)
+----
 
 === License header
 
