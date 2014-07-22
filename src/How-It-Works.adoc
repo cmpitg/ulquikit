@@ -232,8 +232,8 @@ appropriate keywords and values.
 
 (require "../command-core.rkt")
 
-(provide run
-         help)
+;; (provide run
+;;          help)
 
 ;; include::commands/generate-src/run
 
@@ -251,12 +251,14 @@ By default, +ulqui generate-src+ extracts source code from
 .code::commands/generate-src/run
 [source,racket,linenums]
 ----
-(define (run #:from [from "src"]
-             #:to   [to   "generated-src"])
-  (display-command "generate-src")
-  (~> (extract-blocks from)
-    (include-file-blocks)
-    (write-blocks-to-files to)))
+;; #lang racket
+
+;; (define (run #:from [from "src"]
+;;              #:to   [to   "generated-src"])
+;;   (display-command "generate-src")
+;;   (~> (extract-blocks from)
+;;     (include-file-blocks)
+;;     (write-blocks-to-files to)))
 
 ----
 
@@ -285,6 +287,8 @@ Thus, +create-block+ is implemented as followed:
 .code::create-block
 [source,racket,linenums]
 ----
+;; #lang racket
+
 (define (create-block #:type type
                       #:name name
                       #:content content)
