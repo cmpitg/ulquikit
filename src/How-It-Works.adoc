@@ -275,6 +275,107 @@ By default, +ulqui generate-src+ extracts source code from
 * extract all AsciiDoc code block with titles and return them as hashes with
   +create-block+.
 
+
+.code::extract-blocks
+[source,racket,linenums]
+----
+;; lang racket
+
+(define (extract-blocks from-dir)
+  (for ([file (list-all-adocs (standardize-path from-dir))])
+    (extract-block file)))
+
+(module+ test
+  (let* ([temp-dir (get-relative-path (get-temp-dir)
+                                      "./ulqui-extract-blocks/inside")]
+         [file-list '("Main"
+                      "License"
+                      "inside/Utils"
+                      "inside/Utils-String")]
+         [source-files (for/list ([name (in-list file-list)])
+                         (get-relative-path (format "~a./~a.adoc"
+                                                    temp-dir
+                                                    name)))]
+         [content
+          {"Main" (string-join
+                   '("= A document"
+                     ""
+                     "Just a hello world program"
+                     ""
+                     ".file::/tmp/tmp.rkt"
+                     "[source,racket,linenums]"
+                     "----"
+                     ";; include::license-header"
+                     ""
+                     ";; include::use-rackjure"
+                     ""
+                     ";; include::main-program"
+                     ""
+                     "== Main program"
+                     ""
+                     ".code::main-program"
+                     "[source,racket,linenums]"
+                     "----"
+                     ";; include::utils"
+                     ""
+                     "(module+ main"
+                     "  (displayln (string-reverse \"¡Hola mundo!\")))"
+                     ""
+                     ".code::use-rackjure"
+                     "[source]"
+                     "----"
+                     "#lang rackjure"
+                     "(current-curly-dict hash)"
+                     "----"
+                     "")
+                   "\n")
+           "License" (string-join
+                      '("= License header"
+                        ""
+                        ".code::license-header"
+                        "[source,racket]"
+                        "----"
+                        ";; Just a sample license header."
+                        "----")
+                      "\n")
+           "inside/Utils" (string-join
+                           '("= Utils"
+                             ""
+                             "Right now, we just want to include string utililities."
+                             ""
+                             ".code::utils"
+                             "[source,racket,linenums]"
+                             "----"
+                             ";; include::utils-string"
+                             "----")
+                           "\n")
+           "inside/Utils-String" (string-join
+                                  '("= String Utilities"
+                                    ""
+                                    ".code::utils-string"
+                                    "[source,racket,linenums]"
+                                    "----"
+                                    "(define (string-reverse str)"
+                                    "  (~> (string->list str)"
+                                    "    reverse"
+                                    "    list->string))"
+                                    "----")
+                                  "\n")}])
+    (remove-dir temp-dir)
+    (create-dir temp-dir)
+    (for ([(filename content) (in-hash content)])
+      (let ([path (format "~a./~a.adoc" temp-dir filename)])
+        (display-to-file content path)))
+
+    (let* ([blocks (extract-block temp-dir)]
+           [code-block (blocks 'code)]
+           [file-block (blocks 'file)])
+      (check-equal? code-block expected-code-block)
+      (check-equal? file-block expected-file-block))))
+
+----
+
+
 Each is code block is stored with the following format:
 
 [source,racket,linenums]
