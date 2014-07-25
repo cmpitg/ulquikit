@@ -288,6 +288,40 @@ By default, +ulqui generate-src+ extracts source code from
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
                                       "./ulqui-extract-blocks/inside")]
+
+         [expected-code-blocks
+          {"main-program" (string-join
+                           '(";; include::utils"
+                             ""
+                             "(module+ main"
+                             "  (displayln (string-reverse \"¡Hola mundo!\")))"
+                             "")
+                           "\n")
+           "use-rackjure" (string-join
+                           '("#lang rackjure"
+                             "(current-curly-dict hash)")
+                           "\n")
+           "license-header" ";; Just a sample license header."
+           "utils" ";; include::utils-string"
+           "utils-string" (string-join
+                           '("(define (string-reverse str)"
+                             "  (~> (string->list str)"
+                             "    reverse"
+                             "    list->string))")
+                           "\n")}]
+
+         [expected-file-blocks
+          {"/tmp/tmp.rkt" (string-join
+                           '(";; include::license-header"
+                             ""
+                             ";; include::use-rackjure"
+                             ""
+                             ";; include::main-program"
+                             ""
+                             "== Main program"
+                             "")
+                           "\n")}]
+
          [file-list '("Main"
                       "License"
                       "inside/Utils"
@@ -305,27 +339,17 @@ By default, +ulqui generate-src+ extracts source code from
                      ".file::/tmp/tmp.rkt"
                      "[source,racket,linenums]"
                      "----"
-                     ";; include::license-header"
-                     ""
-                     ";; include::use-rackjure"
-                     ""
-                     ";; include::main-program"
-                     ""
-                     "== Main program"
-                     ""
+                     (expected-file-blocks "/tmp/tmp.rkt")
+                     "----"
                      ".code::main-program"
                      "[source,racket,linenums]"
                      "----"
-                     ";; include::utils"
-                     ""
-                     "(module+ main"
-                     "  (displayln (string-reverse \"¡Hola mundo!\")))"
-                     ""
+                     (expected-code-blocks "main-program")
+                     "----"
                      ".code::use-rackjure"
                      "[source]"
                      "----"
-                     "#lang rackjure"
-                     "(current-curly-dict hash)"
+                     (expected-code-blocks "use-rackjure")
                      "----"
                      "")
                    "\n")
@@ -335,7 +359,7 @@ By default, +ulqui generate-src+ extracts source code from
                         ".code::license-header"
                         "[source,racket]"
                         "----"
-                        ";; Just a sample license header."
+                        (expected-code-blocks "license-header")
                         "----")
                       "\n")
            "inside/Utils" (string-join
@@ -346,7 +370,7 @@ By default, +ulqui generate-src+ extracts source code from
                              ".code::utils"
                              "[source,racket,linenums]"
                              "----"
-                             ";; include::utils-string"
+                             (expected-code-blocks "utils")
                              "----")
                            "\n")
            "inside/Utils-String" (string-join
@@ -355,10 +379,7 @@ By default, +ulqui generate-src+ extracts source code from
                                     ".code::utils-string"
                                     "[source,racket,linenums]"
                                     "----"
-                                    "(define (string-reverse str)"
-                                    "  (~> (string->list str)"
-                                    "    reverse"
-                                    "    list->string))"
+                                    (expected-code-blocks "utils-string")
                                     "----")
                                   "\n")}])
     (remove-dir temp-dir)
@@ -370,8 +391,8 @@ By default, +ulqui generate-src+ extracts source code from
     (let* ([blocks (extract-block temp-dir)]
            [code-block (blocks 'code)]
            [file-block (blocks 'file)])
-      (check-equal? code-block expected-code-block)
-      (check-equal? file-block expected-file-block))))
+      (check-equal? code-block expected-code-blocks)
+      (check-equal? file-block expected-file-blocks))))
 
 ----
 
