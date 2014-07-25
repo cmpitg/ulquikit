@@ -180,7 +180,7 @@ General-purpose utility functions.
 
          [filenames/fullpath (for/list ([name (in-list filenames)])
                                (format "~a/~a" temp-dir name))])
-    (with-handlers ([exn:fail? void])
+    (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
       (remove-dir temp-dir)
       (create-dir temp-dir)
       (for ([path (in-list filenames/fullpath)])
