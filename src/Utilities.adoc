@@ -140,6 +140,8 @@ General-purpose utility functions.
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define read-file #λ(call-with-input-file % port->string))
+
 (define get-relative-path
   #λ(simple-form-path (apply build-path %&)))
 
@@ -149,6 +151,19 @@ General-purpose utility functions.
   #λ(delete-directory/files % #:must-exist? #f))
 
 (define create-dir make-directory*)
+
+(define create-empty-file
+  #λ(with-output-to-file %1
+      (λ () (display ""))
+      #:mode 'text
+      #:exists 'truncate/replace))
+
+(module+ test
+  (let ([random-file (get-relative-path (get-temp-dir)
+                                        "___random-file.txt")])
+    (create-empty-file random-file)
+    (check-equal? (file-exists? random-file) #t)
+    (check-equal? (read-file random-file) "")))
 
 (define (list-all-adocs path)
   (with-handlers ([exn:fail? (λ (exn) '())])
