@@ -258,6 +258,8 @@ By default, +ulqui generate-src+ extracts source code from
 
 ;; include::create-block
 
+;; include::extract-blocks
+
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
 ;;   (display-command "generate-src")
