@@ -382,17 +382,19 @@ By default, +ulqui generate-src+ extracts source code from
                                     (expected-code-blocks "utils-string")
                                     "----")
                                   "\n")}])
-    (remove-dir temp-dir)
-    (create-dir temp-dir)
-    (for ([(filename content) (in-hash content)])
-      (let ([path (format "~a./~a.adoc" temp-dir filename)])
-        (display-to-file content path)))
+    (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
+      (remove-dir temp-dir)
+      (create-dir temp-dir)
+      (for ([(filename content) (in-hash content)])
+        (let ([path (format "~a./~a.adoc" temp-dir filename)])
+          (display-to-file content path)))
 
-    (let* ([blocks (extract-block temp-dir)]
-           [code-block (blocks 'code)]
-           [file-block (blocks 'file)])
-      (check-equal? code-block expected-code-blocks)
-      (check-equal? file-block expected-file-blocks))))
+      (let* ([blocks (extract-block temp-dir)]
+             [code-block (blocks 'code)]
+             [file-block (blocks 'file)])
+        (check-equal? code-block expected-code-blocks)
+        (check-equal? file-block expected-file-blocks))
+      (remove-dir temp-dir))))
 
 ----
 
