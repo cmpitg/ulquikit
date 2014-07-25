@@ -148,6 +148,8 @@ General-purpose utility functions.
 (define remove-dir
   #λ(delete-directory/files % #:must-exist? #f))
 
+(define create-dir make-directory*)
+
 (define (list-all-adocs path)
   (with-handlers ([exn:fail? (λ (exn) '())])
    (find-files #λ(string-ends-with? % ".adoc") (expand-user-path path))))
