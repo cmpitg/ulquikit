@@ -140,11 +140,30 @@ General-purpose utility functions.
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(define get-relative-path
+  #λ(simple-form-path (apply build-path %&)))
+
 (define (list-all-adocs path)
   (with-handlers ([exn:fail? (λ (exn) '())])
    (find-files #λ(string-ends-with? % ".adoc") (expand-user-path path))))
 
-(define get-relative-path #λ(simple-form-path (apply build-path %&)))
+(module+ test
+  (let* ([temp-dir (get-relative-path (get-temp-dir)
+                                      "./ulquikit-tmp")]
+         [filenames '("hello-world.adoc"
+                      "hola-mundo.adoc"
+                      "mostly-harmless.adoc"
+                      "42.adoc")]
+
+         [filenames/fullpath (for/list ([name (in-list filenames)])
+                               (format "~a/~a" temp-dir name))])
+    (remove-dir temp-dir)
+    (create-dir temp-dir)
+    (for ([path (in-list filenames/fullpath)])
+      (create-empty-file path))
+
+    (check-equal? (sort (list-all-adocs temp-dir) string<?)
+                  (sort filenames/fullpath string<?))))
 
 (define get-directory-path
   #λ(if-let [path (file-name-from-path %)]
