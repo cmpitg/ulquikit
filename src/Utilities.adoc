@@ -166,6 +166,8 @@ General-purpose utility functions.
                   (sort filenames/fullpath string<?))))
 
 (define get-directory-path
+
+(define path->directory
   #λ(if-let [path (file-name-from-path %)]
       (~>> path
         path->string
@@ -174,8 +176,8 @@ General-purpose utility functions.
       %))
 
 (module+ test
-  (check-equal? (get-directory-path "/tmp/tmp.rkt") "/tmp/")
-  (check-equal? (get-directory-path "/tmp/tmp/")    "/tmp/tmp/"))
+  (check-equal? (path->directory "/tmp/tmp.rkt") "/tmp/")
+  (check-equal? (path->directory "/tmp/tmp/")    "/tmp/tmp/"))
 
 (define create-directory-tree
   #λ(system (format (~a "mkdir -p " %))))
