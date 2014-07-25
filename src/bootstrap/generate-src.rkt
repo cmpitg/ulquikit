@@ -158,7 +158,8 @@
           (when (look-for #rx"\\[source")
             (search-and-update-block)))))))
 
-(define is-include-directive? (partial regexp-match? "include::"))
+(define is-include-directive?
+  (partial regexp-match? #px"(?m:^[; ]+include::)"))
 
 (define (get-block #:type type
                    #:name name)
