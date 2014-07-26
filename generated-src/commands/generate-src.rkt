@@ -66,10 +66,9 @@
 
 ;; lang racket
 
-(define (extract-blocks from-dir)
-  (for/fold ([block {}])
-      ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge block (extract-block file))))
+(define (extract-block path)
+  (let* ([content (read-file path)])
+    _))
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
@@ -181,6 +180,11 @@
         (check-equal? code-block expected-code-blocks)
         (check-equal? file-block expected-file-blocks))
       (remove-dir temp-dir))))
+
+(define (extract-blocks from-dir)
+  (for/fold ([block {}])
+      ([file (list-all-adocs (standardize-path from-dir))])
+    (dict-merge block (extract-block file))))
 
 
 ;; (define (run #:from [from "src"]
