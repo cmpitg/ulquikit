@@ -97,6 +97,3 @@
 (module+ test
   (check-equal? (path->directory "/tmp/tmp.rkt") "/tmp/")
   (check-equal? (path->directory "/tmp/tmp/")    "/tmp/tmp/"))
-
-(define create-directory-tree
-  #λ(system (format (~a "mkdir -p " %))))
