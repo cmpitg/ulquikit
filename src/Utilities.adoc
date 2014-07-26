@@ -142,6 +142,8 @@ General-purpose utility functions.
 
 (define read-file #λ(call-with-input-file % port->string))
 
+(define standardize-path simple-form-path)
+
 (define get-relative-path
   #λ(simple-form-path (apply build-path %&)))
 
