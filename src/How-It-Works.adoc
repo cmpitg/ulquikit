@@ -548,14 +548,13 @@ necessary:
   #λ(~> (string-rest %)
       (string-split "::")
       (append '(""))
-      (list-ref 1)
-      string->symbol))
+      (list-ref 1)))
 
 (module+ test
-  (check-equal? (get-snippet-name ".file::")     (string->symbol ""))
-  (check-equal? (get-snippet-name ".code::")     (string->symbol ""))
-  (check-equal? (get-snippet-name ".file::abc")  'abc)
-  (check-equal? (get-snippet-name ".code::a b")  (string->symbol "a b")))
+  (check-equal? (get-snippet-name ".file::")     "")
+  (check-equal? (get-snippet-name ".code::")     "")
+  (check-equal? (get-snippet-name ".file::abc")  "abc")
+  (check-equal? (get-snippet-name ".code::a b")  "a b"))
 
 (define (add-snippets snippets snippet)
   (let* ([type (snippet 'type)]
