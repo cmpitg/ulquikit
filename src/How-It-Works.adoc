@@ -547,10 +547,11 @@ Thus, +create-snippet+ is implemented as followed:
                  'content "Hmm"})
   (check-equal? (create-snippet #:type "string"
                                 #:name "string"
+                                #:linenum 100
                                 #:content "string")
                 {'type 'string
                  'name 'string
-                 'linenum 10
+                 'linenum 100
                  'content "string"}))
 
 ----
