@@ -330,7 +330,7 @@ The way +extract-snippet+ works is very simple:
    previous line does define a new snippet (starting with +file::+ or +code::+
    or user-defined ones) ⇨
    
-*** set +inside-snippet+ to +#f+
+*** set +inside-snippet+ to +#t+
 
 *** save the snippet name, and
 
@@ -343,18 +343,47 @@ The way +extract-snippet+ works is very simple:
 .code::extract-snippet
 [source,racket,linenums]
 ----
-last-line
-snippet-content
-snippet-name
-inside-snippet?
-
 (define (extract-snippet path)
-  (let* ([content (read-file path)]
-         [lines (string-split content "\n" #:trim? #f)])
+  (let* ([file-content (read-file path)]
+         [lines        (string-split file-content "\n" #:trim? #f)]
+
+         [snippets        (box {})]
+
+         [prev-line       (box "")]
+
+         [snippet-type    (box null)]
+         [snippet-content (box "")]
+         [snippet-name    (box "")]
+         [snippet-linenum (box 0)]
+         [inside-snippet  (box #f)])
+
     (for ([line-num    (in-naturals 1)]
           [line        (in-list lines)])
-      (let* ([demiliter?  (is-snippet-delimiter? line)]
-             [new-snippet-name (if )])))))
+      (if (is-block-delimiter? line)
+          (cond [(unbox inside-snippet)
+                 (box-cas! inside-snippet #f)
+                 (box-swap! snippets
+                            add-snippets
+                            (create-snippet #:type (unbox snippet-type)
+                                            #:name (unbox snippet-name)
+                                            #:linenum (unbox snippet-linenum)
+                                            #:content (unbox snippet-content)))]
+
+                [else
+                 (when (is-block-title? (unbox prev-line))
+                   (box-cas! inside-snippet #t)
+
+                   (box-cas! snippet-type (get-snippet-type line))
+                   (box-cas! snippet-name (get-snippet-name line))
+                   (box-cas! snippet-content "")
+                   (box-cas! snippet-linenum (dec line)))])
+          (when (inside-snippet)
+            (box-swap! snippet-content string-append "\n" line)))
+
+      ;; Always update previous line
+      (box-cas! prev-line line))
+
+    (unbox snippets)))
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
