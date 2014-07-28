@@ -26,10 +26,10 @@
 
 (require "utils.rkt")
 
+(provide (all-defined-out))
+
 (module+ test
   (require rackunit))
-
-(provide (all-defined-out))
 
 ;; #lang racket
 
