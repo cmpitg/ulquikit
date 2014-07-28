@@ -9,10 +9,7 @@
 :pygments-css: class
 :website: http://reference-error.org/projects/ulquikit
 
-The best way to learn about Ulquikit is to start from this document, section
-<<getting-started,Getting started>>
-
-== Terminologies
+== Terminology
 
 Ulquikit aims to be both robust and quick to get started, so I'll keep this
 section short and easily understandable.
