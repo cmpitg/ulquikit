@@ -499,10 +499,10 @@ The way +extract-snippet+ works is very simple:
 
                    (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
                    (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-                   (box-set! snippet-content "")
+                   (box-set! snippet-lines '())
                    (box-set! snippet-linenum (dec line-num)))])
           (when (unbox inside-snippet)
-            (box-swap! snippet-content string-append "\n" line)))
+            (box-swap! snippet-lines append (list line))))
 
       ;; Always update previous line
       (box-set! prev-prev-line (unbox prev-line))
@@ -574,29 +574,29 @@ necessary:
                                               #:name 'hello
                                               #:linenum 10
                                               #:content "Something"))
-                {'file {'hello {'type 'file
-                                'name 'hello
-                                'linenum 10
-                                'content "Something"}}
+                {'file {"hello" {'type 'file
+                                 'name "hello"
+                                 'linenum 10
+                                 'content "Something"}}
                  'code {}})
 
-  (check-equal? (add-snippets {'file {'hello {'type 'file
-                                              'name 'hello
-                                              'linenum 10
-                                              'content "Something"}}
+  (check-equal? (add-snippets {'file {"hello" {'type 'file
+                                               'name "hello"
+                                               'linenum 10
+                                               'content "Something"}}
                                'code {}}
                               (create-snippet #:type 'code
                                               #:name 'say-something
                                               #:linenum 100
                                               #:content "Something else"))
-                {'file {'hello {'type 'file
-                                'name 'hello
-                                'linenum 10
-                                'content "Something"}}
-                 'code {'say-something {'type 'code
-                                        'name 'say-something
-                                        'linenum 100
-                                        'content "Something else"}}}))
+                {'file {"hello" {'type 'file
+                                 'name "hello"
+                                 'linenum 10
+                                 'content "Something"}}
+                 'code {"say-something" {'type 'code
+                                         'name "say-something"
+                                         'linenum 100
+                                         'content "Something else"}}}))
 
 ----
 
