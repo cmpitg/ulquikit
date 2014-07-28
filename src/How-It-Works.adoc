@@ -52,31 +52,13 @@ code.  Hence, the following functions are probably the most interesting ones:
 * +extract-snippets-from-file+, which helps extract snippets from a file
 * +include-snippets+, which helps include snippets into each other
 
-* Each command is a Racket module defined in +commands/+ directory, with the
-  base file name as command name.
-+
-E.g. +commands/new-project.rkt+ is for +ulqui new-project+ command.
+Let's talk about +extract-snippets-from-file+ first:
 
-* Each module implementing a command must export a function with the name
-  +run+.  Arguments passing through +run+ are actual command line arguments
-  passing to the command.
-+
-Named arguments are translated into Racket's keyword arguments.
-+
-E.g.
-+
-  ** Executing +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
-  ** Executing +ulqui generate-src some-file+ calls
-     ++commands/generate-src++'s +(run "some-file")+.
-  ** Executing +ulqui generate-src --from file1 --to file2+ calls
-     ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
+=== +extract-snippet+
 
-* All commands must import +command-core.rkt+ (relative to command directory:
-  +../command-core.rkt+).
-
-* All commands must export a +help+ function returning a string, which serves
-  as documentation for that command when running from the command line with
-  +ulqui command-name --help+ or +ulqui help command-name+.
+The first thing to do is probably to decide how snippets are stored.  This is
+very important since every change made to this data structure would affect
+code later one.
 
 ==== Core functions to implement commands
 
