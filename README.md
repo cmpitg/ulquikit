@@ -18,6 +18,24 @@ In literate programming:
 
 * A program is a real *flow* of words and text.
 
+To quote prof. Knuth:
+
+> Let us change our traditional attitude to the construction of programs:
+> Instead of imagining that our main task is to instruct a computer what to
+> do, let us concentrate rather on explaining to human beings what we want a
+> computer to do.
+>
+> The practitioner of literate programming can be regarded as an essayist,
+> whose main concern is with exposition and excellence of style. Such an
+> author, with thesaurus in hand, chooses the names of variables carefully and
+> explains what each variable means. He or she strives for a program that is
+> comprehensible because its concepts have been introduced in an order that is
+> best for human understanding, using a mixture of formal and informal methods
+> that reinforce each other.
+
+-- Donald Knuth. "Literate Programming (1984)" in Literate Programming. CSLI,
+1992, pg. 99.
+
 ## Misunderstandings ##
 
 Tools like [Docco](http://jashkenas.github.io/docco/) are **not** literate
