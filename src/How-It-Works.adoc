@@ -20,8 +20,11 @@ To compile _and run_ Ulquikit, the following dependencies are required:
 Ulquikit contains 2 parts:
 
 * Bootstrap part: small and straightforward, consists of several Racket files
-  to extract source code and documents from all AcsciiDoc files is +src/+
-  directory of Ulquikit project.
+  to extract source code and documents from all AcsciiDoc files in +src/+
+
+** To generate source code, run +src/bootstrap/generate-src.rkt+
+
+** To generate documentation, run +src/bootstrap/generate-docs.rkt+
 
 * Main part: this file.
 
@@ -38,27 +41,6 @@ Let's dive into some terminology first
 ** A *file snippet* is a snippet producing a source file.
 ** A *code snippet* is a snippet storing source code that can be included into
    other snippets.
-
-== Bootstrap
-
-The two most important files from Bootstrap part are +generate-src.rkt+ and
-+generate-docs.rkt+.  Others are to declare utility functions.
-
-=== +bootstrap/generate-src.rkt+
-
-* Looks for and saves all AsciiDoc code blocks
-  ** If a block starts with +file::+ it's a file name
-  ** If a block starts with +code::+: it's a code block name
-  ** Otherwise, ignore the block.
-
-* For each file block, looks for +;; include::<name>+ and recursively replaces
-  that line with the corresponding block.  Proper indentation is inserted.
-  Invalid ++<name>++s are considered error.  Then writes its contents to the
-  corresponding file in +ulquikit/generated-src+.
-
-=== +bootstrap/generate-docs.rkt+
-
-Simply uses AsciiDoctor to generate docs to +ulquikit/generated-docs+.
 
 == Main program
 
