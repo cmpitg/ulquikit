@@ -339,68 +339,10 @@ The way +extract-snippet+ works is very simple:
 * If current line is _not_ an AsciiDoc code block delimiter: update snippet
   content if +inside-snippet+ is +#t+ and ignore this line otherwise.
 
-
 .code::extract-snippet
 [source,racket,linenums]
 ----
-(define is-block-delimiter?
-  #λ(regexp-match? #rx"^----( *)$" %))
-
-(module+ test
-  (check-equal? (is-block-delimiter? "----")    #t)
-  (check-equal? (is-block-delimiter? " ----")   #f)
-  (check-equal? (is-block-delimiter? "---- ")   #t)
-  (check-equal? (is-block-delimiter? "----  ")  #t)
-  (check-equal? (is-block-delimiter? "----a")   #f))
-
-(define is-block-title?
-  #λ(regexp-match? #rx"^\\.(file|code)::" %))
-
-(module+ test
-  (check-equal? (is-block-title? ".file::something")       #t)
-  (check-equal? (is-block-title? ".file::something else")  #t)
-  (check-equal? (is-block-title? ".file::")                #t)
-  (check-equal? (is-block-title? " .file::something")      #f)
-  (check-equal? (is-block-title? ".file:something")        #f))
-
-(define (add-snippets snippets snippet)
-  (let* ([type (snippet 'type)]
-         [name (snippet 'name)]
-
-         [snippets/typed         (snippets type)]
-         [snippets/typed/updated (snippets/typed name snippet)])
-    (snippets type snippets/typed/updated)))
-
-(module+ test
-  (check-equal? (add-snippets {'file {}
-                               'code {}}
-                              (create-snippet #:type 'file
-                                              #:name 'hello
-                                              #:linenum 10
-                                              #:content "Something"))
-                {'file {'hello {'type 'file
-                                'name 'hello
-                                'linenum 10
-                                'content "Something"}}
-                 'code {}})
-
-  (check-equal? (add-snippets {'file {'hello {'type 'file
-                                              'name 'hello
-                                              'linenum 10
-                                              'content "Something"}}
-                               'code {}}
-                              (create-snippet #:type 'code
-                                              #:name 'say-something
-                                              #:linenum 100
-                                              #:content "Something else"))
-                {'file {'hello {'type 'file
-                                'name 'hello
-                                'linenum 10
-                                'content "Something"}}
-                 'code {'say-something {'type 'code
-                                        'name 'say-something
-                                        'linenum 100
-                                        'content "Something else"}}}))
+;; include::extract-snippet-helpers
 
 ;; (define (extract-snippet path)
 ;;   (let* ([file-content (read-file path)]
@@ -555,6 +497,74 @@ The way +extract-snippet+ works is very simple:
 ;;         (check-equal? file-snippet expected-file-snippets))
 ;;       (remove-dir temp-dir))))
 ----
+
+Of course, for +extract-snippet+ to function, the following helpers are
+necessary:
+
+.code::extract-snippet-helpers
+[source,racket,linenums]
+----
+(define is-block-delimiter?
+  #λ(regexp-match? #rx"^----( *)$" %))
+
+(module+ test
+  (check-equal? (is-block-delimiter? "----")    #t)
+  (check-equal? (is-block-delimiter? " ----")   #f)
+  (check-equal? (is-block-delimiter? "---- ")   #t)
+  (check-equal? (is-block-delimiter? "----  ")  #t)
+  (check-equal? (is-block-delimiter? "----a")   #f))
+
+(define is-block-title?
+  #λ(regexp-match? #rx"^\\.(file|code)::" %))
+
+(module+ test
+  (check-equal? (is-block-title? ".file::something")       #t)
+  (check-equal? (is-block-title? ".file::something else")  #t)
+  (check-equal? (is-block-title? ".file::")                #t)
+  (check-equal? (is-block-title? " .file::something")      #f)
+  (check-equal? (is-block-title? ".file:something")        #f))
+
+(define (add-snippets snippets snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)]
+
+         [snippets/typed         (snippets type)]
+         [snippets/typed/updated (snippets/typed name snippet)])
+    (snippets type snippets/typed/updated)))
+
+(module+ test
+  (check-equal? (add-snippets {'file {}
+                               'code {}}
+                              (create-snippet #:type 'file
+                                              #:name 'hello
+                                              #:linenum 10
+                                              #:content "Something"))
+                {'file {'hello {'type 'file
+                                'name 'hello
+                                'linenum 10
+                                'content "Something"}}
+                 'code {}})
+
+  (check-equal? (add-snippets {'file {'hello {'type 'file
+                                              'name 'hello
+                                              'linenum 10
+                                              'content "Something"}}
+                               'code {}}
+                              (create-snippet #:type 'code
+                                              #:name 'say-something
+                                              #:linenum 100
+                                              #:content "Something else"))
+                {'file {'hello {'type 'file
+                                'name 'hello
+                                'linenum 10
+                                'content "Something"}}
+                 'code {'say-something {'type 'code
+                                        'name 'say-something
+                                        'linenum 100
+                                        'content "Something else"}}}))
+
+----
+
 
 Each is snippet is stored with the following format:
 
