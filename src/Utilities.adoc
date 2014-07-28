@@ -235,7 +235,31 @@ have a look:
 The last 2 examples show that +string-split+ breaks the structure of the input
 string, i.e. blank lines are not preversed.  This is a problem when the
 content of a file needs to be broken into lines while line numbers are
-preversed.
+preversed.  Thus, arise the need for an alternative way to process text:
++utils/text.rkt+.
+
+.file::utils/text.rkt
+[source,racket,linenums]
+----
+;; include::license-header
+
+;; include::use-rackjure
+
+(module+ test
+  (require rackunit))
+
+(provide (all-defined-out))
+
+;; include::utils/text/implementation
+
+----
+
+.code::utils/text/implementation
+[source,racket,linenums]
+----
+;; include::utils/text/lines
+----
+
 
 == Misc
 
