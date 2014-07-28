@@ -353,6 +353,45 @@ The way +extract-snippet+ works is very simple:
   (check-equal? (is-block-delimiter? "----  ")  #t)
   (check-equal? (is-block-delimiter? "----a")   #f))
 
+(define (add-snippets snippets snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)]
+
+         [snippets/typed         (snippets type)]
+         [snippets/typed/updated (snippets/typed name snippet)])
+    (snippets type snippets/typed/updated)))
+
+(module+ test
+  (check-equal? (add-snippets {'file {}
+                               'code {}}
+                              (create-snippet #:type 'file
+                                              #:name 'hello
+                                              #:linenum 10
+                                              #:content "Something"))
+                {'file {'hello {'type 'file
+                                'name 'hello
+                                'linenum 10
+                                'content "Something"}}
+                 'code {}})
+
+  (check-equal? (add-snippets {'file {'hello {'type 'file
+                                              'name 'hello
+                                              'linenum 10
+                                              'content "Something"}}
+                               'code {}}
+                              (create-snippet #:type 'code
+                                              #:name 'say-something
+                                              #:linenum 100
+                                              #:content "Something else"))
+                {'file {'hello {'type 'file
+                                'name 'hello
+                                'linenum 10
+                                'content "Something"}}
+                 'code {'say-something {'type 'code
+                                        'name 'say-something
+                                        'linenum 100
+                                        'content "Something else"}}}))
+
 ;; (define (extract-snippet path)
 ;;   (let* ([file-content (read-file path)]
 ;;          [lines        (string-split file-content "\n" #:trim? #f)]
