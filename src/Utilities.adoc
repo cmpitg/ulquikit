@@ -40,10 +40,10 @@ General-purpose utility functions.
 
 (require "utils.rkt")
 
+(provide (all-defined-out))
+
 (module+ test
   (require rackunit))
-
-(provide (all-defined-out))
 
 ;; include::utils/string/implementation
 
