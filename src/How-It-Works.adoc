@@ -387,116 +387,116 @@ The way +extract-snippet+ works is very simple:
 
     (unbox snippets)))
 
-;; (module+ test
-;;   (let* ([temp-dir (get-relative-path (get-temp-dir)
-;;                                       "./ulqui-extract-snippets/inside")]
+(module+ test
+  (let* ([temp-dir (get-relative-path (get-temp-dir)
+                                      "./ulqui-extract-snippets/inside")]
 
-;;          [expected-code-snippets
-;;           {"main-program" (string-join
-;;                            '(";; include::utils"
-;;                              ""
-;;                              "(module+ main"
-;;                              "  (displayln (string-reverse \"¡Hola mundo!\")))"
-;;                              "")
-;;                            "\n")
-;;            "use-rackjure" (string-join
-;;                            '("#lang rackjure"
-;;                              "(current-curly-dict hash)")
-;;                            "\n")
-;;            "license-header" ";; Just a sample license header."
-;;            "utils" ";; include::utils-string"
-;;            "utils-string" (string-join
-;;                            '("(define (string-reverse str)"
-;;                              "  (~> (string->list str)"
-;;                              "    reverse"
-;;                              "    list->string))")
-;;                            "\n")}]
+         [expected-code-snippets
+          {"main-program" (string-join
+                           '(";; include::utils"
+                             ""
+                             "(module+ main"
+                             "  (displayln (string-reverse \"¡Hola mundo!\")))"
+                             "")
+                           "\n")
+           "use-rackjure" (string-join
+                           '("#lang rackjure"
+                             "(current-curly-dict hash)")
+                           "\n")
+           "license-header" ";; Just a sample license header."
+           "utils" ";; include::utils-string"
+           "utils-string" (string-join
+                           '("(define (string-reverse str)"
+                             "  (~> (string->list str)"
+                             "    reverse"
+                             "    list->string))")
+                           "\n")}]
 
-;;          [expected-file-snippets
-;;           {"/tmp/tmp.rkt" (string-join
-;;                            '(";; include::license-header"
-;;                              ""
-;;                              ";; include::use-rackjure"
-;;                              ""
-;;                              ";; include::main-program"
-;;                              ""
-;;                              "== Main program"
-;;                              "")
-;;                            "\n")}]
+         [expected-file-snippets
+          {"/tmp/tmp.rkt" (string-join
+                           '(";; include::license-header"
+                             ""
+                             ";; include::use-rackjure"
+                             ""
+                             ";; include::main-program"
+                             ""
+                             "== Main program"
+                             "")
+                           "\n")}]
 
-;;          [file-list '("Main"
-;;                       "License"
-;;                       "inside/Utils"
-;;                       "inside/Utils-String")]
-;;          [source-files (for/list ([name (in-list file-list)])
-;;                          (get-relative-path (format "~a./~a.adoc"
-;;                                                     temp-dir
-;;                                                     name)))]
-;;          [content
-;;           {"Main" (string-join
-;;                    '("= A document"
-;;                      ""
-;;                      "Just a hello world program"
-;;                      ""
-;;                      ".file::/tmp/tmp.rkt"
-;;                      "[source,racket,linenums]"
-;;                      "----"
-;;                      (expected-file-snippets "/tmp/tmp.rkt")
-;;                      "----"
-;;                      ".code::main-program"
-;;                      "[source,racket,linenums]"
-;;                      "----"
-;;                      (expected-code-snippets "main-program")
-;;                      "----"
-;;                      ".code::use-rackjure"
-;;                      "[source]"
-;;                      "----"
-;;                      (expected-code-snippets "use-rackjure")
-;;                      "----"
-;;                      "")
-;;                    "\n")
-;;            "License" (string-join
-;;                       '("= License header"
-;;                         ""
-;;                         ".code::license-header"
-;;                         "[source,racket]"
-;;                         "----"
-;;                         (expected-code-snippets "license-header")
-;;                         "----")
-;;                       "\n")
-;;            "inside/Utils" (string-join
-;;                            '("= Utils"
-;;                              ""
-;;                              "Right now, we just want to include string utililities."
-;;                              ""
-;;                              ".code::utils"
-;;                              "[source,racket,linenums]"
-;;                              "----"
-;;                              (expected-code-snippets "utils")
-;;                              "----")
-;;                            "\n")
-;;            "inside/Utils-String" (string-join
-;;                                   '("= String Utilities"
-;;                                     ""
-;;                                     ".code::utils-string"
-;;                                     "[source,racket,linenums]"
-;;                                     "----"
-;;                                     (expected-code-snippets "utils-string")
-;;                                     "----")
-;;                                   "\n")}])
-;;     (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
-;;       (remove-dir temp-dir)
-;;       (create-dir temp-dir)
-;;       (for ([(filename content) (in-hash content)])
-;;         (let ([path (format "~a./~a.adoc" temp-dir filename)])
-;;           (display-to-file content path)))
+         [file-list '("Main"
+                      "License"
+                      "inside/Utils"
+                      "inside/Utils-String")]
+         [source-files (for/list ([name (in-list file-list)])
+                         (get-relative-path (format "~a./~a.adoc"
+                                                    temp-dir
+                                                    name)))]
+         [content
+          {"Main" (string-join
+                   (list "= A document"
+                         ""
+                         "Just a hello world program"
+                         ""
+                         ".file::/tmp/tmp.rkt"
+                         "[source,racket,linenums]"
+                         "----"
+                         (expected-file-snippets "/tmp/tmp.rkt")
+                         "----"
+                         ".code::main-program"
+                         "[source,racket,linenums]"
+                         "----"
+                         (expected-code-snippets "main-program")
+                         "----"
+                         ".code::use-rackjure"
+                         "[source]"
+                         "----"
+                         (expected-code-snippets "use-rackjure")
+                         "----"
+                         "")
+                   "\n")
+           "License" (string-join
+                      (list "= License header"
+                            ""
+                            ".code::license-header"
+                            "[source,racket]"
+                            "----"
+                            (expected-code-snippets "license-header")
+                            "----")
+                      "\n")
+           "inside/Utils" (string-join
+                           (list "= Utils"
+                                 ""
+                                 "Right now, we just want to include string utililities."
+                                 ""
+                                 ".code::utils"
+                                 "[source,racket,linenums]"
+                                 "----"
+                                 (expected-code-snippets "utils")
+                                 "----")
+                           "\n")
+           "inside/Utils-String" (string-join
+                                  (list "= String Utilities"
+                                        ""
+                                        ".code::utils-string"
+                                        "[source,racket,linenums]"
+                                        "----"
+                                        (expected-code-snippets "utils-string")
+                                        "----")
+                                  "\n")}])
+    (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
+      (remove-dir temp-dir)
+      (create-dir temp-dir)
+      (for ([(filename content) (in-hash content)])
+        (let ([path (format "~a./~a.adoc" temp-dir filename)])
+          (display-to-file content path)))
 
-;;       (let* ([snippets (extract-snippet temp-dir)]
-;;              [code-snippet (snippets 'code)]
-;;              [file-snippet (snippets 'file)])
-;;         (check-equal? code-snippet expected-code-snippets)
-;;         (check-equal? file-snippet expected-file-snippets))
-;;       (remove-dir temp-dir))))
+      (let* ([snippets (extract-snippet temp-dir)]
+             [code-snippet (snippets 'code)]
+             [file-snippet (snippets 'file)])
+        (check-equal? code-snippet expected-code-snippets)
+        (check-equal? file-snippet expected-file-snippets))
+      (remove-dir temp-dir))))
 ----
 
 Of course, for +extract-snippet+ to function, the following helpers are
