@@ -435,7 +435,13 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_general_purpose_utilities">1. General-purpose utilities</a></li>
 <li><a href="#_string">2. String</a></li>
 <li><a href="#_path">3. Path</a></li>
-<li><a href="#_misc">4. Misc</a></li>
+<li><a href="#_text">4. Text</a></li>
+<li>
+<ul class="sectlevel2">
+<li><a href="#_breaking_text_into_lines_code_lining_code">4.1. Breaking text into lines (<code>lining</code>)</a></li>
+</ul>
+</li>
+<li><a href="#_misc">5. Misc</a></li>
 </ul>
 </div>
 </div>
@@ -449,21 +455,43 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="listingblock">
 <div class="title">file::utils/utils.rkt</div>
 <div class="content">
-<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
-2
-3
-4
-5
-6
-7
-8</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-c1">;; include::utils/use-rackjure</span>
 
 <span class="tok-p">(</span><span class="tok-k">provide </span><span class="tok-p">(</span><span class="tok-nf">all-defined-out</span><span class="tok-p">))</span>
 
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-nv">rackunit</span><span class="tok-p">))</span>
+
 <span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">inc</span> <span class="tok-p">(</span><span class="tok-nf">partial</span> <span class="tok-nv">+</span> <span class="tok-mi">1</span><span class="tok-p">))</span>
+
 <span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">dec</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">- </span><span class="tok-nv">%</span> <span class="tok-mi">1</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">box-set!</span>
+  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">%1</span> <span class="tok-p">(</span><span class="tok-err">λ</span> <span class="tok-p">(</span><span class="tok-nf">_</span><span class="tok-p">)</span> <span class="tok-nv">%2</span><span class="tok-p">)))</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-mi">0</span><span class="tok-p">)</span> <span class="tok-mi">1</span><span class="tok-p">))</span> <span class="tok-mi">1</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;a&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;b&quot;</span><span class="tok-p">))</span> <span class="tok-s">&quot;b&quot;</span><span class="tok-p">))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -496,10 +524,10 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 
 <span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;utils.rkt&quot;</span><span class="tok-p">)</span>
 
+<span class="tok-p">(</span><span class="tok-k">provide </span><span class="tok-p">(</span><span class="tok-nf">all-defined-out</span><span class="tok-p">))</span>
+
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
   <span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-nv">rackunit</span><span class="tok-p">))</span>
-
-<span class="tok-p">(</span><span class="tok-k">provide </span><span class="tok-p">(</span><span class="tok-nf">all-defined-out</span><span class="tok-p">))</span>
 
 <span class="tok-c1">;; include::utils/string/implementation</span>
 </td></tr></table></code></pre>
@@ -563,8 +591,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 53
 54
 55
-56
-57</div></td><td class="code"><span class="tok-c1">;; #lang racket</span>
+56</div></td><td class="code"><span class="tok-c1">;; #lang racket</span>
 
 <span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 <span class="tok-c1">;; Implementation</span>
@@ -609,12 +636,11 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
   <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">string-ends-with?</span> <span class="tok-s">&quot;abcdef&quot;</span> <span class="tok-s">&quot;dee&quot;</span><span class="tok-p">)</span> <span class="tok-no">#f</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">string-ends-with?</span> <span class="tok-s">&quot;$ab$$c&quot;</span> <span class="tok-s">&quot;b$$c&quot;</span><span class="tok-p">)</span> <span class="tok-no">#t</span><span class="tok-p">))</span>
 
-<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">string-rest</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-nb">string-&gt;list </span><span class="tok-nv">%</span><span class="tok-p">)</span>
-                        <span class="tok-p">((</span><span class="tok-err">λ</span> <span class="tok-p">(</span><span class="tok-nf">lst</span><span class="tok-p">)</span>
-                           <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">lst</span><span class="tok-p">)</span>
-                               <span class="tok-nv">lst</span>
-                               <span class="tok-p">(</span><span class="tok-nf">rest</span> <span class="tok-nv">lst</span><span class="tok-p">))))</span>
-                        <span class="tok-nv">list-&gt;string</span><span class="tok-p">))</span>
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">string-empty?</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">zero? </span><span class="tok-p">(</span><span class="tok-nb">string-length </span><span class="tok-nv">%</span><span class="tok-p">)))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">string-rest</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">string-empty?</span> <span class="tok-nv">%</span><span class="tok-p">)</span>
+                          <span class="tok-s">&quot;&quot;</span>
+                          <span class="tok-p">(</span><span class="tok-nb">substring </span><span class="tok-nv">%</span> <span class="tok-mi">1</span><span class="tok-p">)))</span>
 
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
   <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">string-rest</span> <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
@@ -729,12 +755,13 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 64
 65
 66
-67
-68</div></td><td class="code"><span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+67</div></td><td class="code"><span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 <span class="tok-c1">;; Implementation</span>
 <span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 
 <span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">read-file</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">call-with-input-file </span><span class="tok-nv">%</span> <span class="tok-nv">port-&gt;string</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">standardize-path</span> <span class="tok-nv">simple-form-path</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">get-relative-path</span>
   <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">simple-form-path</span> <span class="tok-p">(</span><span class="tok-nb">apply </span><span class="tok-nv">build-path</span> <span class="tok-nv">%&amp;</span><span class="tok-p">)))</span>
@@ -795,16 +822,60 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
   <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-s">&quot;/tmp/tmp.rkt&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;/tmp/&quot;</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-s">&quot;/tmp/tmp/&quot;</span><span class="tok-p">)</span>    <span class="tok-s">&quot;/tmp/tmp/&quot;</span><span class="tok-p">))</span>
-
-<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">create-directory-tree</span>
-  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">system</span> <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-p">(</span><span class="tok-nf">~a</span> <span class="tok-s">&quot;mkdir -p &quot;</span> <span class="tok-nv">%</span><span class="tok-p">))))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_misc">4. Misc</h2>
+<h2 id="_text">4. Text</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>This module is born out of the need for a better text processing method.
+TODO: give example.</p>
+</div>
+<div class="listingblock">
+<div class="title">file::utils/text.rkt</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+
+<span class="tok-c1">;; include::use-rackjure</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-nv">rackunit</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">provide </span><span class="tok-p">(</span><span class="tok-nf">all-defined-out</span><span class="tok-p">))</span>
+
+<span class="tok-c1">;; include::utils/text/implementation</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="title">code::utils/text/implementation</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1</div></td><td class="code"><span class="tok-c1">;; To be implemented</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_breaking_text_into_lines_code_lining_code">4.1. Breaking text into lines (<code>lining</code>)</h3>
+<div class="paragraph">
+<p>One way to do this is to</p>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_misc">5. Misc</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">code::utils/use-rackjure</div>
@@ -824,7 +895,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-26 02:08:20 ICT
+Last updated 2014-07-28 17:44:44 ICT
 </div>
 </div>
 </body>

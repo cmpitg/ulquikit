@@ -24,5 +24,16 @@
 
 (provide (all-defined-out))
 
+(module+ test
+  (require rackunit))
+
 (define inc (partial + 1))
+
 (define dec #λ(- % 1))
+
+(define box-set!
+  #λ(box-swap! %1 (λ (_) %2)))
+
+(module+ test
+  (check-equal? (unbox (box-set! (box 0) 1)) 1)
+  (check-equal? (unbox (box-set! (box "a") "b")) "b"))

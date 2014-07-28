@@ -432,21 +432,22 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_bootstrap">1. Bootstrap</a></li>
+<li><a href="#_terminology">1. Terminology</a></li>
+<li><a href="#_bootstrap">2. Bootstrap</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#__code_bootstrap_generate_src_rkt_code">1.1. <code>bootstrap/generate-src.rkt</code></a></li>
-<li><a href="#__code_bootstrap_generate_docs_rkt_code">1.2. <code>bootstrap/generate-docs.rkt</code></a></li>
+<li><a href="#__code_bootstrap_generate_src_rkt_code">2.1. <code>bootstrap/generate-src.rkt</code></a></li>
+<li><a href="#__code_bootstrap_generate_docs_rkt_code">2.2. <code>bootstrap/generate-docs.rkt</code></a></li>
 </ul>
 </li>
-<li><a href="#_main_program">2. Main program</a></li>
+<li><a href="#_main_program">3. Main program</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_commands">2.1. Commands</a></li>
+<li><a href="#_commands">3.1. Commands</a></li>
 <li>
 <ul class="sectlevel3">
-<li><a href="#_core_functions_to_implement_commands">2.1.1. Core functions to implement commands</a></li>
-<li><a href="#_built_in_commands">2.1.2. Built-in commands</a></li>
+<li><a href="#_core_functions_to_implement_commands">3.1.1. Core functions to implement commands</a></li>
+<li><a href="#_built_in_commands">3.1.2. Built-in commands</a></li>
 <li>
 <ul class="sectlevel4">
 <li><a href="#__code_generate_src_code"><code>generate-src</code></a></li>
@@ -454,9 +455,9 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </li>
 </ul>
 </li>
-<li><a href="#_utility_functions">2.2. Utility functions</a></li>
-<li><a href="#_misc">2.3. Misc</a></li>
-<li><a href="#_license_header">2.4. License header</a></li>
+<li><a href="#_utility_functions">3.2. Utility functions</a></li>
+<li><a href="#_misc">3.3. Misc</a></li>
+<li><a href="#_license_header">3.4. License header</a></li>
 </ul>
 </li>
 </ul>
@@ -497,17 +498,48 @@ directory of Ulquikit project.</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p>Let&#8217;s dive into some terminology first</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_bootstrap">1. Bootstrap</h2>
+<h2 id="_terminology">1. Terminology</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>code block</strong> is an AsciiDoc code block.</p>
+</li>
+<li>
+<p>A <strong>snippet</strong> is a code block with Ulquikit-defined title and delimiter
+<code>----</code>.  By default, a code block title that starts <code>file::</code> and <code>code::</code>
+defines a <em>file snippet</em> and <em>code snippet</em>, respectively:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>A <strong>file snippet</strong> is a snippet producing a source file.</p>
+</li>
+<li>
+<p>A <strong>code snippet</strong> is a snippet storing source code that can be included into
+other snippets.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_bootstrap">2. Bootstrap</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The two most important files from Bootstrap part are <code>generate-src.rkt</code> and
 <code>generate-docs.rkt</code>.  Others are to declare utility functions.</p>
 </div>
 <div class="sect2">
-<h3 id="__code_bootstrap_generate_src_rkt_code">1.1. <code>bootstrap/generate-src.rkt</code></h3>
+<h3 id="__code_bootstrap_generate_src_rkt_code">2.1. <code>bootstrap/generate-src.rkt</code></h3>
 <div class="ulist">
 <ul>
 <li>
@@ -536,7 +568,7 @@ corresponding file in <code>ulquikit/generated-src</code>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="__code_bootstrap_generate_docs_rkt_code">1.2. <code>bootstrap/generate-docs.rkt</code></h3>
+<h3 id="__code_bootstrap_generate_docs_rkt_code">2.2. <code>bootstrap/generate-docs.rkt</code></h3>
 <div class="paragraph">
 <p>Simply uses AsciiDoctor to generate docs to <code>ulquikit/generated-docs</code>.</p>
 </div>
@@ -544,14 +576,14 @@ corresponding file in <code>ulquikit/generated-src</code>.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_main_program">2. Main program</h2>
+<h2 id="_main_program">3. Main program</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>The best way to use Ulquikit is to start with some commands.  Let&#8217;s define how
 commands work first:</p>
 </div>
 <div class="sect2">
-<h3 id="_commands">2.1. Commands</h3>
+<h3 id="_commands">3.1. Commands</h3>
 <div class="ulist">
 <ul>
 <li>
@@ -599,7 +631,7 @@ as documentation for that command when running from the command line with
 </ul>
 </div>
 <div class="sect3">
-<h4 id="_core_functions_to_implement_commands">2.1.1. Core functions to implement commands</h4>
+<h4 id="_core_functions_to_implement_commands">3.1.1. Core functions to implement commands</h4>
 <div class="listingblock">
 <div class="title">file::command-core.rkt</div>
 <div class="content">
@@ -851,7 +883,7 @@ appropriate keywords and values.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_built_in_commands">2.1.2. Built-in commands</h4>
+<h4 id="_built_in_commands">3.1.2. Built-in commands</h4>
 <div class="sect4">
 <h5 id="__code_generate_src_code"><code>generate-src</code></h5>
 <div class="listingblock">
@@ -871,11 +903,19 @@ appropriate keywords and values.</p>
 12
 13
 14
-15</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+15
+16
+17
+18
+19</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-c1">;; include::use-rackjure</span>
 
 <span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../command-core.rkt&quot;</span><span class="tok-p">)</span>
+
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/utils.rkt&quot;</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/path.rkt&quot;</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/string.rkt&quot;</span><span class="tok-p">)</span>
 
 <span class="tok-c1">;; (provide run</span>
 <span class="tok-c1">;;          help)</span>
@@ -920,21 +960,21 @@ appropriate keywords and values.</p>
 11
 12</div></td><td class="code"><span class="tok-c1">;; #lang racket</span>
 
-<span class="tok-c1">;; include::create-block</span>
+<span class="tok-c1">;; include::create-snippet</span>
 
-<span class="tok-c1">;; include::extract-blocks</span>
+<span class="tok-c1">;; include::extract-snippets</span>
 
 <span class="tok-c1">;; (define (run #:from [from &quot;src&quot;]</span>
 <span class="tok-c1">;;              #:to   [to   &quot;generated-src&quot;])</span>
 <span class="tok-c1">;;   (display-command &quot;generate-src&quot;)</span>
-<span class="tok-c1">;;   (~&gt; (extract-blocks from)</span>
-<span class="tok-c1">;;     (include-file-blocks)</span>
-<span class="tok-c1">;;     (write-blocks-to-files to)))</span>
+<span class="tok-c1">;;   (~&gt; (extract-snippets from)</span>
+<span class="tok-c1">;;     (include-file-snippets)</span>
+<span class="tok-c1">;;     (write-snippets-to-files to)))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p><code>extract-blocks</code> will</p>
+<p><code>extract-snippets</code> will</p>
 </div>
 <div class="ulist">
 <ul>
@@ -942,13 +982,17 @@ appropriate keywords and values.</p>
 <p>find all AsciiDoc files in a directory (argument: <code>dir</code>),</p>
 </li>
 <li>
-<p>extract all AsciiDoc code block with titles and return them as hashes with
-<code>create-block</code>.</p>
+<p>extract all AsciiDoc code snippet with titles and return them as hashes with
+<code>create-snippet</code>.</p>
 </li>
 </ul>
 </div>
+<div class="paragraph">
+<p><code>extract-snippets</code> relies on <code>extract-snippet</code>, which only extracts from one file
+at a time.</p>
+</div>
 <div class="listingblock">
-<div class="title">code::extract-blocks</div>
+<div class="title">code::extract-snippets</div>
 <div class="content">
 <pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">  1
   2
@@ -1065,17 +1109,29 @@ appropriate keywords and values.</p>
 113
 114
 115
-116</div></td><td class="code"><span class="tok-c1">;; lang racket</span>
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125</div></td><td class="code"><span class="tok-c1">;; lang racket</span>
 
-<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">extract-blocks</span> <span class="tok-nv">from-dir</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([</span><span class="tok-nf">file</span> <span class="tok-p">(</span><span class="tok-nf">list-all-adocs</span> <span class="tok-p">(</span><span class="tok-nf">standardize-path</span> <span class="tok-nv">from-dir</span><span class="tok-p">))])</span>
-    <span class="tok-p">(</span><span class="tok-nf">extract-block</span> <span class="tok-nv">file</span><span class="tok-p">)))</span>
+<span class="tok-c1">;; include::extract-snippet</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">extract-snippets</span> <span class="tok-nv">from-dir</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">for/fold</span> <span class="tok-p">([</span><span class="tok-nf">snippet</span> <span class="tok-p">{}])</span>
+      <span class="tok-p">([</span><span class="tok-nf">file</span> <span class="tok-p">(</span><span class="tok-nf">list-all-adocs</span> <span class="tok-p">(</span><span class="tok-nf">standardize-path</span> <span class="tok-nv">from-dir</span><span class="tok-p">))])</span>
+    <span class="tok-p">(</span><span class="tok-nf">dict-merge</span> <span class="tok-nv">snippet</span> <span class="tok-p">(</span><span class="tok-nf">extract-snippet</span> <span class="tok-nv">file</span><span class="tok-p">))))</span>
 
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">temp-dir</span> <span class="tok-p">(</span><span class="tok-nf">get-relative-path</span> <span class="tok-p">(</span><span class="tok-nf">get-temp-dir</span><span class="tok-p">)</span>
-                                      <span class="tok-s">&quot;./ulqui-extract-blocks/inside&quot;</span><span class="tok-p">)]</span>
+                                      <span class="tok-s">&quot;./ulqui-extract-snippets&quot;</span><span class="tok-p">)]</span>
 
-         <span class="tok-p">[</span><span class="tok-nf">expected-code-blocks</span>
+         <span class="tok-p">[</span><span class="tok-nf">expected-code-snippets</span>
           <span class="tok-p">{</span><span class="tok-s">&quot;main-program&quot;</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span>
                            <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;;; include::utils&quot;</span>
                              <span class="tok-s">&quot;&quot;</span>
@@ -1096,7 +1152,7 @@ appropriate keywords and values.</p>
                              <span class="tok-s">&quot;    list-&gt;string))&quot;</span><span class="tok-p">)</span>
                            <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)}]</span>
 
-         <span class="tok-p">[</span><span class="tok-nf">expected-file-blocks</span>
+         <span class="tok-p">[</span><span class="tok-nf">expected-file-snippets</span>
           <span class="tok-p">{</span><span class="tok-s">&quot;/tmp/tmp.rkt&quot;</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span>
                            <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;;; include::license-header&quot;</span>
                              <span class="tok-s">&quot;&quot;</span>
@@ -1118,108 +1174,133 @@ appropriate keywords and values.</p>
                                                     <span class="tok-nv">name</span><span class="tok-p">)))]</span>
          <span class="tok-p">[</span><span class="tok-nf">content</span>
           <span class="tok-p">{</span><span class="tok-s">&quot;Main&quot;</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span>
-                   <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;= A document&quot;</span>
-                     <span class="tok-s">&quot;&quot;</span>
-                     <span class="tok-s">&quot;Just a hello world program&quot;</span>
-                     <span class="tok-s">&quot;&quot;</span>
-                     <span class="tok-s">&quot;.file::/tmp/tmp.rkt&quot;</span>
-                     <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
-                     <span class="tok-s">&quot;----&quot;</span>
-                     <span class="tok-p">(</span><span class="tok-nf">expected-file-blocks</span> <span class="tok-s">&quot;/tmp/tmp.rkt&quot;</span><span class="tok-p">)</span>
-                     <span class="tok-s">&quot;----&quot;</span>
-                     <span class="tok-s">&quot;.code::main-program&quot;</span>
-                     <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
-                     <span class="tok-s">&quot;----&quot;</span>
-                     <span class="tok-p">(</span><span class="tok-nf">expected-code-blocks</span> <span class="tok-s">&quot;main-program&quot;</span><span class="tok-p">)</span>
-                     <span class="tok-s">&quot;----&quot;</span>
-                     <span class="tok-s">&quot;.code::use-rackjure&quot;</span>
-                     <span class="tok-s">&quot;[source]&quot;</span>
-                     <span class="tok-s">&quot;----&quot;</span>
-                     <span class="tok-p">(</span><span class="tok-nf">expected-code-blocks</span> <span class="tok-s">&quot;use-rackjure&quot;</span><span class="tok-p">)</span>
-                     <span class="tok-s">&quot;----&quot;</span>
-                     <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
+                   <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-s">&quot;= A document&quot;</span>
+                         <span class="tok-s">&quot;&quot;</span>
+                         <span class="tok-s">&quot;Just a hello world program&quot;</span>
+                         <span class="tok-s">&quot;&quot;</span>
+                         <span class="tok-s">&quot;.file::/tmp/tmp.rkt&quot;</span>
+                         <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
+                         <span class="tok-s">&quot;----&quot;</span>
+                         <span class="tok-p">(</span><span class="tok-nf">expected-file-snippets</span> <span class="tok-s">&quot;/tmp/tmp.rkt&quot;</span><span class="tok-p">)</span>
+                         <span class="tok-s">&quot;----&quot;</span>
+                         <span class="tok-s">&quot;.code::main-program&quot;</span>
+                         <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
+                         <span class="tok-s">&quot;----&quot;</span>
+                         <span class="tok-p">(</span><span class="tok-nf">expected-code-snippets</span> <span class="tok-s">&quot;main-program&quot;</span><span class="tok-p">)</span>
+                         <span class="tok-s">&quot;----&quot;</span>
+                         <span class="tok-s">&quot;.code::use-rackjure&quot;</span>
+                         <span class="tok-s">&quot;[source]&quot;</span>
+                         <span class="tok-s">&quot;----&quot;</span>
+                         <span class="tok-p">(</span><span class="tok-nf">expected-code-snippets</span> <span class="tok-s">&quot;use-rackjure&quot;</span><span class="tok-p">)</span>
+                         <span class="tok-s">&quot;----&quot;</span>
+                         <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
                    <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)</span>
            <span class="tok-s">&quot;License&quot;</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span>
-                      <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;= License header&quot;</span>
-                        <span class="tok-s">&quot;&quot;</span>
-                        <span class="tok-s">&quot;.code::license-header&quot;</span>
-                        <span class="tok-s">&quot;[source,racket]&quot;</span>
-                        <span class="tok-s">&quot;----&quot;</span>
-                        <span class="tok-p">(</span><span class="tok-nf">expected-code-blocks</span> <span class="tok-s">&quot;license-header&quot;</span><span class="tok-p">)</span>
-                        <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
+                      <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-s">&quot;= License header&quot;</span>
+                            <span class="tok-s">&quot;&quot;</span>
+                            <span class="tok-s">&quot;.code::license-header&quot;</span>
+                            <span class="tok-s">&quot;[source,racket]&quot;</span>
+                            <span class="tok-s">&quot;----&quot;</span>
+                            <span class="tok-p">(</span><span class="tok-nf">expected-code-snippets</span> <span class="tok-s">&quot;license-header&quot;</span><span class="tok-p">)</span>
+                            <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
                       <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)</span>
            <span class="tok-s">&quot;inside/Utils&quot;</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span>
-                           <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;= Utils&quot;</span>
-                             <span class="tok-s">&quot;&quot;</span>
-                             <span class="tok-s">&quot;Right now, we just want to include string utililities.&quot;</span>
-                             <span class="tok-s">&quot;&quot;</span>
-                             <span class="tok-s">&quot;.code::utils&quot;</span>
-                             <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
-                             <span class="tok-s">&quot;----&quot;</span>
-                             <span class="tok-p">(</span><span class="tok-nf">expected-code-blocks</span> <span class="tok-s">&quot;utils&quot;</span><span class="tok-p">)</span>
-                             <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
+                           <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-s">&quot;= Utils&quot;</span>
+                                 <span class="tok-s">&quot;&quot;</span>
+                                 <span class="tok-s">&quot;Right now, we just want to include string utililities.&quot;</span>
+                                 <span class="tok-s">&quot;&quot;</span>
+                                 <span class="tok-s">&quot;.code::utils&quot;</span>
+                                 <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
+                                 <span class="tok-s">&quot;----&quot;</span>
+                                 <span class="tok-p">(</span><span class="tok-nf">expected-code-snippets</span> <span class="tok-s">&quot;utils&quot;</span><span class="tok-p">)</span>
+                                 <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
                            <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)</span>
            <span class="tok-s">&quot;inside/Utils-String&quot;</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span>
-                                  <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;= String Utilities&quot;</span>
-                                    <span class="tok-s">&quot;&quot;</span>
-                                    <span class="tok-s">&quot;.code::utils-string&quot;</span>
-                                    <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
-                                    <span class="tok-s">&quot;----&quot;</span>
-                                    <span class="tok-p">(</span><span class="tok-nf">expected-code-blocks</span> <span class="tok-s">&quot;utils-string&quot;</span><span class="tok-p">)</span>
-                                    <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
+                                  <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-s">&quot;= String Utilities&quot;</span>
+                                        <span class="tok-s">&quot;&quot;</span>
+                                        <span class="tok-s">&quot;.code::utils-string&quot;</span>
+                                        <span class="tok-s">&quot;[source,racket,linenums]&quot;</span>
+                                        <span class="tok-s">&quot;----&quot;</span>
+                                        <span class="tok-p">(</span><span class="tok-nf">expected-code-snippets</span> <span class="tok-s">&quot;utils-string&quot;</span><span class="tok-p">)</span>
+                                        <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
                                   <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)}])</span>
     <span class="tok-p">(</span><span class="tok-k">with-handlers </span><span class="tok-p">([</span><span class="tok-nf">exn:fail?</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">remove-dir</span> <span class="tok-nv">temp-dir</span><span class="tok-p">)])</span>
       <span class="tok-p">(</span><span class="tok-nf">remove-dir</span> <span class="tok-nv">temp-dir</span><span class="tok-p">)</span>
-      <span class="tok-p">(</span><span class="tok-nf">create-dir</span> <span class="tok-nv">temp-dir</span><span class="tok-p">)</span>
+      <span class="tok-p">(</span><span class="tok-nf">create-dir</span> <span class="tok-p">(</span><span class="tok-nf">get-relative-path</span> <span class="tok-nv">temp-dir</span>
+                                     <span class="tok-s">&quot;./inside&quot;</span><span class="tok-p">))</span>
       <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([(</span><span class="tok-nf">filename</span> <span class="tok-nv">content</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nf">in-hash</span> <span class="tok-nv">content</span><span class="tok-p">)])</span>
-        <span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">([</span><span class="tok-nf">path</span> <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-s">&quot;~a./~a.adoc&quot;</span> <span class="tok-nv">temp-dir</span> <span class="tok-nv">filename</span><span class="tok-p">)])</span>
+        <span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">([</span><span class="tok-nf">path</span> <span class="tok-p">(</span><span class="tok-nf">get-relative-path</span> <span class="tok-nv">temp-dir</span>
+                                       <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-s">&quot;./~a.adoc&quot;</span> <span class="tok-nv">filename</span><span class="tok-p">))])</span>
           <span class="tok-p">(</span><span class="tok-nf">display-to-file</span> <span class="tok-nv">content</span> <span class="tok-nv">path</span><span class="tok-p">)))</span>
 
-      <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">blocks</span> <span class="tok-p">(</span><span class="tok-nf">extract-block</span> <span class="tok-nv">temp-dir</span><span class="tok-p">)]</span>
-             <span class="tok-p">[</span><span class="tok-nf">code-block</span> <span class="tok-p">(</span><span class="tok-nf">blocks</span> <span class="tok-ss">&#39;code</span><span class="tok-p">)]</span>
-             <span class="tok-p">[</span><span class="tok-nf">file-block</span> <span class="tok-p">(</span><span class="tok-nf">blocks</span> <span class="tok-ss">&#39;file</span><span class="tok-p">)])</span>
-        <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-nv">code-block</span> <span class="tok-nv">expected-code-blocks</span><span class="tok-p">)</span>
-        <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-nv">file-block</span> <span class="tok-nv">expected-file-blocks</span><span class="tok-p">))</span>
+      <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">snippets</span> <span class="tok-p">(</span><span class="tok-nf">extract-snippets</span> <span class="tok-nv">temp-dir</span><span class="tok-p">)]</span>
+             <span class="tok-p">[</span><span class="tok-nf">code-snippet</span> <span class="tok-p">(</span><span class="tok-nf">snippets</span> <span class="tok-ss">&#39;code</span><span class="tok-p">)]</span>
+             <span class="tok-p">[</span><span class="tok-nf">file-snippet</span> <span class="tok-p">(</span><span class="tok-nf">snippets</span> <span class="tok-ss">&#39;file</span><span class="tok-p">)])</span>
+
+        <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([(</span><span class="tok-nf">name</span> <span class="tok-nv">content</span><span class="tok-p">)</span> <span class="tok-nv">code-snippet</span><span class="tok-p">])</span>
+          <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">code-snippet</span> <span class="tok-nv">name</span><span class="tok-p">)</span> <span class="tok-nv">content</span><span class="tok-p">))</span>
+
+        <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([(</span><span class="tok-nf">name</span> <span class="tok-nv">content</span><span class="tok-p">)</span> <span class="tok-nv">file-snippet</span><span class="tok-p">])</span>
+          <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">file-snippet</span> <span class="tok-nv">name</span><span class="tok-p">)</span> <span class="tok-nv">content</span><span class="tok-p">)))</span>
       <span class="tok-p">(</span><span class="tok-nf">remove-dir</span> <span class="tok-nv">temp-dir</span><span class="tok-p">))))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each is code block is stored with the following format:</p>
+<p>The way <code>extract-snippet</code> works is very simple:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>It will first read the content of a file and break it into lines while
+preserving line numbers (thus the call to <code>string-split</code> with <code>#:trim? #f</code>).</p>
+</li>
+<li>
+<p>Iterate through each line, one by one</p>
+</li>
+<li>
+<p>If the current line is an AsciiDoc code block delimiter (i.e. <code>----</code>), since
+we only care about snippet, there are several posibilities:</p>
+<div class="ulist">
+<ul>
+<li>
+<p>if we are already inside a snippet (when <code>inside-snippet</code> is <code>#t</code>), it
+means the snippet is finished ⇨ reset <code>inside-snippet</code> to <code>#f</code>;</p>
+</li>
+<li>
+<p>if we are outside a snippet (when <code>inside-snippet</code> is <code>#f</code>) and the
+previous line does not define a new snippet (i.e. it doesn&#8217;t start with
+<code>file::</code> or <code>code::</code> or user-defined ones), ignore this case;</p>
+</li>
+<li>
+<p>if we are outside a snippet (when <code>inside-snippet</code> is <code>#f</code>) and the
+previous line does define a new snippet (starting with <code>file::</code> or <code>code::</code>
+or user-defined ones) ⇨</p>
+<div class="ulist">
+<ul>
+<li>
+<p>set <code>inside-snippet</code> to <code>#t</code></p>
+</li>
+<li>
+<p>save the snippet name, and</p>
+</li>
+<li>
+<p>save the line number marking the beginning of the snippet;</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p>If current line is <em>not</em> an AsciiDoc code block delimiter: update snippet
+content if <code>inside-snippet</code> is <code>#t</code> and ignore this line otherwise.</p>
+</li>
+</ul>
 </div>
 <div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
-2
-3</div></td><td class="code"><span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-nv">code-block-type</span>          <i class="conum" data-value="1"></i><b>(1)</b>
- <span class="tok-ss">&#39;name</span> <span class="tok-nv">code-block-name</span>          <i class="conum" data-value="2"></i><b>(2)</b>
- <span class="tok-ss">&#39;content</span> <span class="tok-nv">code-block-content</span><span class="tok-p">}</span>   <i class="conum" data-value="3"></i><b>(3)</b>
-</td></tr></table></code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>is either <code>'file</code> or <code>'code</code></td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>is the name of the code block; e.g. block title <code>file::something</code> has
-<code>something</code> as its name</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>is the content of the code block, i.e. which is surrounded by <code>----</code> in
-AsciiDoc format</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Thus, <code>create-block</code> is implemented as followed:</p>
-</div>
-<div class="listingblock">
-<div class="title">code::create-block</div>
+<div class="title">code::extract-snippet</div>
 <div class="content">
 <pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
  2
@@ -1248,11 +1329,325 @@ AsciiDoc format</td>
 25
 26
 27
-28</div></td><td class="code"><span class="tok-c1">;; #lang racket</span>
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47</div></td><td class="code"><span class="tok-c1">;; include::extract-snippet-helpers</span>
 
-<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">create-block</span> <span class="tok-kd">#:type</span> <span class="tok-nv">type</span>
-                      <span class="tok-kd">#:name</span> <span class="tok-nv">name</span>
-                      <span class="tok-kd">#:content</span> <span class="tok-nv">content</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">extract-snippet</span> <span class="tok-nv">path</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">file-content</span> <span class="tok-p">(</span><span class="tok-nf">read-file</span> <span class="tok-nv">path</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">lines</span>        <span class="tok-p">(</span><span class="tok-nf">string-split</span> <span class="tok-nv">file-content</span> <span class="tok-s">&quot;\n&quot;</span> <span class="tok-kd">#:trim?</span> <span class="tok-no">#f</span><span class="tok-p">)]</span>
+
+         <span class="tok-p">[</span><span class="tok-nf">snippets</span>        <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-p">{</span><span class="tok-ss">&#39;file</span> <span class="tok-p">{}</span>
+                                <span class="tok-ss">&#39;code</span> <span class="tok-p">{}})]</span>
+
+         <span class="tok-p">[</span><span class="tok-nf">prev-prev-line</span>  <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">prev-line</span>       <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">)]</span>
+
+         <span class="tok-p">[</span><span class="tok-nf">snippet-type</span>    <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-nv">null</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">snippet-content</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">snippet-name</span>    <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">snippet-linenum</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-mi">0</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">inside-snippet</span>  <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-no">#f</span><span class="tok-p">)])</span>
+
+    <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([</span><span class="tok-nf">line-num</span>    <span class="tok-p">(</span><span class="tok-nf">in-naturals</span> <span class="tok-mi">1</span><span class="tok-p">)]</span>
+          <span class="tok-p">[</span><span class="tok-nf">line</span>        <span class="tok-p">(</span><span class="tok-nf">in-list</span> <span class="tok-nv">lines</span><span class="tok-p">)])</span>
+      <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-nv">line</span><span class="tok-p">)</span>
+          <span class="tok-p">(</span><span class="tok-k">cond </span><span class="tok-p">[(</span><span class="tok-nb">unbox </span><span class="tok-nv">inside-snippet</span><span class="tok-p">)</span>
+
+                 <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">inside-snippet</span> <span class="tok-no">#f</span><span class="tok-p">)</span>
+                 <span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">snippets</span>
+                            <span class="tok-nv">add-snippets</span>
+                            <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-type</span><span class="tok-p">)</span>
+                                            <span class="tok-kd">#:name</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-name</span><span class="tok-p">)</span>
+                                            <span class="tok-kd">#:linenum</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-linenum</span><span class="tok-p">)</span>
+                                            <span class="tok-kd">#:content</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-content</span><span class="tok-p">)))]</span>
+
+                <span class="tok-p">[</span><span class="tok-nf">else</span>
+                 <span class="tok-p">(</span><span class="tok-k">when </span><span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">))</span>
+                   <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">inside-snippet</span> <span class="tok-no">#t</span><span class="tok-p">)</span>
+
+                   <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-type</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-type</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">)))</span>
+                   <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-name</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">)))</span>
+                   <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-content</span> <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
+                   <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-linenum</span> <span class="tok-p">(</span><span class="tok-nf">dec</span> <span class="tok-nv">line-num</span><span class="tok-p">)))])</span>
+          <span class="tok-p">(</span><span class="tok-k">when </span><span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">inside-snippet</span><span class="tok-p">)</span>
+            <span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">snippet-content</span> <span class="tok-nv">string-append</span> <span class="tok-s">&quot;\n&quot;</span> <span class="tok-nv">line</span><span class="tok-p">)))</span>
+
+      <span class="tok-c1">;; Always update previous line</span>
+      <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">prev-prev-line</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-line</span><span class="tok-p">))</span>
+      <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">prev-line</span>      <span class="tok-nv">line</span><span class="tok-p">))</span>
+
+    <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippets</span><span class="tok-p">)))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Of course, for <code>extract-snippet</code> to function, the following helpers are
+necessary:</p>
+</div>
+<div class="listingblock">
+<div class="title">code::extract-snippet-helpers</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">is-block-delimiter?</span>
+  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">regexp-match? </span><span class="tok-sr">#rx&quot;^----( *)$&quot;</span> <span class="tok-nv">%</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>    <span class="tok-no">#t</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-s">&quot; ----&quot;</span><span class="tok-p">)</span>   <span class="tok-no">#f</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-s">&quot;---- &quot;</span><span class="tok-p">)</span>   <span class="tok-no">#t</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-s">&quot;----  &quot;</span><span class="tok-p">)</span>  <span class="tok-no">#t</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-s">&quot;----a&quot;</span><span class="tok-p">)</span>   <span class="tok-no">#f</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">is-block-title?</span>
+  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">regexp-match? </span><span class="tok-sr">#rx&quot;^\\.(file|code)::&quot;</span> <span class="tok-nv">%</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-s">&quot;.file::something&quot;</span><span class="tok-p">)</span>       <span class="tok-no">#t</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-s">&quot;.file::something else&quot;</span><span class="tok-p">)</span>  <span class="tok-no">#t</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-s">&quot;.file::&quot;</span><span class="tok-p">)</span>                <span class="tok-no">#t</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-s">&quot;.file:something&quot;</span><span class="tok-p">)</span>        <span class="tok-no">#f</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">get-snippet-type</span>
+  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-nf">string-rest</span> <span class="tok-nv">%</span><span class="tok-p">)</span>
+      <span class="tok-p">(</span><span class="tok-nf">string-split</span> <span class="tok-s">&quot;::&quot;</span><span class="tok-p">)</span>
+      <span class="tok-p">(</span><span class="tok-nb">list-ref </span><span class="tok-mi">0</span><span class="tok-p">)</span>
+      <span class="tok-nv">string-&gt;symbol</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-type</span> <span class="tok-s">&quot;.file::&quot;</span><span class="tok-p">)</span>  <span class="tok-ss">&#39;file</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-type</span> <span class="tok-s">&quot;.code::&quot;</span><span class="tok-p">)</span>  <span class="tok-ss">&#39;code</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">get-snippet-name</span>
+  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-nf">string-rest</span> <span class="tok-nv">%</span><span class="tok-p">)</span>
+      <span class="tok-p">(</span><span class="tok-nf">string-split</span> <span class="tok-s">&quot;::&quot;</span><span class="tok-p">)</span>
+      <span class="tok-p">(</span><span class="tok-nb">append </span><span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;&quot;</span><span class="tok-p">))</span>
+      <span class="tok-p">(</span><span class="tok-nb">list-ref </span><span class="tok-mi">1</span><span class="tok-p">)))</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-s">&quot;.file::&quot;</span><span class="tok-p">)</span>     <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-s">&quot;.code::&quot;</span><span class="tok-p">)</span>     <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-s">&quot;.file::abc&quot;</span><span class="tok-p">)</span>  <span class="tok-s">&quot;abc&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-s">&quot;.code::a b&quot;</span><span class="tok-p">)</span>  <span class="tok-s">&quot;a b&quot;</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">add-snippets</span> <span class="tok-nv">snippets</span> <span class="tok-nv">snippet</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">type</span> <span class="tok-p">(</span><span class="tok-nf">snippet</span> <span class="tok-ss">&#39;type</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">name</span> <span class="tok-p">(</span><span class="tok-nf">snippet</span> <span class="tok-ss">&#39;name</span><span class="tok-p">)]</span>
+
+         <span class="tok-p">[</span><span class="tok-nf">snippets/typed</span>         <span class="tok-p">(</span><span class="tok-nf">snippets</span> <span class="tok-nv">type</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">snippets/typed/updated</span> <span class="tok-p">(</span><span class="tok-nf">snippets/typed</span> <span class="tok-nv">name</span> <span class="tok-nv">snippet</span><span class="tok-p">)])</span>
+    <span class="tok-p">(</span><span class="tok-nf">snippets</span> <span class="tok-nv">type</span> <span class="tok-nv">snippets/typed/updated</span><span class="tok-p">)))</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">add-snippets</span> <span class="tok-p">{</span><span class="tok-ss">&#39;file</span> <span class="tok-p">{}</span>
+                               <span class="tok-ss">&#39;code</span> <span class="tok-p">{}}</span>
+                              <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-ss">&#39;file</span>
+                                              <span class="tok-kd">#:name</span> <span class="tok-ss">&#39;hello</span>
+                                              <span class="tok-kd">#:linenum</span> <span class="tok-mi">10</span>
+                                              <span class="tok-kd">#:content</span> <span class="tok-s">&quot;Something&quot;</span><span class="tok-p">))</span>
+                <span class="tok-p">{</span><span class="tok-ss">&#39;file</span> <span class="tok-p">{</span><span class="tok-ss">&#39;hello</span> <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-ss">&#39;file</span>
+                                <span class="tok-ss">&#39;name</span> <span class="tok-ss">&#39;hello</span>
+                                <span class="tok-ss">&#39;linenum</span> <span class="tok-mi">10</span>
+                                <span class="tok-ss">&#39;content</span> <span class="tok-s">&quot;Something&quot;</span><span class="tok-p">}}</span>
+                 <span class="tok-ss">&#39;code</span> <span class="tok-p">{}})</span>
+
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">add-snippets</span> <span class="tok-p">{</span><span class="tok-ss">&#39;file</span> <span class="tok-p">{</span><span class="tok-ss">&#39;hello</span> <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-ss">&#39;file</span>
+                                              <span class="tok-ss">&#39;name</span> <span class="tok-ss">&#39;hello</span>
+                                              <span class="tok-ss">&#39;linenum</span> <span class="tok-mi">10</span>
+                                              <span class="tok-ss">&#39;content</span> <span class="tok-s">&quot;Something&quot;</span><span class="tok-p">}}</span>
+                               <span class="tok-ss">&#39;code</span> <span class="tok-p">{}}</span>
+                              <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-ss">&#39;code</span>
+                                              <span class="tok-kd">#:name</span> <span class="tok-ss">&#39;say-something</span>
+                                              <span class="tok-kd">#:linenum</span> <span class="tok-mi">100</span>
+                                              <span class="tok-kd">#:content</span> <span class="tok-s">&quot;Something else&quot;</span><span class="tok-p">))</span>
+                <span class="tok-p">{</span><span class="tok-ss">&#39;file</span> <span class="tok-p">{</span><span class="tok-ss">&#39;hello</span> <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-ss">&#39;file</span>
+                                <span class="tok-ss">&#39;name</span> <span class="tok-ss">&#39;hello</span>
+                                <span class="tok-ss">&#39;linenum</span> <span class="tok-mi">10</span>
+                                <span class="tok-ss">&#39;content</span> <span class="tok-s">&quot;Something&quot;</span><span class="tok-p">}}</span>
+                 <span class="tok-ss">&#39;code</span> <span class="tok-p">{</span><span class="tok-ss">&#39;say-something</span> <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-ss">&#39;code</span>
+                                        <span class="tok-ss">&#39;name</span> <span class="tok-ss">&#39;say-something</span>
+                                        <span class="tok-ss">&#39;linenum</span> <span class="tok-mi">100</span>
+                                        <span class="tok-ss">&#39;content</span> <span class="tok-s">&quot;Something else&quot;</span><span class="tok-p">}}}))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each is snippet is stored with the following format:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4</div></td><td class="code"><span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-nv">snippet-type</span>          <i class="conum" data-value="1"></i><b>(1)</b>
+ <span class="tok-ss">&#39;name</span> <span class="tok-nv">snippet-name</span>          <i class="conum" data-value="2"></i><b>(2)</b>
+ <span class="tok-ss">&#39;linenum</span> <span class="tok-nv">line-number</span>        <i class="conum" data-value="3"></i><b>(3)</b>
+ <span class="tok-ss">&#39;content</span> <span class="tok-nv">snippet-content</span><span class="tok-p">}</span>   <i class="conum" data-value="4"></i><b>(4)</b>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>is either <code>'file</code> or <code>'code</code></td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>is the name of the snippet; e.g. snippet with title <code>file::something</code> has
+<code>something</code> as its name</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>is the line number from the literate source code from where the snippet is
+extracted</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>is the content of the code snippet, i.e. which is surrounded by <code>----</code> in
+AsciiDoc format</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Thus, <code>create-snippet</code> is implemented as followed:</p>
+</div>
+<div class="listingblock">
+<div class="title">code::create-snippet</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34</div></td><td class="code"><span class="tok-c1">;; #lang racket</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-nv">type</span>
+                        <span class="tok-kd">#:name</span> <span class="tok-nv">name</span>
+                        <span class="tok-kd">#:linenum</span> <span class="tok-nv">linenum</span>
+                        <span class="tok-kd">#:content</span> <span class="tok-nv">content</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">([</span><span class="tok-nf">type</span> <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nb">symbol? </span><span class="tok-nv">type</span><span class="tok-p">)</span>
                   <span class="tok-nv">type</span>
                   <span class="tok-p">(</span><span class="tok-nb">string-&gt;symbol </span><span class="tok-nv">type</span><span class="tok-p">))]</span>
@@ -1261,20 +1656,25 @@ AsciiDoc format</td>
                   <span class="tok-p">(</span><span class="tok-nb">string-&gt;symbol </span><span class="tok-nv">name</span><span class="tok-p">))])</span>
     <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-nv">type</span>
      <span class="tok-ss">&#39;name</span> <span class="tok-nv">name</span>
+     <span class="tok-ss">&#39;linenum</span> <span class="tok-nv">linenum</span>
      <span class="tok-ss">&#39;content</span> <span class="tok-nv">content</span><span class="tok-p">}))</span>
 
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
-  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">create-block</span> <span class="tok-kd">#:type</span> <span class="tok-ss">&#39;file</span>
-                              <span class="tok-kd">#:name</span> <span class="tok-ss">&#39;hello-world</span>
-                              <span class="tok-kd">#:content</span> <span class="tok-s">&quot;Hmm&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-ss">&#39;file</span>
+                                <span class="tok-kd">#:name</span> <span class="tok-ss">&#39;hello-world</span>
+                                <span class="tok-kd">#:linenum</span> <span class="tok-mi">10</span>
+                                <span class="tok-kd">#:content</span> <span class="tok-s">&quot;Hmm&quot;</span><span class="tok-p">)</span>
                 <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-ss">&#39;file</span>
                  <span class="tok-ss">&#39;name</span> <span class="tok-ss">&#39;hello-world</span>
+                 <span class="tok-ss">&#39;linenum</span> <span class="tok-mi">10</span>
                  <span class="tok-ss">&#39;content</span> <span class="tok-s">&quot;Hmm&quot;</span><span class="tok-p">})</span>
-  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">create-block</span> <span class="tok-kd">#:type</span> <span class="tok-s">&quot;string&quot;</span>
-                              <span class="tok-kd">#:name</span> <span class="tok-s">&quot;string&quot;</span>
-                              <span class="tok-kd">#:content</span> <span class="tok-s">&quot;string&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-s">&quot;string&quot;</span>
+                                <span class="tok-kd">#:name</span> <span class="tok-s">&quot;string&quot;</span>
+                                <span class="tok-kd">#:linenum</span> <span class="tok-mi">100</span>
+                                <span class="tok-kd">#:content</span> <span class="tok-s">&quot;string&quot;</span><span class="tok-p">)</span>
                 <span class="tok-p">{</span><span class="tok-ss">&#39;type</span> <span class="tok-ss">&#39;string</span>
                  <span class="tok-ss">&#39;name</span> <span class="tok-ss">&#39;string</span>
+                 <span class="tok-ss">&#39;linenum</span> <span class="tok-mi">100</span>
                  <span class="tok-ss">&#39;content</span> <span class="tok-s">&quot;string&quot;</span><span class="tok-p">}))</span>
 </td></tr></table></code></pre>
 </div>
@@ -1283,13 +1683,13 @@ AsciiDoc format</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_utility_functions">2.2. Utility functions</h3>
+<h3 id="_utility_functions">3.2. Utility functions</h3>
 <div class="paragraph">
 <p>See <a href="Utilities.html">Utilities</a>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_misc">2.3. Misc</h3>
+<h3 id="_misc">3.3. Misc</h3>
 <div class="listingblock">
 <div class="title">code::use-rackjure</div>
 <div class="content">
@@ -1303,7 +1703,7 @@ AsciiDoc format</td>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_license_header">2.4. License header</h3>
+<h3 id="_license_header">3.4. License header</h3>
 <div class="paragraph">
 <p>Of course, since Ulquikit is distributed under the terms of GPLv3, the license
 header is necessary.</p>
@@ -1338,7 +1738,7 @@ header is necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-26 02:07:56 ICT
+Last updated 2014-07-28 17:46:23 ICT
 </div>
 </div>
 </body>

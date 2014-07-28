@@ -23,6 +23,7 @@
 
 (require "../command-core.rkt")
 
+(require "../utils/utils.rkt")
 (require "../utils/path.rkt")
 (require "../utils/string.rkt")
 
@@ -36,9 +37,10 @@
 
 ;; #lang racket
 
-(define (create-block #:type type
-                      #:name name
-                      #:content content)
+(define (create-snippet #:type type
+                        #:name name
+                        #:linenum linenum
+                        #:content content)
   (let ([type (if (symbol? type)
                   type
                   (string->symbol type))]
@@ -47,34 +49,168 @@
                   (string->symbol name))])
     {'type type
      'name name
+     'linenum linenum
      'content content}))
 
 (module+ test
-  (check-equal? (create-block #:type 'file
-                              #:name 'hello-world
-                              #:content "Hmm")
+  (check-equal? (create-snippet #:type 'file
+                                #:name 'hello-world
+                                #:linenum 10
+                                #:content "Hmm")
                 {'type 'file
                  'name 'hello-world
+                 'linenum 10
                  'content "Hmm"})
-  (check-equal? (create-block #:type "string"
-                              #:name "string"
-                              #:content "string")
+  (check-equal? (create-snippet #:type "string"
+                                #:name "string"
+                                #:linenum 100
+                                #:content "string")
                 {'type 'string
                  'name 'string
+                 'linenum 100
                  'content "string"}))
 
 
 ;; lang racket
 
-(define (extract-block path)
-  (let* ([content (read-file path)])
-    _))
+(define is-block-delimiter?
+  #λ(regexp-match? #rx"^----( *)$" %))
+
+(module+ test
+  (check-equal? (is-block-delimiter? "----")    #t)
+  (check-equal? (is-block-delimiter? " ----")   #f)
+  (check-equal? (is-block-delimiter? "---- ")   #t)
+  (check-equal? (is-block-delimiter? "----  ")  #t)
+  (check-equal? (is-block-delimiter? "----a")   #f))
+
+(define is-block-title?
+  #λ(regexp-match? #rx"^\\.(file|code)::" %))
+
+(module+ test
+  (check-equal? (is-block-title? ".file::something")       #t)
+  (check-equal? (is-block-title? ".file::something else")  #t)
+  (check-equal? (is-block-title? ".file::")                #t)
+  (check-equal? (is-block-title? ".file:something")        #f))
+
+(define get-snippet-type
+  #λ(~> (string-rest %)
+      (string-split "::")
+      (list-ref 0)
+      string->symbol))
+
+(module+ test
+  (check-equal? (get-snippet-type ".file::")  'file)
+  (check-equal? (get-snippet-type ".code::")  'code))
+
+(define get-snippet-name
+  #λ(~> (string-rest %)
+      (string-split "::")
+      (append '(""))
+      (list-ref 1)))
+
+(module+ test
+  (check-equal? (get-snippet-name ".file::")     "")
+  (check-equal? (get-snippet-name ".code::")     "")
+  (check-equal? (get-snippet-name ".file::abc")  "abc")
+  (check-equal? (get-snippet-name ".code::a b")  "a b"))
+
+(define (add-snippets snippets snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)]
+
+         [snippets/typed         (snippets type)]
+         [snippets/typed/updated (snippets/typed name snippet)])
+    (snippets type snippets/typed/updated)))
+
+(module+ test
+  (check-equal? (add-snippets {'file {}
+                               'code {}}
+                              (create-snippet #:type 'file
+                                              #:name 'hello
+                                              #:linenum 10
+                                              #:content "Something"))
+                {'file {'hello {'type 'file
+                                'name 'hello
+                                'linenum 10
+                                'content "Something"}}
+                 'code {}})
+
+  (check-equal? (add-snippets {'file {'hello {'type 'file
+                                              'name 'hello
+                                              'linenum 10
+                                              'content "Something"}}
+                               'code {}}
+                              (create-snippet #:type 'code
+                                              #:name 'say-something
+                                              #:linenum 100
+                                              #:content "Something else"))
+                {'file {'hello {'type 'file
+                                'name 'hello
+                                'linenum 10
+                                'content "Something"}}
+                 'code {'say-something {'type 'code
+                                        'name 'say-something
+                                        'linenum 100
+                                        'content "Something else"}}}))
+
+
+(define (extract-snippet path)
+  (let* ([file-content (read-file path)]
+         [lines        (string-split file-content "\n" #:trim? #f)]
+
+         [snippets        (box {'file {}
+                                'code {}})]
+
+         [prev-prev-line  (box "")]
+         [prev-line       (box "")]
+
+         [snippet-type    (box null)]
+         [snippet-content (box "")]
+         [snippet-name    (box "")]
+         [snippet-linenum (box 0)]
+         [inside-snippet  (box #f)])
+
+    (for ([line-num    (in-naturals 1)]
+          [line        (in-list lines)])
+      (if (is-block-delimiter? line)
+          (cond [(unbox inside-snippet)
+
+                 (box-set! inside-snippet #f)
+                 (box-swap! snippets
+                            add-snippets
+                            (create-snippet #:type (unbox snippet-type)
+                                            #:name (unbox snippet-name)
+                                            #:linenum (unbox snippet-linenum)
+                                            #:content (unbox snippet-content)))]
+
+                [else
+                 (when (is-block-title? (unbox prev-prev-line))
+                   (box-set! inside-snippet #t)
+
+                   (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
+                   (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
+                   (box-set! snippet-content "")
+                   (box-set! snippet-linenum (dec line-num)))])
+          (when (unbox inside-snippet)
+            (box-swap! snippet-content string-append "\n" line)))
+
+      ;; Always update previous line
+      (box-set! prev-prev-line (unbox prev-line))
+      (box-set! prev-line      line))
+
+    (unbox snippets)))
+
+
+(define (extract-snippets from-dir)
+  (for/fold ([snippet {}])
+      ([file (list-all-adocs (standardize-path from-dir))])
+    (dict-merge snippet (extract-snippet file))))
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
-                                      "./ulqui-extract-blocks/inside")]
+                                      "./ulqui-extract-snippets")]
 
-         [expected-code-blocks
+         [expected-code-snippets
           {"main-program" (string-join
                            '(";; include::utils"
                              ""
@@ -95,7 +231,7 @@
                              "    list->string))")
                            "\n")}]
 
-         [expected-file-blocks
+         [expected-file-snippets
           {"/tmp/tmp.rkt" (string-join
                            '(";; include::license-header"
                              ""
@@ -117,82 +253,83 @@
                                                     name)))]
          [content
           {"Main" (string-join
-                   '("= A document"
-                     ""
-                     "Just a hello world program"
-                     ""
-                     ".file::/tmp/tmp.rkt"
-                     "[source,racket,linenums]"
-                     "----"
-                     (expected-file-blocks "/tmp/tmp.rkt")
-                     "----"
-                     ".code::main-program"
-                     "[source,racket,linenums]"
-                     "----"
-                     (expected-code-blocks "main-program")
-                     "----"
-                     ".code::use-rackjure"
-                     "[source]"
-                     "----"
-                     (expected-code-blocks "use-rackjure")
-                     "----"
-                     "")
+                   (list "= A document"
+                         ""
+                         "Just a hello world program"
+                         ""
+                         ".file::/tmp/tmp.rkt"
+                         "[source,racket,linenums]"
+                         "----"
+                         (expected-file-snippets "/tmp/tmp.rkt")
+                         "----"
+                         ".code::main-program"
+                         "[source,racket,linenums]"
+                         "----"
+                         (expected-code-snippets "main-program")
+                         "----"
+                         ".code::use-rackjure"
+                         "[source]"
+                         "----"
+                         (expected-code-snippets "use-rackjure")
+                         "----"
+                         "")
                    "\n")
            "License" (string-join
-                      '("= License header"
-                        ""
-                        ".code::license-header"
-                        "[source,racket]"
-                        "----"
-                        (expected-code-blocks "license-header")
-                        "----")
+                      (list "= License header"
+                            ""
+                            ".code::license-header"
+                            "[source,racket]"
+                            "----"
+                            (expected-code-snippets "license-header")
+                            "----")
                       "\n")
            "inside/Utils" (string-join
-                           '("= Utils"
-                             ""
-                             "Right now, we just want to include string utililities."
-                             ""
-                             ".code::utils"
-                             "[source,racket,linenums]"
-                             "----"
-                             (expected-code-blocks "utils")
-                             "----")
+                           (list "= Utils"
+                                 ""
+                                 "Right now, we just want to include string utililities."
+                                 ""
+                                 ".code::utils"
+                                 "[source,racket,linenums]"
+                                 "----"
+                                 (expected-code-snippets "utils")
+                                 "----")
                            "\n")
            "inside/Utils-String" (string-join
-                                  '("= String Utilities"
-                                    ""
-                                    ".code::utils-string"
-                                    "[source,racket,linenums]"
-                                    "----"
-                                    (expected-code-blocks "utils-string")
-                                    "----")
+                                  (list "= String Utilities"
+                                        ""
+                                        ".code::utils-string"
+                                        "[source,racket,linenums]"
+                                        "----"
+                                        (expected-code-snippets "utils-string")
+                                        "----")
                                   "\n")}])
     (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
       (remove-dir temp-dir)
-      (create-dir temp-dir)
+      (create-dir (get-relative-path temp-dir
+                                     "./inside"))
       (for ([(filename content) (in-hash content)])
-        (let ([path (format "~a./~a.adoc" temp-dir filename)])
+        (let ([path (get-relative-path temp-dir
+                                       (format "./~a.adoc" filename))])
           (display-to-file content path)))
 
-      (let* ([blocks (extract-block temp-dir)]
-             [code-block (blocks 'code)]
-             [file-block (blocks 'file)])
-        (check-equal? code-block expected-code-blocks)
-        (check-equal? file-block expected-file-blocks))
-      (remove-dir temp-dir))))
+      (let* ([snippets (extract-snippets temp-dir)]
+             [code-snippet (snippets 'code)]
+             [file-snippet (snippets 'file)])
 
-(define (extract-blocks from-dir)
-  (for/fold ([block {}])
-      ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge block (extract-block file))))
+        (for ([(name content) code-snippet])
+          (check-equal? (code-snippet name) content))
+
+        (for ([(name content) file-snippet])
+          (check-equal? (file-snippet name) content)))
+      (remove-dir temp-dir))))
 
 
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
 ;;   (display-command "generate-src")
-;;   (~> (extract-blocks from)
-;;     (include-file-blocks)
-;;     (write-blocks-to-files to)))
+;;   (~> (extract-snippets from)
+;;     (include-file-snippets)
+;;     (write-snippets-to-files to)))
 
 
 ;; TO-BE-IMPLEMENTED

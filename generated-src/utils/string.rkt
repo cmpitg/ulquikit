@@ -76,12 +76,11 @@
   (check-equal? (string-ends-with? "abcdef" "dee") #f)
   (check-equal? (string-ends-with? "$ab$$c" "b$$c") #t))
 
-(define string-rest #λ(~> (string->list %)
-                        ((λ (lst)
-                           (if (empty? lst)
-                               lst
-                               (rest lst))))
-                        list->string))
+(define string-empty? #λ(zero? (string-length %)))
+
+(define string-rest #λ(if (string-empty? %)
+                          ""
+                          (substring % 1)))
 
 (module+ test
   (check-equal? (string-rest "") "")
