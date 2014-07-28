@@ -389,7 +389,7 @@ The way +extract-snippet+ works is very simple:
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
-                                      "./ulqui-extract-snippets/inside")]
+                                      "./ulqui-extract-snippets")]
 
          [expected-code-snippets
           {"main-program" (string-join
@@ -486,9 +486,11 @@ The way +extract-snippet+ works is very simple:
                                   "\n")}])
     (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
       (remove-dir temp-dir)
-      (create-dir temp-dir)
+      (create-dir (get-relative-path temp-dir
+                                     "./inside"))
       (for ([(filename content) (in-hash content)])
-        (let ([path (format "~a./~a.adoc" temp-dir filename)])
+        (let ([path (get-relative-path temp-dir
+                                       (format "./~a.adoc" filename))])
           (display-to-file content path)))
 
       (let* ([snippets (extract-snippet temp-dir)]
