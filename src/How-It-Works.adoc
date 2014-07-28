@@ -524,6 +524,14 @@ necessary:
   (check-equal? (is-block-title? " .file::something")      #f)
   (check-equal? (is-block-title? ".file:something")        #f))
 
+(define get-snippet-type
+  #λ(string->symbol (list-ref (string-split % "::") 0)))
+
+(module+ test
+  (check-equal? (get-snippet-type ".file::")  'file)
+  (check-equal? (get-snippet-type ".code::")  'code)
+  (check-equal? (get-snippet-type " .file::") 'code))
+
 (define (add-snippets snippets snippet)
   (let* ([type (snippet 'type)]
          [name (snippet 'name)]
