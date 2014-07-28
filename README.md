@@ -98,35 +98,51 @@ vice versa.
 
 ## Examples ##
 
-## Installation (not yet available) ##
+## Requirements ##
 
-For Debian-based system, using `sudo` instead of `su`
+* Racket 6.0+
 
-Racket 5.3+
+* Ruby 1.9.3+
+
+* [AsciiDoctor](http://asciidoctor.org/)
+
+## Installation ##
+
+Make sure you have Racket and Ruby installed.  One of the best way to install
+Ruby is to use RVM.  Visit:
+
+* http://racket-lang.org for Racket installation instruction
+
+* https://rvm.io/ for RVM and Ruby installation instruction
+
+### Quick Installation (not yet available) ###
+
+#### If you have Ruby installed ####
+
+For Debian-based system:
 
 ```sh
-sudo aptitude install racket
 raco install ulquikit
+ulquikit install-dependencies
 ```
 
-Ruby 1.9.3+:
+#### If you don't have Ruby installed ####
 
 ```sh
-# Best to install with RVM, visit https://rvm.io/
-# Single-user installation
+raco install ulquikit
+ulquikit install-dependencies-with-ruby
+```
+
+This will install Ruby using RVM with single-user mode.  Behind the scene, the
+following commands are executed:
+
+```sh
 \curl -sSL https://get.rvm.io | bash -s stable
-# For Bash
-echo "source $HOME/.rvm/scripts/rvm" >> ~/.bash_profile
-# For Zsh
-echo "source $HOME/.rvm/scripts/rvm" >> ~/.zshrc
+echo "source $HOME/.rvm/scripts/rvm" >> ~/.profile
 source $HOME/.rvm/scripts/rvm
 rvm install 1.9
-```
-
-Gem dependencies:
-
-```sh
-ulqui install-ruby-dependencies
+rvm use 1.9 --default
+gem install asciidoctor
 ```
 
 ## Trivia ##
