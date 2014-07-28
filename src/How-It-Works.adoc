@@ -273,40 +273,94 @@ By default, +ulqui generate-src+ extracts source code from
 ----
 ;; #lang racket
 
-;; include::create-block
+;; include::create-snippet
 
-;; include::extract-blocks
+;; include::extract-snippets
 
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
 ;;   (display-command "generate-src")
-;;   (~> (extract-blocks from)
-;;     (include-file-blocks)
-;;     (write-blocks-to-files to)))
+;;   (~> (extract-snippets from)
+;;     (include-file-snippets)
+;;     (write-snippets-to-files to)))
 
 ----
 
-+extract-blocks+ will
++extract-snippets+ will
 
 * find all AsciiDoc files in a directory (argument: +dir+),
-* extract all AsciiDoc code block with titles and return them as hashes with
-  +create-block+.
+* extract all AsciiDoc code snippet with titles and return them as hashes with
+  +create-snippet+.
 
++extract-snippets+ relies on +extract-snippet+, which only extracts from one file
+at a time.
 
-.code::extract-blocks
+.code::extract-snippets
 [source,racket,linenums]
 ----
 ;; lang racket
 
-(define (extract-block path)
-  (let* ([content (read-file path)])
-    _))
+;; include::extract-snippet
+
+(define (extract-snippets from-dir)
+  (for/fold ([snippet {}])
+      ([file (list-all-adocs (standardize-path from-dir))])
+    (dict-merge snippet (extract-snippet file))))
+
+----
+
+The way +extract-snippet+ works is very simple:
+
+* It will first read the content of a file and break it into lines while
+  preserving line numbers (thus the call to +string-split+ with +#:trim? #f+).
+
+* Iterate through each line, one by one
+
+* If the current line is an AsciiDoc code block delimiter (i.e. +----+), since
+  we only care about snippet, there are several posibilities:
+
+** if we are already inside a snippet (when +inside-snippet+ is +#t+), it
+   means the snippet is finished ⇨ reset +inside-snippet+ to +#f+;
+
+** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
+   previous line does not define a new snippet (i.e. it doesn't start with
+   +file::+ or +code::+ or user-defined ones), ignore this case;
+
+** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
+   previous line does define a new snippet (starting with +file::+ or +code::+
+   or user-defined ones) ⇨
+   
+*** set +inside-snippet+ to +#f+
+
+*** save the snippet name, and
+
+*** save the line number marking the beginning of the snippet;
+
+* If current line is _not_ an AsciiDoc code block delimiter: update snippet
+  content if +inside-snippet+ is +#t+ and ignore this line otherwise.
+
+
+.code::extract-snippet
+[source,racket,linenums]
+----
+last-line
+snippet-content
+snippet-name
+inside-snippet?
+
+(define (extract-snippet path)
+  (let* ([content (read-file path)]
+         [lines (string-split content "\n" #:trim? #f)])
+    (for ([line-num    (in-naturals 1)]
+          [line        (in-list lines)])
+      (let* ([demiliter?  (is-snippet-delimiter? line)]
+             [new-snippet-name (if )])))))
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
-                                      "./ulqui-extract-blocks/inside")]
+                                      "./ulqui-extract-snippets/inside")]
 
-         [expected-code-blocks
+         [expected-code-snippets
           {"main-program" (string-join
                            '(";; include::utils"
                              ""
@@ -327,7 +381,7 @@ By default, +ulqui generate-src+ extracts source code from
                              "    list->string))")
                            "\n")}]
 
-         [expected-file-blocks
+         [expected-file-snippets
           {"/tmp/tmp.rkt" (string-join
                            '(";; include::license-header"
                              ""
@@ -356,17 +410,17 @@ By default, +ulqui generate-src+ extracts source code from
                      ".file::/tmp/tmp.rkt"
                      "[source,racket,linenums]"
                      "----"
-                     (expected-file-blocks "/tmp/tmp.rkt")
+                     (expected-file-snippets "/tmp/tmp.rkt")
                      "----"
                      ".code::main-program"
                      "[source,racket,linenums]"
                      "----"
-                     (expected-code-blocks "main-program")
+                     (expected-code-snippets "main-program")
                      "----"
                      ".code::use-rackjure"
                      "[source]"
                      "----"
-                     (expected-code-blocks "use-rackjure")
+                     (expected-code-snippets "use-rackjure")
                      "----"
                      "")
                    "\n")
@@ -376,7 +430,7 @@ By default, +ulqui generate-src+ extracts source code from
                         ".code::license-header"
                         "[source,racket]"
                         "----"
-                        (expected-code-blocks "license-header")
+                        (expected-code-snippets "license-header")
                         "----")
                       "\n")
            "inside/Utils" (string-join
@@ -387,7 +441,7 @@ By default, +ulqui generate-src+ extracts source code from
                              ".code::utils"
                              "[source,racket,linenums]"
                              "----"
-                             (expected-code-blocks "utils")
+                             (expected-code-snippets "utils")
                              "----")
                            "\n")
            "inside/Utils-String" (string-join
@@ -396,7 +450,7 @@ By default, +ulqui generate-src+ extracts source code from
                                     ".code::utils-string"
                                     "[source,racket,linenums]"
                                     "----"
-                                    (expected-code-blocks "utils-string")
+                                    (expected-code-snippets "utils-string")
                                     "----")
                                   "\n")}])
     (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
@@ -406,45 +460,42 @@ By default, +ulqui generate-src+ extracts source code from
         (let ([path (format "~a./~a.adoc" temp-dir filename)])
           (display-to-file content path)))
 
-      (let* ([blocks (extract-block temp-dir)]
-             [code-block (blocks 'code)]
-             [file-block (blocks 'file)])
-        (check-equal? code-block expected-code-blocks)
-        (check-equal? file-block expected-file-blocks))
+      (let* ([snippets (extract-snippet temp-dir)]
+             [code-snippet (snippets 'code)]
+             [file-snippet (snippets 'file)])
+        (check-equal? code-snippet expected-code-snippets)
+        (check-equal? file-snippet expected-file-snippets))
       (remove-dir temp-dir))))
-
-(define (extract-blocks from-dir)
-  (for/fold ([block {}])
-      ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge block (extract-block file))))
-
 ----
 
-
-Each is code block is stored with the following format:
+Each is snippet is stored with the following format:
 
 [source,racket,linenums]
 ----
-{'type code-block-type          <1>
- 'name code-block-name          <2>
- 'content code-block-content}   <3>
+{'type snippet-type          <1>
+ 'name snippet-name          <2>
+ 'linenum line-number        <3>
+ 'content snippet-content}   <4>
 ----
 <1> is either +'file+ or +'code+
-<2> is the name of the code block; e.g. block title +file::something+ has
+<2> is the name of the snippet; e.g. snippet with title +file::something+ has
 +something+ as its name
-<3> is the content of the code block, i.e. which is surrounded by +----+ in
+<3> is the line number from the literate source code from where the snippet is
+extracted
+<4> is the content of the code snippet, i.e. which is surrounded by +----+ in
 AsciiDoc format
 
-Thus, +create-block+ is implemented as followed:
+Thus, +create-snippet+ is implemented as followed:
 
-.code::create-block
+.code::create-snippet
 [source,racket,linenums]
 ----
 ;; #lang racket
 
-(define (create-block #:type type
-                      #:name name
-                      #:content content)
+(define (create-snippet #:type type
+                        #:name name
+                        #:linenum linenum
+                        #:content content)
   (let ([type (if (symbol? type)
                   type
                   (string->symbol type))]
@@ -453,20 +504,24 @@ Thus, +create-block+ is implemented as followed:
                   (string->symbol name))])
     {'type type
      'name name
+     'linenum linenum
      'content content}))
 
 (module+ test
-  (check-equal? (create-block #:type 'file
-                              #:name 'hello-world
-                              #:content "Hmm")
+  (check-equal? (create-snippet #:type 'file
+                                #:name 'hello-world
+                                #:linenum 10
+                                #:content "Hmm")
                 {'type 'file
                  'name 'hello-world
+                 'linenum 10
                  'content "Hmm"})
-  (check-equal? (create-block #:type "string"
-                              #:name "string"
-                              #:content "string")
+  (check-equal? (create-snippet #:type "string"
+                                #:name "string"
+                                #:content "string")
                 {'type 'string
                  'name 'string
+                 'linenum 10
                  'content "string"}))
 
 ----
