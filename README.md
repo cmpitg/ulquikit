@@ -38,26 +38,21 @@ To quote prof. Knuth:
 
 ## Misunderstandings ##
 
-Tools like [Docco](http://jashkenas.github.io/docco/) are **not** literate
-programming tools.  They are essentially documentation tools with literate
-programming *style*.
+Note that my personal idea is not included here.  Everything is drawn directly
+from Knuth's work.
 
-*Literate programming* is a way of writing (not just coding, but **writing**)
-by producing documents (**not** documentation).  It's not about *reading*
-source code and documentation but *writing*, *reusing* and *extending* them.
-It's not about *generating beautiful documentation*.
+The most common misunderstanding is that tools like
+[Docco](http://jashkenas.github.io/docco/) are considered literate programming
+tools.  They are not.  They are documentation tools with literate programming
+style.
 
-You can't focus on reading the doc.  You can't define snippets and move them
-around.  You can't reuse snippets.  Again, that's **not** literate
-programming.
+*Literate programming* is a way of **programming**, not *generating beautiful
+documentation*.
 
 In traditional way of programming, programmers *write code and supply
 documentation*.  In literate programming, programmers *write documents and
-supply code*.
-
-*Calling* tools like Docco literate programming tools causes huge
-misunderstanding.  Not only do they not get the art of it, they spread wrong
-ideas about Knuth's work as well.
+supply code*.  The source code is there as a side effect of the document, not
+vice versa.
 
 ## Why literate programming? ##
 
