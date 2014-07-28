@@ -349,8 +349,10 @@ The way +extract-snippet+ works is very simple:
   (let* ([file-content (read-file path)]
          [lines        (string-split file-content "\n" #:trim? #f)]
 
-         [snippets        (box {})]
+         [snippets        (box {'file {}
+                                'code {}})]
 
+         [prev-prev-line  (box "")]
          [prev-line       (box "")]
 
          [snippet-type    (box null)]
@@ -363,7 +365,8 @@ The way +extract-snippet+ works is very simple:
           [line        (in-list lines)])
       (if (is-block-delimiter? line)
           (cond [(unbox inside-snippet)
-                 (box-cas! inside-snippet #f)
+
+                 (box-set! inside-snippet #f)
                  (box-swap! snippets
                             add-snippets
                             (create-snippet #:type (unbox snippet-type)
@@ -372,18 +375,19 @@ The way +extract-snippet+ works is very simple:
                                             #:content (unbox snippet-content)))]
 
                 [else
-                 (when (is-block-title? (unbox prev-line))
-                   (box-cas! inside-snippet #t)
+                 (when (is-block-title? (unbox prev-prev-line))
+                   (box-set! inside-snippet #t)
 
-                   (box-cas! snippet-type (get-snippet-type line))
-                   (box-cas! snippet-name (get-snippet-name line))
-                   (box-cas! snippet-content "")
-                   (box-cas! snippet-linenum (dec line)))])
-          (when (inside-snippet)
+                   (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
+                   (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
+                   (box-set! snippet-content "")
+                   (box-set! snippet-linenum (dec line-num)))])
+          (when (unbox inside-snippet)
             (box-swap! snippet-content string-append "\n" line)))
 
       ;; Always update previous line
-      (box-cas! prev-line line))
+      (box-set! prev-prev-line (unbox prev-line))
+      (box-set! prev-line      line))
 
     (unbox snippets)))
 
@@ -493,11 +497,15 @@ The way +extract-snippet+ works is very simple:
                                        (format "./~a.adoc" filename))])
           (display-to-file content path)))
 
-      (let* ([snippets (extract-snippet temp-dir)]
+      (let* ([snippets (extract-snippets temp-dir)]
              [code-snippet (snippets 'code)]
              [file-snippet (snippets 'file)])
-        (check-equal? code-snippet expected-code-snippets)
-        (check-equal? file-snippet expected-file-snippets))
+
+        (for ([(name content) code-snippet])
+          (check-equal? (code-snippet name) content))
+
+        (for ([(name content) file-snippet])
+          (check-equal? (file-snippet name) content)))
       (remove-dir temp-dir))))
 ----
 
