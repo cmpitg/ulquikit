@@ -418,13 +418,14 @@ at a time.
              [code-snippet (snippets 'code)]
              [file-snippet (snippets 'file)])
 
-        (for ([(name content) code-snippet])
-          (check-equal? (code-snippet name) content))
+        (for ([(name snippet) code-snippet])
+          (check-equal? (snippet 'content)
+                        (expected-code-snippets name)))
 
-        (for ([(name content) file-snippet])
-          (check-equal? (file-snippet name) content)))
+        (for ([(name snippet) file-snippet])
+          (check-equal? (snippet 'content)
+                        (expected-file-snippets name))))
       (remove-dir temp-dir))))
-
 ----
 
 The way +extract-snippet+ works is very simple:
