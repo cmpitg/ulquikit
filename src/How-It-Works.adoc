@@ -123,69 +123,142 @@ Thus, +create-snippet+ is simply implemented as followed:
 
 ----
 
+Now the helper +create-snippet+ is ready.  Let's move on to
++extract-snippets-from-file+.
 
-               [next-keyword (if (is-argument? current-arg)
-                                 null
-                                 (parse-keyword current-arg))]
-               [arg/converted (if (is-argument? current-arg)
-                                  (if-let [value (string->number current-arg)]
-                                    value
-                                    current-arg)
-                                  (parse-keyword current-arg))]
-               [next-result-value
-                (or (and (is-argument? current-arg)
-                         (or (and (null? last-keyword)
-                                  (list arg/converted))
-                             (list (list last-keyword arg/converted))))
++extract-snippets-from-file+ needs to determine whether _a line in a code
+block_ belongs to a _code snippet_, or _file snippet_, or none of those; then
+extracts the content of the code block and store it if necessary.  Let's have
+a look at 3 types of code block to see how we could tackle this problem:
 
-                    (and (is-option? current-arg)
-                         (or (and (null? last-keyword)
-                                  '())
-                             (list (list last-keyword #t)))))])
-          (parse next-keyword
-                 more
-                 (append result next-result-value))))))
+* A _code snippet_ has the following format:
++
+[listing]
+..........
+.code::title-of-the-code-block  <1>
+[source]                        <2>
+----                            <3>
+Content of the code block
+----                            <4>
+..........
 
-(module+ test
-  (check-equal? (parse-command-args "") '())
+* A _file snippet_ shares the same structure as a _code snippet_:
++
+[listing]
+..........
+.file::title-of-the-code-block  <1>
+[source]                        <2>
+----                            <3>
+Content of the code block
+----                            <4>
+..........
 
-  (check-equal? (parse-command-args "hello-world")
-                '("hello-world"))
+* A non-snippet code block is any block without +code::...+ or +file::...+ as
+  its title:
++
+[listing]
+..........
+[source]                        <2>
+----                            <3>
+Content of the code block
+----                            <4>
 
-  (check-equal? (parse-command-args "hello world")
-                '("hello" "world"))
+....                            <3>
+This is a literal block
+....                            <4>
+..........
 
-  (check-equal? (parse-command-args "--help")
-                '([#:help #t]))
+<1> block title
+<2> block type
+<3> block delimiter
+<4> block delimiter
 
-  (check-equal? (parse-command-args "hello --help")
-                '("hello" [#:help #t]))
+As we can clearly see from the 3 examples, _code snippets_ and _file snippets_
+could be determined by checking 2^nd^ previous line from block delimiter to
+see if it starts with +.file::+ or +.code::+.  Everything between the 2
+delimiters is stored as the content of the snippet.
 
-  (check-equal? (parse-command-args "--help hello")
-                '([#:help "hello"]))
+Hence, we have the following algorithm for +extract-snippets-from-file+:
 
-  (check-equal? (parse-command-args "hello world --help --set-tab 4")
-                '("hello" "world"
-                  [#:help #t]
-                  [#:set-tab 4])))
+* Read the content of a file
 
-----
+* Break the content into lines preserving line numbers (call +string-split+
+  with +#:trim? #f+).
 
+* For each line:
 
-+run-command+ the result of parse-command-args and perform the actual call to
-+run+ function of the module implementing the command.
+** If we're already inside a snippet:
 
-.code::command/run-command
+*** Complete a snippet and add it to snippet list if current line is a block
+    delimiter (i.e. +----+)
+
+*** Add current line to the current snippet's content if current line is not a
+    block delimiter
+
+** If we're outside a snippet, we only care if current line is a block
+   delimiter (i.e. +----+):
+
+*** If this block has a title that marks the beginning of a snippet (i.e. the
+    2^nd^ previous line starts with +.file::+ or +.code::+), extract snippet
+    name and add a new snippet.  Otherwise
+
+*** If this block does not mark the beginning of a snippet, ignore it.
+
+.code::extract-snippets-from-file
 [source,racket,linenums]
 ----
-;; (define (run-command . arguments)
-;;   (void)
-;;   )
+;; include::extract-snippets-from-file-helpers
+
+(define (extract-snippets-from-file path)
+  (let* ([file-content (read-file path)]
+         [lines        (string-split file-content "\n" #:trim? #f)]
+
+         [snippets        (box {'file {}
+                                      'code {}})]
+
+         [prev-prev-line  (box "")]
+         [prev-line       (box "")]
+
+         [snippet-type    (box null)]
+         [snippet-lines   (box '())]
+         [snippet-name    (box "")]
+         [snippet-linenum (box 0)]
+         [inside-snippet  (box #f)])
+
+    (for ([line-num    (in-naturals 1)]
+          [line        (in-list lines)])
+      (if (is-block-delimiter? line)
+          (if (unbox inside-snippet)
+
+              (begin
+                (box-set! inside-snippet #f)
+                (box-swap! snippets
+                           add-snippets
+                           (create-snippet #:type (unbox snippet-type)
+                                           #:name (unbox snippet-name)
+                                           #:linenum (unbox snippet-linenum)
+                                           #:content (string-join (unbox snippet-lines)
+                                                                  "\n"))))
+
+              (when (is-block-title? (unbox prev-prev-line))
+                (box-set! inside-snippet #t)
+
+                (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
+                (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
+                (box-set! snippet-lines '())
+                (box-set! snippet-linenum (dec line-num))))
+
+          (when (unbox inside-snippet)
+            (box-swap! snippet-lines append (list line))))
+
+      ;; Always update previous line
+      (box-set! prev-prev-line (unbox prev-line))
+      (box-set! prev-line      line))
+
+    (unbox snippets)))
+
 ----
 
-==== Built-in commands
-
-===== +generate-src+
 
 .file::commands/generate-src.rkt
 [source,racket,linenums]
