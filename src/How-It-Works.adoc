@@ -246,6 +246,7 @@ appropriate keywords and values.
 
 (require "../command-core.rkt")
 
+(require "../utils/utils.rkt")
 (require "../utils/path.rkt")
 (require "../utils/string.rkt")
 
