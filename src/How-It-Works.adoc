@@ -623,6 +623,7 @@ be created with <<func/create-snippet,+create-snippet+>>.
 
 Thus, +create-snippet+ is implemented as followed:
 
+[[func/create-snippet]]
 .code::create-snippet
 [source,racket,linenums]
 ----
@@ -636,8 +637,8 @@ Thus, +create-snippet+ is implemented as followed:
                   type
                   (string->symbol type))]
         [name (if (symbol? name)
-                  name
-                  (string->symbol name))])
+                  (symbol->string name)
+                  name)])
     {'type type
      'name name
      'linenum linenum
@@ -649,7 +650,7 @@ Thus, +create-snippet+ is implemented as followed:
                                 #:linenum 10
                                 #:content "Hmm")
                 {'type 'file
-                 'name 'hello-world
+                 'name "hello-world"
                  'linenum 10
                  'content "Hmm"})
   (check-equal? (create-snippet #:type "string"
@@ -657,7 +658,7 @@ Thus, +create-snippet+ is implemented as followed:
                                 #:linenum 100
                                 #:content "string")
                 {'type 'string
-                 'name 'string
+                 'name "string"
                  'linenum 100
                  'content "string"}))
 
