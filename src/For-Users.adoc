@@ -25,11 +25,10 @@ There are 3 kinds of code block types (with regards of AsciiDoc syntax):
 * Code blocks whose titles start with either +file::+ or +code::+
   <<define-block-delimiter,or your preferences>>:
 
-** +file::+ blocks indicate a file block, which will be output to a file.
-+
-E.g. +file::somefile.rkt+ or +file::/somefile.rkt+ produces
-+<your-project-root>/generated-src/somefile.rkt+ by default, unless you
-specify another +generated-src+ location.  These are called *file snippets*.
+** +file::somefile.rkt+ or +file::/somefile.rkt+ produces
+   +<your-project-root>/generated-src/somefile.rkt+ by default, unless you
+   specify another +generated-src+ location.  These are called *file
+   snippets*.
 +
 There have been some discussions over whether +file::/path+ should be
 different from +file::path+ but I decided that they should be the same.  You
