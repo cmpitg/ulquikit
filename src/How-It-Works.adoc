@@ -612,11 +612,14 @@ Each is snippet is stored with the following format:
 ----
 <1> is either +'file+ or +'code+
 <2> is the name of the snippet; e.g. snippet with title +file::something+ has
-+something+ as its name
++something+ as its name.  Note that snippet name is _a string_.
 <3> is the line number from the literate source code from where the snippet is
 extracted
 <4> is the content of the code snippet, i.e. which is surrounded by +----+ in
 AsciiDoc format
+
+NOTE: Snippets should never be created by directly by using hash.  They should
+be created with <<func/create-snippet,+create-snippet+>>.
 
 Thus, +create-snippet+ is implemented as followed:
 
