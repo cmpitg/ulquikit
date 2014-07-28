@@ -21,6 +21,9 @@ General-purpose utility functions.
 
 (provide (all-defined-out))
 
+(module+ test
+  (require rackunit))
+
 (define inc (partial + 1))
 (define dec #λ(- % 1))
 
