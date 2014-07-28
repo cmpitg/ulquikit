@@ -90,8 +90,8 @@
         (*file-blocks* ((*file-blocks*) name block))
         (*code-blocks* ((*code-blocks*) name block)))))
 
-(define (is-code-block-title? str)
-  (regexp-match? #rx"\\.(file|code)::" str))
+(define is-code-block-title?
+  #λ(regexp-match? #rx"\\.(file|code)::" %))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
