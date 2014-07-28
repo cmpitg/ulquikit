@@ -229,7 +229,5 @@
         (extract-blocks)
         (include-file-blocks)
         (write-blocks-to-files)
-
-        (displayln (~a (hash-keys (*code-blocks*))))
-        
+        ;; (displayln (~a (hash-keys (*code-blocks*))))
         (newline)))
