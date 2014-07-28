@@ -433,6 +433,7 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
 <li><a href="#getting-started">1. Getting started</a></li>
+<li><a href="#_notes">2. Notes</a></li>
 </ul>
 </div>
 </div>
@@ -555,10 +556,30 @@ ulqui generate-docs --from <span class="tok-nb">source</span> --to documents
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_notes">2. Notes</h2>
+<div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p>Ulquikit will <strong>not</strong> handle the case of invalid AsciiDoc syntax.  Results of
+such situations are unexpected.</p>
+</li>
+<li>
+<p>Nested AsciiDoc blocks are <strong>not supported</strong>.  Supporting it brings more
+complexity to your literate source code, which does more harm than good.
+Please <a href="https://github.com/cmpitg/ulquikit/issues">submit an issue</a> if you
+think there&#8217;s a better reason to support it.  I&#8217;m happy to hear your
+opinion.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-21 18:02:55 ICT
+Last updated 2014-07-28 12:15:05 ICT
 </div>
 </div>
 </body>

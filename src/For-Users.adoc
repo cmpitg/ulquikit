@@ -83,3 +83,9 @@ ulqui generate-docs --from source --to documents
 
 * Ulquikit will *not* handle the case of invalid AsciiDoc syntax.  Results of
   such situations are unexpected.
+
+* Nested AsciiDoc blocks are *not supported*.  Supporting it brings more
+  complexity to your literate source code, which does more harm than good.
+  Please https://github.com/cmpitg/ulquikit/issues[submit an issue] if you
+  think there's a better reason to support it.  I'm happy to hear your
+  opinion.
