@@ -25,6 +25,20 @@ Ulquikit contains 2 parts:
 
 * Main part: this file.
 
+Let's dive into some terminology first
+
+== Terminology
+
+* A *code block* is an AsciiDoc code block.
+
+* A *snippet* is a code block with Ulquikit-defined title and delimiter
+  +----+.  By default, a code block title that starts +file::+ and +code::+
+  defines a _file snippet_ and _code snippet_, respectively:
+
+** A *file snippet* is a snippet producing a source file.
+** A *code snippet* is a snippet storing source code that can be included into
+   other snippets.
+
 == Bootstrap
 
 The two most important files from Bootstrap part are +generate-src.rkt+ and
