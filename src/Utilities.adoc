@@ -32,8 +32,8 @@ General-purpose utility functions.
   #λ(box-swap! %1 (λ (_) %2)))
 
 (module+ test
-  (check-equal? (unbox (box-set! (box 0) 1)) 1)
-  (check-equal? (unbox (box-set! (box "a") "b")) "b"))
+  (check-equal? (box-set! (box 0)   1)   1)
+  (check-equal? (box-set! (box "a") "b") "b"))
 
 ----
 
