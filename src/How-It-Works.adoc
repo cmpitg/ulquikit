@@ -474,7 +474,7 @@ The way +extract-snippet+ works is very simple:
          [prev-line       (box "")]
 
          [snippet-type    (box null)]
-         [snippet-content (box "")]
+         [snippet-lines   (box '())]
          [snippet-name    (box "")]
          [snippet-linenum (box 0)]
          [inside-snippet  (box #f)])
@@ -490,7 +490,8 @@ The way +extract-snippet+ works is very simple:
                             (create-snippet #:type (unbox snippet-type)
                                             #:name (unbox snippet-name)
                                             #:linenum (unbox snippet-linenum)
-                                            #:content (unbox snippet-content)))]
+                                            #:content (string-join (unbox snippet-lines)
+                                                                   "\n")))]
 
                 [else
                  (when (is-block-title? (unbox prev-prev-line))
