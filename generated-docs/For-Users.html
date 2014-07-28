@@ -432,8 +432,9 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#getting-started">1. Getting started</a></li>
-<li><a href="#_notes">2. Notes</a></li>
+<li><a href="#_terminologies">1. Terminologies</a></li>
+<li><a href="#getting-started">2. Getting started</a></li>
+<li><a href="#_notes">3. Notes</a></li>
 </ul>
 </div>
 </div>
@@ -447,7 +448,59 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </div>
 </div>
 <div class="sect1">
-<h2 id="getting-started">1. Getting started</h2>
+<h2 id="_terminologies">1. Terminologies</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Ulquikit aims to be both robust and quick to get started, so I&#8217;ll keep this
+section short and easily understandable.</p>
+</div>
+<div class="paragraph">
+<p>There are 3 kinds of code block types (with regards of AsciiDoc syntax):</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>Code blocks without titles.  Ulquikit will ignore them.</p>
+</li>
+<li>
+<p>Code blocks without Ulquikit-defined titles, i.e. titles that don&#8217;t start
+with <code>file::</code> or <code>code::</code> (or anything <a href="#define-block-delimiter"><em>you define
+in your project</em></a>).  Ulquikit will also ignore them.</p>
+</li>
+<li>
+<p>Code blocks whose titles start with either <code>file::</code> or <code>code::</code>
+<a href="#define-block-delimiter">or your preferences</a>:</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>file::</code> blocks indicate a file block, which will be output to a file.</p>
+<div class="paragraph">
+<p>E.g. <code>file::somefile.rkt</code> or <code>file::/somefile.rkt</code> produces
+<code>&lt;your-project-root&gt;/generated-src/somefile.rkt</code> by default, unless you
+specify another <code>generated-src</code> location.  These are called <strong>file snippets</strong>.</p>
+</div>
+<div class="paragraph">
+<p>There have been some discussions over whether <code>file::/path</code> should be
+different from <code>file::path</code> but I decided that they should be the same.  You
+wouldn&#8217;t want your project to include files outside your project directory,
+wouldn&#8217;t you?</p>
+</div>
+</li>
+<li>
+<p><code>code::name</code> defines a <strong>code snippet</strong> with the name <code>name</code>.  Snippet names
+should be unique across the project, although Ulquikit makes no assumption
+about this and yields no errors.  However, the results of non-unique
+snippets are unexpected.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="getting-started">2. Getting started</h2>
 <div class="sectionbody">
 <div class="admonitionblock note">
 <table>
@@ -557,7 +610,7 @@ ulqui generate-docs --from <span class="tok-nb">source</span> --to documents
 </div>
 </div>
 <div class="sect1">
-<h2 id="_notes">2. Notes</h2>
+<h2 id="_notes">3. Notes</h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -566,11 +619,10 @@ ulqui generate-docs --from <span class="tok-nb">source</span> --to documents
 such situations are unexpected.</p>
 </li>
 <li>
-<p>Nested AsciiDoc blocks are <strong>not supported</strong>.  Supporting it brings more
-complexity to your literate source code, which does more harm than good.
-Please <a href="https://github.com/cmpitg/ulquikit/issues">submit an issue</a> if you
-think there&#8217;s a better reason to support it.  I&#8217;m happy to hear your
-opinion.</p>
+<p>Nested snippets are <strong>not supported</strong>.  Supporting it brings more complexity
+to your literate source code, which does more harm than good.  Please
+<a href="https://github.com/cmpitg/ulquikit/issues">submit an issue</a> if you think
+there&#8217;s a better reason to support it.  I&#8217;m happy to hear your opinion.</p>
 </li>
 </ul>
 </div>
@@ -579,7 +631,7 @@ opinion.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-28 12:15:05 ICT
+Last updated 2014-07-28 12:29:18 ICT
 </div>
 </div>
 </body>

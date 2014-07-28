@@ -12,6 +12,39 @@
 The best way to learn about Ulquikit is to start from this document, section
 <<getting-started,Getting started>>
 
+== Terminologies
+
+Ulquikit aims to be both robust and quick to get started, so I'll keep this
+section short and easily understandable.
+
+There are 3 kinds of code block types (with regards of AsciiDoc syntax):
+
+* Code blocks without titles.  Ulquikit will ignore them.
+
+* Code blocks without Ulquikit-defined titles, i.e. titles that don't start
+  with +file::+ or +code::+ (or anything <<define-block-delimiter,_you define
+  in your project_>>).  Ulquikit will also ignore them.
+
+* Code blocks whose titles start with either +file::+ or +code::+
+  <<define-block-delimiter,or your preferences>>:
+
+** +file::+ blocks indicate a file block, which will be output to a file.
++
+E.g. +file::somefile.rkt+ or +file::/somefile.rkt+ produces
++<your-project-root>/generated-src/somefile.rkt+ by default, unless you
+specify another +generated-src+ location.  These are called *file snippets*.
++
+There have been some discussions over whether +file::/path+ should be
+different from +file::path+ but I decided that they should be the same.  You
+wouldn't want your project to include files outside your project directory,
+wouldn't you?
++
+** +code::name+ defines a *code snippet* with the name +name+.  Snippet names
+   should be unique across the project, although Ulquikit makes no assumption
+   about this and yields no errors.  However, the results of non-unique
+   snippets are unexpected.
+
+
 [[getting-started]]
 == Getting started
 
@@ -84,8 +117,7 @@ ulqui generate-docs --from source --to documents
 * Ulquikit will *not* handle the case of invalid AsciiDoc syntax.  Results of
   such situations are unexpected.
 
-* Nested AsciiDoc blocks are *not supported*.  Supporting it brings more
-  complexity to your literate source code, which does more harm than good.
-  Please https://github.com/cmpitg/ulquikit/issues[submit an issue] if you
-  think there's a better reason to support it.  I'm happy to hear your
-  opinion.
+* Nested snippets are *not supported*.  Supporting it brings more complexity
+  to your literate source code, which does more harm than good.  Please
+  https://github.com/cmpitg/ulquikit/issues[submit an issue] if you think
+  there's a better reason to support it.  I'm happy to hear your opinion.
