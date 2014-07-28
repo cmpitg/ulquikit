@@ -259,56 +259,96 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
 
 ----
 
+Of course, for +extract-snippets-from-file+ to function, the following helpers are
+necessary:
 
-.file::commands/generate-src.rkt
+.code::extract-snippets-from-file-helpers
 [source,racket,linenums]
 ----
-;; include::license-header
-
-;; include::use-rackjure
-
-(require "../command-core.rkt")
-
-(require "../utils/utils.rkt")
-(require "../utils/path.rkt")
-(require "../utils/string.rkt")
-
-;; (provide run
-;;          help)
+(define is-block-delimiter?
+  #λ(regexp-match? #rx"^----( *)$" %))
 
 (module+ test
-  (require rackunit))
+  (check-equal? (is-block-delimiter? "----")    #t)
+  (check-equal? (is-block-delimiter? " ----")   #f)
+  (check-equal? (is-block-delimiter? "---- ")   #t)
+  (check-equal? (is-block-delimiter? "----  ")  #t)
+  (check-equal? (is-block-delimiter? "----a")   #f))
 
-;; include::commands/generate-src/run
+(define is-block-title?
+  #λ(regexp-match? #rx"^\\.(file|code)::" %))
 
-;; include::commands/generate-src/help
+(module+ test
+  (check-equal? (is-block-title? ".file::something")       #t)
+  (check-equal? (is-block-title? ".file::something else")  #t)
+  (check-equal? (is-block-title? ".file::")                #t)
+  (check-equal? (is-block-title? ".file:something")        #f))
+
+(define get-snippet-type
+  #λ(~> (string-rest %)
+      (string-split "::")
+      (list-ref 0)
+      string->symbol))
+
+(module+ test
+  (check-equal? (get-snippet-type ".file::")  'file)
+  (check-equal? (get-snippet-type ".code::")  'code))
+
+(define get-snippet-name
+  #λ(~> (string-rest %)
+      (string-split "::")
+      (append '(""))
+      (list-ref 1)))
+
+(module+ test
+  (check-equal? (get-snippet-name ".file::")     "")
+  (check-equal? (get-snippet-name ".code::")     "")
+  (check-equal? (get-snippet-name ".file::abc")  "abc")
+  (check-equal? (get-snippet-name ".code::a b")  "a b"))
+
+(define (add-snippets snippets snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)]
+
+         [snippets/typed         (snippets type)]
+         [snippets/typed/updated (snippets/typed name snippet)])
+    (snippets type snippets/typed/updated)))
+
+(module+ test
+  (check-equal? (add-snippets {'file {}
+                               'code {}}
+                              (create-snippet #:type 'file
+                                              #:name 'hello
+                                              #:linenum 10
+                                              #:content "Something"))
+                {'file {"hello" {'type 'file
+                                 'name "hello"
+                                 'linenum 10
+                                 'content "Something"}}
+                 'code {}})
+
+  (check-equal? (add-snippets {'file {"hello" {'type 'file
+                                               'name "hello"
+                                               'linenum 10
+                                               'content "Something"}}
+                               'code {}}
+                              (create-snippet #:type 'code
+                                              #:name 'say-something
+                                              #:linenum 100
+                                              #:content "Something else"))
+                {'file {"hello" {'type 'file
+                                 'name "hello"
+                                 'linenum 10
+                                 'content "Something"}}
+                 'code {"say-something" {'type 'code
+                                         'name "say-something"
+                                         'linenum 100
+                                         'content "Something else"}}}))
 
 ----
 
-By default, +ulqui generate-src+ extracts source code from
-+<project-root>/src+ and output to +<project-root>/generated-src+, so the
-+run+ function takes 2 keyword arguments with default values like so:
 
-* +#:from+, default to +"src"+, and
-* +#:to+, default to +"generated-src"+
-
-.code::commands/generate-src/run
-[source,racket,linenums]
-----
-;; #lang racket
-
-;; include::create-snippet
-
-;; include::extract-snippets
-
-;; (define (run #:from [from "src"]
-;;              #:to   [to   "generated-src"])
-;;   (display-command "generate-src")
-;;   (~> (extract-snippets from)
-;;     (include-file-snippets)
-;;     (write-snippets-to-files to)))
-
-----
+'''
 
 +extract-snippets+ will
 
@@ -316,7 +356,7 @@ By default, +ulqui generate-src+ extracts source code from
 * extract all AsciiDoc code snippet with titles and return them as hashes with
   +create-snippet+.
 
-+extract-snippets+ relies on +extract-snippet+, which only extracts from one file
++extract-snippets+ relies on +extract-snippets-from-file+, which only extracts from one file
 at a time.
 
 .code::extract-snippets
@@ -451,240 +491,57 @@ at a time.
       (remove-dir temp-dir))))
 ----
 
-The way +extract-snippets-from-file+ works is very simple:
+==== Built-in commands
 
-* It will first read the content of a file and break it into lines while
-  preserving line numbers (thus the call to +string-split+ with +#:trim? #f+).
+===== +generate-src+
 
-* Iterate through each line, one by one
-
-* If the current line is an AsciiDoc code block delimiter (i.e. +----+), since
-  we only care about snippet, there are several posibilities:
-
-** if we are already inside a snippet (when +inside-snippet+ is +#t+), it
-   means the snippet is finished ⇨ reset +inside-snippet+ to +#f+;
-
-** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
-   previous line does not define a new snippet (i.e. it doesn't start with
-   +file::+ or +code::+ or user-defined ones), ignore this case;
-
-** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
-   previous line does define a new snippet (starting with +file::+ or +code::+
-   or user-defined ones) ⇨
-   
-*** set +inside-snippet+ to +#t+
-
-*** save the snippet name, and
-
-*** save the line number marking the beginning of the snippet;
-
-* If current line is _not_ an AsciiDoc code block delimiter: update snippet
-  content if +inside-snippet+ is +#t+ and ignore this line otherwise.
-
-.code::extract-snippets-from-file
+.file::commands/generate-src.rkt
 [source,racket,linenums]
 ----
-;; include::extract-snippets-from-file-helpers
+;; include::license-header
 
-(define (extract-snippets-from-file path)
-  (let* ([file-content (read-file path)]
-         [lines        (string-split file-content "\n" #:trim? #f)]
+;; include::use-rackjure
 
-         [snippets        (box {'file {}
-                                      'code {}})]
+(require "../command-core.rkt")
 
-         [prev-prev-line  (box "")]
-         [prev-line       (box "")]
+(require "../utils/utils.rkt")
+(require "../utils/path.rkt")
+(require "../utils/string.rkt")
 
-         [snippet-type    (box null)]
-         [snippet-lines   (box '())]
-         [snippet-name    (box "")]
-         [snippet-linenum (box 0)]
-         [inside-snippet  (box #f)])
+;; (provide run
+;;          help)
 
-    (for ([line-num    (in-naturals 1)]
-          [line        (in-list lines)])
-      (if (is-block-delimiter? line)
-          (if (unbox inside-snippet)
+(module+ test
+  (require rackunit))
 
-              (begin
-                (box-set! inside-snippet #f)
-                (box-swap! snippets
-                           add-snippets
-                           (create-snippet #:type (unbox snippet-type)
-                                           #:name (unbox snippet-name)
-                                           #:linenum (unbox snippet-linenum)
-                                           #:content (string-join (unbox snippet-lines)
-                                                                  "\n"))))
+;; include::commands/generate-src/run
 
-              (when (is-block-title? (unbox prev-prev-line))
-                (box-set! inside-snippet #t)
-
-                (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
-                (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-                (box-set! snippet-lines '())
-                (box-set! snippet-linenum (dec line-num))))
-
-          (when (unbox inside-snippet)
-            (box-swap! snippet-lines append (list line))))
-
-      ;; Always update previous line
-      (box-set! prev-prev-line (unbox prev-line))
-      (box-set! prev-line      line))
-
-    (unbox snippets)))
+;; include::commands/generate-src/help
 
 ----
 
-Of course, for +extract-snippets-from-file+ to function, the following helpers are
-necessary:
+By default, +ulqui generate-src+ extracts source code from
++<project-root>/src+ and output to +<project-root>/generated-src+, so the
++run+ function takes 2 keyword arguments with default values like so:
 
-.code::extract-snippets-from-file-helpers
-[source,racket,linenums]
-----
-(define is-block-delimiter?
-  #λ(regexp-match? #rx"^----( *)$" %))
+* +#:from+, default to +"src"+, and
+* +#:to+, default to +"generated-src"+
 
-(module+ test
-  (check-equal? (is-block-delimiter? "----")    #t)
-  (check-equal? (is-block-delimiter? " ----")   #f)
-  (check-equal? (is-block-delimiter? "---- ")   #t)
-  (check-equal? (is-block-delimiter? "----  ")  #t)
-  (check-equal? (is-block-delimiter? "----a")   #f))
-
-(define is-block-title?
-  #λ(regexp-match? #rx"^\\.(file|code)::" %))
-
-(module+ test
-  (check-equal? (is-block-title? ".file::something")       #t)
-  (check-equal? (is-block-title? ".file::something else")  #t)
-  (check-equal? (is-block-title? ".file::")                #t)
-  (check-equal? (is-block-title? ".file:something")        #f))
-
-(define get-snippet-type
-  #λ(~> (string-rest %)
-      (string-split "::")
-      (list-ref 0)
-      string->symbol))
-
-(module+ test
-  (check-equal? (get-snippet-type ".file::")  'file)
-  (check-equal? (get-snippet-type ".code::")  'code))
-
-(define get-snippet-name
-  #λ(~> (string-rest %)
-      (string-split "::")
-      (append '(""))
-      (list-ref 1)))
-
-(module+ test
-  (check-equal? (get-snippet-name ".file::")     "")
-  (check-equal? (get-snippet-name ".code::")     "")
-  (check-equal? (get-snippet-name ".file::abc")  "abc")
-  (check-equal? (get-snippet-name ".code::a b")  "a b"))
-
-(define (add-snippets snippets snippet)
-  (let* ([type (snippet 'type)]
-         [name (snippet 'name)]
-
-         [snippets/typed         (snippets type)]
-         [snippets/typed/updated (snippets/typed name snippet)])
-    (snippets type snippets/typed/updated)))
-
-(module+ test
-  (check-equal? (add-snippets {'file {}
-                               'code {}}
-                              (create-snippet #:type 'file
-                                              #:name 'hello
-                                              #:linenum 10
-                                              #:content "Something"))
-                {'file {"hello" {'type 'file
-                                 'name "hello"
-                                 'linenum 10
-                                 'content "Something"}}
-                 'code {}})
-
-  (check-equal? (add-snippets {'file {"hello" {'type 'file
-                                               'name "hello"
-                                               'linenum 10
-                                               'content "Something"}}
-                               'code {}}
-                              (create-snippet #:type 'code
-                                              #:name 'say-something
-                                              #:linenum 100
-                                              #:content "Something else"))
-                {'file {"hello" {'type 'file
-                                 'name "hello"
-                                 'linenum 10
-                                 'content "Something"}}
-                 'code {"say-something" {'type 'code
-                                         'name "say-something"
-                                         'linenum 100
-                                         'content "Something else"}}}))
-
-----
-
-
-Each is snippet is stored with the following format:
-
-[source,racket,linenums]
-----
-{'type snippet-type          <1>
- 'name snippet-name          <2>
- 'linenum line-number        <3>
- 'content snippet-content}   <4>
-----
-<1> is either +'file+ or +'code+
-<2> is the name of the snippet; e.g. snippet with title +file::something+ has
-+something+ as its name.  Note that snippet name is _a string_.
-<3> is the line number from the literate source code from where the snippet is
-extracted
-<4> is the content of the code snippet, i.e. which is surrounded by +----+ in
-AsciiDoc format
-
-NOTE: Snippets should never be created by directly by using hash.  They should
-be created with <<func/create-snippet,+create-snippet+>>.
-
-Thus, +create-snippet+ is implemented as followed:
-
-[[func/create-snippet]]
-.code::create-snippet
+.code::commands/generate-src/run
 [source,racket,linenums]
 ----
 ;; #lang racket
 
-(define (create-snippet #:type type
-                        #:name name
-                        #:linenum linenum
-                        #:content content)
-  (let ([type (if (symbol? type)
-                  type
-                  (string->symbol type))]
-        [name (if (symbol? name)
-                  (symbol->string name)
-                  name)])
-    {'type type
-     'name name
-     'linenum linenum
-     'content content}))
+;; include::create-snippet
 
-(module+ test
-  (check-equal? (create-snippet #:type 'file
-                                #:name 'hello-world
-                                #:linenum 10
-                                #:content "Hmm")
-                {'type 'file
-                 'name "hello-world"
-                 'linenum 10
-                 'content "Hmm"})
-  (check-equal? (create-snippet #:type "string"
-                                #:name "string"
-                                #:linenum 100
-                                #:content "string")
-                {'type 'string
-                 'name "string"
-                 'linenum 100
-                 'content "string"}))
+;; include::extract-snippets
+
+;; (define (run #:from [from "src"]
+;;              #:to   [to   "generated-src"])
+;;   (display-command "generate-src")
+;;   (~> (extract-snippets from)
+;;     (include-file-snippets)
+;;     (write-snippets-to-files to)))
 
 ----
 
@@ -700,6 +557,174 @@ See link:Utilities.html[Utilities].
 #lang rackjure
 
 (current-curly-dict hash)
+----
+
+== Commands
+
+* Each command is a Racket module defined in +commands/+ directory, with the
+  base file name as command name.
++
+E.g. +commands/new-project.rkt+ is for +ulqui new-project+ command.
+
+* Each module implementing a command must export a function with the name
+  +run+.  Arguments passing through +run+ are actual command line arguments
+  passing to the command.
++
+Named arguments are translated into Racket's keyword arguments.
++
+E.g.
++
+  ** Executing +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
+  ** Executing +ulqui generate-src some-file+ calls
+     ++commands/generate-src++'s +(run "some-file")+.
+  ** Executing +ulqui generate-src --from file1 --to file2+ calls
+     ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
+
+* All commands must import +command-core.rkt+ (relative to command directory:
+  +../command-core.rkt+).
+
+* All commands must export a +help+ function returning a string, which serves
+  as documentation for that command when running from the command line with
+  +ulqui command-name --help+ or +ulqui help command-name+.
+
+=== Core functions to implement commands
+
+.file::command-core.rkt
+[source,racket,linenums]
+----
+;; include::license-header
+
+#lang rackjure
+
+(require srfi/1)
+
+(require "utils/string.rkt")
+
+(provide (all-defined-out))
+
+(module+ test
+  (require rackunit))
+
+(define (display-command title)
+  (displayln (str "----> " title)))
+
+(define (run-help command)
+  (eval `(local-require ,(str command ".rkt")))
+  (eval '(help)))
+
+;; include::command/parse-command-args
+
+;; include::command/run-command
+
+----
+
+Two of the most important functions in +command-core+ module are
++run-command+ and +parse-command-args+.
+
++parse-command-args+ will transform command line arguments into a list of
+appropriate keywords and values.
+
+.code::command/parse-command-args
+[source,racket,linenums]
+----
+;; #lang racket
+
+(define is-argument? #λ(not (string-starts-with? % "-")))
+
+(module+ test
+  (check-equal? (is-argument? "")     #t)
+  (check-equal? (is-argument? "a")    #t)
+  (check-equal? (is-argument? "-a")   #f)
+  (check-equal? (is-argument? "--a")  #f)
+  (check-equal? (is-argument? "-")    #f))
+
+(define is-option? #λ(not (is-argument? %)))
+
+(module+ test
+  (check-equal? (is-option? "")     #f)
+  (check-equal? (is-option? "a")    #f)
+  (check-equal? (is-option? "-a")   #t)
+  (check-equal? (is-option? "--a")  #t)
+  (check-equal? (is-option? "-")    #t))
+
+(define parse-keyword
+  #λ(string->keyword (~>> (string->list %)
+                       (drop-while (λ (ch) (eq? #\- ch)))
+                       list->string)))
+
+(module+ test
+  (check-equal? (parse-keyword "-h")      '#:h)
+  (check-equal? (parse-keyword "--help")  '#:help)
+  (check-equal? (parse-keyword "---help") '#:help))
+
+(define (parse-command-args args)
+  (let parse ([last-keyword null]
+              [args         (string-split args " ")]
+              [result       '()])
+    (if (empty? args)
+        (if (null? last-keyword)
+            result
+            (append result (list (list last-keyword #t))))
+        (let* ([current-arg (first args)]
+               [more        (rest args)]
+
+               [next-keyword (if (is-argument? current-arg)
+                                 null
+                                 (parse-keyword current-arg))]
+               [arg/converted (if (is-argument? current-arg)
+                                  (if-let [value (string->number current-arg)]
+                                    value
+                                    current-arg)
+                                  (parse-keyword current-arg))]
+               [next-result-value
+                (or (and (is-argument? current-arg)
+                         (or (and (null? last-keyword)
+                                  (list arg/converted))
+                             (list (list last-keyword arg/converted))))
+
+                    (and (is-option? current-arg)
+                         (or (and (null? last-keyword)
+                                  '())
+                             (list (list last-keyword #t)))))])
+          (parse next-keyword
+                 more
+                 (append result next-result-value))))))
+
+(module+ test
+  (check-equal? (parse-command-args "") '())
+
+  (check-equal? (parse-command-args "hello-world")
+                '("hello-world"))
+
+  (check-equal? (parse-command-args "hello world")
+                '("hello" "world"))
+
+  (check-equal? (parse-command-args "--help")
+                '([#:help #t]))
+
+  (check-equal? (parse-command-args "hello --help")
+                '("hello" [#:help #t]))
+
+  (check-equal? (parse-command-args "--help hello")
+                '([#:help "hello"]))
+
+  (check-equal? (parse-command-args "hello world --help --set-tab 4")
+                '("hello" "world"
+                  [#:help #t]
+                  [#:set-tab 4])))
+
+----
+
+
++run-command+ the result of parse-command-args and perform the actual call to
++run+ function of the module implementing the command.
+
+.code::command/run-command
+[source,racket,linenums]
+----
+;; (define (run-command . arguments)
+;;   (void)
+;;   )
 ----
 
 === License header

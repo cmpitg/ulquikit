@@ -154,12 +154,12 @@
                                          'content "Something else"}}}))
 
 
-(define (extract-snippet path)
+(define (extract-snippets-from-file path)
   (let* ([file-content (read-file path)]
          [lines        (string-split file-content "\n" #:trim? #f)]
 
          [snippets        (box {'file {}
-                                'code {}})]
+                                      'code {}})]
 
          [prev-prev-line  (box "")]
          [prev-line       (box "")]
@@ -173,25 +173,26 @@
     (for ([line-num    (in-naturals 1)]
           [line        (in-list lines)])
       (if (is-block-delimiter? line)
-          (cond [(unbox inside-snippet)
+          (if (unbox inside-snippet)
 
-                 (box-set! inside-snippet #f)
-                 (box-swap! snippets
-                            add-snippets
-                            (create-snippet #:type (unbox snippet-type)
-                                            #:name (unbox snippet-name)
-                                            #:linenum (unbox snippet-linenum)
-                                            #:content (string-join (unbox snippet-lines)
-                                                                   "\n")))]
+              (begin
+                (box-set! inside-snippet #f)
+                (box-swap! snippets
+                           add-snippets
+                           (create-snippet #:type (unbox snippet-type)
+                                           #:name (unbox snippet-name)
+                                           #:linenum (unbox snippet-linenum)
+                                           #:content (string-join (unbox snippet-lines)
+                                                                  "\n"))))
 
-                [else
-                 (when (is-block-title? (unbox prev-prev-line))
-                   (box-set! inside-snippet #t)
+              (when (is-block-title? (unbox prev-prev-line))
+                (box-set! inside-snippet #t)
 
-                   (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
-                   (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-                   (box-set! snippet-lines '())
-                   (box-set! snippet-linenum (dec line-num)))])
+                (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
+                (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
+                (box-set! snippet-lines '())
+                (box-set! snippet-linenum (dec line-num))))
+
           (when (unbox inside-snippet)
             (box-swap! snippet-lines append (list line))))
 
@@ -205,7 +206,7 @@
 (define (extract-snippets from-dir)
   (for/fold ([snippet {}])
       ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge snippet (extract-snippet file))))
+    (dict-merge snippet (extract-snippets-from-file file))))
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
