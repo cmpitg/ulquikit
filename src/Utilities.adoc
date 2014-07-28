@@ -208,35 +208,8 @@ General-purpose utility functions.
 
 == Text
 
-This module is born out of the need for a better text processing method,
-starting with the problem of breaking a string into lines.
-
-To break (or rather split) a string into lines, the first, obvious way came to
-my head was to use +string-split+ function with +\n+ as the separator.  Let's
-have a look:
-
-[source,racket,linenums]
-----
-(string-split "abc" "\n")
-;; ⇨ ("abc")
-
-(string-split "abc\ndef" "\n")
-;; ⇨ ("abc" "def")
-
-(string-split "abc\ndef\n" "\n")
-;; ⇨ ("abc" "def")
-;; This is actually fine
-
-(string-split "\nabc\ndef\n" "\n")
-;; ⇨ ("abc" "def")
-;; Oops, now we got a problem
-----
-
-The last 2 examples show that +string-split+ breaks the structure of the input
-string, i.e. blank lines are not preversed.  This is a problem when the
-content of a file needs to be broken into lines while line numbers are
-preversed.  Thus, arise the need for an alternative way to process text:
-+utils/text.rkt+.
+This module is born out of the need for a better text processing method.
+TODO: give example.
 
 .file::utils/text.rkt
 [source,racket,linenums]
@@ -257,9 +230,12 @@ preversed.  Thus, arise the need for an alternative way to process text:
 .code::utils/text/implementation
 [source,racket,linenums]
 ----
-;; include::utils/text/lines
+;; To be implemented
 ----
 
+=== Breaking text into lines (++lining++)
+
+One way to do this is to 
 
 == Misc
 
