@@ -214,7 +214,7 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
          [lines        (string-split file-content "\n" #:trim? #f)]
 
          [snippets        (box {'file {}
-                                      'code {}})]
+                               'code {}})]
 
          [prev-prev-line  (box "")]
          [prev-line       (box "")]
@@ -227,29 +227,32 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
 
     (for ([line-num    (in-naturals 1)]
           [line        (in-list lines)])
-      (if (is-block-delimiter? line)
-          (if (unbox inside-snippet)
 
-              (begin
-                (box-set! inside-snippet #f)
-                (box-swap! snippets
-                           add-snippets
-                           (create-snippet #:type (unbox snippet-type)
-                                           #:name (unbox snippet-name)
-                                           #:linenum (unbox snippet-linenum)
-                                           #:content (string-join (unbox snippet-lines)
-                                                                  "\n"))))
+      (cond [(and (unbox inside-snippet)
+                  (not (is-block-delimiter? line)))
 
-              (when (is-block-title? (unbox prev-prev-line))
-                (box-set! inside-snippet #t)
+             (box-swap! snippet-lines append (list line))]
 
-                (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
-                (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-                (box-set! snippet-lines '())
-                (box-set! snippet-linenum (dec line-num))))
+            [(and (unbox inside-snippet)
+                  (is-block-delimiter? line))
 
-          (when (unbox inside-snippet)
-            (box-swap! snippet-lines append (list line))))
+             (box-set! inside-snippet #f)
+             (box-swap! snippets
+                        add-snippets
+                        (create-snippet #:type (unbox snippet-type)
+                                        #:name (unbox snippet-name)
+                                        #:linenum (unbox snippet-linenum)
+                                        #:content (string-join (unbox snippet-lines)
+                                                               "\n")))]
+            [(is-block-delimiter? line)
+
+             (when (is-block-title? (unbox prev-prev-line))
+               (box-set! inside-snippet #t)
+
+               (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
+               (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
+               (box-set! snippet-lines '())
+               (box-set! snippet-linenum (dec line-num)))])
 
       ;; Always update previous line
       (box-set! prev-prev-line (unbox prev-line))
