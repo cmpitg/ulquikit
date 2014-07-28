@@ -303,10 +303,10 @@ at a time.
 
 ;; include::extract-snippet
 
-;; (define (extract-snippets from-dir)
-;;   (for/fold ([snippet {}])
-;;       ([file (list-all-adocs (standardize-path from-dir))])
-;;     (dict-merge snippet (extract-snippet file))))
+(define (extract-snippets from-dir)
+  (for/fold ([snippet {}])
+      ([file (list-all-adocs (standardize-path from-dir))])
+    (dict-merge snippet (extract-snippet file))))
 
 ----
 
