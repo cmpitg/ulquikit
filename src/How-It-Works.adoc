@@ -301,12 +301,12 @@ at a time.
 ----
 ;; lang racket
 
-;; include::extract-snippet
+;; include::extract-snippets-from-file
 
 (define (extract-snippets from-dir)
   (for/fold ([snippet {}])
       ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge snippet (extract-snippet file))))
+    (dict-merge snippet (extract-snippets-from-file file))))
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
@@ -428,7 +428,7 @@ at a time.
       (remove-dir temp-dir))))
 ----
 
-The way +extract-snippet+ works is very simple:
+The way +extract-snippets-from-file+ works is very simple:
 
 * It will first read the content of a file and break it into lines while
   preserving line numbers (thus the call to +string-split+ with +#:trim? #f+).
@@ -458,12 +458,12 @@ The way +extract-snippet+ works is very simple:
 * If current line is _not_ an AsciiDoc code block delimiter: update snippet
   content if +inside-snippet+ is +#t+ and ignore this line otherwise.
 
-.code::extract-snippet
+.code::extract-snippets-from-file
 [source,racket,linenums]
 ----
-;; include::extract-snippet-helpers
+;; include::extract-snippets-from-file-helpers
 
-(define (extract-snippet path)
+(define (extract-snippets-from-file path)
   (let* ([file-content (read-file path)]
          [lines        (string-split file-content "\n" #:trim? #f)]
 
@@ -513,10 +513,10 @@ The way +extract-snippet+ works is very simple:
 
 ----
 
-Of course, for +extract-snippet+ to function, the following helpers are
+Of course, for +extract-snippets-from-file+ to function, the following helpers are
 necessary:
 
-.code::extract-snippet-helpers
+.code::extract-snippets-from-file-helpers
 [source,racket,linenums]
 ----
 (define is-block-delimiter?
@@ -664,7 +664,6 @@ Thus, +create-snippet+ is implemented as followed:
                  'content "string"}))
 
 ----
-
 
 === Utility functions
 
