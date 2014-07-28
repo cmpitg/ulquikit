@@ -45,8 +45,8 @@
                   type
                   (string->symbol type))]
         [name (if (symbol? name)
-                  name
-                  (string->symbol name))])
+                  (symbol->string name)
+                  name)])
     {'type type
      'name name
      'linenum linenum
@@ -58,7 +58,7 @@
                                 #:linenum 10
                                 #:content "Hmm")
                 {'type 'file
-                 'name 'hello-world
+                 'name "hello-world"
                  'linenum 10
                  'content "Hmm"})
   (check-equal? (create-snippet #:type "string"
@@ -66,7 +66,7 @@
                                 #:linenum 100
                                 #:content "string")
                 {'type 'string
-                 'name 'string
+                 'name "string"
                  'linenum 100
                  'content "string"}))
 
@@ -129,29 +129,29 @@
                                               #:name 'hello
                                               #:linenum 10
                                               #:content "Something"))
-                {'file {'hello {'type 'file
-                                'name 'hello
-                                'linenum 10
-                                'content "Something"}}
+                {'file {"hello" {'type 'file
+                                 'name "hello"
+                                 'linenum 10
+                                 'content "Something"}}
                  'code {}})
 
-  (check-equal? (add-snippets {'file {'hello {'type 'file
-                                              'name 'hello
-                                              'linenum 10
-                                              'content "Something"}}
+  (check-equal? (add-snippets {'file {"hello" {'type 'file
+                                               'name "hello"
+                                               'linenum 10
+                                               'content "Something"}}
                                'code {}}
                               (create-snippet #:type 'code
                                               #:name 'say-something
                                               #:linenum 100
                                               #:content "Something else"))
-                {'file {'hello {'type 'file
-                                'name 'hello
-                                'linenum 10
-                                'content "Something"}}
-                 'code {'say-something {'type 'code
-                                        'name 'say-something
-                                        'linenum 100
-                                        'content "Something else"}}}))
+                {'file {"hello" {'type 'file
+                                 'name "hello"
+                                 'linenum 10
+                                 'content "Something"}}
+                 'code {"say-something" {'type 'code
+                                         'name "say-something"
+                                         'linenum 100
+                                         'content "Something else"}}}))
 
 
 (define (extract-snippet path)
@@ -165,7 +165,7 @@
          [prev-line       (box "")]
 
          [snippet-type    (box null)]
-         [snippet-content (box "")]
+         [snippet-lines   (box '())]
          [snippet-name    (box "")]
          [snippet-linenum (box 0)]
          [inside-snippet  (box #f)])
@@ -181,7 +181,8 @@
                             (create-snippet #:type (unbox snippet-type)
                                             #:name (unbox snippet-name)
                                             #:linenum (unbox snippet-linenum)
-                                            #:content (unbox snippet-content)))]
+                                            #:content (string-join (unbox snippet-lines)
+                                                                   "\n")))]
 
                 [else
                  (when (is-block-title? (unbox prev-prev-line))
@@ -189,10 +190,10 @@
 
                    (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
                    (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-                   (box-set! snippet-content "")
+                   (box-set! snippet-lines '())
                    (box-set! snippet-linenum (dec line-num)))])
           (when (unbox inside-snippet)
-            (box-swap! snippet-content string-append "\n" line)))
+            (box-swap! snippet-lines append (list line))))
 
       ;; Always update previous line
       (box-set! prev-prev-line (unbox prev-line))
@@ -316,13 +317,14 @@
              [code-snippet (snippets 'code)]
              [file-snippet (snippets 'file)])
 
-        (for ([(name content) code-snippet])
-          (check-equal? (code-snippet name) content))
+        (for ([(name snippet) code-snippet])
+          (check-equal? (snippet 'content)
+                        (expected-code-snippets name)))
 
-        (for ([(name content) file-snippet])
-          (check-equal? (file-snippet name) content)))
+        (for ([(name snippet) file-snippet])
+          (check-equal? (snippet 'content)
+                        (expected-file-snippets name))))
       (remove-dir temp-dir))))
-
 
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
