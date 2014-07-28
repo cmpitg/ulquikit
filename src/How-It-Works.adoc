@@ -345,47 +345,47 @@ The way +extract-snippet+ works is very simple:
 ----
 ;; include::extract-snippet-helpers
 
-;; (define (extract-snippet path)
-;;   (let* ([file-content (read-file path)]
-;;          [lines        (string-split file-content "\n" #:trim? #f)]
+(define (extract-snippet path)
+  (let* ([file-content (read-file path)]
+         [lines        (string-split file-content "\n" #:trim? #f)]
 
-;;          [snippets        (box {})]
+         [snippets        (box {})]
 
-;;          [prev-line       (box "")]
+         [prev-line       (box "")]
 
-;;          [snippet-type    (box null)]
-;;          [snippet-content (box "")]
-;;          [snippet-name    (box "")]
-;;          [snippet-linenum (box 0)]
-;;          [inside-snippet  (box #f)])
+         [snippet-type    (box null)]
+         [snippet-content (box "")]
+         [snippet-name    (box "")]
+         [snippet-linenum (box 0)]
+         [inside-snippet  (box #f)])
 
-;;     (for ([line-num    (in-naturals 1)]
-;;           [line        (in-list lines)])
-;;       (if (is-block-delimiter? line)
-;;           (cond [(unbox inside-snippet)
-;;                  (box-cas! inside-snippet #f)
-;;                  (box-swap! snippets
-;;                             add-snippets
-;;                             (create-snippet #:type (unbox snippet-type)
-;;                                             #:name (unbox snippet-name)
-;;                                             #:linenum (unbox snippet-linenum)
-;;                                             #:content (unbox snippet-content)))]
+    (for ([line-num    (in-naturals 1)]
+          [line        (in-list lines)])
+      (if (is-block-delimiter? line)
+          (cond [(unbox inside-snippet)
+                 (box-cas! inside-snippet #f)
+                 (box-swap! snippets
+                            add-snippets
+                            (create-snippet #:type (unbox snippet-type)
+                                            #:name (unbox snippet-name)
+                                            #:linenum (unbox snippet-linenum)
+                                            #:content (unbox snippet-content)))]
 
-;;                 [else
-;;                  (when (is-block-title? (unbox prev-line))
-;;                    (box-cas! inside-snippet #t)
+                [else
+                 (when (is-block-title? (unbox prev-line))
+                   (box-cas! inside-snippet #t)
 
-;;                    (box-cas! snippet-type (get-snippet-type line))
-;;                    (box-cas! snippet-name (get-snippet-name line))
-;;                    (box-cas! snippet-content "")
-;;                    (box-cas! snippet-linenum (dec line)))])
-;;           (when (inside-snippet)
-;;             (box-swap! snippet-content string-append "\n" line)))
+                   (box-cas! snippet-type (get-snippet-type line))
+                   (box-cas! snippet-name (get-snippet-name line))
+                   (box-cas! snippet-content "")
+                   (box-cas! snippet-linenum (dec line)))])
+          (when (inside-snippet)
+            (box-swap! snippet-content string-append "\n" line)))
 
-;;       ;; Always update previous line
-;;       (box-cas! prev-line line))
+      ;; Always update previous line
+      (box-cas! prev-line line))
 
-;;     (unbox snippets)))
+    (unbox snippets)))
 
 ;; (module+ test
 ;;   (let* ([temp-dir (get-relative-path (get-temp-dir)
@@ -522,16 +522,30 @@ necessary:
   (check-equal? (is-block-title? ".file::something")       #t)
   (check-equal? (is-block-title? ".file::something else")  #t)
   (check-equal? (is-block-title? ".file::")                #t)
-  (check-equal? (is-block-title? " .file::something")      #f)
   (check-equal? (is-block-title? ".file:something")        #f))
 
 (define get-snippet-type
-  #λ(string->symbol (list-ref (string-split % "::") 0)))
+  #λ(~> (string-rest %)
+      (string-split "::")
+      (list-ref 0)
+      string->symbol))
 
 (module+ test
   (check-equal? (get-snippet-type ".file::")  'file)
-  (check-equal? (get-snippet-type ".code::")  'code)
-  (check-equal? (get-snippet-type " .file::") 'code))
+  (check-equal? (get-snippet-type ".code::")  'code))
+
+(define get-snippet-name
+  #λ(~> (string-rest %)
+      (string-split "::")
+      (append '(""))
+      (list-ref 1)
+      string->symbol))
+
+(module+ test
+  (check-equal? (get-snippet-name ".file::")     (string->symbol ""))
+  (check-equal? (get-snippet-name ".code::")     (string->symbol ""))
+  (check-equal? (get-snippet-name ".file::abc")  'abc)
+  (check-equal? (get-snippet-name ".code::a b")  (string->symbol "a b")))
 
 (define (add-snippets snippets snippet)
   (let* ([type (snippet 'type)]
