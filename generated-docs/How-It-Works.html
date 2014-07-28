@@ -877,14 +877,17 @@ name and add a new snippet.  Otherwise</p>
 46
 47
 48
-49</div></td><td class="code"><span class="tok-c1">;; include::extract-snippets-from-file-helpers</span>
+49
+50
+51
+52</div></td><td class="code"><span class="tok-c1">;; include::extract-snippets-from-file-helpers</span>
 
 <span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">extract-snippets-from-file</span> <span class="tok-nv">path</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">file-content</span> <span class="tok-p">(</span><span class="tok-nf">read-file</span> <span class="tok-nv">path</span><span class="tok-p">)]</span>
          <span class="tok-p">[</span><span class="tok-nf">lines</span>        <span class="tok-p">(</span><span class="tok-nf">string-split</span> <span class="tok-nv">file-content</span> <span class="tok-s">&quot;\n&quot;</span> <span class="tok-kd">#:trim?</span> <span class="tok-no">#f</span><span class="tok-p">)]</span>
 
          <span class="tok-p">[</span><span class="tok-nf">snippets</span>        <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-p">{</span><span class="tok-ss">&#39;file</span> <span class="tok-p">{}</span>
-                                      <span class="tok-ss">&#39;code</span> <span class="tok-p">{}})]</span>
+                               <span class="tok-ss">&#39;code</span> <span class="tok-p">{}})]</span>
 
          <span class="tok-p">[</span><span class="tok-nf">prev-prev-line</span>  <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">)]</span>
          <span class="tok-p">[</span><span class="tok-nf">prev-line</span>       <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;&quot;</span><span class="tok-p">)]</span>
@@ -897,29 +900,32 @@ name and add a new snippet.  Otherwise</p>
 
     <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([</span><span class="tok-nf">line-num</span>    <span class="tok-p">(</span><span class="tok-nf">in-naturals</span> <span class="tok-mi">1</span><span class="tok-p">)]</span>
           <span class="tok-p">[</span><span class="tok-nf">line</span>        <span class="tok-p">(</span><span class="tok-nf">in-list</span> <span class="tok-nv">lines</span><span class="tok-p">)])</span>
-      <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-nv">line</span><span class="tok-p">)</span>
-          <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">inside-snippet</span><span class="tok-p">)</span>
 
-              <span class="tok-p">(</span><span class="tok-nf">begin</span>
-                <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">inside-snippet</span> <span class="tok-no">#f</span><span class="tok-p">)</span>
-                <span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">snippets</span>
-                           <span class="tok-nv">add-snippets</span>
-                           <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-type</span><span class="tok-p">)</span>
-                                           <span class="tok-kd">#:name</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-name</span><span class="tok-p">)</span>
-                                           <span class="tok-kd">#:linenum</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-linenum</span><span class="tok-p">)</span>
-                                           <span class="tok-kd">#:content</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-lines</span><span class="tok-p">)</span>
-                                                                  <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">))))</span>
+      <span class="tok-p">(</span><span class="tok-k">cond </span><span class="tok-p">[(</span><span class="tok-k">and </span><span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">inside-snippet</span><span class="tok-p">)</span>
+                  <span class="tok-p">(</span><span class="tok-nb">not </span><span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-nv">line</span><span class="tok-p">)))</span>
 
-              <span class="tok-p">(</span><span class="tok-k">when </span><span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">))</span>
-                <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">inside-snippet</span> <span class="tok-no">#t</span><span class="tok-p">)</span>
+             <span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">snippet-lines</span> <span class="tok-nv">append</span> <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-nv">line</span><span class="tok-p">))]</span>
 
-                <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-type</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-type</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">)))</span>
-                <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-name</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">)))</span>
-                <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-lines</span> <span class="tok-o">&#39;</span><span class="tok-p">())</span>
-                <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-linenum</span> <span class="tok-p">(</span><span class="tok-nf">dec</span> <span class="tok-nv">line-num</span><span class="tok-p">))))</span>
+            <span class="tok-p">[(</span><span class="tok-k">and </span><span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">inside-snippet</span><span class="tok-p">)</span>
+                  <span class="tok-p">(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-nv">line</span><span class="tok-p">))</span>
 
-          <span class="tok-p">(</span><span class="tok-k">when </span><span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">inside-snippet</span><span class="tok-p">)</span>
-            <span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">snippet-lines</span> <span class="tok-nv">append</span> <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-nv">line</span><span class="tok-p">))))</span>
+             <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">inside-snippet</span> <span class="tok-no">#f</span><span class="tok-p">)</span>
+             <span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">snippets</span>
+                        <span class="tok-nv">add-snippets</span>
+                        <span class="tok-p">(</span><span class="tok-nf">create-snippet</span> <span class="tok-kd">#:type</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-type</span><span class="tok-p">)</span>
+                                        <span class="tok-kd">#:name</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-name</span><span class="tok-p">)</span>
+                                        <span class="tok-kd">#:linenum</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-linenum</span><span class="tok-p">)</span>
+                                        <span class="tok-kd">#:content</span> <span class="tok-p">(</span><span class="tok-nf">string-join</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">snippet-lines</span><span class="tok-p">)</span>
+                                                               <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)))]</span>
+            <span class="tok-p">[(</span><span class="tok-nf">is-block-delimiter?</span> <span class="tok-nv">line</span><span class="tok-p">)</span>
+
+             <span class="tok-p">(</span><span class="tok-k">when </span><span class="tok-p">(</span><span class="tok-nf">is-block-title?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">))</span>
+               <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">inside-snippet</span> <span class="tok-no">#t</span><span class="tok-p">)</span>
+
+               <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-type</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-type</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">)))</span>
+               <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-name</span> <span class="tok-p">(</span><span class="tok-nf">get-snippet-name</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-prev-line</span><span class="tok-p">)))</span>
+               <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-lines</span> <span class="tok-o">&#39;</span><span class="tok-p">())</span>
+               <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">snippet-linenum</span> <span class="tok-p">(</span><span class="tok-nf">dec</span> <span class="tok-nv">line-num</span><span class="tok-p">)))])</span>
 
       <span class="tok-c1">;; Always update previous line</span>
       <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-nv">prev-prev-line</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-nv">prev-line</span><span class="tok-p">))</span>
@@ -1827,7 +1833,7 @@ header is necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-29 01:35:31 ICT
+Last updated 2014-07-29 01:47:52 ICT
 </div>
 </div>
 </body>
