@@ -78,3 +78,8 @@ You could also specify your source and destination:
 # Uses literate source code from source/ and outputs to documents/
 ulqui generate-docs --from source --to documents
 ----
+
+== Notes
+
+* Ulquikit will *not* handle the case of invalid AsciiDoc syntax.  Results of
+  such situations are unexpected.
