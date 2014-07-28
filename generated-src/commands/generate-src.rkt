@@ -71,8 +71,6 @@
                  'content "string"}))
 
 
-;; lang racket
-
 (define is-block-delimiter?
   #λ(regexp-match? #rx"^----( *)$" %))
 

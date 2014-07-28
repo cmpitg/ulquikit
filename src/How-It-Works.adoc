@@ -350,23 +350,13 @@ necessary:
 
 ----
 
-
-'''
-
-+extract-snippets+ will
-
-* find all AsciiDoc files in a directory (argument: +dir+),
-* extract all AsciiDoc code snippet with titles and return them as hashes with
-  +create-snippet+.
-
-+extract-snippets+ relies on +extract-snippets-from-file+, which only extracts from one file
-at a time.
+As a result, +extract-snippets+, which extracts snippets from all AsciiDoc
+documents in a directory recursively, makes use of
++extract-snippets-from-file+ to function.
 
 .code::extract-snippets
 [source,racket,linenums]
 ----
-;; lang racket
-
 ;; include::extract-snippets-from-file
 
 (define (extract-snippets from-dir)
@@ -494,9 +484,7 @@ at a time.
       (remove-dir temp-dir))))
 ----
 
-==== Built-in commands
-
-===== +generate-src+
+=== +generate-src+
 
 .file::commands/generate-src.rkt
 [source,racket,linenums]
@@ -546,20 +534,6 @@ By default, +ulqui generate-src+ extracts source code from
 ;;     (include-file-snippets)
 ;;     (write-snippets-to-files to)))
 
-----
-
-=== Utility functions
-
-See link:Utilities.html[Utilities].
-
-=== Misc
-
-.code::use-rackjure
-[source,racket,linenums]
-----
-#lang rackjure
-
-(current-curly-dict hash)
 ----
 
 == Commands
@@ -730,7 +704,21 @@ appropriate keywords and values.
 ;;   )
 ----
 
-=== License header
+== Utility functions
+
+See link:Utilities.html[Utilities].
+
+== Misc
+
+.code::use-rackjure
+[source,racket,linenums]
+----
+#lang rackjure
+
+(current-curly-dict hash)
+----
+
+== License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
 header is necessary.

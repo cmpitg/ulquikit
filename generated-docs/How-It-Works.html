@@ -437,27 +437,18 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li>
 <ul class="sectlevel2">
 <li><a href="#__code_extract_snippet_code">2.1. <code>extract-snippet</code></a></li>
-<li>
-<ul class="sectlevel3">
-<li><a href="#_built_in_commands">2.1.1. Built-in commands</a></li>
-<li>
-<ul class="sectlevel4">
-<li><a href="#__code_generate_src_code"><code>generate-src</code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#_utility_functions">2.2. Utility functions</a></li>
-<li><a href="#_misc">2.3. Misc</a></li>
+<li><a href="#__code_generate_src_code">2.2. <code>generate-src</code></a></li>
 </ul>
 </li>
 <li><a href="#_commands">3. Commands</a></li>
 <li>
 <ul class="sectlevel2">
 <li><a href="#_core_functions_to_implement_commands">3.1. Core functions to implement commands</a></li>
-<li><a href="#_license_header">3.2. License header</a></li>
 </ul>
 </li>
+<li><a href="#_utility_functions">4. Utility functions</a></li>
+<li><a href="#_misc">5. Misc</a></li>
+<li><a href="#_license_header">6. License header</a></li>
 </ul>
 </div>
 </div>
@@ -1102,24 +1093,10 @@ necessary:</p>
 </td></tr></table></code></pre>
 </div>
 </div>
-<hr>
 <div class="paragraph">
-<p><code>extract-snippets</code> will</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>find all AsciiDoc files in a directory (argument: <code>dir</code>),</p>
-</li>
-<li>
-<p>extract all AsciiDoc code snippet with titles and return them as hashes with
-<code>create-snippet</code>.</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p><code>extract-snippets</code> relies on <code>extract-snippets-from-file</code>, which only extracts from one file
-at a time.</p>
+<p>As a result, <code>extract-snippets</code>, which extracts snippets from all AsciiDoc
+documents in a directory recursively, makes use of
+<code>extract-snippets-from-file</code> to function.</p>
 </div>
 <div class="listingblock">
 <div class="title">code::extract-snippets</div>
@@ -1248,11 +1225,7 @@ at a time.</p>
 122
 123
 124
-125
-126
-127</div></td><td class="code"><span class="tok-c1">;; lang racket</span>
-
-<span class="tok-c1">;; include::extract-snippets-from-file</span>
+125</div></td><td class="code"><span class="tok-c1">;; include::extract-snippets-from-file</span>
 
 <span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">extract-snippets</span> <span class="tok-nv">from-dir</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-nf">for/fold</span> <span class="tok-p">([</span><span class="tok-nf">snippet</span> <span class="tok-p">{}])</span>
@@ -1380,10 +1353,9 @@ at a time.</p>
 </td></tr></table></code></pre>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_built_in_commands">2.1.1. Built-in commands</h4>
-<div class="sect4">
-<h5 id="__code_generate_src_code"><code>generate-src</code></h5>
+</div>
+<div class="sect2">
+<h3 id="__code_generate_src_code">2.2. <code>generate-src</code></h3>
 <div class="listingblock">
 <div class="title">file::commands/generate-src.rkt</div>
 <div class="content">
@@ -1468,28 +1440,6 @@ at a time.</p>
 <span class="tok-c1">;;   (~&gt; (extract-snippets from)</span>
 <span class="tok-c1">;;     (include-file-snippets)</span>
 <span class="tok-c1">;;     (write-snippets-to-files to)))</span>
-</td></tr></table></code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_utility_functions">2.2. Utility functions</h3>
-<div class="paragraph">
-<p>See <a href="Utilities.html">Utilities</a>.</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_misc">2.3. Misc</h3>
-<div class="listingblock">
-<div class="title">code::use-rackjure</div>
-<div class="content">
-<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
-2
-3</div></td><td class="code"><span class="tok-kn">#lang rackjure</span>
-
-<span class="tok-p">(</span><span class="tok-nf">current-curly-dict</span> <span class="tok-nv">hash</span><span class="tok-p">)</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -1797,8 +1747,35 @@ appropriate keywords and values.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_license_header">3.2. License header</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_utility_functions">4. Utility functions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="Utilities.html">Utilities</a>.</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_misc">5. Misc</h2>
+<div class="sectionbody">
+<div class="listingblock">
+<div class="title">code::use-rackjure</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3</div></td><td class="code"><span class="tok-kn">#lang rackjure</span>
+
+<span class="tok-p">(</span><span class="tok-nf">current-curly-dict</span> <span class="tok-nv">hash</span><span class="tok-p">)</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_license_header">6. License header</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Of course, since Ulquikit is distributed under the terms of GPLv3, the license
 header is necessary.</p>
@@ -1830,10 +1807,9 @@ header is necessary.</p>
 </div>
 </div>
 </div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-29 01:47:52 ICT
+Last updated 2014-07-29 01:52:53 ICT
 </div>
 </div>
 </body>

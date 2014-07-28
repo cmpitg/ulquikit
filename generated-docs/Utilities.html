@@ -490,8 +490,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
   <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">box-swap!</span> <span class="tok-nv">%1</span> <span class="tok-p">(</span><span class="tok-err">λ</span> <span class="tok-p">(</span><span class="tok-nf">_</span><span class="tok-p">)</span> <span class="tok-nv">%2</span><span class="tok-p">)))</span>
 
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
-  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-mi">0</span><span class="tok-p">)</span> <span class="tok-mi">1</span><span class="tok-p">))</span> <span class="tok-mi">1</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nb">unbox </span><span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;a&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;b&quot;</span><span class="tok-p">))</span> <span class="tok-s">&quot;b&quot;</span><span class="tok-p">))</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-mi">0</span><span class="tok-p">)</span>   <span class="tok-mi">1</span><span class="tok-p">)</span>   <span class="tok-mi">1</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">box-set!</span> <span class="tok-p">(</span><span class="tok-nb">box </span><span class="tok-s">&quot;a&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;b&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;b&quot;</span><span class="tok-p">))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -895,7 +895,7 @@ TODO: give example.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-28 17:44:44 ICT
+Last updated 2014-07-29 01:58:28 ICT
 </div>
 </div>
 </body>
