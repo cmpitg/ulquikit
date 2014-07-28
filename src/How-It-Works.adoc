@@ -308,89 +308,6 @@ at a time.
       ([file (list-all-adocs (standardize-path from-dir))])
     (dict-merge snippet (extract-snippet file))))
 
-----
-
-The way +extract-snippet+ works is very simple:
-
-* It will first read the content of a file and break it into lines while
-  preserving line numbers (thus the call to +string-split+ with +#:trim? #f+).
-
-* Iterate through each line, one by one
-
-* If the current line is an AsciiDoc code block delimiter (i.e. +----+), since
-  we only care about snippet, there are several posibilities:
-
-** if we are already inside a snippet (when +inside-snippet+ is +#t+), it
-   means the snippet is finished ⇨ reset +inside-snippet+ to +#f+;
-
-** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
-   previous line does not define a new snippet (i.e. it doesn't start with
-   +file::+ or +code::+ or user-defined ones), ignore this case;
-
-** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
-   previous line does define a new snippet (starting with +file::+ or +code::+
-   or user-defined ones) ⇨
-   
-*** set +inside-snippet+ to +#t+
-
-*** save the snippet name, and
-
-*** save the line number marking the beginning of the snippet;
-
-* If current line is _not_ an AsciiDoc code block delimiter: update snippet
-  content if +inside-snippet+ is +#t+ and ignore this line otherwise.
-
-.code::extract-snippet
-[source,racket,linenums]
-----
-;; include::extract-snippet-helpers
-
-(define (extract-snippet path)
-  (let* ([file-content (read-file path)]
-         [lines        (string-split file-content "\n" #:trim? #f)]
-
-         [snippets        (box {'file {}
-                                'code {}})]
-
-         [prev-prev-line  (box "")]
-         [prev-line       (box "")]
-
-         [snippet-type    (box null)]
-         [snippet-content (box "")]
-         [snippet-name    (box "")]
-         [snippet-linenum (box 0)]
-         [inside-snippet  (box #f)])
-
-    (for ([line-num    (in-naturals 1)]
-          [line        (in-list lines)])
-      (if (is-block-delimiter? line)
-          (cond [(unbox inside-snippet)
-
-                 (box-set! inside-snippet #f)
-                 (box-swap! snippets
-                            add-snippets
-                            (create-snippet #:type (unbox snippet-type)
-                                            #:name (unbox snippet-name)
-                                            #:linenum (unbox snippet-linenum)
-                                            #:content (unbox snippet-content)))]
-
-                [else
-                 (when (is-block-title? (unbox prev-prev-line))
-                   (box-set! inside-snippet #t)
-
-                   (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
-                   (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-                   (box-set! snippet-content "")
-                   (box-set! snippet-linenum (dec line-num)))])
-          (when (unbox inside-snippet)
-            (box-swap! snippet-content string-append "\n" line)))
-
-      ;; Always update previous line
-      (box-set! prev-prev-line (unbox prev-line))
-      (box-set! prev-line      line))
-
-    (unbox snippets)))
-
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
                                       "./ulqui-extract-snippets")]
@@ -507,6 +424,90 @@ The way +extract-snippet+ works is very simple:
         (for ([(name content) file-snippet])
           (check-equal? (file-snippet name) content)))
       (remove-dir temp-dir))))
+
+----
+
+The way +extract-snippet+ works is very simple:
+
+* It will first read the content of a file and break it into lines while
+  preserving line numbers (thus the call to +string-split+ with +#:trim? #f+).
+
+* Iterate through each line, one by one
+
+* If the current line is an AsciiDoc code block delimiter (i.e. +----+), since
+  we only care about snippet, there are several posibilities:
+
+** if we are already inside a snippet (when +inside-snippet+ is +#t+), it
+   means the snippet is finished ⇨ reset +inside-snippet+ to +#f+;
+
+** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
+   previous line does not define a new snippet (i.e. it doesn't start with
+   +file::+ or +code::+ or user-defined ones), ignore this case;
+
+** if we are outside a snippet (when +inside-snippet+ is +#f+) and the
+   previous line does define a new snippet (starting with +file::+ or +code::+
+   or user-defined ones) ⇨
+   
+*** set +inside-snippet+ to +#t+
+
+*** save the snippet name, and
+
+*** save the line number marking the beginning of the snippet;
+
+* If current line is _not_ an AsciiDoc code block delimiter: update snippet
+  content if +inside-snippet+ is +#t+ and ignore this line otherwise.
+
+.code::extract-snippet
+[source,racket,linenums]
+----
+;; include::extract-snippet-helpers
+
+(define (extract-snippet path)
+  (let* ([file-content (read-file path)]
+         [lines        (string-split file-content "\n" #:trim? #f)]
+
+         [snippets        (box {'file {}
+                                'code {}})]
+
+         [prev-prev-line  (box "")]
+         [prev-line       (box "")]
+
+         [snippet-type    (box null)]
+         [snippet-content (box "")]
+         [snippet-name    (box "")]
+         [snippet-linenum (box 0)]
+         [inside-snippet  (box #f)])
+
+    (for ([line-num    (in-naturals 1)]
+          [line        (in-list lines)])
+      (if (is-block-delimiter? line)
+          (cond [(unbox inside-snippet)
+
+                 (box-set! inside-snippet #f)
+                 (box-swap! snippets
+                            add-snippets
+                            (create-snippet #:type (unbox snippet-type)
+                                            #:name (unbox snippet-name)
+                                            #:linenum (unbox snippet-linenum)
+                                            #:content (unbox snippet-content)))]
+
+                [else
+                 (when (is-block-title? (unbox prev-prev-line))
+                   (box-set! inside-snippet #t)
+
+                   (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
+                   (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
+                   (box-set! snippet-content "")
+                   (box-set! snippet-linenum (dec line-num)))])
+          (when (unbox inside-snippet)
+            (box-swap! snippet-content string-append "\n" line)))
+
+      ;; Always update previous line
+      (box-set! prev-prev-line (unbox prev-line))
+      (box-set! prev-line      line))
+
+    (unbox snippets)))
+
 ----
 
 Of course, for +extract-snippet+ to function, the following helpers are
