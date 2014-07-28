@@ -42,12 +42,15 @@ Let's dive into some terminology first
 ** A *code snippet* is a snippet storing source code that can be included into
    other snippets.
 
-== Main program
+== Extracting and including snippets
 
-The best way to use Ulquikit is to start with some commands.  Let's define how
-commands work first:
+Ulquikit works by searching for all AsciiDoc documents inside
++<project-root>/src+ directory, building a database of snippets, including
+them into each other if necessary, then generating documentation and source
+code.  Hence, the following functions are probably the most interesting ones:
 
-=== Commands
+* +extract-snippets-from-file+, which helps extract snippets from a file
+* +include-snippets+, which helps include snippets into each other
 
 * Each command is a Racket module defined in +commands/+ directory, with the
   base file name as command name.
