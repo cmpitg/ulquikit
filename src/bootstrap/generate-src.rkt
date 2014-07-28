@@ -92,7 +92,8 @@
         (*code-blocks* ((*code-blocks*) name block)))))
 
 (define is-code-block-title?
-  #λ(regexp-match? #rx"\\.(file|code)::" %))
+  #λ(and (regexp-match? #rx"\\.(file|code)::" %)
+         (not (regexp-match? #px"<\\d+>$" %))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main program
@@ -228,4 +229,7 @@
         (extract-blocks)
         (include-file-blocks)
         (write-blocks-to-files)
+
+        (displayln (~a (hash-keys (*code-blocks*))))
+        
         (newline)))
