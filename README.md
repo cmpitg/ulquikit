@@ -160,6 +160,13 @@ gem install asciidoctor
 This project is distributed under the terms of the GNU General Public
 License v3.  See `COPYING` for further information.
 
+## Contributors ##
+
+Special thanks to:
+
+* [@myguidingstar](https://github.com/myguidingstar)
+* [@lewtds](https://github.com/lewtds)
+
 ## Copyright ##
 
 Copyright 2013-2014 © Duong H. Nguyen <cmpitg AT gmailDOTcom>
