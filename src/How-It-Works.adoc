@@ -302,10 +302,10 @@ at a time.
 
 ;; include::extract-snippet
 
-(define (extract-snippets from-dir)
-  (for/fold ([snippet {}])
-      ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge snippet (extract-snippet file))))
+;; (define (extract-snippets from-dir)
+;;   (for/fold ([snippet {}])
+;;       ([file (list-all-adocs (standardize-path from-dir))])
+;;     (dict-merge snippet (extract-snippet file))))
 
 ----
 
@@ -343,158 +343,168 @@ The way +extract-snippet+ works is very simple:
 .code::extract-snippet
 [source,racket,linenums]
 ----
-(define (extract-snippet path)
-  (let* ([file-content (read-file path)]
-         [lines        (string-split file-content "\n" #:trim? #f)]
-
-         [snippets        (box {})]
-
-         [prev-line       (box "")]
-
-         [snippet-type    (box null)]
-         [snippet-content (box "")]
-         [snippet-name    (box "")]
-         [snippet-linenum (box 0)]
-         [inside-snippet  (box #f)])
-
-    (for ([line-num    (in-naturals 1)]
-          [line        (in-list lines)])
-      (if (is-block-delimiter? line)
-          (cond [(unbox inside-snippet)
-                 (box-cas! inside-snippet #f)
-                 (box-swap! snippets
-                            add-snippets
-                            (create-snippet #:type (unbox snippet-type)
-                                            #:name (unbox snippet-name)
-                                            #:linenum (unbox snippet-linenum)
-                                            #:content (unbox snippet-content)))]
-
-                [else
-                 (when (is-block-title? (unbox prev-line))
-                   (box-cas! inside-snippet #t)
-
-                   (box-cas! snippet-type (get-snippet-type line))
-                   (box-cas! snippet-name (get-snippet-name line))
-                   (box-cas! snippet-content "")
-                   (box-cas! snippet-linenum (dec line)))])
-          (when (inside-snippet)
-            (box-swap! snippet-content string-append "\n" line)))
-
-      ;; Always update previous line
-      (box-cas! prev-line line))
-
-    (unbox snippets)))
+(define is-block-delimiter?
+  #λ(regexp-match? #rx"^----( *)$" %))
 
 (module+ test
-  (let* ([temp-dir (get-relative-path (get-temp-dir)
-                                      "./ulqui-extract-snippets/inside")]
+  (check-equal? (is-block-delimiter? "----")    #t)
+  (check-equal? (is-block-delimiter? " ----")   #f)
+  (check-equal? (is-block-delimiter? "---- ")   #t)
+  (check-equal? (is-block-delimiter? "----  ")  #t)
+  (check-equal? (is-block-delimiter? "----a")   #f))
 
-         [expected-code-snippets
-          {"main-program" (string-join
-                           '(";; include::utils"
-                             ""
-                             "(module+ main"
-                             "  (displayln (string-reverse \"¡Hola mundo!\")))"
-                             "")
-                           "\n")
-           "use-rackjure" (string-join
-                           '("#lang rackjure"
-                             "(current-curly-dict hash)")
-                           "\n")
-           "license-header" ";; Just a sample license header."
-           "utils" ";; include::utils-string"
-           "utils-string" (string-join
-                           '("(define (string-reverse str)"
-                             "  (~> (string->list str)"
-                             "    reverse"
-                             "    list->string))")
-                           "\n")}]
+;; (define (extract-snippet path)
+;;   (let* ([file-content (read-file path)]
+;;          [lines        (string-split file-content "\n" #:trim? #f)]
 
-         [expected-file-snippets
-          {"/tmp/tmp.rkt" (string-join
-                           '(";; include::license-header"
-                             ""
-                             ";; include::use-rackjure"
-                             ""
-                             ";; include::main-program"
-                             ""
-                             "== Main program"
-                             "")
-                           "\n")}]
+;;          [snippets        (box {})]
 
-         [file-list '("Main"
-                      "License"
-                      "inside/Utils"
-                      "inside/Utils-String")]
-         [source-files (for/list ([name (in-list file-list)])
-                         (get-relative-path (format "~a./~a.adoc"
-                                                    temp-dir
-                                                    name)))]
-         [content
-          {"Main" (string-join
-                   '("= A document"
-                     ""
-                     "Just a hello world program"
-                     ""
-                     ".file::/tmp/tmp.rkt"
-                     "[source,racket,linenums]"
-                     "----"
-                     (expected-file-snippets "/tmp/tmp.rkt")
-                     "----"
-                     ".code::main-program"
-                     "[source,racket,linenums]"
-                     "----"
-                     (expected-code-snippets "main-program")
-                     "----"
-                     ".code::use-rackjure"
-                     "[source]"
-                     "----"
-                     (expected-code-snippets "use-rackjure")
-                     "----"
-                     "")
-                   "\n")
-           "License" (string-join
-                      '("= License header"
-                        ""
-                        ".code::license-header"
-                        "[source,racket]"
-                        "----"
-                        (expected-code-snippets "license-header")
-                        "----")
-                      "\n")
-           "inside/Utils" (string-join
-                           '("= Utils"
-                             ""
-                             "Right now, we just want to include string utililities."
-                             ""
-                             ".code::utils"
-                             "[source,racket,linenums]"
-                             "----"
-                             (expected-code-snippets "utils")
-                             "----")
-                           "\n")
-           "inside/Utils-String" (string-join
-                                  '("= String Utilities"
-                                    ""
-                                    ".code::utils-string"
-                                    "[source,racket,linenums]"
-                                    "----"
-                                    (expected-code-snippets "utils-string")
-                                    "----")
-                                  "\n")}])
-    (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
-      (remove-dir temp-dir)
-      (create-dir temp-dir)
-      (for ([(filename content) (in-hash content)])
-        (let ([path (format "~a./~a.adoc" temp-dir filename)])
-          (display-to-file content path)))
+;;          [prev-line       (box "")]
 
-      (let* ([snippets (extract-snippet temp-dir)]
-             [code-snippet (snippets 'code)]
-             [file-snippet (snippets 'file)])
-        (check-equal? code-snippet expected-code-snippets)
-        (check-equal? file-snippet expected-file-snippets))
-      (remove-dir temp-dir))))
+;;          [snippet-type    (box null)]
+;;          [snippet-content (box "")]
+;;          [snippet-name    (box "")]
+;;          [snippet-linenum (box 0)]
+;;          [inside-snippet  (box #f)])
+
+;;     (for ([line-num    (in-naturals 1)]
+;;           [line        (in-list lines)])
+;;       (if (is-block-delimiter? line)
+;;           (cond [(unbox inside-snippet)
+;;                  (box-cas! inside-snippet #f)
+;;                  (box-swap! snippets
+;;                             add-snippets
+;;                             (create-snippet #:type (unbox snippet-type)
+;;                                             #:name (unbox snippet-name)
+;;                                             #:linenum (unbox snippet-linenum)
+;;                                             #:content (unbox snippet-content)))]
+
+;;                 [else
+;;                  (when (is-block-title? (unbox prev-line))
+;;                    (box-cas! inside-snippet #t)
+
+;;                    (box-cas! snippet-type (get-snippet-type line))
+;;                    (box-cas! snippet-name (get-snippet-name line))
+;;                    (box-cas! snippet-content "")
+;;                    (box-cas! snippet-linenum (dec line)))])
+;;           (when (inside-snippet)
+;;             (box-swap! snippet-content string-append "\n" line)))
+
+;;       ;; Always update previous line
+;;       (box-cas! prev-line line))
+
+;;     (unbox snippets)))
+
+;; (module+ test
+;;   (let* ([temp-dir (get-relative-path (get-temp-dir)
+;;                                       "./ulqui-extract-snippets/inside")]
+
+;;          [expected-code-snippets
+;;           {"main-program" (string-join
+;;                            '(";; include::utils"
+;;                              ""
+;;                              "(module+ main"
+;;                              "  (displayln (string-reverse \"¡Hola mundo!\")))"
+;;                              "")
+;;                            "\n")
+;;            "use-rackjure" (string-join
+;;                            '("#lang rackjure"
+;;                              "(current-curly-dict hash)")
+;;                            "\n")
+;;            "license-header" ";; Just a sample license header."
+;;            "utils" ";; include::utils-string"
+;;            "utils-string" (string-join
+;;                            '("(define (string-reverse str)"
+;;                              "  (~> (string->list str)"
+;;                              "    reverse"
+;;                              "    list->string))")
+;;                            "\n")}]
+
+;;          [expected-file-snippets
+;;           {"/tmp/tmp.rkt" (string-join
+;;                            '(";; include::license-header"
+;;                              ""
+;;                              ";; include::use-rackjure"
+;;                              ""
+;;                              ";; include::main-program"
+;;                              ""
+;;                              "== Main program"
+;;                              "")
+;;                            "\n")}]
+
+;;          [file-list '("Main"
+;;                       "License"
+;;                       "inside/Utils"
+;;                       "inside/Utils-String")]
+;;          [source-files (for/list ([name (in-list file-list)])
+;;                          (get-relative-path (format "~a./~a.adoc"
+;;                                                     temp-dir
+;;                                                     name)))]
+;;          [content
+;;           {"Main" (string-join
+;;                    '("= A document"
+;;                      ""
+;;                      "Just a hello world program"
+;;                      ""
+;;                      ".file::/tmp/tmp.rkt"
+;;                      "[source,racket,linenums]"
+;;                      "----"
+;;                      (expected-file-snippets "/tmp/tmp.rkt")
+;;                      "----"
+;;                      ".code::main-program"
+;;                      "[source,racket,linenums]"
+;;                      "----"
+;;                      (expected-code-snippets "main-program")
+;;                      "----"
+;;                      ".code::use-rackjure"
+;;                      "[source]"
+;;                      "----"
+;;                      (expected-code-snippets "use-rackjure")
+;;                      "----"
+;;                      "")
+;;                    "\n")
+;;            "License" (string-join
+;;                       '("= License header"
+;;                         ""
+;;                         ".code::license-header"
+;;                         "[source,racket]"
+;;                         "----"
+;;                         (expected-code-snippets "license-header")
+;;                         "----")
+;;                       "\n")
+;;            "inside/Utils" (string-join
+;;                            '("= Utils"
+;;                              ""
+;;                              "Right now, we just want to include string utililities."
+;;                              ""
+;;                              ".code::utils"
+;;                              "[source,racket,linenums]"
+;;                              "----"
+;;                              (expected-code-snippets "utils")
+;;                              "----")
+;;                            "\n")
+;;            "inside/Utils-String" (string-join
+;;                                   '("= String Utilities"
+;;                                     ""
+;;                                     ".code::utils-string"
+;;                                     "[source,racket,linenums]"
+;;                                     "----"
+;;                                     (expected-code-snippets "utils-string")
+;;                                     "----")
+;;                                   "\n")}])
+;;     (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
+;;       (remove-dir temp-dir)
+;;       (create-dir temp-dir)
+;;       (for ([(filename content) (in-hash content)])
+;;         (let ([path (format "~a./~a.adoc" temp-dir filename)])
+;;           (display-to-file content path)))
+
+;;       (let* ([snippets (extract-snippet temp-dir)]
+;;              [code-snippet (snippets 'code)]
+;;              [file-snippet (snippets 'file)])
+;;         (check-equal? code-snippet expected-code-snippets)
+;;         (check-equal? file-snippet expected-file-snippets))
+;;       (remove-dir temp-dir))))
 ----
 
 Each is snippet is stored with the following format:
