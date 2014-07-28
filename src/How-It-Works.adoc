@@ -353,6 +353,16 @@ The way +extract-snippet+ works is very simple:
   (check-equal? (is-block-delimiter? "----  ")  #t)
   (check-equal? (is-block-delimiter? "----a")   #f))
 
+(define is-block-title?
+  #λ(regexp-match? #rx"^\\.(file|code)::" %))
+
+(module+ test
+  (check-equal? (is-block-title? ".file::something")       #t)
+  (check-equal? (is-block-title? ".file::something else")  #t)
+  (check-equal? (is-block-title? ".file::")                #t)
+  (check-equal? (is-block-title? " .file::something")      #f)
+  (check-equal? (is-block-title? ".file:something")        #f))
+
 (define (add-snippets snippets snippet)
   (let* ([type (snippet 'type)]
          [name (snippet 'name)]
