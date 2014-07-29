@@ -603,83 +603,7 @@ With all the reasons stated above, we have this implementation:
 ----
 ;; lang racket
 
-(define (update-snippet/boxed snippets/box snippet)
-  (let* ([type (snippet 'type)]
-         [name (snippet 'name)])
-    (box-swap! snippets/box
-               (λ (snippets)
-                 (let* ([snippets/typed (snippets type)]
-                        [snippets/typed/updated (snippets/typed name snippet)]
-                        [snippets/updated (snippets type snippets/typed/updated)])
-                   snippets/updated)))))
-
-(module+ test
-  (let* ([snippets {'file {}
-                    'code {"hello" {'type 'code
-                                    'name "hello"
-                                    'lines '("original")
-                                    'linenum 20
-                                    'processed #f}}}]
-         [snippets/box (box snippets)])
-    (update-snippet/boxed snippets/box
-                          {'type 'code
-                           'name "hello"
-                           'lines '("changed")
-                           'linenum 10
-                           'processed #t})
-    (check-equal? (unbox snippets/box)
-                  {'file {}
-                   'code {"hello" {'type 'code
-                                   'name "hello"
-                                   'lines '("changed")
-                                   'linenum 10
-                                   'processed #t}}})))
-
-(define is-include-directive?
-  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (trim %))
-        (regexp-match? #px"^<!-- include::.* -->" (trim %))
-        (regexp-match? #px"^/\\* include::.* \\*/" (trim %))))
-
-(module+ test
-  (check-equal? (is-include-directive? "  ;; include::") #t)
-  (check-equal? (is-include-directive? ";; include::") #t)
-  (check-equal? (is-include-directive? "a;; include::") #f)
-  (check-equal? (is-include-directive? ";; include::something") #t)
-  (check-equal? (is-include-directive? "## include::something") #t)
-  (check-equal? (is-include-directive? "// include::something") #t)
-  (check-equal? (is-include-directive? "/* include::something */") #t)
-  (check-equal? (is-include-directive? "<!-- include::something -->") #t)
-  (check-equal? (is-include-directive? "a <!-- include::something -->") #f))
-
-(define (get-included-snippet-name line)
-  (if (is-include-directive? line)
-      (let* ([line (trim line)]
-             [line-2 (if (string-ends-with? line " -->")
-                         (first (string-split line " -->"))
-                         line)]
-             [line-3 (if (string-ends-with? line-2 " */")
-                         (first (string-split line-2 " */"))
-                         line-2)]
-             [splitted (string-split line-3 "include::")])
-        (if (> (length splitted) 1)
-            (last splitted)
-            ""))
-      ""))
-
-(module+ test
-  (check-equal? (get-included-snippet-name "  ;; include::") "")
-  (check-equal? (get-included-snippet-name ";; include::") "")
-  (check-equal? (get-included-snippet-name ";; include::something") "something")
-  (check-equal? (get-included-snippet-name "## include::something") "something")
-  (check-equal? (get-included-snippet-name "// include::something") "something")
-  (check-equal? (get-included-snippet-name "/* include::something */") "something")
-  (check-equal? (get-included-snippet-name "<!-- include::something -->") "something")
-  (check-equal? (get-included-snippet-name "a <!-- include::something -->") ""))
-
-(define (get-snippet-by-name snippets
-                             name
-                             #:type [type 'code])
-  (~> snippets type name))
+;; include::include-snippet-helpers
 
 (define (include-snippet boxed
                          target
@@ -822,6 +746,90 @@ With all the reasons stated above, we have this implementation:
 
 ----
 
+As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
+are short and easily implemented like so:
+
+.code::include-snippet-helpers
+[source,racket,linenums]
+----
+(define (update-snippet/boxed snippets/box snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)])
+    (box-swap! snippets/box
+               (λ (snippets)
+                 (let* ([snippets/typed (snippets type)]
+                        [snippets/typed/updated (snippets/typed name snippet)]
+                        [snippets/updated (snippets type snippets/typed/updated)])
+                   snippets/updated)))))
+
+(module+ test
+  (let* ([snippets {'file {}
+                    'code {"hello" {'type 'code
+                                    'name "hello"
+                                    'lines '("original")
+                                    'linenum 20
+                                    'processed #f}}}]
+         [snippets/box (box snippets)])
+    (update-snippet/boxed snippets/box
+                          {'type 'code
+                           'name "hello"
+                           'lines '("changed")
+                           'linenum 10
+                           'processed #t})
+    (check-equal? (unbox snippets/box)
+                  {'file {}
+                   'code {"hello" {'type 'code
+                                   'name "hello"
+                                   'lines '("changed")
+                                   'linenum 10
+                                   'processed #t}}})))
+
+(define is-include-directive?
+  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (trim %))
+        (regexp-match? #px"^<!-- include::.* -->" (trim %))
+        (regexp-match? #px"^/\\* include::.* \\*/" (trim %))))
+
+(module+ test
+  (check-equal? (is-include-directive? "  ;; include::") #t)
+  (check-equal? (is-include-directive? ";; include::") #t)
+  (check-equal? (is-include-directive? "a;; include::") #f)
+  (check-equal? (is-include-directive? ";; include::something") #t)
+  (check-equal? (is-include-directive? "## include::something") #t)
+  (check-equal? (is-include-directive? "// include::something") #t)
+  (check-equal? (is-include-directive? "/* include::something */") #t)
+  (check-equal? (is-include-directive? "<!-- include::something -->") #t)
+  (check-equal? (is-include-directive? "a <!-- include::something -->") #f))
+
+(define (get-included-snippet-name line)
+  (if (is-include-directive? line)
+      (let* ([line (trim line)]
+             [line-2 (if (string-ends-with? line " -->")
+                         (first (string-split line " -->"))
+                         line)]
+             [line-3 (if (string-ends-with? line-2 " */")
+                         (first (string-split line-2 " */"))
+                         line-2)]
+             [splitted (string-split line-3 "include::")])
+        (if (> (length splitted) 1)
+            (last splitted)
+            ""))
+      ""))
+
+(module+ test
+  (check-equal? (get-included-snippet-name "  ;; include::") "")
+  (check-equal? (get-included-snippet-name ";; include::") "")
+  (check-equal? (get-included-snippet-name ";; include::something") "something")
+  (check-equal? (get-included-snippet-name "## include::something") "something")
+  (check-equal? (get-included-snippet-name "// include::something") "something")
+  (check-equal? (get-included-snippet-name "/* include::something */") "something")
+  (check-equal? (get-included-snippet-name "<!-- include::something -->") "something")
+  (check-equal? (get-included-snippet-name "a <!-- include::something -->") ""))
+
+(define (get-snippet-by-name snippets
+                             name
+                             #:type [type 'code])
+  (~> snippets type name))
+----
 
 === +generate-src+
 
