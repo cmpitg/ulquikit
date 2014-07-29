@@ -78,8 +78,8 @@ extracted
 <4> is the content of the code snippet, i.e. which is surrounded by +----+ in
 AsciiDoc format
 
-NOTE: Snippets should never be created by directly by using hash.  They should
-be created with <<func/create-snippet,+create-snippet+>>.
+IMPORTANT: Snippets should never be created by directly by using hash.  They
+should be created with <<func/create-snippet,+create-snippet+>>.
 
 Thus, +create-snippet+ is simply implemented as followed:
 
