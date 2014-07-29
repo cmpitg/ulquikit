@@ -600,6 +600,8 @@ With all the reasons stated above, we have this implementation:
 ----
 ;; lang racket
 
+(require racket/pretty)
+
 (define (update-snippet/boxed snippets/box snippet)
   (let* ([type (snippet 'type)]
          [name (snippet 'name)])
@@ -681,6 +683,8 @@ With all the reasons stated above, we have this implementation:
 (define (do-include-snippet boxed
                             target
                             included?)
+  ;; (pretty-display (~a "processing: " target))
+
   (unless (target 'processed)
     (let* ([lines
             (for/list ([line (target 'lines)])
@@ -713,6 +717,7 @@ With all the reasons stated above, we have this implementation:
                            ;; processed
                            (~> (get-snippet-by-name (unbox boxed)
                                                     included-snippet-name)
+                             'lines
                              (string-join "\n"))]))
 
                   line))]
@@ -722,7 +727,9 @@ With all the reasons stated above, we have this implementation:
                                         #:linenum (target 'linenum)
                                         #:lines lines
                                         #:processed #t)])
-      (update-snippet/boxed boxed new-snippet))))
+      (update-snippet/boxed boxed new-snippet)
+      ;; (pretty-display (~a "-> after processing: " new-snippet))
+      )))
 
 (module+ test
   (let* ([file-snippet-tmp {'name "/tmp/tmp.rkt"
@@ -732,7 +739,7 @@ With all the reasons stated above, we have this implementation:
          [snippets {'file {"/tmp/tmp.rkt" file-snippet-tmp}
                     'code {"A" {'name "A"
                                 'type 'code
-                                'lines '("World\n;; include::B")
+                                'lines '("World" ";; include::B")
                                 'linenum 20}
                            "B" {'name "B"
                                 'type 'code
@@ -744,15 +751,18 @@ With all the reasons stated above, we have this implementation:
                   {'file {"/tmp/tmp.rkt" {'name "/tmp/tmp.rkt"
                                           'type 'file
                                           'lines '("World\nHello")
-                                          'linenum 10}}
+                                          'linenum 10
+                                          'processed #t}}
                    'code {"A" {'name "A"
                                'type 'code
-                               'lines '("World\nHello")
-                               'linenum 20}
+                               'lines '("World" "Hello")
+                               'linenum 20
+                               'processed #t}
                           "B" {'name "B"
                                'type 'code
                                'lines '("Hello")
-                               'linenum 30}}})))
+                               'linenum 30
+                               'processed #t}}})))
 
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
