@@ -58,12 +58,15 @@ Ulquikit works by searching for all AsciiDoc documents inside
 them into each other if necessary, then generating documentation and source
 code.  Hence, the following functions are probably the most interesting ones:
 
-* +extract-snippets-from-file+, which helps extract snippets from a file
-* +include-snippets+, which helps include snippets into each other
+* <<func/extract-snippets-from-file,+extract-snippets-from-file+>>, which
+  helps extract snippets from a file
+* <<func/include-snippet,+include-snippet+>>, which helps
+  <<section/include-snippets,include snippets>> into each other
 
 Let's talk about +extract-snippets-from-file+ first:
 
-=== +extract-snippet+
+[[section/extract-snippets]]
+=== Extracting snippets
 
 The first thing to do is probably to decide how snippets are stored.  This is
 very important since every change made to this data structure would affect
@@ -78,7 +81,7 @@ Each snippet is a hash with following format:
  'name snippet-name          <2>
  'linenum line-number        <3>
  'lines snippet-lines        <4>
- 'processed? processed?}      <5>
+ 'processed? processed?}     <5>
 ----
 <1> is either +'file+ or +'code+
 <2> is the name of the snippet; e.g. snippet with title +file::something+ has
@@ -90,7 +93,7 @@ purpose
 <5> determines whether this snippet has been processed? to include others, when
 created for the first time, +'processed?+ is always +#f+.  It's only changed
 after the snippet has been passed through
-<<include-snippet,+include-snippets+>>
+<<include-snippet,+include-snippet+>>
 
 IMPORTANT: Snippets should never be created by directly by using hash.  They
 should be created with <<func/create-snippet,+create-snippet+>>.
@@ -241,6 +244,7 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
 
 *** If this block does not mark the beginning of a snippet, ignore it.
 
+[[func/extract-snippets-from-file]]
 .code::extract-snippets-from-file
 [source,racket,linenums]
 ----
@@ -538,7 +542,8 @@ After +extract-snippets+, the next important function is +include-snippet+,
 which is use to include other snippets into one targeted snippet.  Let's see
 how we could implement it.
 
-=== +include-snippet+
+[[section/include-snippets]]
+=== Including snippets into each other
 
 +include-snippet+ should take 2 arguments: a hash containing all snippets,
 and the snippet which needs to be checked and included.  Thus this function
@@ -598,6 +603,7 @@ target track)+
 
 With all the reasons stated above, we have this implementation:
 
+[[func/include-snippet]]
 .code::include-snippet
 [source,racket,linenums]
 ----
