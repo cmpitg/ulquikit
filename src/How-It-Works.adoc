@@ -680,7 +680,7 @@ With all the reasons stated above, we have this implementation:
 
 (define (do-include-snippet boxed
                             target
-                            #:included? included?)
+                            included?)
   (unless (target 'processed)
     (let* ([lines
             (for/list ([line (target 'lines)])
@@ -739,7 +739,7 @@ With all the reasons stated above, we have this implementation:
                                 'lines '("Hello")
                                 'linenum 30}}}]
          [boxed (box snippets)])
-    (do-include-snippet boxed file-snippet-tmp)
+    (do-include-snippet boxed file-snippet-tmp {})
     (check-equal? (unbox boxed)
                   {'file {"/tmp/tmp.rkt" {'name "/tmp/tmp.rkt"
                                           'type 'file
