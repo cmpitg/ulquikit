@@ -586,9 +586,12 @@ This is a perfect example of safe use mutable values in combination with
 http://docs.racket-lang.org/reference/boxes.html[+box+].
 
 * Snippet A includes snippet B, then snippet B includes snippet A again,
-  creating an infinite loop.  To prevent this, a list of currently included
+  creating circular dependency.  To prevent this, a list of currently included
   snippet must be kept track of.  If a snippet has already been in the track,
   include it but don't process it.
+
+WARNING: In case of circular dependency, the results are *unexpected*.  Thus,
+make sure snippets are well-managed.
 
 Henceforth, our helper will takes the signature: +(process-include-snippet
 target track)+
@@ -683,8 +686,7 @@ With all the reasons stated above, we have this implementation:
 (define (do-include-snippet boxed
                             target
                             included?)
-  ;; (pretty-display (~a "processing: " target))
-
+  (define updated-included? (included? (target 'name) #t))
   (unless (target 'processed)
     (let* ([lines
             (for/list ([line (target 'lines)])
@@ -692,7 +694,7 @@ With all the reasons stated above, we have this implementation:
                   (let* ([included-snippet-name (get-included-snippet-name line)]
                          [snippet-to-include    (get-snippet-by-name (unbox boxed)
                                                                      included-snippet-name)])
-                    (cond [(or (included? included-snippet-name)
+                    (cond [(or (updated-included? included-snippet-name)
                                (not snippet-to-include))
 
                            ;; This snippet has already been included on the
@@ -711,7 +713,7 @@ With all the reasons stated above, we have this implementation:
                            ;; and hasn't been processed
                            (do-include-snippet boxed
                                                snippet-to-include
-                                               (included? included-snippet-name #t))
+                                               (updated-included? included-snippet-name #t))
 
                            ;; Of course, then we must return it after
                            ;; processed
@@ -772,7 +774,32 @@ With all the reasons stated above, we have this implementation:
                                'type 'code
                                'lines '("Unprocessed")
                                'linenum 30
-                               'processed #f}}})))
+                               'processed #f}}}))
+
+  (let* ([snippet-a {'name "A"
+                     'type 'code
+                     'lines '("World" ";; include::B")
+                     'linenum 20}]
+         [snippets {'file {}
+                    'code {"A" snippet-a
+                           "B" {'name "B"
+                                'type 'code
+                                'lines '("Hello" ";; include::A")
+                                'linenum 30}}}]
+         [boxed (box snippets)])
+    (do-include-snippet boxed snippet-a {})
+    (check-equal? (unbox boxed)
+                  {'file {}
+                   'code {"A" {'name "A"
+                               'type 'code
+                               'lines '("World" "Hello\n;; include::A")
+                               'linenum 20
+                               'processed #t}
+                          "B" {'name "B"
+                               'type 'code
+                               'lines '("Hello" ";; include::A")
+                               'linenum 30
+                               'processed #t}}})))
 
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
