@@ -37,38 +37,51 @@
 
 ;; #lang racket
 
+;; lang racket
+
+(define get-snippet-content
+  #λ(string-join (% 'lines) "\n"))
+
+
 (define (create-snippet #:type type
                         #:name name
                         #:linenum linenum
-                        #:content content)
+                        #:lines lines
+                        #:processed? [processed? #f])
   (let ([type (if (symbol? type)
                   type
                   (string->symbol type))]
         [name (if (symbol? name)
                   (symbol->string name)
-                  name)])
+                  name)]
+        [lines (if (string? lines)
+                   (string-split lines "\n" #:trim? #f)
+                   lines)])
     {'type type
      'name name
      'linenum linenum
-     'content content}))
+     'lines lines
+     'processed? processed?}))
 
 (module+ test
   (check-equal? (create-snippet #:type 'file
                                 #:name 'hello-world
                                 #:linenum 10
-                                #:content "Hmm")
+                                #:lines '("Hmm"))
                 {'type 'file
                  'name "hello-world"
                  'linenum 10
-                 'content "Hmm"})
+                 'lines '("Hmm")
+                 'processed? #f})
   (check-equal? (create-snippet #:type "string"
                                 #:name "string"
                                 #:linenum 100
-                                #:content "string")
+                                #:lines "string")
                 {'type 'string
                  'name "string"
                  'linenum 100
-                 'content "string"}))
+                 'lines '("string")
+                 'processed? #f}))
 
 
 (define is-block-delimiter?
@@ -126,30 +139,34 @@
                               (create-snippet #:type 'file
                                               #:name 'hello
                                               #:linenum 10
-                                              #:content "Something"))
+                                              #:lines '("Something")))
                 {'file {"hello" {'type 'file
                                  'name "hello"
                                  'linenum 10
-                                 'content "Something"}}
+                                 'lines '("Something")
+                                 'processed? #f}}
                  'code {}})
 
   (check-equal? (add-snippets {'file {"hello" {'type 'file
                                                'name "hello"
                                                'linenum 10
-                                               'content "Something"}}
+                                               'lines '("Something")
+                                               'processed? #f}}
                                'code {}}
                               (create-snippet #:type 'code
                                               #:name 'say-something
                                               #:linenum 100
-                                              #:content "Something else"))
+                                              #:lines '("Something else")))
                 {'file {"hello" {'type 'file
                                  'name "hello"
                                  'linenum 10
-                                 'content "Something"}}
+                                 'lines '("Something")
+                                 'processed? #f}}
                  'code {"say-something" {'type 'code
                                          'name "say-something"
                                          'linenum 100
-                                         'content "Something else"}}}))
+                                         'lines '("Something else")
+                                         'processed? #f}}}))
 
 
 (define (extract-snippets-from-file path)
@@ -185,8 +202,7 @@
                         (create-snippet #:type (unbox snippet-type)
                                         #:name (unbox snippet-name)
                                         #:linenum (unbox snippet-linenum)
-                                        #:content (string-join (unbox snippet-lines)
-                                                               "\n")))]
+                                        #:lines (unbox snippet-lines)))]
             [(is-block-delimiter? line)
 
              (when (is-block-title? (unbox prev-prev-line))
@@ -320,13 +336,233 @@
              [file-snippet (snippets 'file)])
 
         (for ([(name snippet) code-snippet])
-          (check-equal? (snippet 'content)
+          (check-equal? (get-snippet-content snippet)
                         (expected-code-snippets name)))
 
         (for ([(name snippet) file-snippet])
-          (check-equal? (snippet 'content)
+          (check-equal? (get-snippet-content snippet)
                         (expected-file-snippets name))))
       (remove-dir temp-dir))))
+
+;; lang racket
+
+(define (update-snippet/boxed snippets/box snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)])
+    (box-swap! snippets/box
+               (λ (snippets)
+                 (let* ([snippets/typed (snippets type)]
+                        [snippets/typed/updated (snippets/typed name snippet)]
+                        [snippets/updated (snippets type snippets/typed/updated)])
+                   snippets/updated)))))
+
+(module+ test
+  (let* ([snippets {'file {}
+                    'code {"hello" {'type 'code
+                                    'name "hello"
+                                    'lines '("original")
+                                    'linenum 20
+                                    'processed? #f}}}]
+         [snippets/box (box snippets)])
+    (update-snippet/boxed snippets/box
+                          {'type 'code
+                           'name "hello"
+                           'lines '("changed")
+                           'linenum 10
+                           'processed? #t})
+    (check-equal? (unbox snippets/box)
+                  {'file {}
+                   'code {"hello" {'type 'code
+                                   'name "hello"
+                                   'lines '("changed")
+                                   'linenum 10
+                                   'processed? #t}}})))
+
+(define is-include-directive?
+  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (trim %))
+        (regexp-match? #px"^<!-- include::.* -->" (trim %))
+        (regexp-match? #px"^/\\* include::.* \\*/" (trim %))))
+
+(module+ test
+  (check-equal? (is-include-directive? "  ;; include::") #t)
+  (check-equal? (is-include-directive? ";; include::") #t)
+  (check-equal? (is-include-directive? "a;; include::") #f)
+  (check-equal? (is-include-directive? ";; include::something") #t)
+  (check-equal? (is-include-directive? "## include::something") #t)
+  (check-equal? (is-include-directive? "// include::something") #t)
+  (check-equal? (is-include-directive? "/* include::something */") #t)
+  (check-equal? (is-include-directive? "<!-- include::something -->") #t)
+  (check-equal? (is-include-directive? "a <!-- include::something -->") #f))
+
+(define (get-included-snippet-name line)
+  (if (is-include-directive? line)
+      (let* ([line (trim line)]
+             [line-2 (if (string-ends-with? line " -->")
+                         (first (string-split line " -->"))
+                         line)]
+             [line-3 (if (string-ends-with? line-2 " */")
+                         (first (string-split line-2 " */"))
+                         line-2)]
+             [splitted (string-split line-3 "include::")])
+        (if (> (length splitted) 1)
+            (last splitted)
+            ""))
+      ""))
+
+(module+ test
+  (check-equal? (get-included-snippet-name "  ;; include::") "")
+  (check-equal? (get-included-snippet-name ";; include::") "")
+  (check-equal? (get-included-snippet-name ";; include::something") "something")
+  (check-equal? (get-included-snippet-name "## include::something") "something")
+  (check-equal? (get-included-snippet-name "// include::something") "something")
+  (check-equal? (get-included-snippet-name "/* include::something */") "something")
+  (check-equal? (get-included-snippet-name "<!-- include::something -->") "something")
+  (check-equal? (get-included-snippet-name "a <!-- include::something -->") ""))
+
+(define (get-snippet-by-name snippets
+                             name
+                             #:type [type 'code])
+  (~> snippets type name))
+
+(define (include-snippet boxed
+                         target
+                         [included? {}])
+  (define updated-included? (included? (target 'name) #t))
+  (unless (target 'processed?)
+    (let* ([lines
+            (for/list ([line (target 'lines)])
+              (if (is-include-directive? line)
+                  (let* ([included-snippet-name (get-included-snippet-name line)]
+                         [snippet-to-include    (get-snippet-by-name (unbox boxed)
+                                                                     included-snippet-name)])
+                    (cond [(or (updated-included? included-snippet-name)
+                               (not snippet-to-include))
+
+                           ;; This snippet has already been included on the
+                           ;; track or there's no such snippet ⇨ do nothing
+                           line]
+
+                          [(snippet-to-include 'processed?)
+
+                           ;; When the snippet is already processed, simply
+                           ;; return it
+                           (string-join (snippet-to-include 'lines) "\n")]
+
+                          [else
+
+                           ;; When the snippet we're about to include exists
+                           ;; and hasn't been processed
+                           (include-snippet boxed
+                                            snippet-to-include
+                                            (updated-included? included-snippet-name #t))
+
+                           ;; Of course, then we must return it after
+                           ;; processed
+                           (~> (get-snippet-by-name (unbox boxed)
+                                                    included-snippet-name)
+                             'lines
+                             (string-join "\n"))]))
+
+                  line))]
+
+           [new-snippet (create-snippet #:type (target 'type)
+                                        #:name (target 'name)
+                                        #:linenum (target 'linenum)
+                                        #:lines lines
+                                        #:processed? #t)])
+      (update-snippet/boxed boxed new-snippet))))
+
+(module+ test
+  (let* ([file-snippet-tmp {'name "/tmp/tmp.rkt"
+                            'type 'file
+                            'lines '(";; include::A")
+                            'linenum 10}]
+         [snippets {'file {"/tmp/tmp.rkt" file-snippet-tmp}
+                    'code {"A" {'name "A"
+                                'type 'code
+                                'lines '("World" ";; include::B")
+                                'linenum 20}
+                           "B" {'name "B"
+                                'type 'code
+                                'lines '("Hello")
+                                'linenum 30}
+                           "C" {'name "C"
+                                'type 'code
+                                'lines '("Unprocessed")
+                                'linenum 30
+                                'processed? #f}}}]
+         [boxed (box snippets)])
+    (include-snippet boxed file-snippet-tmp {})
+    (check-equal? (unbox boxed)
+                  {'file {"/tmp/tmp.rkt" {'name "/tmp/tmp.rkt"
+                                          'type 'file
+                                          'lines '("World\nHello")
+                                          'linenum 10
+                                          'processed? #t}}
+                   'code {"A" {'name "A"
+                               'type 'code
+                               'lines '("World" "Hello")
+                               'linenum 20
+                               'processed? #t}
+                          "B" {'name "B"
+                               'type 'code
+                               'lines '("Hello")
+                               'linenum 30
+                               'processed? #t}
+                          "C" {'name "C"
+                               'type 'code
+                               'lines '("Unprocessed")
+                               'linenum 30
+                               'processed? #f}}}))
+
+  (let* ([snippet-a {'name "A"
+                     'type 'code
+                     'lines '("World" ";; include::B")
+                     'linenum 20}]
+         [snippets {'file {}
+                    'code {"A" snippet-a
+                           "B" {'name "B"
+                                'type 'code
+                                'lines '("Hello" ";; include::A")
+                                'linenum 30}}}]
+         [boxed (box snippets)])
+    (include-snippet boxed snippet-a {})
+    (check-equal? (unbox boxed)
+                  {'file {}
+                   'code {"A" {'name "A"
+                               'type 'code
+                               'lines '("World" "Hello\n;; include::A")
+                               'linenum 20
+                               'processed? #t}
+                          "B" {'name "B"
+                               'type 'code
+                               'lines '("Hello" ";; include::A")
+                               'linenum 30
+                               'processed? #t}}}))
+
+  (let* ([snippet-a {'name "A"
+                     'type 'code
+                     'lines '("World" ";; include::B")
+                     'linenum 20}]
+         [snippets {'file {}
+                    'code {"A" snippet-a}}]
+         [boxed (box snippets)])
+    (include-snippet boxed snippet-a {})
+    (check-equal? (unbox boxed)
+                  {'file {}
+                   'code {"A" {'name "A"
+                               'type 'code
+                               'lines '("World" ";; include::B")
+                               'linenum 20
+                               'processed? #t}}})))
+
+;; (define (include-snippet snippets target)
+;;   (let* ([boxed (box snippets)]
+;;          [snippet-name (target 'name)])
+;;     (include-snippet boxed
+;;                              #:name snippet-name
+;;                              #:included {})))
+
 
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
