@@ -851,11 +851,42 @@ below.
 ----
 ;; lang racket
 
+;; include::include-file-snippets
+
 (define (generate-src #:from [from "src"]
                       #:to   [to   "generated-src"])
+  
   (~> (extract-snippets from)
     (include-file-snippets)
     (generate-src-files to)))
+
+----
+
+The ultimate goal of generating source code is to produce files, so we only
+need to include other snippets into file snippets.  +include-file-snippets+
+does exactly that.  This function takes a hash of snippets as a result of the
+call to +extract-snippets+ and returns a hash of snippets with all file
+snippets <<section/include-snippets,included>>.
+
+.code::include-file-snippets
+[source,racket,linenums]
+----
+;; lang racket
+
+(define (include-file-snippets snippets)
+  (let ([boxed (box snippets)]
+        [file-snippets/names (hash-keys (snippets 'file))])
+    (for ([target-name file-snippets/names])
+      (let* ([target (~> snippets 'file target-name)])
+        (include-snippet boxed target {})))
+    (unbox boxed)))
+
+(define (generate-src-files snippets to)
+  (for ([(name snippet) (snippets 'file)])
+    (let* ([path    (path->string (get-relative-path to name))]
+           [content (get-snippet-content snippet)])
+      (create-dir (path->directory path))
+      (display-to-file content path #:exists 'truncate/replace))))
 
 ----
 
@@ -877,6 +908,8 @@ below.
 
 (module+ test
   (require rackunit))
+
+;; include::generate-src
 
 ;; include::commands/generate-src/run
 
