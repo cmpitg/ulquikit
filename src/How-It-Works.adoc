@@ -678,51 +678,53 @@ With all the reasons stated above, we have this implementation:
                              #:type [type 'code])
   (~> snippets type name))
 
-;; (define (do-include-snippet boxed
-;;                             target
-;;                             #:included? included?)
-;;   (unless (target 'processed)
-;;     (let* ([lines
-;;             (for/list ([line (target 'lines)])
-;;               (if (is-include-directive? line)
-;;                   (let* ([included-snippet-name (get-included-snippet-name line)]
-;;                          [snippet-to-include    (get-snippet-by-name (unbox boxed)
-;;                                                                      included-snippet-name)])
-;;                     (cond [(or (included? included-snippet-name)
-;;                                (not snippet-to-include))
+(define (do-include-snippet boxed
+                            target
+                            #:included? included?)
+  (unless (target 'processed)
+    (let* ([lines
+            (for/list ([line (target 'lines)])
+              (if (is-include-directive? line)
+                  (let* ([included-snippet-name (get-included-snippet-name line)]
+                         [snippet-to-include    (get-snippet-by-name (unbox boxed)
+                                                                     included-snippet-name)])
+                    (cond [(or (included? included-snippet-name)
+                               (not snippet-to-include))
 
-;;                            ;; This snippet has already been included on the
-;;                            ;; track or there's no such snippet ⇨ do nothing
-;;                            line]
+                           ;; This snippet has already been included on the
+                           ;; track or there's no such snippet ⇨ do nothing
+                           line]
 
-;;                           [(snippet-to-include 'processed)
+                          [(snippet-to-include 'processed)
 
-;;                            ;; When the snippet is already processed, simply
-;;                            ;; return it
-;;                            (string-join (snippet-to-include 'lines) "\n")]
+                           ;; When the snippet is already processed, simply
+                           ;; return it
+                           (string-join (snippet-to-include 'lines) "\n")]
 
-;;                           [else
+                          [else
 
-;;                            ;; When the snippet we're about to include exists
-;;                            ;; and hasn't been processed
-;;                            (do-include-snippet boxed
-;;                                                snippet-to-include
-;;                                                (include? included-snippet-name #t))
+                           ;; When the snippet we're about to include exists
+                           ;; and hasn't been processed
+                           (do-include-snippet boxed
+                                               snippet-to-include
+                                               (included? included-snippet-name #t))
 
-;;                            ;; Of course, then we must return it after
-;;                            ;; processed
-;;                            (~> (get-snippet-by-name (unbox boxed)
-;;                                                     included-snippet-name)
-;;                              (string-join "\n"))]))
+                           ;; Of course, then we must return it after
+                           ;; processed
+                           (~> (get-snippet-by-name (unbox boxed)
+                                                    included-snippet-name)
+                             (string-join "\n"))]))
 
-;;                   line))]
+                  line))]
 
-;;            [new-snippet (create-snippet #:type (target 'type)
-;;                                         #:name (target 'name)
-;;                                         #:linenum (target 'linenum)
-;;                                         #:lines lines
-;;                                         #:processed #t)])
-;;       (update-snippet/boxed boxed new-snippet))))
+           [new-snippet (create-snippet #:type (target 'type)
+                                        #:name (target 'name)
+                                        #:linenum (target 'linenum)
+                                        #:lines lines
+                                        #:processed #t)])
+      (update-snippet/boxed boxed new-snippet))))
+
+
 
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
