@@ -603,8 +603,6 @@ With all the reasons stated above, we have this implementation:
 ----
 ;; lang racket
 
-(require racket/pretty)
-
 (define (update-snippet/boxed snippets/box snippet)
   (let* ([type (snippet 'type)]
          [name (snippet 'name)])
