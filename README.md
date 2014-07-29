@@ -115,6 +115,30 @@ Ruby is to use RVM.  Visit:
 
 * https://rvm.io/ for RVM and Ruby installation instruction
 
+### Quick installation for Ulquikit hackers ###
+
+```sh
+# Install Racket
+# Install Ruby
+gem install -V asciidoctor
+cd /path/to/src
+git clone https://github.com/cmpitg/ulquikit
+raco pkg install rackjure
+raco pkg install --link ulquikit
+
+# To generate src
+cd /path/to/ulquikit
+src/bootstrap/generate-src.rkt
+
+# To generate docs
+cd /path/to/ulquikit
+src/bootstrap/generate-docs.rkt
+
+# To test
+cd /path/to/ulquikit
+raco test generated-src/*
+```
+
 ### Quick Installation (not yet available) ###
 
 #### If you have Ruby installed ####
