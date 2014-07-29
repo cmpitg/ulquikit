@@ -673,6 +673,11 @@ With all the reasons stated above, we have this implementation:
   (check-equal? (get-included-snippet-name "<!-- include::something -->") "something")
   (check-equal? (get-included-snippet-name "a <!-- include::something -->") ""))
 
+(define (get-snippet-by-name snippets
+                             name
+                             #:type [type 'code])
+  (~> snippets type name))
+
 ;; (define (do-include-snippet boxed
 ;;                             target
 ;;                             #:included? included?)
