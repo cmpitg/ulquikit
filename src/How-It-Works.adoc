@@ -676,6 +676,8 @@ By default, +ulqui generate-src+ extracts source code from
 
 ;; include::extract-snippets
 
+;; include::include-snippets
+
 ;; (define (run #:from [from "src"]
 ;;              #:to   [to   "generated-src"])
 ;;   (display-command "generate-src")
