@@ -837,7 +837,27 @@ are short and easily implemented like so:
   (~> snippets type name))
 ----
 
-=== +generate-src+
+And that concludes the most important functions of Ulquikit.  Those functions
+are used to implement the <<section/generate-source,+generate-src+>> right below.
+
+=== Generating source code
+
+Once snippets are extracted and included into each other, the act of
+generateing source code becomes trivial, as implemented in +generate-src+
+below.
+
+.code::generate-src
+[source,racket,linenums]
+----
+;; lang racket
+
+(define (generate-src #:from [from "src"]
+                      #:to   [to   "generated-src"])
+  (~> (extract-snippets from)
+    (include-file-snippets)
+    (generate-src-files to)))
+
+----
 
 .file::commands/generate-src.rkt
 [source,racket,linenums]
