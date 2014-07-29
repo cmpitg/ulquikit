@@ -68,26 +68,41 @@ Each snippet is a hash with following format:
 {'type snippet-type          <1>
  'name snippet-name          <2>
  'linenum line-number        <3>
- 'content snippet-content}   <4>
+ 'lines snippet-lines}   <4>
 ----
 <1> is either +'file+ or +'code+
 <2> is the name of the snippet; e.g. snippet with title +file::something+ has
 +something+ as its name.  Note that snippet name is _a string_.
 <3> is the line number from the literate source code from where the snippet is
 extracted
-<4> is the content of the code snippet, i.e. which is surrounded by +----+ in
-AsciiDoc format
+<4> is the content of the snippet as a list of lines, this is for performance
+purpose
 
 IMPORTANT: Snippets should never be created by directly by using hash.  They
 should be created with <<func/create-snippet,+create-snippet+>>.
 
-Thus, +create-snippet+ is simply implemented as followed:
+Since a snippet stores a list of lines as its content, it'd be convenient to
+have a helper that joins those lines into a complete string:
+
+.code::get-snippet-content
+[source,racket,linenums]
+----
+;; lang racket
+
+(define get-snippet-content
+  #λ(string-join (% 'lines) "\n"))
+
+----
+
++create-snippet+ is simply implemented as followed:
 
 [[func/create-snippet]]
 .code::create-snippet
 [source,racket,linenums]
 ----
 ;; #lang racket
+
+;; include::get-snippet-content
 
 (define (create-snippet #:type type
                         #:name name
