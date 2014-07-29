@@ -685,7 +685,7 @@ With all the reasons stated above, we have this implementation:
 
 (define (do-include-snippet boxed
                             target
-                            included?)
+                            [included? {}])
   (define updated-included? (included? (target 'name) #t))
   (unless (target 'processed)
     (let* ([lines
