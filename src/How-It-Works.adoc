@@ -683,9 +683,9 @@ With all the reasons stated above, we have this implementation:
                              #:type [type 'code])
   (~> snippets type name))
 
-(define (do-include-snippet boxed
-                            target
-                            [included? {}])
+(define (include-snippet boxed
+                         target
+                         [included? {}])
   (define updated-included? (included? (target 'name) #t))
   (unless (target 'processed)
     (let* ([lines
@@ -711,9 +711,9 @@ With all the reasons stated above, we have this implementation:
 
                            ;; When the snippet we're about to include exists
                            ;; and hasn't been processed
-                           (do-include-snippet boxed
-                                               snippet-to-include
-                                               (updated-included? included-snippet-name #t))
+                           (include-snippet boxed
+                                            snippet-to-include
+                                            (updated-included? included-snippet-name #t))
 
                            ;; Of course, then we must return it after
                            ;; processed
@@ -751,7 +751,7 @@ With all the reasons stated above, we have this implementation:
                                 'linenum 30
                                 'processed #f}}}]
          [boxed (box snippets)])
-    (do-include-snippet boxed file-snippet-tmp {})
+    (include-snippet boxed file-snippet-tmp {})
     (check-equal? (unbox boxed)
                   {'file {"/tmp/tmp.rkt" {'name "/tmp/tmp.rkt"
                                           'type 'file
@@ -785,7 +785,7 @@ With all the reasons stated above, we have this implementation:
                                 'lines '("Hello" ";; include::A")
                                 'linenum 30}}}]
          [boxed (box snippets)])
-    (do-include-snippet boxed snippet-a {})
+    (include-snippet boxed snippet-a {})
     (check-equal? (unbox boxed)
                   {'file {}
                    'code {"A" {'name "A"
@@ -806,7 +806,7 @@ With all the reasons stated above, we have this implementation:
          [snippets {'file {}
                     'code {"A" snippet-a}}]
          [boxed (box snippets)])
-    (do-include-snippet boxed snippet-a {})
+    (include-snippet boxed snippet-a {})
     (check-equal? (unbox boxed)
                   {'file {}
                    'code {"A" {'name "A"
@@ -818,7 +818,7 @@ With all the reasons stated above, we have this implementation:
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
 ;;          [snippet-name (target 'name)])
-;;     (do-include-snippet boxed
+;;     (include-snippet boxed
 ;;                              #:name snippet-name
 ;;                              #:included {})))
 
