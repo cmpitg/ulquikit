@@ -623,9 +623,9 @@ With all the reasons stated above, we have this implementation:
                                    'linenum 10
                                    'processed #t}}})))
 
-(define (process-include-snippet boxed
-                                 target
-                                 #:included? included?)
+(define (do-include-snippet boxed
+                            target
+                            #:included? included?)
   (unless (target 'processed)
     (let* ([lines
             (for/list ([line (target 'lines)])
@@ -650,9 +650,9 @@ With all the reasons stated above, we have this implementation:
 
                            ;; When the snippet we're about to include exists
                            ;; and hasn't been processed
-                           (process-include-snippet boxed
-                                                    snippet-to-include
-                                                    (include? included-snippet-name #t))
+                           (do-include-snippet boxed
+                                               snippet-to-include
+                                               (include? included-snippet-name #t))
 
                            ;; Of course, then we must return it after
                            ;; processed
@@ -672,7 +672,7 @@ With all the reasons stated above, we have this implementation:
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
 ;;          [snippet-name (target 'name)])
-;;     (process-include-snippet boxed
+;;     (do-include-snippet boxed
 ;;                              #:name snippet-name
 ;;                              #:included {})))
 
