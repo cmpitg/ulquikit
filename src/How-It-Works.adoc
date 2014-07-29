@@ -648,23 +648,30 @@ With all the reasons stated above, we have this implementation:
   (check-equal? (is-include-directive? "<!-- include::something -->") #t)
   (check-equal? (is-include-directive? "a <!-- include::something -->") #f))
 
-;; (define (get-included-snippet-name line)
-;;   (let* ([line (trim line)]
-;;          [line-2 (if (string-ends-with? line "-->")
-;;                      (first (string-split line "-->"))
-;;                      line)]
-;;          [line-3 (if (string-ends-with? line "*/")
-;;                      (first (string-split line "*/"))
-;;                      line)])
-;;     (second (string-split line "include::"))))
+(define (get-included-snippet-name line)
+  (if (is-include-directive? line)
+      (let* ([line (trim line)]
+             [line-2 (if (string-ends-with? line " -->")
+                         (first (string-split line " -->"))
+                         line)]
+             [line-3 (if (string-ends-with? line-2 " */")
+                         (first (string-split line-2 " */"))
+                         line-2)]
+             [splitted (string-split line-3 "include::")])
+        (if (> (length splitted) 1)
+            (last splitted)
+            ""))
+      ""))
 
-;; (module+ test
-;;   (check-equal? (get-included-snippet-name "  ;; include::") "")
-;;   (check-equal? (get-included-snippet-name ";; include::") "")
-;;   (check-equal? (get-included-snippet-name ";; include::something") "something")
-;;   (check-equal? (get-included-snippet-name "## include::something") "something")
-;;   (check-equal? (get-included-snippet-name "// include::something") "something")
-;;   )
+(module+ test
+  (check-equal? (get-included-snippet-name "  ;; include::") "")
+  (check-equal? (get-included-snippet-name ";; include::") "")
+  (check-equal? (get-included-snippet-name ";; include::something") "something")
+  (check-equal? (get-included-snippet-name "## include::something") "something")
+  (check-equal? (get-included-snippet-name "// include::something") "something")
+  (check-equal? (get-included-snippet-name "/* include::something */") "something")
+  (check-equal? (get-included-snippet-name "<!-- include::something -->") "something")
+  (check-equal? (get-included-snippet-name "a <!-- include::something -->") ""))
 
 ;; (define (do-include-snippet boxed
 ;;                             target
