@@ -495,6 +495,19 @@ format>> defined above.
       (remove-dir temp-dir))))
 ----
 
+After +extract-snippets+, the next important function is +include-snippets+,
+which is use to include snippets to each other.  Let's see how we could
+implement it.
+
+=== +include-snippets+
+
++include-snippets+ should take 2 arguments: a hash containing all snippets,
+and the snippet which needs to be checked and included.  Thus this function
+has the following signature: +(include-snippets snippets target)+
++include-snippets+ working by browsing its content, one line at a time, then
+replace the line with +include+ directive with the corresponding _code
+snippet_.  If no snippet is found, leave that line as-is.
+
 === +generate-src+
 
 .file::commands/generate-src.rkt
