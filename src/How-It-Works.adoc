@@ -586,6 +586,51 @@ target track)+
 
 With all the reasons stated above, we have this implementation:
 
+.code::include-snippets
+[source,racket,linenums]
+----
+;; lang racket
+
+(define (update-snippet/boxed snippets/box snippet)
+  (let* ([type (snippet 'type)]
+         [name (snippet 'name)])
+    (box-swap! snippets/box
+               (λ (snippets)
+                 (let* ([snippets/typed (snippets type)]
+                        [snippets/typed/updated (snippets/typed name snippet)]
+                        [snippets/updated (snippets type snippets/typed/updated)])
+                   snippets/updated)))))
+
+(module+ test
+  (let* ([snippets {'file {}
+                    'code {"hello" {'type 'code
+                                    'name "hello"
+                                    'lines '("original")
+                                    'linenum 20
+                                    'processed #f}}}]
+         [snippets/box (box snippets)])
+    (update-snippet/boxed snippets/box
+                          {'type 'code
+                           'name "hello"
+                           'lines '("changed")
+                           'linenum 10
+                           'processed #t})
+    (check-equal? (unbox snippets/box)
+                  {'file {}
+                   'code {"hello" {'type 'code
+                                   'name "hello"
+                                   'lines '("changed")
+                                   'linenum 10
+                                   'processed #t}}})))
+
+;; (define (include-snippets snippets target)
+;;   (let* ([boxed (box snippets)]
+;;          [snippet-name (target 'name)])
+;;     (process-include-snippet boxed
+;;                              #:name snippet-name
+;;                              #:included '())))
+
+----
 
 
 === +generate-src+
