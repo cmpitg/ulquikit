@@ -78,7 +78,7 @@ Each snippet is a hash with following format:
  'name snippet-name          <2>
  'linenum line-number        <3>
  'lines snippet-lines        <4>
- 'processed processed?}      <5>
+ 'processed? processed?}      <5>
 ----
 <1> is either +'file+ or +'code+
 <2> is the name of the snippet; e.g. snippet with title +file::something+ has
@@ -87,8 +87,8 @@ Each snippet is a hash with following format:
 extracted
 <4> is the content of the snippet as a list of lines, this is for performance
 purpose
-<5> determines whether this snippet has been processed to include others, when
-created for the first time, +'processed+ is always +#f+.  It's only changed
+<5> determines whether this snippet has been processed? to include others, when
+created for the first time, +'processed?+ is always +#f+.  It's only changed
 after the snippet has been passed through
 <<include-snippet,+include-snippets+>>
 
@@ -122,7 +122,7 @@ have a helper that joins those lines into a complete string:
                         #:name name
                         #:linenum linenum
                         #:lines lines
-                        #:processed [processed #f])
+                        #:processed? [processed? #f])
   (let ([type (if (symbol? type)
                   type
                   (string->symbol type))]
@@ -136,7 +136,7 @@ have a helper that joins those lines into a complete string:
      'name name
      'linenum linenum
      'lines lines
-     'processed processed}))
+     'processed? processed?}))
 
 (module+ test
   (check-equal? (create-snippet #:type 'file
@@ -147,7 +147,7 @@ have a helper that joins those lines into a complete string:
                  'name "hello-world"
                  'linenum 10
                  'lines '("Hmm")
-                 'processed #f})
+                 'processed? #f})
   (check-equal? (create-snippet #:type "string"
                                 #:name "string"
                                 #:linenum 100
@@ -156,7 +156,7 @@ have a helper that joins those lines into a complete string:
                  'name "string"
                  'linenum 100
                  'lines '("string")
-                 'processed #f}))
+                 'processed? #f}))
 
 ----
 
@@ -364,14 +364,14 @@ necessary:
                                  'name "hello"
                                  'linenum 10
                                  'lines '("Something")
-                                 'processed #f}}
+                                 'processed? #f}}
                  'code {}})
 
   (check-equal? (add-snippets {'file {"hello" {'type 'file
                                                'name "hello"
                                                'linenum 10
                                                'lines '("Something")
-                                               'processed #f}}
+                                               'processed? #f}}
                                'code {}}
                               (create-snippet #:type 'code
                                               #:name 'say-something
@@ -381,12 +381,12 @@ necessary:
                                  'name "hello"
                                  'linenum 10
                                  'lines '("Something")
-                                 'processed #f}}
+                                 'processed? #f}}
                  'code {"say-something" {'type 'code
                                          'name "say-something"
                                          'linenum 100
                                          'lines '("Something else")
-                                         'processed #f}}}))
+                                         'processed? #f}}}))
 
 ----
 
@@ -609,7 +609,7 @@ With all the reasons stated above, we have this implementation:
                          target
                          [included? {}])
   (define updated-included? (included? (target 'name) #t))
-  (unless (target 'processed)
+  (unless (target 'processed?)
     (let* ([lines
             (for/list ([line (target 'lines)])
               (if (is-include-directive? line)
@@ -623,7 +623,7 @@ With all the reasons stated above, we have this implementation:
                            ;; track or there's no such snippet ⇨ do nothing
                            line]
 
-                          [(snippet-to-include 'processed)
+                          [(snippet-to-include 'processed?)
 
                            ;; When the snippet is already processed, simply
                            ;; return it
@@ -650,7 +650,7 @@ With all the reasons stated above, we have this implementation:
                                         #:name (target 'name)
                                         #:linenum (target 'linenum)
                                         #:lines lines
-                                        #:processed #t)])
+                                        #:processed? #t)])
       (update-snippet/boxed boxed new-snippet))))
 
 (module+ test
@@ -671,7 +671,7 @@ With all the reasons stated above, we have this implementation:
                                 'type 'code
                                 'lines '("Unprocessed")
                                 'linenum 30
-                                'processed #f}}}]
+                                'processed? #f}}}]
          [boxed (box snippets)])
     (include-snippet boxed file-snippet-tmp {})
     (check-equal? (unbox boxed)
@@ -679,22 +679,22 @@ With all the reasons stated above, we have this implementation:
                                           'type 'file
                                           'lines '("World\nHello")
                                           'linenum 10
-                                          'processed #t}}
+                                          'processed? #t}}
                    'code {"A" {'name "A"
                                'type 'code
                                'lines '("World" "Hello")
                                'linenum 20
-                               'processed #t}
+                               'processed? #t}
                           "B" {'name "B"
                                'type 'code
                                'lines '("Hello")
                                'linenum 30
-                               'processed #t}
+                               'processed? #t}
                           "C" {'name "C"
                                'type 'code
                                'lines '("Unprocessed")
                                'linenum 30
-                               'processed #f}}}))
+                               'processed? #f}}}))
 
   (let* ([snippet-a {'name "A"
                      'type 'code
@@ -714,12 +714,12 @@ With all the reasons stated above, we have this implementation:
                                'type 'code
                                'lines '("World" "Hello\n;; include::A")
                                'linenum 20
-                               'processed #t}
+                               'processed? #t}
                           "B" {'name "B"
                                'type 'code
                                'lines '("Hello" ";; include::A")
                                'linenum 30
-                               'processed #t}}}))
+                               'processed? #t}}}))
 
   (let* ([snippet-a {'name "A"
                      'type 'code
@@ -735,7 +735,7 @@ With all the reasons stated above, we have this implementation:
                                'type 'code
                                'lines '("World" ";; include::B")
                                'linenum 20
-                               'processed #t}}})))
+                               'processed? #t}}})))
 
 ;; (define (include-snippet snippets target)
 ;;   (let* ([boxed (box snippets)]
@@ -768,21 +768,21 @@ are short and easily implemented like so:
                                     'name "hello"
                                     'lines '("original")
                                     'linenum 20
-                                    'processed #f}}}]
+                                    'processed? #f}}}]
          [snippets/box (box snippets)])
     (update-snippet/boxed snippets/box
                           {'type 'code
                            'name "hello"
                            'lines '("changed")
                            'linenum 10
-                           'processed #t})
+                           'processed? #t})
     (check-equal? (unbox snippets/box)
                   {'file {}
                    'code {"hello" {'type 'code
                                    'name "hello"
                                    'lines '("changed")
                                    'linenum 10
-                                   'processed #t}}})))
+                                   'processed? #t}}})))
 
 (define is-include-directive?
   #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (trim %))
