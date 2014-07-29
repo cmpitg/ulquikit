@@ -799,6 +799,22 @@ With all the reasons stated above, we have this implementation:
                                'type 'code
                                'lines '("Hello" ";; include::A")
                                'linenum 30
+                               'processed #t}}}))
+
+  (let* ([snippet-a {'name "A"
+                     'type 'code
+                     'lines '("World" ";; include::B")
+                     'linenum 20}]
+         [snippets {'file {}
+                    'code {"A" snippet-a}}]
+         [boxed (box snippets)])
+    (do-include-snippet boxed snippet-a {})
+    (check-equal? (unbox boxed)
+                  {'file {}
+                   'code {"A" {'name "A"
+                               'type 'code
+                               'lines '("World" ";; include::B")
+                               'linenum 20
                                'processed #t}}})))
 
 ;; (define (include-snippets snippets target)
