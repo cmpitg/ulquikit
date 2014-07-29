@@ -729,9 +729,7 @@ With all the reasons stated above, we have this implementation:
                                         #:linenum (target 'linenum)
                                         #:lines lines
                                         #:processed #t)])
-      (update-snippet/boxed boxed new-snippet)
-      ;; (pretty-display (~a "-> after processing: " new-snippet))
-      )))
+      (update-snippet/boxed boxed new-snippet))))
 
 (module+ test
   (let* ([file-snippet-tmp {'name "/tmp/tmp.rkt"
