@@ -133,6 +133,8 @@ General-purpose utility functions.
 ;; include::utils/use-rackjure
 
 (require racket/path)
+(require srfi/1)
+
 (require "string.rkt")
 
 (provide (all-defined-out))
@@ -214,38 +216,49 @@ General-purpose utility functions.
   (check-equal? (path->directory "/tmp/tmp.rkt") "/tmp/")
   (check-equal? (path->directory "/tmp/tmp/")    "/tmp/tmp/"))
 
+;; include::path/get-path
+
 ----
 
-== Text
+==== Path building with +get-path+
 
-This module is born out of the need for a better text processing method.
-TODO: give example.
+One of the most important functions in this path libraries is +get-path+.
+Since +build-path+ doesn't work with absolute path and doesn't cleanse the
+path, +get-path+ is there to save the day!  Note that +get-path+ returns a
+string instead of a path.  Moreover, +get-path+ automatically prefix the path
+with current working directory of the path is relative.
 
-.file::utils/text.rkt
+.code::path/get-path
 [source,racket,linenums]
 ----
-;; include::license-header
-
-;; include::use-rackjure
+(define (get-path . args)
+  (let* ([paths/expanded (map expand-user-path args)]
+         [paths/reversed (reverse (cons (current-directory) paths/expanded))]
+         
+         [paths/no-absolute (~>> paths/reversed
+                              (take-while #λ(not (absolute-path? %)))
+                              reverse)]
+         [path/absolute     (~>> paths/reversed
+                              (drop-while #λ(not (absolute-path? %)))
+                              first)]
+         [paths             (cons path/absolute paths/no-absolute)])
+    (~> (apply build-path paths)
+      simplify-path
+      path->string)))
 
 (module+ test
-  (require rackunit))
-
-(provide (all-defined-out))
-
-;; include::utils/text/implementation
-
+  (check-equal? (get-path "/tmp") "/tmp")
+  (check-equal? (get-path "/tmp/") "/tmp/")
+  (check-equal? (get-path "/tmp" "/hello") "/hello")
+  (check-equal? (get-path "/tmp" "./hello") "/tmp/hello")
+  (check-equal? (get-path "/tmp" "/hello" "~")
+                (path->string (find-system-path 'home-dir)))
+  (check-equal? (get-path "/tmp" "/hello" "/world" "./superman/")
+                "/world/superman/")
+  (check-equal? (get-path "world/")
+                (path->string (build-path (current-directory) "world/"))))
 ----
 
-.code::utils/text/implementation
-[source,racket,linenums]
-----
-;; To be implemented
-----
-
-=== Breaking text into lines (++lining++)
-
-One way to do this is to 
 
 == Misc
 
