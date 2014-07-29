@@ -744,7 +744,12 @@ With all the reasons stated above, we have this implementation:
                            "B" {'name "B"
                                 'type 'code
                                 'lines '("Hello")
-                                'linenum 30}}}]
+                                'linenum 30}
+                           "C" {'name "C"
+                                'type 'code
+                                'lines '("Unprocessed")
+                                'linenum 30
+                                'processed #f}}}]
          [boxed (box snippets)])
     (do-include-snippet boxed file-snippet-tmp {})
     (check-equal? (unbox boxed)
@@ -762,7 +767,12 @@ With all the reasons stated above, we have this implementation:
                                'type 'code
                                'lines '("Hello")
                                'linenum 30
-                               'processed #t}}})))
+                               'processed #t}
+                          "C" {'name "C"
+                               'type 'code
+                               'lines '("Unprocessed")
+                               'linenum 30
+                               'processed #f}}})))
 
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
