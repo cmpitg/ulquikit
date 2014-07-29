@@ -68,7 +68,8 @@ Each snippet is a hash with following format:
 {'type snippet-type          <1>
  'name snippet-name          <2>
  'linenum line-number        <3>
- 'lines snippet-lines}   <4>
+ 'lines snippet-lines        <4>
+ 'processed processed?}      <5>
 ----
 <1> is either +'file+ or +'code+
 <2> is the name of the snippet; e.g. snippet with title +file::something+ has
@@ -77,6 +78,10 @@ Each snippet is a hash with following format:
 extracted
 <4> is the content of the snippet as a list of lines, this is for performance
 purpose
+<5> determines whether this snippet has been processed to include others, when
+created for the first time, +'processed+ is always +#f+.  It's only changed
+after the snippet has been passed through
+<<include-snippet,+include-snippets+>>
 
 IMPORTANT: Snippets should never be created by directly by using hash.  They
 should be created with <<func/create-snippet,+create-snippet+>>.
@@ -107,7 +112,8 @@ have a helper that joins those lines into a complete string:
 (define (create-snippet #:type type
                         #:name name
                         #:linenum linenum
-                        #:lines lines)
+                        #:lines lines
+                        #:processed [processed #f])
   (let ([type (if (symbol? type)
                   type
                   (string->symbol type))]
@@ -120,7 +126,8 @@ have a helper that joins those lines into a complete string:
     {'type type
      'name name
      'linenum linenum
-     'lines lines}))
+     'lines lines
+     'processed processed}))
 
 (module+ test
   (check-equal? (create-snippet #:type 'file
@@ -130,7 +137,8 @@ have a helper that joins those lines into a complete string:
                 {'type 'file
                  'name "hello-world"
                  'linenum 10
-                 'lines '("Hmm")})
+                 'lines '("Hmm")
+                 'processed #f})
   (check-equal? (create-snippet #:type "string"
                                 #:name "string"
                                 #:linenum 100
@@ -138,7 +146,8 @@ have a helper that joins those lines into a complete string:
                 {'type 'string
                  'name "string"
                  'linenum 100
-                 'lines '("string")}))
+                 'lines '("string")
+                 'processed #f}))
 
 ----
 
@@ -345,13 +354,15 @@ necessary:
                 {'file {"hello" {'type 'file
                                  'name "hello"
                                  'linenum 10
-                                 'lines '("Something")}}
+                                 'lines '("Something")
+                                 'processed #f}}
                  'code {}})
 
   (check-equal? (add-snippets {'file {"hello" {'type 'file
                                                'name "hello"
                                                'linenum 10
-                                               'lines '("Something")}}
+                                               'lines '("Something")
+                                               'processed #f}}
                                'code {}}
                               (create-snippet #:type 'code
                                               #:name 'say-something
@@ -360,11 +371,13 @@ necessary:
                 {'file {"hello" {'type 'file
                                  'name "hello"
                                  'linenum 10
-                                 'lines '("Something")}}
+                                 'lines '("Something")
+                                 'processed #f}}
                  'code {"say-something" {'type 'code
                                          'name "say-something"
                                          'linenum 100
-                                         'lines '("Something else")}}}))
+                                         'lines '("Something else")
+                                         'processed #f}}}))
 
 ----
 
