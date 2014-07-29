@@ -538,6 +538,51 @@ has the following signature: +(include-snippets snippets target)+
 replace the line with +include+ directive with the corresponding _code
 snippet_.  If no snippet is found, leave that line as-is.
 
+Note that there are a couple things to bring into concern there:
+
+* Snippet A includes snippet B, snippets B includes snippets C and D.  So the
+  best scenario is to include C and D into B while we're actually
+  processing A.  I.e. +include-snippets+ should be recursive to accumulate the
+  results.
+
+* Also because of the above reason, +snippets+ should be able to receive the
+  changes across all calls recursive to +include-snippets+.  I.e. consider
+  this dummy, incorrect implementation:
++
+[source,racket,linenums]
+----
+(define (include-snippets snippets target)
+  (unless (= (snippets 'a) 12)
+    ;; Increase (snippets 'a)
+    (include-snippets snippets new-target)))
+
+(let ([snippets {'a 10}])
+ (include-snippets snippets some-target))
+
+(displayln (snippets 'a))
+;; ⇨ 12
+
+----
++
+As you can see after returning from any call, the value of snippets should be
+changed as it is changed inside those calls.
++
+One of the solutions for this is to construct a helper and put +snippets+ into
+a +box+ to make it safely immutable, then change it value for each time the
+helper is call.
+
+* Snippet A includes snippet B, then snippet B includes snippet A again,
+  creating an infinite loop.  To prevent this, a list of currently included
+  snippet must be kept track of.  If a snippet has already been in the track,
+  include it but don't process it.
+
+Henceforth, our helper will takes the signature: +(process-include-snippet
+target track)+
+
+With all the reasons stated above, we have this implementation:
+
+
+
 === +generate-src+
 
 .file::commands/generate-src.rkt
