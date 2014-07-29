@@ -724,7 +724,35 @@ With all the reasons stated above, we have this implementation:
                                         #:processed #t)])
       (update-snippet/boxed boxed new-snippet))))
 
-
+(module+ test
+  (let* ([file-snippet-tmp {'name "/tmp/tmp.rkt"
+                            'type 'file
+                            'lines '(";; include:A")
+                            'linenum 10}]
+         [snippets {'file {"/tmp/tmp.rkt" file-snippet-tmp}
+                    'code {"A" {'name "A"
+                                'type 'code
+                                'lines '("World\n;; include:B")
+                                'linenum 20}
+                           "B" {'name "B"
+                                'type 'code
+                                'lines '("Hello")
+                                'linenum 30}}}]
+         [boxed (box snippets)])
+    (do-include-snippet boxed file-snippet-tmp)
+    (check-equal? (unbox boxed)
+                  {'file {"/tmp/tmp.rkt" {'name "/tmp/tmp.rkt"
+                                          'type 'file
+                                          'lines '("World\nHello")
+                                          'linenum 10}}
+                   'code {"A" {'name "A"
+                               'type 'code
+                               'lines '("World\nHello")
+                               'linenum 20}
+                          "B" {'name "B"
+                               'type 'code
+                               'lines '("Hello")
+                               'linenum 30}}})))
 
 ;; (define (include-snippets snippets target)
 ;;   (let* ([boxed (box snippets)]
