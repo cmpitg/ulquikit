@@ -107,35 +107,38 @@ have a helper that joins those lines into a complete string:
 (define (create-snippet #:type type
                         #:name name
                         #:linenum linenum
-                        #:content content)
+                        #:lines lines)
   (let ([type (if (symbol? type)
                   type
                   (string->symbol type))]
         [name (if (symbol? name)
                   (symbol->string name)
-                  name)])
+                  name)]
+        [lines (if (string? lines)
+                   (string-split lines "\n" #:trim? #f)
+                   lines)])
     {'type type
      'name name
      'linenum linenum
-     'content content}))
+     'lines lines}))
 
 (module+ test
   (check-equal? (create-snippet #:type 'file
                                 #:name 'hello-world
                                 #:linenum 10
-                                #:content "Hmm")
+                                #:lines '("Hmm"))
                 {'type 'file
                  'name "hello-world"
                  'linenum 10
-                 'content "Hmm"})
+                 'lines '("Hmm")})
   (check-equal? (create-snippet #:type "string"
                                 #:name "string"
                                 #:linenum 100
-                                #:content "string")
+                                #:lines "string")
                 {'type 'string
                  'name "string"
                  'linenum 100
-                 'content "string"}))
+                 'lines '("string")}))
 
 ----
 
@@ -258,8 +261,7 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
                         (create-snippet #:type (unbox snippet-type)
                                         #:name (unbox snippet-name)
                                         #:linenum (unbox snippet-linenum)
-                                        #:content (string-join (unbox snippet-lines)
-                                                               "\n")))]
+                                        #:lines (unbox snippet-lines)))]
             [(is-block-delimiter? line)
 
              (when (is-block-title? (unbox prev-prev-line))
@@ -339,30 +341,30 @@ necessary:
                               (create-snippet #:type 'file
                                               #:name 'hello
                                               #:linenum 10
-                                              #:content "Something"))
+                                              #:lines '("Something")))
                 {'file {"hello" {'type 'file
                                  'name "hello"
                                  'linenum 10
-                                 'content "Something"}}
+                                 'lines '("Something")}}
                  'code {}})
 
   (check-equal? (add-snippets {'file {"hello" {'type 'file
                                                'name "hello"
                                                'linenum 10
-                                               'content "Something"}}
+                                               'lines '("Something")}}
                                'code {}}
                               (create-snippet #:type 'code
                                               #:name 'say-something
                                               #:linenum 100
-                                              #:content "Something else"))
+                                              #:lines '("Something else")))
                 {'file {"hello" {'type 'file
                                  'name "hello"
                                  'linenum 10
-                                 'content "Something"}}
+                                 'lines '("Something")}}
                  'code {"say-something" {'type 'code
                                          'name "say-something"
                                          'linenum 100
-                                         'content "Something else"}}}))
+                                         'lines '("Something else")}}}))
 
 ----
 
@@ -501,11 +503,11 @@ format>> defined above.
              [file-snippet (snippets 'file)])
 
         (for ([(name snippet) code-snippet])
-          (check-equal? (snippet 'content)
+          (check-equal? (get-snippet-content snippet)
                         (expected-code-snippets name)))
 
         (for ([(name snippet) file-snippet])
-          (check-equal? (snippet 'content)
+          (check-equal? (get-snippet-content snippet)
                         (expected-file-snippets name))))
       (remove-dir temp-dir))))
 ----
