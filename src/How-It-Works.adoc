@@ -946,77 +946,67 @@ string and returns a map of following format:
 command line
 <2> options are collected a hash; options that have no values are set to +#t+
 
-+parse-command-args+ works by simple iterating through all args, collecting
-arguments, then collecting options and converting them when possible.
-
 .code::parse-command-args
 [source,racket,linenums]
 ----
 ;; include::parse-command-args-helpers
 
 (define (parse-command-args args)
-  (let parse ([last-keyword null]
-              [args         (string-split args " ")]
-              [result       '()])
-    (if (empty? args)
-        (if (null? last-keyword)
-            result
-            (append result (list (list last-keyword #t))))
-        (let* ([current-arg (first args)]
-               [more        (rest args)]
+  (let ([arguments (takef args is-argument?)]
+        [rest-args (dropf args is-argument?)])
+    (displayln (~a "Arguments: " arguments))
+    (displayln (~a "Rest: " rest-args))
+    (let parse-options ([rest-args  rest-args]
+                        [options    {}])
+      (if (empty? rest-args)
+          {'arguments arguments
+           'options   options}
+          (let* ([option-name   (first rest-args)]
+                 [option-values (takef (drop rest-args 1) is-argument?)]
+                 [rest-args     (dropf (rest rest-args)   is-argument?)]
 
-               [next-keyword (if (is-argument? current-arg)
-                                 null
-                                 (parse-keyword current-arg))]
-               [arg/converted (if (is-argument? current-arg)
-                                  (if-let [value (string->number current-arg)]
-                                    value
-                                    current-arg)
-                                  (parse-keyword current-arg))]
-               [next-result-value
-                (or (and (is-argument? current-arg)
-                         (or (and (null? last-keyword)
-                                  (list arg/converted))
-                             (list (list last-keyword arg/converted))))
+                 [option-values/converted (map try-convert-value option-values)]
 
-                    (and (is-option? current-arg)
-                         (or (and (null? last-keyword)
-                                  '())
-                             (list (list last-keyword #t)))))])
-          (parse next-keyword
-                 more
-                 (append result next-result-value))))))
+                 [name   (option->keyword option-name)]
+                 [values (cond [(zero? (length option-values))
+                                #t]
+                               [(= (length option-values) 1)
+                                (first option-values)]
+                               [else
+                                option-values])])
+            (parse-options rest-args
+                           (options name values)))))))
 
 (module+ test
-  (check-equal? (parse-command-args "")
+  (check-equal? (parse-command-args '(""))
                 {'arguments '()
                  'options   {}})
 
-  (check-equal? (parse-command-args "hello-world")
+  (check-equal? (parse-command-args '("hello-world"))
                 {'arguments '("hello-world")
                  'options   {}})
 
-  (check-equal? (parse-command-args "hello world")
+  (check-equal? (parse-command-args '("hello" "world"))
                 {'arguments '("hello" "world")
                  'options   {}})
 
-  (check-equal? (parse-command-args "--help")
+  (check-equal? (parse-command-args '("--help"))
                 {'arguments '()
                  'options   {'#:help #t}})
 
-  (check-equal? (parse-command-args "hello --help")
+  (check-equal? (parse-command-args '("hello" "--help"))
                 {'arguments '("hello")
                  'options   {'#:help #t}})
 
-  (check-equal? (parse-command-args "hello --help world args")
+  (check-equal? (parse-command-args '("hello" "--help" "world" "args"))
                 {'arguments '("hello")
                  'options   {'#:help '("world" "args")}})
 
-  (check-equal? (parse-command-args "--help hello")
+  (check-equal? (parse-command-args '("--help" "hello"))
                 {'arguments '()
                  'options   {'#:help "hello"}})
 
-  (check-equal? (parse-command-args "hello world --help --set-tab 4")
+  (check-equal? (parse-command-args '("hello" "world" "--help" "--set-tab" "4"))
                 {'arguments '("hello" "world")
                  'options   {'#:help #t
                              '#:set-tab 4}}))
