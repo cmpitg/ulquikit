@@ -67,19 +67,6 @@ General-purpose utility functions.
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define (trim str)
-  (let* ([str/list                  (string->list str)]
-         [str/list/trim-begin       (dropf str/list #λ(equal? % #\space))]
-         [str/list/reversed         (reverse str/list/trim-begin)]
-         [str/list/reversed/trimmed (dropf str/list/reversed #λ(equal? % #\space))])
-    (~> str/list/reversed/trimmed
-      reverse
-      list->string)))
-
-(module+ test
-  (check-equal? (trim "     ") "")
-  (check-equal? (trim "  -  ") "-"))
-
 (define string-starts-with?
   #λ(regexp-match? (regexp (str "^" (regexp-quote %2))) %1))
 

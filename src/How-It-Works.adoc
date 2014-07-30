@@ -791,9 +791,9 @@ are short and easily implemented like so:
                                    'processed? #t}}})))
 
 (define is-include-directive?
-  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (trim %))
-        (regexp-match? #px"^<!-- include::.* -->" (trim %))
-        (regexp-match? #px"^/\\* include::.* \\*/" (trim %))))
+  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (string-trim %))
+        (regexp-match? #px"^<!-- include::.* -->" (string-trim %))
+        (regexp-match? #px"^/\\* include::.* \\*/" (string-trim %))))
 
 (module+ test
   (check-equal? (is-include-directive? "  ;; include::") #t)
@@ -808,7 +808,7 @@ are short and easily implemented like so:
 
 (define (get-included-snippet-name line)
   (if (is-include-directive? line)
-      (let* ([line (trim line)]
+      (let* ([line (string-trim line)]
              [line-2 (if (string-ends-with? line " -->")
                          (first (string-split line " -->"))
                          line)]
