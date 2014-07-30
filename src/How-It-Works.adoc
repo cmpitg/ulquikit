@@ -1061,8 +1061,6 @@ command line
 
 ;; include::use-rackjure
 
-(require srfi/1)
-
 (require "utils/string.rkt")
 
 (provide (all-defined-out))
