@@ -1057,7 +1057,34 @@ arguments, then collecting options and converting them when possible.
   (check-equal? (parse-keyword "---help") '#:help))
 ----
 
+.file::command-core.rkt
+[source,racket,linenums]
+----
+;; include::license-header
 
+;; include::use-rackjure
+
+(require srfi/1)
+
+(require "utils/string.rkt")
+
+(provide (all-defined-out))
+
+(module+ test
+  (require rackunit))
+
+(define (display-command title)
+  (displayln (str "----> " title)))
+
+(define (run-help command)
+  (eval `(local-require ,(str command ".rkt")))
+  (eval '(help)))
+
+;; include::parse-command-args
+
+;; include::run-command
+
+----
 
 === Command: +generate-src+
 
@@ -1086,54 +1113,6 @@ arguments, then collecting options and converting them when possible.
 ;; include::commands/generate-src/run
 
 ;; include::commands/generate-src/help
-
-----
-
-.file::command-core.rkt
-[source,racket,linenums]
-----
-;; include::license-header
-
-;; include::use-rackjure
-
-(require srfi/1)
-
-(require "utils/string.rkt")
-
-(provide (all-defined-out))
-
-(module+ test
-  (require rackunit))
-
-(define (display-command title)
-  (displayln (str "----> " title)))
-
-(define (run-help command)
-  (eval `(local-require ,(str command ".rkt")))
-  (eval '(help)))
-
-;; include::command/parse-command-args
-
-;; include::command/run-command
-
-----
-
-Two of the most important functions in +command-core+ module are
-+run-command+ and +parse-command-args+.
-
-+parse-command-args+ will transform command line arguments into a list of
-appropriate keywords and values.
-
-
-+run-command+ the result of parse-command-args and perform the actual call to
-+run+ function of the module implementing the command.
-
-.code::command/run-command
-[source,racket,linenums]
-----
-;; (define (run-command . arguments)
-;;   (void)
-;;   )
 ----
 
 == Utility functions
