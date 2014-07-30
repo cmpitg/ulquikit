@@ -954,8 +954,6 @@ command line
 (define (parse-command-args args)
   (let ([arguments (takef args is-argument?)]
         [rest-args (dropf args is-argument?)])
-    (displayln (~a "Arguments: " arguments))
-    (displayln (~a "Rest: " rest-args))
     (let parse-options ([rest-args  rest-args]
                         [options    {}])
       (if (empty? rest-args)
@@ -968,17 +966,17 @@ command line
                  [option-values/converted (map try-convert-value option-values)]
 
                  [name   (option->keyword option-name)]
-                 [values (cond [(zero? (length option-values))
+                 [values (cond [(zero? (length option-values/converted))
                                 #t]
-                               [(= (length option-values) 1)
-                                (first option-values)]
+                               [(= (length option-values/converted) 1)
+                                (first option-values/converted)]
                                [else
-                                option-values])])
+                                option-values/converted])])
             (parse-options rest-args
                            (options name values)))))))
 
 (module+ test
-  (check-equal? (parse-command-args '(""))
+  (check-equal? (parse-command-args '())
                 {'arguments '()
                  'options   {}})
 
