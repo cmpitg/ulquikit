@@ -1046,15 +1046,15 @@ arguments, then collecting options and converting them when possible.
   (check-equal? (is-option? "--a")  #t)
   (check-equal? (is-option? "-")    #t))
 
-(define parse-keyword
-  #λ(string->keyword (~>> (string->list %)
-                       (drop-while (λ (ch) (eq? #\- ch)))
+(define option->keyword
+  #λ(string->keyword (~> (string->list %)
+                       (dropf (λ (ch) (eq? #\- ch)))
                        list->string)))
 
 (module+ test
-  (check-equal? (parse-keyword "-h")      '#:h)
-  (check-equal? (parse-keyword "--help")  '#:help)
-  (check-equal? (parse-keyword "---help") '#:help))
+  (check-equal? (option->keyword "-h")      '#:h)
+  (check-equal? (option->keyword "--help")  '#:help)
+  (check-equal? (option->keyword "---help") '#:help))
 ----
 
 .file::command-core.rkt
