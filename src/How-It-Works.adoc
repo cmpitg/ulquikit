@@ -929,127 +929,22 @@ E.g.
 * All commands must import +command-core.rkt+ (relative to command directory:
   +../command-core.rkt+).
 
-=== Command: +generate-src+
+With all that has been said, let's move on to the function which is used to
+parse command line arguments.
 
+==== Parsing command line arguments
 
-.file::commands/generate-src.rkt
-[source,racket,linenums]
+This function takes all arguments passed to the command line as a list of
+string and returns a map of following format:
+
+[source,racket]
 ----
-;; include::license-header
-
-;; include::use-rackjure
-
-(require "../command-core.rkt")
-
-(require "../utils/utils.rkt")
-(require "../utils/path.rkt")
-(require "../utils/string.rkt")
-
-;; (provide run
-;;          help)
-
-(module+ test
-  (require rackunit))
-
-;; include::generate-src
-
-;; include::commands/generate-src/run
-
-;; include::commands/generate-src/help
-
+{'arguments list-of-arguments  <1>
+ 'options   hash-of-options}   <2>
 ----
-
-By default, +ulqui generate-src+ extracts source code from
-+<project-root>/src+ and output to +<project-root>/generated-src+, so the
-+run+ function takes 2 keyword arguments with default values like so:
-
-* +#:from+, default to +"src"+, and
-* +#:to+, default to +"generated-src"+
-
-.code::commands/generate-src/run
-[source,racket,linenums]
-----
-;; #lang racket
-
-;; include::create-snippet
-
-;; include::extract-snippets
-
-;; include::include-snippet
-
-;; (define (run #:from [from "src"]
-;;              #:to   [to   "generated-src"])
-;;   (display-command "generate-src")
-;;   (~> (extract-snippets from)
-;;     (include-file-snippets)
-;;     (write-snippets-to-files to)))
-
-----
-
-== Commands
-
-* Each command is a Racket module defined in +commands/+ directory, with the
-  base file name as command name.
-+
-E.g. +commands/new-project.rkt+ is for +ulqui new-project+ command.
-
-* Each module implementing a command must export a function with the name
-  +run+.  Arguments passing through +run+ are actual command line arguments
-  passing to the command.
-+
-Named arguments are translated into Racket's keyword arguments.
-+
-E.g.
-+
-  ** Executing +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
-  ** Executing +ulqui generate-src some-file+ calls
-     ++commands/generate-src++'s +(run "some-file")+.
-  ** Executing +ulqui generate-src --from file1 --to file2+ calls
-     ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
-
-* All commands must import +command-core.rkt+ (relative to command directory:
-  +../command-core.rkt+).
-
-* All commands must export a +help+ function returning a string, which serves
-  as documentation for that command when running from the command line with
-  +ulqui command-name --help+ or +ulqui help command-name+.
-
-=== Core functions to implement commands
-
-.file::command-core.rkt
-[source,racket,linenums]
-----
-;; include::license-header
-
-#lang rackjure
-
-(require srfi/1)
-
-(require "utils/string.rkt")
-
-(provide (all-defined-out))
-
-(module+ test
-  (require rackunit))
-
-(define (display-command title)
-  (displayln (str "----> " title)))
-
-(define (run-help command)
-  (eval `(local-require ,(str command ".rkt")))
-  (eval '(help)))
-
-;; include::command/parse-command-args
-
-;; include::command/run-command
-
-----
-
-Two of the most important functions in +command-core+ module are
-+run-command+ and +parse-command-args+.
-
-+parse-command-args+ will transform command line arguments into a list of
-appropriate keywords and values.
+<1> main arguments collected as a list, with the same order as they are at the
+command line
+<2> options are collected a hash
 
 .code::command/parse-command-args
 [source,racket,linenums]
