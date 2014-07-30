@@ -898,6 +898,40 @@ helpers for +generate-src+.
 
 ----
 
+Once all functions are ready, let's write a command to generate source code.
+
+=== Anatomy of a Ulquikit command
+
+Ulquikit commands are actually a Racket modules, residing in +commands/+.  The
+name of the module (without +.rkt+ extension of course) is the actual command.
+E.g. +commands/generate-src.rkt+ implements +generate-src+ command.
+
+As a rule of thumb, each command has to provide at least 2 functions: +run+
+and +help+:
+
+* Command line arguments are parsed and passed through +run+ function.  Named
+  arguments are automatically converted to either boolean or number and passed
+  as Racket keywords.
++
+E.g.
+
+** +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
+** +ulqui generate-src some-file+ calls ++commands/generate-src++'s +(run "some-file")+.
+** +ulqui generate-src --from file1 --to file2+ calls
+   ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
+
+* When +ulqui help command-name+ or +ulqui command-name --help+ is invoked,
+  the +help+ function that belongs to +commands/command-name.rkt+ module is
+  called.  The same effect could be achieved by calling +(run #:help #t)+.
+  This the +help+ function takes no arguments and returns a string that would
+  be displayed as help.
+
+* All commands must import +command-core.rkt+ (relative to command directory:
+  +../command-core.rkt+).
+
+=== Command: +generate-src+
+
+
 .file::commands/generate-src.rkt
 [source,racket,linenums]
 ----
