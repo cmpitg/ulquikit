@@ -932,7 +932,7 @@ E.g.
 With all that has been said, let's move on to the function which is used to
 parse command line arguments.
 
-==== Parsing command line arguments
+==== Parsing command line arguments +parse-command-args+
 
 This function takes all arguments passed to the command line as a list of
 string and returns a map of following format:
@@ -946,38 +946,13 @@ string and returns a map of following format:
 command line
 <2> options are collected a hash
 
-.code::command/parse-command-args
++parse-command-args+ works by simple iterating through all args, collecting
+arguments, then collecting options.
+
+.code::parse-command-args
 [source,racket,linenums]
 ----
-;; #lang racket
-
-(define is-argument? #λ(not (string-starts-with? % "-")))
-
-(module+ test
-  (check-equal? (is-argument? "")     #t)
-  (check-equal? (is-argument? "a")    #t)
-  (check-equal? (is-argument? "-a")   #f)
-  (check-equal? (is-argument? "--a")  #f)
-  (check-equal? (is-argument? "-")    #f))
-
-(define is-option? #λ(not (is-argument? %)))
-
-(module+ test
-  (check-equal? (is-option? "")     #f)
-  (check-equal? (is-option? "a")    #f)
-  (check-equal? (is-option? "-a")   #t)
-  (check-equal? (is-option? "--a")  #t)
-  (check-equal? (is-option? "-")    #t))
-
-(define parse-keyword
-  #λ(string->keyword (~>> (string->list %)
-                       (drop-while (λ (ch) (eq? #\- ch)))
-                       list->string)))
-
-(module+ test
-  (check-equal? (parse-keyword "-h")      '#:h)
-  (check-equal? (parse-keyword "--help")  '#:help)
-  (check-equal? (parse-keyword "---help") '#:help))
+;; include::parse-command-args-helpers
 
 (define (parse-command-args args)
   (let parse ([last-keyword null]
