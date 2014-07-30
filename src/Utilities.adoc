@@ -220,7 +220,7 @@ General-purpose utility functions.
 
 ----
 
-==== Path building with +get-path+
+=== Path building with +get-path+
 
 One of the most important functions in this path libraries is +get-path+.
 Since +build-path+ doesn't work with absolute path and doesn't cleanse the
