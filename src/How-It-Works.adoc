@@ -851,7 +851,13 @@ below.
 ----
 ;; lang racket
 
-;; include::include-file-snippets
+;; include::create-snippet
+
+;; include::extract-snippets
+
+;; include::include-snippet
+
+;; include::generate-snippets-helpers
 
 (define (generate-src #:from [from "src"]
                       #:to   [to   "generated-src"])
@@ -866,9 +872,11 @@ The ultimate goal of generating source code is to produce files, so we only
 need to include other snippets into file snippets.  +include-file-snippets+
 does exactly that.  This function takes a hash of snippets as a result of the
 call to +extract-snippets+ and returns a hash of snippets with all file
-snippets <<section/include-snippets,included>>.
+snippets <<section/include-snippets,included>>.  Let's combine the implement
+of +include-file-snippets+ and +generate-src-files+ to make a complete set of
+helpers for +generate-src+.
 
-.code::include-file-snippets
+.code::generate-snippets-helpers
 [source,racket,linenums]
 ----
 ;; lang racket
