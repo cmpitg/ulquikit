@@ -1055,6 +1055,15 @@ arguments, then collecting options and converting them when possible.
   (check-equal? (option->keyword "-h")      '#:h)
   (check-equal? (option->keyword "--help")  '#:help)
   (check-equal? (option->keyword "---help") '#:help))
+
+(define try-convert-value
+  #λ(if-let [value (string->number %)]
+      value
+      %))
+
+(module+ test
+  (check-equal? (try-convert-value "1") 1)
+  (check-equal? (try-convert-value "a") "a"))
 ----
 
 .file::command-core.rkt
