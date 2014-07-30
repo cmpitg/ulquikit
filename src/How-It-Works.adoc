@@ -946,6 +946,7 @@ string and returns a map of following format:
 command line
 <2> options are collected a hash; options that have no values are set to +#t+
 
+[[func/parse-command-args]]
 .code::parse-command-args
 [source,racket,linenums]
 ----
@@ -1011,6 +1012,9 @@ command line
 
 ----
 
+As always, it's a good style to implement some helpers for
+<<func/parse-command-args,+parse-command-args+>>.
+
 .code::parse-command-args-helpers
 [source,racket,linenums]
 ----
@@ -1053,6 +1057,9 @@ command line
   (check-equal? (try-convert-value "1") 1)
   (check-equal? (try-convert-value "a") "a"))
 ----
+
+With all necessary functions implemented, +command-core+ comes down to this
+little piece below:
 
 .file::command-core.rkt
 [source,racket,linenums]
