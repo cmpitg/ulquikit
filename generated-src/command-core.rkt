@@ -19,7 +19,7 @@
 
 #lang rackjure
 
-(require srfi/1)
+(current-curly-dict hash)
 
 (require "utils/string.rkt")
 
@@ -55,73 +55,82 @@
   (check-equal? (is-option? "--a")  #t)
   (check-equal? (is-option? "-")    #t))
 
-(define parse-keyword
-  #λ(string->keyword (~>> (string->list %)
-                       (drop-while (λ (ch) (eq? #\- ch)))
+(define option->keyword
+  #λ(string->keyword (~> (string->list %)
+                       (dropf (λ (ch) (eq? #\- ch)))
                        list->string)))
 
 (module+ test
-  (check-equal? (parse-keyword "-h")      '#:h)
-  (check-equal? (parse-keyword "--help")  '#:help)
-  (check-equal? (parse-keyword "---help") '#:help))
+  (check-equal? (option->keyword "-h")      '#:h)
+  (check-equal? (option->keyword "--help")  '#:help)
+  (check-equal? (option->keyword "---help") '#:help))
 
-(define (parse-command-args args)
-  (let parse ([last-keyword null]
-              [args         (string-split args " ")]
-              [result       '()])
-    (if (empty? args)
-        (if (null? last-keyword)
-            result
-            (append result (list (list last-keyword #t))))
-        (let* ([current-arg (first args)]
-               [more        (rest args)]
-
-               [next-keyword (if (is-argument? current-arg)
-                                 null
-                                 (parse-keyword current-arg))]
-               [arg/converted (if (is-argument? current-arg)
-                                  (if-let [value (string->number current-arg)]
-                                    value
-                                    current-arg)
-                                  (parse-keyword current-arg))]
-               [next-result-value
-                (or (and (is-argument? current-arg)
-                         (or (and (null? last-keyword)
-                                  (list arg/converted))
-                             (list (list last-keyword arg/converted))))
-
-                    (and (is-option? current-arg)
-                         (or (and (null? last-keyword)
-                                  '())
-                             (list (list last-keyword #t)))))])
-          (parse next-keyword
-                 more
-                 (append result next-result-value))))))
+(define try-convert-value
+  #λ(if-let [value (string->number %)]
+      value
+      %))
 
 (module+ test
-  (check-equal? (parse-command-args "") '())
+  (check-equal? (try-convert-value "1") 1)
+  (check-equal? (try-convert-value "a") "a"))
 
-  (check-equal? (parse-command-args "hello-world")
-                '("hello-world"))
+(define (parse-command-args args)
+  (let ([arguments (takef args is-argument?)]
+        [rest-args (dropf args is-argument?)])
+    (let parse-options ([rest-args  rest-args]
+                        [options    {}])
+      (if (empty? rest-args)
+          {'arguments arguments
+           'options   options}
+          (let* ([option-name   (first rest-args)]
+                 [option-values (takef (drop rest-args 1) is-argument?)]
+                 [rest-args     (dropf (rest rest-args)   is-argument?)]
 
-  (check-equal? (parse-command-args "hello world")
-                '("hello" "world"))
+                 [option-values/converted (map try-convert-value option-values)]
 
-  (check-equal? (parse-command-args "--help")
-                '([#:help #t]))
+                 [name   (option->keyword option-name)]
+                 [values (cond [(zero? (length option-values/converted))
+                                #t]
+                               [(= (length option-values/converted) 1)
+                                (first option-values/converted)]
+                               [else
+                                option-values/converted])])
+            (parse-options rest-args
+                           (options name values)))))))
 
-  (check-equal? (parse-command-args "hello --help")
-                '("hello" [#:help #t]))
+(module+ test
+  (check-equal? (parse-command-args '())
+                {'arguments '()
+                 'options   {}})
 
-  (check-equal? (parse-command-args "--help hello")
-                '([#:help "hello"]))
+  (check-equal? (parse-command-args '("hello-world"))
+                {'arguments '("hello-world")
+                 'options   {}})
 
-  (check-equal? (parse-command-args "hello world --help --set-tab 4")
-                '("hello" "world"
-                  [#:help #t]
-                  [#:set-tab 4])))
+  (check-equal? (parse-command-args '("hello" "world"))
+                {'arguments '("hello" "world")
+                 'options   {}})
+
+  (check-equal? (parse-command-args '("--help"))
+                {'arguments '()
+                 'options   {'#:help #t}})
+
+  (check-equal? (parse-command-args '("hello" "--help"))
+                {'arguments '("hello")
+                 'options   {'#:help #t}})
+
+  (check-equal? (parse-command-args '("hello" "--help" "world" "args"))
+                {'arguments '("hello")
+                 'options   {'#:help '("world" "args")}})
+
+  (check-equal? (parse-command-args '("--help" "hello"))
+                {'arguments '()
+                 'options   {'#:help "hello"}})
+
+  (check-equal? (parse-command-args '("hello" "world" "--help" "--set-tab" "4"))
+                {'arguments '("hello" "world")
+                 'options   {'#:help #t
+                             '#:set-tab 4}}))
 
 
-;; (define (run-command . arguments)
-;;   (void)
-;;   )
+;; TO-BE-IMPLEMENTED

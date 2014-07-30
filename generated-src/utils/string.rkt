@@ -22,8 +22,6 @@
 ;; Using hashtable with curly-dict notation
 (current-curly-dict hash)
 
-(require srfi/1)
-
 (require "utils.rkt")
 
 (provide (all-defined-out))
@@ -36,21 +34,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Implementation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(define (trim str)
-  (let* ([str/list                  (string->list str)]
-         [str/list/trim-begin       (drop-while #λ(equal? % #\space)
-                                                str/list)]
-         [str/list/reversed         (reverse str/list/trim-begin)]
-         [str/list/reversed/trimmed (drop-while #λ(equal? % #\space)
-                                                str/list/reversed)])
-    (~> str/list/reversed/trimmed
-      reverse
-      list->string)))
-
-(module+ test
-  (check-equal? (trim "     ") "")
-  (check-equal? (trim "  -  ") "-"))
 
 (define string-starts-with?
   #λ(regexp-match? (regexp (str "^" (regexp-quote %2))) %1))

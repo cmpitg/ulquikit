@@ -23,6 +23,7 @@
 (current-curly-dict hash)
 
 (require racket/path)
+
 (require "string.rkt")
 
 (provide (all-defined-out))
@@ -97,3 +98,30 @@
 (module+ test
   (check-equal? (path->directory "/tmp/tmp.rkt") "/tmp/")
   (check-equal? (path->directory "/tmp/tmp/")    "/tmp/tmp/"))
+
+(define (get-path . args)
+  (let* ([paths/expanded (map expand-user-path args)]
+         [paths/reversed (reverse (cons (current-directory) paths/expanded))]
+         
+         [paths/no-absolute (~> paths/reversed
+                              (takef #λ(not (absolute-path? %)))
+                              reverse)]
+         [path/absolute     (~> paths/reversed
+                              (dropf #λ(not (absolute-path? %)))
+                              first)]
+         [paths             (cons path/absolute paths/no-absolute)])
+    (~> (apply build-path paths)
+      simplify-path
+      path->string)))
+
+(module+ test
+  (check-equal? (get-path "/tmp") "/tmp")
+  (check-equal? (get-path "/tmp/") "/tmp/")
+  (check-equal? (get-path "/tmp" "/hello") "/hello")
+  (check-equal? (get-path "/tmp" "./hello") "/tmp/hello")
+  (check-equal? (get-path "/tmp" "/hello" "~")
+                (path->string (find-system-path 'home-dir)))
+  (check-equal? (get-path "/tmp" "/hello" "/world" "./superman/")
+                "/world/superman/")
+  (check-equal? (get-path "world/")
+                (path->string (build-path (current-directory) "world/"))))

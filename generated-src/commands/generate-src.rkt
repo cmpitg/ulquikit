@@ -32,8 +32,8 @@
 
 (module+ test
   (require rackunit))
-
-;; #lang racket
+  
+;; lang racket
 
 ;; #lang racket
 
@@ -379,9 +379,9 @@
                                    'processed? #t}}})))
 
 (define is-include-directive?
-  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (trim %))
-        (regexp-match? #px"^<!-- include::.* -->" (trim %))
-        (regexp-match? #px"^/\\* include::.* \\*/" (trim %))))
+  #λ(or (regexp-match? #px"^[#;/-]{2} include::.*" (string-trim %))
+        (regexp-match? #px"^<!-- include::.* -->" (string-trim %))
+        (regexp-match? #px"^/\\* include::.* \\*/" (string-trim %))))
 
 (module+ test
   (check-equal? (is-include-directive? "  ;; include::") #t)
@@ -396,7 +396,7 @@
 
 (define (get-included-snippet-name line)
   (if (is-include-directive? line)
-      (let* ([line (trim line)]
+      (let* ([line (string-trim line)]
              [line-2 (if (string-ends-with? line " -->")
                          (first (string-split line " -->"))
                          line)]
@@ -564,12 +564,32 @@
 ;;                              #:included {})))
 
 
-;; (define (run #:from [from "src"]
-;;              #:to   [to   "generated-src"])
-;;   (display-command "generate-src")
-;;   (~> (extract-snippets from)
-;;     (include-file-snippets)
-;;     (write-snippets-to-files to)))
+;; lang racket
 
+(define (include-file-snippets snippets)
+  (let ([boxed (box snippets)]
+        [file-snippets/names (hash-keys (snippets 'file))])
+    (for ([target-name file-snippets/names])
+      (let* ([target (~> snippets 'file target-name)])
+        (include-snippet boxed target {})))
+    (unbox boxed)))
+
+(define (generate-src-files snippets to)
+  (for ([(name snippet) (snippets 'file)])
+    (let* ([path    (path->string (get-relative-path to name))]
+           [content (get-snippet-content snippet)])
+      (create-dir (path->directory path))
+      (display-to-file content path #:exists 'truncate/replace))))
+
+
+(define (generate-src #:from [from "src"]
+                      #:to   [to   "generated-src"])
+  
+  (~> (extract-snippets from)
+    (include-file-snippets)
+    (generate-src-files to)))
+
+
+;; TO-BE-IMPLEMENTED
 
 ;; TO-BE-IMPLEMENTED
