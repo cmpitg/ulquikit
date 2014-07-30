@@ -47,8 +47,6 @@ General-purpose utility functions.
 
 ;; include::utils/use-rackjure
 
-(require srfi/1)
-
 (require "utils.rkt")
 
 (provide (all-defined-out))
@@ -71,11 +69,9 @@ General-purpose utility functions.
 
 (define (trim str)
   (let* ([str/list                  (string->list str)]
-         [str/list/trim-begin       (drop-while #λ(equal? % #\space)
-                                                str/list)]
+         [str/list/trim-begin       (dropf str/list #λ(equal? % #\space))]
          [str/list/reversed         (reverse str/list/trim-begin)]
-         [str/list/reversed/trimmed (drop-while #λ(equal? % #\space)
-                                                str/list/reversed)])
+         [str/list/reversed/trimmed (dropf str/list/reversed #λ(equal? % #\space))])
     (~> str/list/reversed/trimmed
       reverse
       list->string)))
@@ -133,7 +129,6 @@ General-purpose utility functions.
 ;; include::utils/use-rackjure
 
 (require racket/path)
-(require srfi/1)
 
 (require "string.rkt")
 
@@ -235,11 +230,11 @@ with current working directory of the path is relative.
   (let* ([paths/expanded (map expand-user-path args)]
          [paths/reversed (reverse (cons (current-directory) paths/expanded))]
          
-         [paths/no-absolute (~>> paths/reversed
-                              (take-while #λ(not (absolute-path? %)))
+         [paths/no-absolute (~> paths/reversed
+                              (takef #λ(not (absolute-path? %)))
                               reverse)]
-         [path/absolute     (~>> paths/reversed
-                              (drop-while #λ(not (absolute-path? %)))
+         [path/absolute     (~> paths/reversed
+                              (dropf #λ(not (absolute-path? %)))
                               first)]
          [paths             (cons path/absolute paths/no-absolute)])
     (~> (apply build-path paths)
