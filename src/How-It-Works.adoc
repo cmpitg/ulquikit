@@ -1089,8 +1089,21 @@ and passes necessary arguments.
     (keyword-apply run-func
                    keyword-list
                    val-list
-                   main-args)
-    ))
+                   main-args)))
+
+----
+
+Besides <<func/run-command,+run-command+>>, we also have +run-help+ as a
+helper to display help of a command:
+
+.code::run-help
+[source,racket,linenums]
+----
+(define run-help #λ(run-command % '("--help")))
+
+----
+
+
 With all necessary functions implemented, +command-core+ comes down to this
 little piece below:
 
