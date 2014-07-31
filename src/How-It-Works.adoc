@@ -1140,15 +1140,14 @@ little piece below:
 (require "../utils/path.rkt")
 (require "../utils/string.rkt")
 
-;; (provide run
-;;          help)
+(provide run)
 
 (module+ test
   (require rackunit))
   
 ;; include::generate-src
 
-;; include::commands/generate-src/run
+(define run generate-src)
 
 ;; include::commands/generate-src/help
 ----
