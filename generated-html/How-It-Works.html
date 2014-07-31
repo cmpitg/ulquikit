@@ -438,21 +438,27 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <ul class="sectlevel2">
 <li><a href="#section/extract-snippets">2.1. Extracting snippets</a></li>
 <li><a href="#section/include-snippets">2.2. Including snippets into each other</a></li>
-<li><a href="#command/generate-src">2.3. Generating source code</a></li>
-<li><a href="#_anatomy_of_a_ulquikit_command">2.4. Anatomy of a Ulquikit command</a></li>
+</ul>
+</li>
+<li><a href="#command/generate-src">3. Generating source code</a></li>
+<li><a href="#_anatomy_of_a_ulquikit_command">4. Anatomy of a Ulquikit command</a></li>
 <li>
-<ul class="sectlevel3">
-<li><a href="#_parsing_command_line_arguments_code_parse_command_args_code">2.4.1. Parsing command line arguments <code>parse-command-args</code></a></li>
-<li><a href="#_calling_corresponding_command">2.4.2. Calling corresponding command</a></li>
-<li><a href="#_putting_all_command_things_together">2.4.3. Putting all command things together</a></li>
+<ul class="sectlevel2">
+<li><a href="#_parsing_command_line_arguments_code_parse_command_args_code">4.1. Parsing command line arguments <code>parse-command-args</code></a></li>
+<li><a href="#_calling_corresponding_command">4.2. Calling corresponding command</a></li>
+<li><a href="#_putting_all_command_things_together">4.3. Putting all command things together</a></li>
 </ul>
 </li>
-<li><a href="#_generating_html">2.5. Generating HTML</a></li>
+<li><a href="#_generating_html">5. Generating HTML</a></li>
+<li><a href="#_utility_functions">6. Utility functions</a></li>
+<li><a href="#_misc">7. Misc</a></li>
+<li><a href="#_license_header">8. License header</a></li>
+<li><a href="#_extras">9. Extras</a></li>
+<li>
+<ul class="sectlevel2">
+<li><a href="#_command_list">9.1. Command list</a></li>
 </ul>
 </li>
-<li><a href="#_utility_functions">3. Utility functions</a></li>
-<li><a href="#_misc">4. Misc</a></li>
-<li><a href="#_license_header">5. License header</a></li>
 </ul>
 </div>
 </div>
@@ -2006,8 +2012,11 @@ are short and easily implemented like so:</p>
 are used to implement the <a href="#section/generate-source"><code>generate-src</code></a> right below.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="command/generate-src">2.3. Generating source code</h3>
+</div>
+</div>
+<div class="sect1">
+<h2 id="command/generate-src">3. Generating source code</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Once snippets are extracted and included into each other, the act of
 generateing source code becomes trivial, as implemented in <code>generate-src</code>
@@ -2208,8 +2217,10 @@ generate source code.</p>
 structure for defining other commands as well.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_anatomy_of_a_ulquikit_command">2.4. Anatomy of a Ulquikit command</h3>
+</div>
+<div class="sect1">
+<h2 id="_anatomy_of_a_ulquikit_command">4. Anatomy of a Ulquikit command</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>Ulquikit commands are actually a Racket modules, residing in <code>commands/</code>.  The
 name of the module (without <code>.rkt</code> extension of course) is the actual command.
@@ -2269,8 +2280,8 @@ of <a href="#command/generate-src"><code>generate-src</code></a> for more detail
 <p>With all that has been said, let&#8217;s move on to the function which is used to
 parse command line arguments.</p>
 </div>
-<div class="sect3">
-<h4 id="_parsing_command_line_arguments_code_parse_command_args_code">2.4.1. Parsing command line arguments <code>parse-command-args</code></h4>
+<div class="sect2">
+<h3 id="_parsing_command_line_arguments_code_parse_command_args_code">4.1. Parsing command line arguments <code>parse-command-args</code></h3>
 <div class="paragraph">
 <p>This function takes all arguments passed to the command line as a list of
 string and returns a map of following format:</p>
@@ -2517,8 +2528,8 @@ command line</td>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_calling_corresponding_command">2.4.2. Calling corresponding command</h4>
+<div class="sect2">
+<h3 id="_calling_corresponding_command">4.2. Calling corresponding command</h3>
 <div class="paragraph">
 <p>Function <code>run-command</code> does exactly that, i.e. it calls corresponding command
 and passes necessary arguments.</p>
@@ -2581,8 +2592,8 @@ the corresponding command and returns its content.</p>
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_putting_all_command_things_together">2.4.3. Putting all command things together</h4>
+<div class="sect2">
+<h3 id="_putting_all_command_things_together">4.3. Putting all command things together</h3>
 <div class="paragraph">
 <p>With all necessary functions implemented, module <code>command-core</code> which all
 other commands have to <code>required</code> comes down to this little piece below:</p>
@@ -2650,8 +2661,10 @@ HTML documents with some default options.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_generating_html">2.5. Generating HTML</h3>
+</div>
+<div class="sect1">
+<h2 id="_generating_html">5. Generating HTML</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>First, let&#8217;s decide upon how this command is used:</p>
 </div>
@@ -2833,9 +2846,8 @@ extract file name and replace <code>.adoc</code> extension with <code>.html</cod
 </div>
 </div>
 </div>
-</div>
 <div class="sect1">
-<h2 id="_utility_functions">3. Utility functions</h2>
+<h2 id="_utility_functions">6. Utility functions</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>See <a href="Utilities.html">Utilities</a>.</p>
@@ -2843,7 +2855,7 @@ extract file name and replace <code>.adoc</code> extension with <code>.html</cod
 </div>
 </div>
 <div class="sect1">
-<h2 id="_misc">4. Misc</h2>
+<h2 id="_misc">7. Misc</h2>
 <div class="sectionbody">
 <div class="listingblock">
 <div class="title">code::use-rackjure</div>
@@ -2859,7 +2871,7 @@ extract file name and replace <code>.adoc</code> extension with <code>.html</cod
 </div>
 </div>
 <div class="sect1">
-<h2 id="_license_header">5. License header</h2>
+<h2 id="_license_header">8. License header</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Of course, since Ulquikit is distributed under the terms of GPLv3, the license
@@ -2891,10 +2903,19 @@ header is necessary.</p>
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_extras">9. Extras</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_command_list">9.1. Command list</h3>
+
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-08-01 02:02:39 ICT
+Last updated 2014-08-01 02:08:47 ICT
 </div>
 </div>
 </body>
