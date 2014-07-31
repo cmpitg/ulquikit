@@ -840,6 +840,7 @@ are short and easily implemented like so:
 And that concludes the most important functions of Ulquikit.  Those functions
 are used to implement the <<section/generate-source,+generate-src+>> right below.
 
+[[command/generate-src]]
 === Generating source code
 
 Once snippets are extracted and included into each other, the act of
@@ -931,6 +932,14 @@ E.g.
   called.  The same effect could be achieved by calling +(run #:help #t)+.
   This the +help+ function takes no arguments and returns a string that would
   be displayed as help.
+
+* Usually, in a typical program, help strings are hardcoded into the source
+  code, which makes the maintenance of help strings harder that necessary, not
+  to mention the code looks really ugly.  Ulquikit defines a convention for
+  writing and maintaining helps more effectively: command +do-something+ has
+  its help stored in +commands/do-something.help.txt+.  See the implementation
+  of <<command/generate-src,+generate-src+>> for more details on
+  <<help/generate-src,how help string>> is stored.
 
 * All commands must import +command-core.rkt+ (relative to command directory:
   +../command-core.rkt+).
