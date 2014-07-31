@@ -50,7 +50,7 @@
 (define (generate-docs)
   (let* ([project-dir        (get-relative-path +this-directory+ "../../")]
          [src-dir            (get-relative-path project-dir "./src")]
-         [generated-docs-dir (get-relative-path project-dir "./generated-docs/")])
+         [generated-docs-dir (get-relative-path project-dir "./generated-html/")])
     (parameterize ([current-directory project-dir])
       (for ([input-file (get-all-adocs src-dir)])
         (render-asciidoc input-file
