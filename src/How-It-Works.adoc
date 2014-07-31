@@ -905,7 +905,30 @@ helpers for +generate-src+.
 
 ----
 
-Once all functions are ready, let's write a command to generate source code.
+And of course, we need to define help string for +generate-src+:
+
+.file::commands/generate-src.help.txt
+[source,text,linenums]
+----
+ulqui generate-src [--from from] [--to to]
+
+Generate source code from a location to another location.
+
+  --from Location of the literate source code, default: "src"
+  --to   Location of the generated source code, default: "generated-src"
+
+Examples
+
+Generate source code from src/ to generated-src/
+  ulqui generate-src
+
+or explitcitly
+  ulqui generate-src --from src/ --to generated-src/
+
+Generate source code from ../literate-source/ to ../source/
+  ulqui generate-src --from ../literate-source/ --to ../source/
+
+----
 
 === Anatomy of a Ulquikit command
 
