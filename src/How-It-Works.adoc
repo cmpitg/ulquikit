@@ -1340,11 +1340,53 @@ The code for command +generate-html+ is as simple as followed:
 
 ----
 
+== The +ulqui+ script
+
+So far we have been going through all important internal components of
+Ulquikit.  What's left to make a complete, usable application is the main
+command that takes care of user interactive: the +ulqui+ script.  +ulqui+ is a
+complete Racket module.
+
+First and foremost, this module should be able to detect all built-in commands
+residing in +commands/+ directory.  This task is simple and straightforward:
+find all +.rkt+ files is +commands/+ directory and return them as a list
+without their extensions.
+
+.code::ulqui/list-commands
+[source,racket,linenums]
+----
+(define (list-commands)
+  (let* ([command-dir (get-path +this-directory+ "./commands/")]
+         [commands    (~>> (directory-list command-dir)
+                        (map path->string)
+                        (filter #λ(string-ends-with? % ".rkt"))
+                        (map #λ(regexp-replace #px"\\.rkt$" % "")))])
+    commands))
+
+----
+
+.file::ulqui
+[source,racket,linenums]
+----
+#!/usr/bin/env racket
+
+;; include::license-header
+
+;; include::use-rackjure
+
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
+
+(require "utils/string.rkt")
+(require "utils/path.rkt")
+
+;; include::ulqui/list-commands
+
+(module+ main
+  (displayln (list-commands)))
+----
 
 
-== Utility functions
-
-See link:Utilities.html[Utilities].
 
 == Misc
 
@@ -1386,4 +1428,10 @@ header is necessary.
 
 == Extras
 
+== Utility functions
+
+See link:Utilities.html[Utilities].
+
 === Command list
+
+=== Story: How the Racket version of Ulquikit was actually developed
