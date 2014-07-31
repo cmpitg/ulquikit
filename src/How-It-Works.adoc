@@ -1128,13 +1128,11 @@ little piece below:
 (define (display-command title)
   (displayln (str "----> " title)))
 
-(define (run-help command)
-  (eval `(local-require ,(str command ".rkt")))
-  (eval '(help)))
-
 ;; include::parse-command-args
 
 ;; include::run-command
+
+;; include::run-help
 
 ----
 
