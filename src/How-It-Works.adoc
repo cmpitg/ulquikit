@@ -1123,11 +1123,19 @@ As always, it's a good style to implement some helpers for
 (define try-convert-value
   #λ(if-let [value (string->number %)]
       value
-      %))
+      (cond [(string=? "true" %)
+             #t]
+            [(string=? "false" %)
+             #f]
+            [else
+             %])))
 
 (module+ test
   (check-equal? (try-convert-value "1") 1)
-  (check-equal? (try-convert-value "a") "a"))
+  (check-equal? (try-convert-value "a") "a")
+  (check-equal? (try-convert-value "true")  #t)
+  (check-equal? (try-convert-value "false") #f))
+
 ----
 
 ==== Calling corresponding command
