@@ -1208,7 +1208,6 @@ Generate source code from ../literate-source/ to ../source/
   (generate-src #:from from
                 #:to   to))
 
-;; include::commands/generate-src/help
 ----
 
 == Utility functions
