@@ -40,17 +40,19 @@
 
 (define get-relative-path #λ(simple-form-path (apply build-path %&)))
 
-(define get-directory-path
-  #λ(if-let [path (file-name-from-path %)]
-      (~>> path
-        path->string
-        (string-split %)
-        first)
-      %))
+(define (get-directory-path path)
+  (path->string
+   (call-with-values #λ(split-path path)
+                     (λ (dir file file-is-dir?)
+                       (if file-is-dir?
+                           (build-path dir (str file "/"))
+                           dir)))))
 
 (module+ test
   (check-equal? (get-directory-path "/tmp/tmp.rkt") "/tmp/")
-  (check-equal? (get-directory-path "/tmp/tmp/")    "/tmp/tmp/"))
+  (check-equal? (get-directory-path "/tmp/tmp/")    "/tmp/tmp/")
+  (check-equal? (get-directory-path "/m/src/ulquikit/generated-src/ulqui")
+                "/m/src/ulquikit/generated-src/"))
 
 (define create-directory-tree
   #λ(system (format (~a "mkdir -p " %))))
