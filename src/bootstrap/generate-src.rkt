@@ -220,7 +220,7 @@
                                          +this-directory+
                                          (format (~a "../../generated-src/"
                                                      name))))])
-                     (displayln (~a "-> Writing to " output-path))
+                     (displayln (~a "-> Writing " output-path))
                      (create-directory-tree (get-directory-path output-path))
                      (write-file-overwrite output-path (block 'content))))))
 
