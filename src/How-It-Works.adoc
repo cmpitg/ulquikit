@@ -930,6 +930,40 @@ Generate source code from ../literate-source/ to ../source/
 
 ----
 
+Once all functions are ready, let's put them together into a command to
+generate source code.
+
+.file::commands/generate-src.rkt
+[source,racket,linenums]
+----
+;; include::license-header
+
+;; include::use-rackjure
+
+(require "../command-core.rkt")
+
+(require "../utils/utils.rkt")
+(require "../utils/path.rkt")
+(require "../utils/string.rkt")
+
+(provide run)
+
+(module+ test
+  (require rackunit))
+
+;; include::generate-src
+
+(define (run #:from [from "src"]
+             #:to   [to   "generated-src"])
+  (display-command "Generating source")
+  (generate-src #:from from
+                #:to   to))
+
+----
+
+That's how +generate-src+ should be done.  It's time to generalize this
+structure for defining other commands as well.
+
 === Anatomy of a Ulquikit command
 
 Ulquikit commands are actually a Racket modules, residing in +commands/+.  The
@@ -1139,9 +1173,10 @@ the corresponding command and returns its content.
 
 ----
 
+==== Putting all command things together
 
-With all necessary functions implemented, +command-core+ comes down to this
-little piece below:
+With all necessary functions implemented, module +command-core+ which all
+other commands have to +required+ comes down to this little piece below:
 
 .file::command-core.rkt
 [source,racket,linenums]
@@ -1172,63 +1207,6 @@ little piece below:
 ;; include::run-command
 
 ;; include::run-help
-
-----
-
-And of course, here is help string for +generate-src+:
-
-.file::commands/generate-src.help.txt
-[source,text,linenums]
-----
-ulqui generate-src [--from from] [--to to]
-
-Generate source code from a location to another location.
-
-  --from Location of the literate source code, default: "src"
-  --to   Location of the generated source code, default: "generated-src"
-
-Examples
-
-Generate source code from src/ to generated-src/
-  ulqui generate-src
-
-or explitcitly
-  ulqui generate-src --from src/ --to generated-src/
-
-Generate source code from ../literate-source/ to ../source/
-  ulqui generate-src --from ../literate-source/ --to ../source/
-
-----
-
-
-=== Command: +generate-src+
-
-
-.file::commands/generate-src.rkt
-[source,racket,linenums]
-----
-;; include::license-header
-
-;; include::use-rackjure
-
-(require "../command-core.rkt")
-
-(require "../utils/utils.rkt")
-(require "../utils/path.rkt")
-(require "../utils/string.rkt")
-
-(provide run)
-
-(module+ test
-  (require rackunit))
-  
-;; include::generate-src
-
-(define (run #:from [from "src"]
-             #:to   [to   "generated-src"])
-  (display-command "Generating source")
-  (generate-src #:from from
-                #:to   to))
 
 ----
 
