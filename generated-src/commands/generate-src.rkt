@@ -27,12 +27,11 @@
 (require "../utils/path.rkt")
 (require "../utils/string.rkt")
 
-;; (provide run
-;;          help)
+(provide run)
 
 (module+ test
   (require rackunit))
-  
+
 ;; lang racket
 
 ;; #lang racket
@@ -174,7 +173,7 @@
          [lines        (string-split file-content "\n" #:trim? #f)]
 
          [snippets        (box {'file {}
-                               'code {}})]
+                                'code {}})]
 
          [prev-prev-line  (box "")]
          [prev-line       (box "")]
@@ -332,8 +331,8 @@
           (display-to-file content path)))
 
       (let* ([snippets (extract-snippets temp-dir)]
-             [code-snippet (snippets 'code)]
-             [file-snippet (snippets 'file)])
+             [code-snippet (get-code-snippets snippets)]
+             [file-snippet (get-file-snippets snippets)])
 
         (for ([(name snippet) code-snippet])
           (check-equal? (get-snippet-content snippet)
@@ -568,28 +567,36 @@
 
 (define (include-file-snippets snippets)
   (let ([boxed (box snippets)]
-        [file-snippets/names (hash-keys (snippets 'file))])
+        [file-snippets/names (hash-keys (get-file-snippets snippets))])
     (for ([target-name file-snippets/names])
       (let* ([target (~> snippets 'file target-name)])
         (include-snippet boxed target {})))
     (unbox boxed)))
 
 (define (generate-src-files snippets to)
-  (for ([(name snippet) (snippets 'file)])
+  (for ([(name snippet) (get-file-snippets snippets)])
     (let* ([path    (path->string (get-relative-path to name))]
            [content (get-snippet-content snippet)])
       (create-dir (path->directory path))
+      (displayln (~a "-> Writing " path))
       (display-to-file content path #:exists 'truncate/replace))))
+
+(define get-file-snippets #λ(% 'file #:else {}))
+
+(define get-code-snippets #λ(% 'code #:else {}))
 
 
 (define (generate-src #:from [from "src"]
                       #:to   [to   "generated-src"])
-  
-  (~> (extract-snippets from)
-    (include-file-snippets)
-    (generate-src-files to)))
+  (let* ([from (get-path from)]
+         [to   (get-path to)])
+    (~> (extract-snippets from)
+      (include-file-snippets)
+      (generate-src-files to))))
 
 
-;; TO-BE-IMPLEMENTED
-
-;; TO-BE-IMPLEMENTED
+(define (run #:from [from "src"]
+             #:to   [to   "generated-src"])
+  (display-command "Generating source")
+  (generate-src #:from from
+                #:to   to))

@@ -21,19 +21,22 @@
 
 (current-curly-dict hash)
 
+(require "utils/path.rkt")
 (require "utils/string.rkt")
 
-(provide (all-defined-out))
+(provide run-command
+         (rename-out [run-help run-command-help]
+                     [run-help run-help])
+         display-command)
+
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
 
 (module+ test
   (require rackunit))
 
 (define (display-command title)
-  (displayln (str "----> " title)))
-
-(define (run-help command)
-  (eval `(local-require ,(str command ".rkt")))
-  (eval '(help)))
+  (displayln (str "==== " title " ====")))
 
 ;; #lang racket
 
@@ -133,4 +136,27 @@
                              '#:set-tab 4}}))
 
 
-;; TO-BE-IMPLEMENTED
+(define (run-command command args)
+  (let* ([module-location (string->path
+                           (get-path +this-directory+
+                                     (format "commands/~a.rkt"
+                                             command)))]
+         [run-func        (dynamic-require module-location 'run)]
+         [args            (if (hash? args)
+                              args
+                              (parse-command-args args))]
+         [main-args       (args 'arguments)]
+         [keyword-list    (hash-keys (args 'options))]
+         [val-list        (hash-values (args 'options))])
+    (keyword-apply run-func
+                   keyword-list
+                   val-list
+                   main-args)))
+
+
+(define (run-help command)
+  (let* ([help-file (get-path +this-directory+
+                              (format "commands/~a.help.txt"
+                                      command))])
+    (displayln (read-file help-file))))
+
