@@ -895,6 +895,7 @@ helpers for +generate-src+.
     (let* ([path    (path->string (get-relative-path to name))]
            [content (get-snippet-content snippet)])
       (create-dir (path->directory path))
+      (displayln (~a "-> Writing to " path))
       (display-to-file content path #:exists 'truncate/replace))))
 
 (define get-file-snippets #λ(% 'file #:else {}))
