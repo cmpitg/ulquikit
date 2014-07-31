@@ -841,7 +841,7 @@ And that concludes the most important functions of Ulquikit.  Those functions
 are used to implement the <<section/generate-source,+generate-src+>> right below.
 
 [[command/generate-src]]
-=== Generating source code
+== Generating source code
 
 Once snippets are extracted and included into each other, the act of
 generateing source code becomes trivial, as implemented in +generate-src+
@@ -964,7 +964,7 @@ generate source code.
 That's how +generate-src+ should be done.  It's time to generalize this
 structure for defining other commands as well.
 
-=== Anatomy of a Ulquikit command
+== Anatomy of a Ulquikit command
 
 Ulquikit commands are actually a Racket modules, residing in +commands/+.  The
 name of the module (without +.rkt+ extension of course) is the actual command.
@@ -1004,7 +1004,7 @@ E.g.
 With all that has been said, let's move on to the function which is used to
 parse command line arguments.
 
-==== Parsing command line arguments +parse-command-args+
+=== Parsing command line arguments +parse-command-args+
 
 This function takes all arguments passed to the command line as a list of
 string and returns a map of following format:
@@ -1138,7 +1138,7 @@ As always, it's a good style to implement some helpers for
 
 ----
 
-==== Calling corresponding command
+=== Calling corresponding command
 
 Function +run-command+ does exactly that, i.e. it calls corresponding command
 and passes necessary arguments.
@@ -1181,7 +1181,7 @@ the corresponding command and returns its content.
 
 ----
 
-==== Putting all command things together
+=== Putting all command things together
 
 With all necessary functions implemented, module +command-core+ which all
 other commands have to +required+ comes down to this little piece below:
@@ -1221,7 +1221,7 @@ other commands have to +required+ comes down to this little piece below:
 The next big piece of Ulquikit is the +generate-html+ command which generates
 HTML documents with some default options.
 
-=== Generating HTML
+== Generating HTML
 
 First, let's decide upon how this command is used:
 
@@ -1379,3 +1379,7 @@ header is necessary.
 ;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 ----
+
+== Extras
+
+=== Command list
