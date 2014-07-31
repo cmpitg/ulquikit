@@ -525,8 +525,8 @@ format>> defined above.
           (display-to-file content path)))
 
       (let* ([snippets (extract-snippets temp-dir)]
-             [code-snippet (snippets 'code)]
-             [file-snippet (snippets 'file)])
+             [code-snippet (get-code-snippets snippets)]
+             [file-snippet (get-file-snippets snippets)])
 
         (for ([(name snippet) code-snippet])
           (check-equal? (get-snippet-content snippet)
@@ -883,18 +883,22 @@ helpers for +generate-src+.
 
 (define (include-file-snippets snippets)
   (let ([boxed (box snippets)]
-        [file-snippets/names (hash-keys (snippets 'file))])
+        [file-snippets/names (hash-keys (get-file-snippets snippets))])
     (for ([target-name file-snippets/names])
       (let* ([target (~> snippets 'file target-name)])
         (include-snippet boxed target {})))
     (unbox boxed)))
 
 (define (generate-src-files snippets to)
-  (for ([(name snippet) (snippets 'file)])
+  (for ([(name snippet) (get-file-snippets snippets)])
     (let* ([path    (path->string (get-relative-path to name))]
            [content (get-snippet-content snippet)])
       (create-dir (path->directory path))
       (display-to-file content path #:exists 'truncate/replace))))
+
+(define get-file-snippets #λ(% 'file #:else {}))
+
+(define get-code-snippets #λ(% 'code #:else {}))
 
 ----
 
