@@ -861,10 +861,11 @@ below.
 
 (define (generate-src #:from [from "src"]
                       #:to   [to   "generated-src"])
-  
-  (~> (extract-snippets from)
-    (include-file-snippets)
-    (generate-src-files to)))
+  (let* ([from (get-path from)]
+         [to   (get-path to)])
+    (~> (extract-snippets from)
+      (include-file-snippets)
+      (generate-src-files to))))
 
 ----
 
