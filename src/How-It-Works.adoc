@@ -1258,8 +1258,6 @@ documents) and destination (where HTML documents are generated), namedly
 .code::generate-html
 [source,racket,linenums]
 ----
-;; include::generate-html-helpers
-
 (define (generate-html #:from      [from "src"]
                        #:to        [to "generated-html"])
   (let* ([from  (get-path from)]
@@ -1267,10 +1265,8 @@ documents) and destination (where HTML documents are generated), namedly
          [docs  (list-all-adocs from)])
     (parameterize ([current-directory from])
       (for ([doc docs])
-        (render-asciidoc-to-html doc
-                                 (get-relative-path
-                                  to
-                                  (adoc->html-extension doc)))))))
+        (render-asciidoc doc
+                         (get-relative-path to (get-output-file doc)))))))
 
 ----
 
