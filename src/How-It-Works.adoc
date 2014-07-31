@@ -1129,7 +1129,7 @@ little piece below:
   (require rackunit))
 
 (define (display-command title)
-  (displayln (str "----> " title)))
+  (displayln (str "==== " title " ====")))
 
 ;; include::parse-command-args
 
@@ -1162,7 +1162,11 @@ little piece below:
   
 ;; include::generate-src
 
-(define run generate-src)
+(define (run #:from [from "src"]
+             #:to   [to   "generated-src"])
+  (display-command "Generating source")
+  (generate-src #:from from
+                #:to   to))
 
 ;; include::commands/generate-src/help
 ----
