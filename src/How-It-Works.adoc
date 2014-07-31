@@ -255,7 +255,7 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
          [lines        (string-split file-content "\n" #:trim? #f)]
 
          [snippets        (box {'file {}
-                               'code {}})]
+                                'code {}})]
 
          [prev-prev-line  (box "")]
          [prev-line       (box "")]
