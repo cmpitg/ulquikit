@@ -1103,12 +1103,17 @@ and passes necessary arguments.
 ----
 
 Besides <<func/run-command,+run-command+>>, we also have +run-help+ as a
-helper to display help of a command:
+helper to display help of a command.  +run-help+ simply reads the help file of
+the corresponding command and returns its content.
 
 .code::run-help
 [source,racket,linenums]
 ----
-(define run-help #λ(run-command % '("--help")))
+(define (run-help command)
+  (let* ([help-file (get-path +this-directory+
+                              (format "commands/~a.help.txt"
+                                      command))])
+    (displayln (read-file help-file))))
 
 ----
 
