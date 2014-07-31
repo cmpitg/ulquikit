@@ -1100,9 +1100,13 @@ little piece below:
 
 ;; include::use-rackjure
 
+(require "utils/path.rkt")
 (require "utils/string.rkt")
 
 (provide (all-defined-out))
+
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
 
 (module+ test
   (require rackunit))
