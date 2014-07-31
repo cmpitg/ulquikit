@@ -1305,6 +1305,39 @@ extract file name and replace +.adoc+ extension with +.html+ extension.
 
 ----
 
+The code for command +generate-html+ is as simple as followed:
+
+.file::commands/generate-html.rkt
+[source,racket,linenums]
+----
+;; include::license-header
+
+;; include::use-rackjure
+
+(require "../command-core.rkt")
+(require "../utils/path.rkt")
+
+(provide run)
+
+(module+ test
+  (require rackunit))
+
+;; include::render-asciidoc
+
+;; include::get-output-file
+
+;; include::generate-html
+
+(define (run #:from [from "src"]
+             #:to   [to   "generated-html"])
+  (display-command "Generating HTML")
+  (generate-html #:from from
+                 #:to   to))
+
+----
+
+
+
 == Utility functions
 
 See link:Utilities.html[Utilities].
