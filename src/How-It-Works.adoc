@@ -1117,7 +1117,10 @@ little piece below:
 (require "utils/path.rkt")
 (require "utils/string.rkt")
 
-(provide (all-defined-out))
+(provide run-command
+         (rename-out [run-help run-command-help]
+                     [run-help run-help])
+         display-command)
 
 (require racket/runtime-path)
 (define-runtime-path +this-directory+ ".")
