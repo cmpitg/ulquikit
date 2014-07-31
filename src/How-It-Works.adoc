@@ -12,6 +12,10 @@
 Ulquikit is written in literate programming itself with a small bootstrap
 code.  This document is Ulquikit's literate source code.
 
+IMPORTANT: Ulquikit follows
+http://en.wikipedia.org/wiki/Convention_over_configuration[convention over
+configuration] design.
+
 To compile _and run_ Ulquikit, the following dependencies are required:
 
 * http://asciidoctor.org[AsciiDoctor]
