@@ -914,8 +914,8 @@ ulqui generate-src [--from from] [--to to]
 
 Generate source code from a location to another location.
 
-  --from Location of the literate source code, default: "src"
-  --to   Location of the generated source code, default: "generated-src"
+  --from location where literate source code is stored, default: "src"
+  --to   location where source are generated, default: "generated-src"
 
 Examples
 
