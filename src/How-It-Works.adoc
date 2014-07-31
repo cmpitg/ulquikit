@@ -1270,6 +1270,40 @@ documents) and destination (where HTML documents are generated), namedly
 
 ----
 
+Let's dig into some helpers for this function.  The first helper to notice is
++render-asciidoc+, used to build and run rendering command with AsciiDoctor.
+
+By default, AsciiDoctor is invoked with +--doctype book+.  Customization could
+be added later.
+
+.code::render-asciidoc
+[source,racket,linenums]
+----
+(define asciidoctor-format-command
+  #λ(format "asciidoctor ~a -d book -o ~a" %1 %2))
+
+(define (render-asciidoc input-file output-file)
+  (displayln (str "-> " input-file " => " output-file))
+  (system (asciidoctor-format-command input-file output-file)))
+
+----
+
+And last but not least, for +generate-html+ to be ready, we need a function to
+extract file name and replace +.adoc+ extension with +.html+ extension.
+
+.code::get-output-file
+[source,racket,linenums]
+----
+(define get-output-file
+  #λ(~> (file-name-from-path %)
+      path->string
+      (string-replace ".adoc" ".html")))
+
+(module+ test
+  (check-equal? (get-output-file "/tmp/tmp.adoc")   "tmp.html")
+  (check-equal? (get-output-file "/tmp/world.adoc") "world.html"))
+
+----
 
 == Utility functions
 
