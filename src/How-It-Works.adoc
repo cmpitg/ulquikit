@@ -1064,6 +1064,32 @@ As always, it's a good style to implement some helpers for
   (check-equal? (try-convert-value "a") "a"))
 ----
 
+==== Calling corresponding command
+
+Function +run-command+ does exactly that, i.e. it calls corresponding command
+and passes necessary arguments.
+
+.code::run-command
+[source,racket,linenums]
+----
+(define (run-command command args)
+  (let* ([module-location (string->path
+                           (get-path +this-directory+
+                                     (format "commands/~a.rkt"
+                                             command)))]
+         [run-func        (dynamic-require module-location 'run)]
+         [args            (if (hash? args)
+                              args
+                              (parse-command-args args))]
+         [main-args       (args 'arguments)]
+         [keyword-list    (hash-keys (args 'options))]
+         [val-list        (hash-values (args 'options))]
+         )
+    (keyword-apply run-func
+                   keyword-list
+                   val-list
+                   main-args)
+    ))
 With all necessary functions implemented, +command-core+ comes down to this
 little piece below:
 
