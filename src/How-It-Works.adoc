@@ -1356,7 +1356,7 @@ without their extensions.
 [source,racket,linenums]
 ----
 (define (list-commands)
-  (let* ([command-dir (get-path +this-directory+ "./commands/")]
+  (let* ([command-dir (get-path +this-directory+ "../commands/")]
          [commands    (~>> (directory-list command-dir)
                         (map path->string)
                         (filter #λ(string-ends-with? % ".rkt"))
@@ -1418,7 +1418,7 @@ command.
 Finally, putting all things mentioned above together, we have this +ulqui+
 script:
 
-.file::ulqui
+.file::bin/ulqui
 [source,racket,linenums]
 ----
 #!/usr/bin/env racket
@@ -1432,9 +1432,9 @@ script:
 (require racket/runtime-path)
 (define-runtime-path +this-directory+ ".")
 
-(require "utils/string.rkt")
-(require "utils/path.rkt")
-(require "command-core.rkt")
+(require "../utils/string.rkt")
+(require "../utils/path.rkt")
+(require "../command-core.rkt")
 
 ;; include::ulqui/list-commands
 
