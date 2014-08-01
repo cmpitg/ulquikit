@@ -1386,7 +1386,19 @@ without their extensions.
 ;; include::ulqui/list-commands
 
 (module+ main
-  (displayln (list-commands)))
+  (let* ([arguments (vector->list (current-command-line-arguments))]
+         [arg-list  (if (empty? arguments)
+                        '("help")
+                        arguments)]
+         [command   (first arg-list)]
+         [args      (rest arg-list)])
+    (cond [(string=? "help" command)
+           (if (empty? args)
+               (display-help)
+               (run-help (first args)))]
+          [else
+           (run-command command args)])))
+
 ----
 
 
