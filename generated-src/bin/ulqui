@@ -1,0 +1,96 @@
+#!/usr/bin/env racket
+
+;;
+;; This file is part of Ulquikit project.
+;;
+;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;;
+;; Ulquikit is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation, either version 3 of the License, or (at your option)
+;; any later version.
+;;
+;; Ulquikit is distributed in the hope that it will be useful, but WITHOUT ANY
+;; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+;;
+;; You should have received a copy of the GNU General Public License along
+;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
+;;
+
+#lang at-exp rackjure
+
+(current-curly-dict hash)
+
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
+
+(require "../utils/string.rkt")
+(require "../utils/path.rkt")
+(require "../command-core.rkt")
+
+(define (list-commands)
+  (let* ([command-dir (get-path +this-directory+ "../commands/")]
+         [commands    (~>> (directory-list command-dir)
+                        (map path->string)
+                        (filter #λ(string-ends-with? % ".rkt"))
+                        (map #λ(regexp-replace #px"\\.rkt$" % "")))])
+    commands))
+
+
+(define (display-help)
+  (displayln
+   @str{Usage: ulqui <command> [options] ...
+
+Ulquikit is yet another literate programming tool, with the main tasks of
+generating code and documentation from literate source.
+
+Supported markup language: AsciiDoc.
+Supported output formats for documentation: HTML.
+
+Available commands:
+
+})
+  (let* ([commands   (list-commands)]
+         
+         [full-helps (map #λ(with-output-to-string
+                              (λ ()
+                                (run-help %))) commands)]
+         
+         [helps      (for/list ([text full-helps])
+                       (let* ([lines (string-split text "\n" #:trim? #f)]
+                              [usage-omitted (dropf lines
+                                                    #λ(not (string=? % "")))]
+                              [help (takef (rest usage-omitted)
+                                           #λ(not (string=? % "")))])
+                         (string-join help "\n")))])
+    (map (λ (command help)
+           (displayln (str (format (~a command
+                                       #:width 15))
+                           " :: "
+                           help)))
+         commands
+         helps))
+  (newline)
+  (displayln
+   @str{
+Use 'ulqui help' or 'ulqui --help' to bring this help.
+Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
+command.
+}))
+
+
+(module+ main
+  (let* ([arguments (vector->list (current-command-line-arguments))]
+         [arg-list  (if (empty? arguments)
+                        '("help")
+                        arguments)]
+         [command   (first arg-list)]
+         [args      (rest arg-list)])
+    (cond [(string=? "help" command)
+           (if (empty? args)
+               (display-help)
+               (run-help (first args)))]
+          [else
+           (run-command command args)])))

@@ -87,17 +87,18 @@
                     (sort filenames/fullpath string<?))
       (remove-dir temp-dir))))
 
-(define path->directory
-  #λ(if-let [path (file-name-from-path %)]
-      (~>> path
-        path->string
-        (string-split %)
-        first)
-      %))
-
+(define (path->directory path)
+  (path->string
+   (call-with-values #λ(split-path path)
+                     (λ (dir file file-is-dir?)
+                       (if file-is-dir?
+                           (build-path dir (str file "/"))
+                           dir)))))
 (module+ test
   (check-equal? (path->directory "/tmp/tmp.rkt") "/tmp/")
-  (check-equal? (path->directory "/tmp/tmp/")    "/tmp/tmp/"))
+  (check-equal? (path->directory "/tmp/tmp/")    "/tmp/tmp/")
+  (check-equal? (path->directory "/m/src/ulquikit/generated-src/ulqui")
+                "/m/src/ulquikit/generated-src/"))
 
 (define (get-path . args)
   (let* ([paths/expanded (map expand-user-path args)]

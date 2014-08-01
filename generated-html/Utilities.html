@@ -724,7 +724,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 66
 67
 68
-69</div></td><td class="code"><span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+69
+70</div></td><td class="code"><span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 <span class="tok-c1">;; Implementation</span>
 <span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 
@@ -780,17 +781,18 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
                     <span class="tok-p">(</span><span class="tok-nf">sort</span> <span class="tok-nv">filenames/fullpath</span> <span class="tok-nv">string&lt;?</span><span class="tok-p">))</span>
       <span class="tok-p">(</span><span class="tok-nf">remove-dir</span> <span class="tok-nv">temp-dir</span><span class="tok-p">))))</span>
 
-<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">path-&gt;directory</span>
-  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">if-let</span> <span class="tok-p">[</span><span class="tok-nf">path</span> <span class="tok-p">(</span><span class="tok-nf">file-name-from-path</span> <span class="tok-nv">%</span><span class="tok-p">)]</span>
-      <span class="tok-p">(</span><span class="tok-nf">~&gt;&gt;</span> <span class="tok-nv">path</span>
-        <span class="tok-nv">path-&gt;string</span>
-        <span class="tok-p">(</span><span class="tok-nf">string-split</span> <span class="tok-nv">%</span><span class="tok-p">)</span>
-        <span class="tok-nv">first</span><span class="tok-p">)</span>
-      <span class="tok-nv">%</span><span class="tok-p">))</span>
-
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-nv">path</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">path-&gt;string</span>
+   <span class="tok-p">(</span><span class="tok-nb">call-with-values </span><span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">split-path </span><span class="tok-nv">path</span><span class="tok-p">)</span>
+                     <span class="tok-p">(</span><span class="tok-err">λ</span> <span class="tok-p">(</span><span class="tok-nf">dir</span> <span class="tok-nv">file</span> <span class="tok-nv">file-is-dir?</span><span class="tok-p">)</span>
+                       <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-nv">file-is-dir?</span>
+                           <span class="tok-p">(</span><span class="tok-nb">build-path </span><span class="tok-nv">dir</span> <span class="tok-p">(</span><span class="tok-nf">str</span> <span class="tok-nv">file</span> <span class="tok-s">&quot;/&quot;</span><span class="tok-p">))</span>
+                           <span class="tok-nv">dir</span><span class="tok-p">)))))</span>
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">test</span>
   <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-s">&quot;/tmp/tmp.rkt&quot;</span><span class="tok-p">)</span> <span class="tok-s">&quot;/tmp/&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-s">&quot;/tmp/tmp/&quot;</span><span class="tok-p">)</span>    <span class="tok-s">&quot;/tmp/tmp/&quot;</span><span class="tok-p">))</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-s">&quot;/tmp/tmp/&quot;</span><span class="tok-p">)</span>    <span class="tok-s">&quot;/tmp/tmp/&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">check-equal?</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-s">&quot;/m/src/ulquikit/generated-src/ulqui&quot;</span><span class="tok-p">)</span>
+                <span class="tok-s">&quot;/m/src/ulquikit/generated-src/&quot;</span><span class="tok-p">))</span>
 
 <span class="tok-c1">;; include::path/get-path</span>
 </td></tr></table></code></pre>
@@ -886,7 +888,7 @@ with current working directory of the path is relative.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-07-31 21:17:08 ICT
+Last updated 2014-08-01 02:46:02 ICT
 </div>
 </div>
 </body>

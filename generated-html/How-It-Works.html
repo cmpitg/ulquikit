@@ -450,13 +450,15 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 </ul>
 </li>
 <li><a href="#_generating_html">5. Generating HTML</a></li>
-<li><a href="#_utility_functions">6. Utility functions</a></li>
+<li><a href="#_the_code_ulqui_code_script">6. The <code>ulqui</code> script</a></li>
 <li><a href="#_misc">7. Misc</a></li>
 <li><a href="#_license_header">8. License header</a></li>
 <li><a href="#_extras">9. Extras</a></li>
+<li><a href="#_utility_functions">10. Utility functions</a></li>
 <li>
 <ul class="sectlevel2">
-<li><a href="#_command_list">9.1. Command list</a></li>
+<li><a href="#_command_list">10.1. Command list</a></li>
+<li><a href="#_story_how_the_racket_version_of_ulquikit_was_actually_developed">10.2. Story: How the Racket version of Ulquikit was actually developed</a></li>
 </ul>
 </li>
 </ul>
@@ -468,6 +470,20 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <div class="paragraph">
 <p>Ulquikit is written in literate programming itself with a small bootstrap
 code.  This document is Ulquikit&#8217;s literate source code.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="icon-important" title="Important"></i>
+</td>
+<td class="content">
+Ulquikit follows
+<a href="http://en.wikipedia.org/wiki/Convention_over_configuration">convention over
+configuration</a> design.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p>To compile <em>and run</em> Ulquikit, the following dependencies are required:</p>
@@ -2847,10 +2863,201 @@ extract file name and replace <code>.adoc</code> extension with <code>.html</cod
 </div>
 </div>
 <div class="sect1">
-<h2 id="_utility_functions">6. Utility functions</h2>
+<h2 id="_the_code_ulqui_code_script">6. The <code>ulqui</code> script</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>See <a href="Utilities.html">Utilities</a>.</p>
+<p>So far we have been going through all important internal components of
+Ulquikit.  What&#8217;s left to make a complete, usable application is the main
+command that takes care of user interactive: the <code>ulqui</code> script.  <code>ulqui</code> is a
+complete Racket module.</p>
+</div>
+<div class="paragraph">
+<p>First and foremost, this module should be able to detect all built-in commands
+residing in <code>commands/</code> directory.  This task is simple and straightforward:
+find all <code>.rkt</code> files is <code>commands/</code> directory and return them as a list
+without their extensions.</p>
+</div>
+<div class="listingblock">
+<div class="title">code::ulqui/list-commands</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+2
+3
+4
+5
+6
+7</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">list-commands</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">command-dir</span> <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">+this-directory+</span> <span class="tok-s">&quot;../commands/&quot;</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">commands</span>    <span class="tok-p">(</span><span class="tok-nf">~&gt;&gt;</span> <span class="tok-p">(</span><span class="tok-nb">directory-list </span><span class="tok-nv">command-dir</span><span class="tok-p">)</span>
+                        <span class="tok-p">(</span><span class="tok-nb">map </span><span class="tok-nv">path-&gt;string</span><span class="tok-p">)</span>
+                        <span class="tok-p">(</span><span class="tok-nf">filter</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">string-ends-with?</span> <span class="tok-nv">%</span> <span class="tok-s">&quot;.rkt&quot;</span><span class="tok-p">))</span>
+                        <span class="tok-p">(</span><span class="tok-nb">map </span><span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">regexp-replace </span><span class="tok-sr">#px&quot;\\.rkt$&quot; % &quot;&quot;</span><span class="tok-p">)))])</span>
+    <span class="tok-nv">commands</span><span class="tok-p">))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>ulqui</code> might be liked, or copied indenpently, so the help of <code>ulqui</code> should
+should be within in source.  Besides, whenever help is called, <code>ulqui</code> should
+be able to detect all available commands and brief their helps.</p>
+</div>
+<div class="listingblock">
+<div class="title">code::ulqui/display-help</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">display-help</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">displayln</span>
+   <span class="tok-nv">@str</span><span class="tok-p">{</span><span class="tok-nf">Usage:</span> <span class="tok-nv">ulqui</span> <span class="tok-nv">&lt;command&gt;</span> <span class="tok-p">[</span><span class="tok-nf">options</span><span class="tok-p">]</span> <span class="tok-o">...</span>
+
+<span class="tok-nv">Ulquikit</span> <span class="tok-nv">is</span> <span class="tok-nv">yet</span> <span class="tok-nv">another</span> <span class="tok-nv">literate</span> <span class="tok-nv">programming</span> <span class="tok-nv">tool,</span> <span class="tok-nv">with</span> <span class="tok-nv">the</span> <span class="tok-nv">main</span> <span class="tok-nv">tasks</span> <span class="tok-nv">of</span>
+<span class="tok-nv">generating</span> <span class="tok-nv">code</span> <span class="tok-k">and </span><span class="tok-nv">documentation</span> <span class="tok-nv">from</span> <span class="tok-nv">literate</span> <span class="tok-nv">source</span><span class="tok-o">.</span>
+
+<span class="tok-nv">Supported</span> <span class="tok-nv">markup</span> <span class="tok-nv">language:</span> <span class="tok-nv">AsciiDoc</span><span class="tok-o">.</span>
+<span class="tok-nv">Supported</span> <span class="tok-nv">output</span> <span class="tok-nv">formats</span> <span class="tok-nv">for</span> <span class="tok-nv">documentation:</span> <span class="tok-nv">HTML</span><span class="tok-o">.</span>
+
+<span class="tok-nv">Available</span> <span class="tok-nv">commands:</span>
+
+<span class="tok-p">})</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">commands</span>   <span class="tok-p">(</span><span class="tok-nf">list-commands</span><span class="tok-p">)]</span>
+
+         <span class="tok-p">[</span><span class="tok-nf">full-helps</span> <span class="tok-p">(</span><span class="tok-nb">map </span><span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">with-output-to-string</span>
+                              <span class="tok-p">(</span><span class="tok-err">λ</span> <span class="tok-p">()</span>
+                                <span class="tok-p">(</span><span class="tok-nf">run-help</span> <span class="tok-nv">%</span><span class="tok-p">)))</span> <span class="tok-nv">commands</span><span class="tok-p">)]</span>
+
+         <span class="tok-p">[</span><span class="tok-nf">helps</span>      <span class="tok-p">(</span><span class="tok-nf">for/list</span> <span class="tok-p">([</span><span class="tok-nf">text</span> <span class="tok-nv">full-helps</span><span class="tok-p">])</span>
+                       <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">lines</span> <span class="tok-p">(</span><span class="tok-nf">string-split</span> <span class="tok-nv">text</span> <span class="tok-s">&quot;\n&quot;</span> <span class="tok-kd">#:trim?</span> <span class="tok-no">#f</span><span class="tok-p">)]</span>
+                              <span class="tok-p">[</span><span class="tok-nf">usage-omitted</span> <span class="tok-p">(</span><span class="tok-nf">dropf</span> <span class="tok-nv">lines</span>
+                                                    <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">not </span><span class="tok-p">(</span><span class="tok-nb">string=? </span><span class="tok-nv">%</span> <span class="tok-s">&quot;&quot;</span><span class="tok-p">)))]</span>
+                              <span class="tok-p">[</span><span class="tok-nf">help</span> <span class="tok-p">(</span><span class="tok-nf">takef</span> <span class="tok-p">(</span><span class="tok-nf">rest</span> <span class="tok-nv">usage-omitted</span><span class="tok-p">)</span>
+                                           <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">not </span><span class="tok-p">(</span><span class="tok-nb">string=? </span><span class="tok-nv">%</span> <span class="tok-s">&quot;&quot;</span><span class="tok-p">)))])</span>
+                         <span class="tok-p">(</span><span class="tok-nf">string-join</span> <span class="tok-nv">help</span> <span class="tok-s">&quot;\n&quot;</span><span class="tok-p">)))])</span>
+    <span class="tok-p">(</span><span class="tok-nb">map </span><span class="tok-p">(</span><span class="tok-err">λ</span> <span class="tok-p">(</span><span class="tok-nf">command</span> <span class="tok-nv">help</span><span class="tok-p">)</span>
+           <span class="tok-p">(</span><span class="tok-nb">displayln </span><span class="tok-p">(</span><span class="tok-nf">str</span> <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-p">(</span><span class="tok-nf">~a</span> <span class="tok-nv">command</span>
+                                       <span class="tok-kd">#:width</span> <span class="tok-mi">15</span><span class="tok-p">))</span>
+                           <span class="tok-s">&quot; :: &quot;</span>
+                           <span class="tok-nv">help</span><span class="tok-p">)))</span>
+         <span class="tok-nv">commands</span>
+         <span class="tok-nv">helps</span><span class="tok-p">))</span>
+  <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">displayln</span>
+   <span class="tok-nv">@str</span><span class="tok-p">{</span>
+<span class="tok-nv">Use</span> <span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">help</span><span class="tok-o">&#39;</span> <span class="tok-k">or </span><span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">--help</span><span class="tok-o">&#39;</span> <span class="tok-nv">to</span> <span class="tok-nv">bring</span> <span class="tok-nv">this</span> <span class="tok-nv">help</span><span class="tok-o">.</span>
+<span class="tok-nv">Use</span> <span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">help</span> <span class="tok-nv">&lt;command&gt;</span><span class="tok-o">&#39;</span> <span class="tok-k">or </span><span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">&lt;command&gt;</span> <span class="tok-nv">--help</span><span class="tok-o">&#39;</span> <span class="tok-nv">to</span> <span class="tok-nv">get</span> <span class="tok-nv">help</span> <span class="tok-nv">for</span> <span class="tok-nv">a</span>
+<span class="tok-nv">command</span><span class="tok-o">.</span>
+<span class="tok-p">}))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, putting all things mentioned above together, we have this <code>ulqui</code>
+script:</p>
+</div>
+<div class="listingblock">
+<div class="title">file::bin/ulqui</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
+
+<span class="tok-c1">;; include::license-header</span>
+
+<span class="tok-kn">#lang at-exp</span> <span class="tok-nv">rackjure</span>
+
+<span class="tok-p">(</span><span class="tok-nf">current-curly-dict</span> <span class="tok-nv">hash</span><span class="tok-p">)</span>
+
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-nv">racket/runtime-path</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-nf">define-runtime-path</span> <span class="tok-nv">+this-directory+</span> <span class="tok-s">&quot;.&quot;</span><span class="tok-p">)</span>
+
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/string.rkt&quot;</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/path.rkt&quot;</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../command-core.rkt&quot;</span><span class="tok-p">)</span>
+
+<span class="tok-c1">;; include::ulqui/list-commands</span>
+
+<span class="tok-c1">;; include::ulqui/display-help</span>
+
+<span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">main</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">arguments</span> <span class="tok-p">(</span><span class="tok-nb">vector-&gt;list </span><span class="tok-p">(</span><span class="tok-nf">current-command-line-arguments</span><span class="tok-p">))]</span>
+         <span class="tok-p">[</span><span class="tok-nf">arg-list</span>  <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">arguments</span><span class="tok-p">)</span>
+                        <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;help&quot;</span><span class="tok-p">)</span>
+                        <span class="tok-nv">arguments</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">command</span>   <span class="tok-p">(</span><span class="tok-nf">first</span> <span class="tok-nv">arg-list</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">args</span>      <span class="tok-p">(</span><span class="tok-nf">rest</span> <span class="tok-nv">arg-list</span><span class="tok-p">)])</span>
+    <span class="tok-p">(</span><span class="tok-k">cond </span><span class="tok-p">[(</span><span class="tok-nb">string=? </span><span class="tok-s">&quot;help&quot;</span> <span class="tok-nv">command</span><span class="tok-p">)</span>
+           <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
+               <span class="tok-p">(</span><span class="tok-nf">display-help</span><span class="tok-p">)</span>
+               <span class="tok-p">(</span><span class="tok-nf">run-help</span> <span class="tok-p">(</span><span class="tok-nf">first</span> <span class="tok-nv">args</span><span class="tok-p">)))]</span>
+          <span class="tok-p">[</span><span class="tok-nf">else</span>
+           <span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)])))</span>
+</td></tr></table></code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -2906,8 +3113,21 @@ header is necessary.</p>
 <div class="sect1">
 <h2 id="_extras">9. Extras</h2>
 <div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_utility_functions">10. Utility functions</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>See <a href="Utilities.html">Utilities</a>.</p>
+</div>
 <div class="sect2">
-<h3 id="_command_list">9.1. Command list</h3>
+<h3 id="_command_list">10.1. Command list</h3>
+
+</div>
+<div class="sect2">
+<h3 id="_story_how_the_racket_version_of_ulquikit_was_actually_developed">10.2. Story: How the Racket version of Ulquikit was actually developed</h3>
 
 </div>
 </div>
@@ -2915,7 +3135,7 @@ header is necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-08-01 02:08:47 ICT
+Last updated 2014-08-02 01:55:46 ICT
 </div>
 </div>
 </body>
