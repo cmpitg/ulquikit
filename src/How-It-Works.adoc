@@ -1381,6 +1381,7 @@ without their extensions.
 
 (require "utils/string.rkt")
 (require "utils/path.rkt")
+(require "command-core.rkt")
 
 ;; include::ulqui/list-commands
 
