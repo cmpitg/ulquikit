@@ -1365,6 +1365,57 @@ without their extensions.
 
 ----
 
++ulqui+ might be liked, or copied indenpently, so the help of +ulqui+ should
+should be within in source.  Besides, whenever help is called, +ulqui+ should
+be able to detect all available commands and brief their helps.
+
+.code::ulqui/display-help
+[source,racket,linenums]
+----
+(define (display-help)
+  (displayln
+   @str{Usage: ulqui <command> [options] ...
+
+Ulquikit is yet another literate programming tool, with the main tasks of
+generating code and documentation from literate source.
+
+Supported markup language: AsciiDoc.
+Supported output formats for documentation: HTML.
+
+Available commands:
+
+})
+  (let* ([commands   (list-commands)]
+         
+         [full-helps (map #λ(with-output-to-string
+                              (λ ()
+                                (run-help %))) commands)]
+         
+         [helps      (for/list ([text full-helps])
+                       (let* ([lines (string-split text "\n" #:trim? #f)]
+                              [usage-omitted (dropf lines
+                                                    #λ(not (string=? % "")))]
+                              [help (takef (rest usage-omitted)
+                                           #λ(not (string=? % "")))])
+                         (string-join help "\n")))])
+    (map (λ (command help)
+           (displayln (str (format (~a command
+                                       #:width 15))
+                           " :: "
+                           help)))
+         commands
+         helps))
+  (newline)
+  (displayln
+   @str{
+Use 'ulqui help' or 'ulqui --help' to bring this help.
+Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
+command.
+}))
+
+----
+
+
 .file::ulqui
 [source,racket,linenums]
 ----
@@ -1384,6 +1435,8 @@ without their extensions.
 (require "command-core.rkt")
 
 ;; include::ulqui/list-commands
+
+;; include::ulqui/display-help
 
 (module+ main
   (let* ([arguments (vector->list (current-command-line-arguments))]
