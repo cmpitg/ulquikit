@@ -1372,7 +1372,9 @@ without their extensions.
 
 ;; include::license-header
 
-;; include::use-rackjure
+#lang at-exp rackjure
+
+(current-curly-dict hash)
 
 (require racket/runtime-path)
 (define-runtime-path +this-directory+ ".")
