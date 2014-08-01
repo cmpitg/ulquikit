@@ -1415,6 +1415,8 @@ command.
 
 ----
 
+Finally, putting all things mentioned above together, we have this +ulqui+
+script:
 
 .file::ulqui
 [source,racket,linenums]
