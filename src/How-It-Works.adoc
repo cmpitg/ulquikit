@@ -1456,8 +1456,6 @@ script:
 
 ----
 
-
-
 == Misc
 
 .code::use-rackjure
