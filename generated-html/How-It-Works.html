@@ -2568,7 +2568,8 @@ and passes necessary arguments.</p>
 13
 14
 15
-16</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
+16
+17</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">module-location</span> <span class="tok-p">(</span><span class="tok-nf">string-&gt;path</span>
                            <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">+this-directory+</span>
                                      <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-s">&quot;commands/~a.rkt&quot;</span>
@@ -2583,7 +2584,8 @@ and passes necessary arguments.</p>
     <span class="tok-p">(</span><span class="tok-nf">keyword-apply</span> <span class="tok-nv">run-func</span>
                    <span class="tok-nv">keyword-list</span>
                    <span class="tok-nv">val-list</span>
-                   <span class="tok-nv">main-args</span><span class="tok-p">)))</span>
+                   <span class="tok-nv">main-args</span><span class="tok-p">)</span>
+    <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">)))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -2887,7 +2889,7 @@ without their extensions.</p>
 5
 6
 7</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">list-commands</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">command-dir</span> <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">+this-directory+</span> <span class="tok-s">&quot;../commands/&quot;</span><span class="tok-p">)]</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">command-dir</span> <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">+ulqui-dir+</span> <span class="tok-s">&quot;../commands/&quot;</span><span class="tok-p">)]</span>
          <span class="tok-p">[</span><span class="tok-nf">commands</span>    <span class="tok-p">(</span><span class="tok-nf">~&gt;&gt;</span> <span class="tok-p">(</span><span class="tok-nb">directory-list </span><span class="tok-nv">command-dir</span><span class="tok-p">)</span>
                         <span class="tok-p">(</span><span class="tok-nb">map </span><span class="tok-nv">path-&gt;string</span><span class="tok-p">)</span>
                         <span class="tok-p">(</span><span class="tok-nf">filter</span> <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nf">string-ends-with?</span> <span class="tok-nv">%</span> <span class="tok-s">&quot;.rkt&quot;</span><span class="tok-p">))</span>
@@ -2981,8 +2983,71 @@ be able to detect all available commands and brief their helps.</p>
    <span class="tok-nv">@str</span><span class="tok-p">{</span>
 <span class="tok-nv">Use</span> <span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">help</span><span class="tok-o">&#39;</span> <span class="tok-k">or </span><span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">--help</span><span class="tok-o">&#39;</span> <span class="tok-nv">to</span> <span class="tok-nv">bring</span> <span class="tok-nv">this</span> <span class="tok-nv">help</span><span class="tok-o">.</span>
 <span class="tok-nv">Use</span> <span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">help</span> <span class="tok-nv">&lt;command&gt;</span><span class="tok-o">&#39;</span> <span class="tok-k">or </span><span class="tok-ss">&#39;ulqui</span> <span class="tok-nv">&lt;command&gt;</span> <span class="tok-nv">--help</span><span class="tok-o">&#39;</span> <span class="tok-nv">to</span> <span class="tok-nv">get</span> <span class="tok-nv">help</span> <span class="tok-nv">for</span> <span class="tok-nv">a</span>
-<span class="tok-nv">command</span><span class="tok-o">.</span>
-<span class="tok-p">}))</span>
+<span class="tok-nv">command</span><span class="tok-o">.</span><span class="tok-p">})</span>
+  <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>One important thing to note is that <code>ulqui</code> script might be linked to and run
+from different places.  Once it has been linked, Ulquikit directory is not the
+directory that contains this script anymore, thus it needs to be re-calculated
+and all functions which are imported need to be <code>require</code>d manually:</p>
+</div>
+<div class="listingblock">
+<div class="title">code::ulqui/require-utils</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">+ulqui-script-path+</span>
+  <span class="tok-p">(</span><span class="tok-nb">resolve-path </span><span class="tok-p">(</span><span class="tok-nb">syntax-source </span><span class="tok-o">#</span><span class="tok-ss">&#39;here</span><span class="tok-p">)))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">+ulqui-dir+</span>
+  <span class="tok-p">(</span><span class="tok-k">let-values </span><span class="tok-p">([(</span><span class="tok-nf">base</span> <span class="tok-nv">name</span> <span class="tok-nv">must-be-dir?</span><span class="tok-p">)</span>
+                <span class="tok-p">(</span><span class="tok-nb">split-path </span><span class="tok-nv">+ulqui-script-path+</span><span class="tok-p">)])</span>
+    <span class="tok-nv">base</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">get-ulqui-module-path</span>
+  <span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">build-path </span><span class="tok-nv">+ulqui-dir+</span> <span class="tok-nv">%</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">string-ends-with?</span>
+ <span class="tok-p">(</span><span class="tok-nb">dynamic-require </span><span class="tok-p">(</span><span class="tok-nf">get-ulqui-module-path</span> <span class="tok-s">&quot;../utils/string.rkt&quot;</span><span class="tok-p">)</span>
+                  <span class="tok-ss">&#39;string-ends-with?</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">get-path</span>
+  <span class="tok-p">(</span><span class="tok-nb">dynamic-require </span><span class="tok-p">(</span><span class="tok-nf">get-ulqui-module-path</span> <span class="tok-s">&quot;../utils/path.rkt&quot;</span><span class="tok-p">)</span>
+                   <span class="tok-ss">&#39;get-path</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">run-help</span>
+  <span class="tok-p">(</span><span class="tok-nb">dynamic-require </span><span class="tok-p">(</span><span class="tok-nf">get-ulqui-module-path</span> <span class="tok-s">&quot;../command-core.rkt&quot;</span><span class="tok-p">)</span>
+                   <span class="tok-ss">&#39;run-help</span><span class="tok-p">))</span>
+
+<span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-nv">run-command</span>
+ <span class="tok-p">(</span><span class="tok-nb">dynamic-require </span><span class="tok-p">(</span><span class="tok-nf">get-ulqui-module-path</span> <span class="tok-s">&quot;../command-core.rkt&quot;</span><span class="tok-p">)</span>
+                  <span class="tok-ss">&#39;run-command</span><span class="tok-p">))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -3020,11 +3085,7 @@ script:</p>
 25
 26
 27
-28
-29
-30
-31
-32</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
+28</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
 
 <span class="tok-c1">;; include::license-header</span>
 
@@ -3032,30 +3093,26 @@ script:</p>
 
 <span class="tok-p">(</span><span class="tok-nf">current-curly-dict</span> <span class="tok-nv">hash</span><span class="tok-p">)</span>
 
-<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-nv">racket/runtime-path</span><span class="tok-p">)</span>
-<span class="tok-p">(</span><span class="tok-nf">define-runtime-path</span> <span class="tok-nv">+this-directory+</span> <span class="tok-s">&quot;.&quot;</span><span class="tok-p">)</span>
-
-<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/string.rkt&quot;</span><span class="tok-p">)</span>
-<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../utils/path.rkt&quot;</span><span class="tok-p">)</span>
-<span class="tok-p">(</span><span class="tok-k">require </span><span class="tok-s">&quot;../command-core.rkt&quot;</span><span class="tok-p">)</span>
+<span class="tok-c1">;; include::ulqui/require-utils</span>
 
 <span class="tok-c1">;; include::ulqui/list-commands</span>
 
 <span class="tok-c1">;; include::ulqui/display-help</span>
 
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">main</span>
-  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">arguments</span> <span class="tok-p">(</span><span class="tok-nb">vector-&gt;list </span><span class="tok-p">(</span><span class="tok-nf">current-command-line-arguments</span><span class="tok-p">))]</span>
-         <span class="tok-p">[</span><span class="tok-nf">arg-list</span>  <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">arguments</span><span class="tok-p">)</span>
-                        <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;help&quot;</span><span class="tok-p">)</span>
-                        <span class="tok-nv">arguments</span><span class="tok-p">)]</span>
-         <span class="tok-p">[</span><span class="tok-nf">command</span>   <span class="tok-p">(</span><span class="tok-nf">first</span> <span class="tok-nv">arg-list</span><span class="tok-p">)]</span>
-         <span class="tok-p">[</span><span class="tok-nf">args</span>      <span class="tok-p">(</span><span class="tok-nf">rest</span> <span class="tok-nv">arg-list</span><span class="tok-p">)])</span>
-    <span class="tok-p">(</span><span class="tok-k">cond </span><span class="tok-p">[(</span><span class="tok-nb">string=? </span><span class="tok-s">&quot;help&quot;</span> <span class="tok-nv">command</span><span class="tok-p">)</span>
-           <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
-               <span class="tok-p">(</span><span class="tok-nf">display-help</span><span class="tok-p">)</span>
-               <span class="tok-p">(</span><span class="tok-nf">run-help</span> <span class="tok-p">(</span><span class="tok-nf">first</span> <span class="tok-nv">args</span><span class="tok-p">)))]</span>
-          <span class="tok-p">[</span><span class="tok-nf">else</span>
-           <span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)])))</span>
+  <span class="tok-p">(</span><span class="tok-nf">void</span>
+   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">arguments</span> <span class="tok-p">(</span><span class="tok-nb">vector-&gt;list </span><span class="tok-p">(</span><span class="tok-nf">current-command-line-arguments</span><span class="tok-p">))]</span>
+          <span class="tok-p">[</span><span class="tok-nf">arg-list</span>  <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">arguments</span><span class="tok-p">)</span>
+                         <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;help&quot;</span><span class="tok-p">)</span>
+                         <span class="tok-nv">arguments</span><span class="tok-p">)]</span>
+          <span class="tok-p">[</span><span class="tok-nf">command</span>   <span class="tok-p">(</span><span class="tok-nf">first</span> <span class="tok-nv">arg-list</span><span class="tok-p">)]</span>
+          <span class="tok-p">[</span><span class="tok-nf">args</span>      <span class="tok-p">(</span><span class="tok-nf">rest</span> <span class="tok-nv">arg-list</span><span class="tok-p">)])</span>
+     <span class="tok-p">(</span><span class="tok-k">cond </span><span class="tok-p">[(</span><span class="tok-nb">string=? </span><span class="tok-s">&quot;help&quot;</span> <span class="tok-nv">command</span><span class="tok-p">)</span>
+            <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">empty?</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
+                <span class="tok-p">(</span><span class="tok-nf">display-help</span><span class="tok-p">)</span>
+                <span class="tok-p">(</span><span class="tok-nf">run-help</span> <span class="tok-p">(</span><span class="tok-nf">first</span> <span class="tok-nv">args</span><span class="tok-p">)))]</span>
+           <span class="tok-p">[</span><span class="tok-nf">else</span>
+            <span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)]))))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -3135,7 +3192,7 @@ header is necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-08-02 01:55:46 ICT
+Last updated 2014-08-02 11:52:08 ICT
 </div>
 </div>
 </body>

@@ -159,7 +159,8 @@
     (keyword-apply run-func
                    keyword-list
                    val-list
-                   main-args)))
+                   main-args)
+    (newline)))
 
 
 (define (run-help command)
