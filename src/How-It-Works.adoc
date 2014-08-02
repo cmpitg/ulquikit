@@ -1166,7 +1166,8 @@ and passes necessary arguments.
     (keyword-apply run-func
                    keyword-list
                    val-list
-                   main-args)))
+                   main-args)
+    (newline)))
 
 ----
 
@@ -1410,8 +1411,8 @@ Available commands:
    @str{
 Use 'ulqui help' or 'ulqui --help' to bring this help.
 Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
-command.
-}))
+command.})
+  (newline))
 
 ----
 
