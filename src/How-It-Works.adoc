@@ -1356,7 +1356,7 @@ without their extensions.
 [source,racket,linenums]
 ----
 (define (list-commands)
-  (let* ([command-dir (get-path +this-directory+ "../commands/")]
+  (let* ([command-dir (get-path +ulqui-dir+ "../commands/")]
          [commands    (~>> (directory-list command-dir)
                         (map path->string)
                         (filter #λ(string-ends-with? % ".rkt"))
@@ -1415,6 +1415,43 @@ command.
 
 ----
 
+One important thing to note is that +ulqui+ script might be linked to and run
+from different places.  Once it has been linked, Ulquikit directory is not the
+directory that contains this script anymore, thus it needs to be re-calculated
+and all functions which are imported need to be ++require++d manually:
+
+.code::ulqui/require-utils
+[source,racket,linenums]
+----
+(define +ulqui-script-path+
+  (resolve-path (syntax-source #'here)))
+
+(define +ulqui-dir+
+  (let-values ([(base name must-be-dir?)
+                (split-path +ulqui-script-path+)])
+    base))
+
+(define get-ulqui-module-path
+  #λ(build-path +ulqui-dir+ %))
+
+(define string-ends-with?
+ (dynamic-require (get-ulqui-module-path "../utils/string.rkt")
+                  'string-ends-with?))
+
+(define get-path
+  (dynamic-require (get-ulqui-module-path "../utils/path.rkt")
+                   'get-path))
+
+(define run-help
+  (dynamic-require (get-ulqui-module-path "../command-core.rkt")
+                   'run-help))
+
+(define run-command
+ (dynamic-require (get-ulqui-module-path "../command-core.rkt")
+                  'run-command))
+----
+
+
 Finally, putting all things mentioned above together, we have this +ulqui+
 script:
 
@@ -1429,30 +1466,26 @@ script:
 
 (current-curly-dict hash)
 
-(require racket/runtime-path)
-(define-runtime-path +this-directory+ ".")
-
-(require "../utils/string.rkt")
-(require "../utils/path.rkt")
-(require "../command-core.rkt")
+;; include::ulqui/require-utils
 
 ;; include::ulqui/list-commands
 
 ;; include::ulqui/display-help
 
 (module+ main
-  (let* ([arguments (vector->list (current-command-line-arguments))]
-         [arg-list  (if (empty? arguments)
-                        '("help")
-                        arguments)]
-         [command   (first arg-list)]
-         [args      (rest arg-list)])
-    (cond [(string=? "help" command)
-           (if (empty? args)
-               (display-help)
-               (run-help (first args)))]
-          [else
-           (run-command command args)])))
+  (void
+   (let* ([arguments (vector->list (current-command-line-arguments))]
+          [arg-list  (if (empty? arguments)
+                         '("help")
+                         arguments)]
+          [command   (first arg-list)]
+          [args      (rest arg-list)])
+     (cond [(string=? "help" command)
+            (if (empty? args)
+                (display-help)
+                (run-help (first args)))]
+           [else
+            (run-command command args)]))))
 
 ----
 
