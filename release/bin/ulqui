@@ -1,0 +1,117 @@
+#!/usr/bin/env racket
+
+;;
+;; This file is part of Ulquikit project.
+;;
+;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;;
+;; Ulquikit is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation, either version 3 of the License, or (at your option)
+;; any later version.
+;;
+;; Ulquikit is distributed in the hope that it will be useful, but WITHOUT ANY
+;; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+;;
+;; You should have received a copy of the GNU General Public License along
+;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
+;;
+
+#lang at-exp rackjure
+
+(current-curly-dict hash)
+
+(define +ulqui-script-path+
+  (resolve-path (syntax-source #'here)))
+
+(define +ulqui-dir+
+  (let-values ([(base name must-be-dir?)
+                (split-path +ulqui-script-path+)])
+    base))
+
+(define get-ulqui-module-path
+  #λ(build-path +ulqui-dir+ %))
+
+(define string-ends-with?
+ (dynamic-require (get-ulqui-module-path "../utils/string.rkt")
+                  'string-ends-with?))
+
+(define get-path
+  (dynamic-require (get-ulqui-module-path "../utils/path.rkt")
+                   'get-path))
+
+(define run-help
+  (dynamic-require (get-ulqui-module-path "../command-core.rkt")
+                   'run-help))
+
+(define run-command
+ (dynamic-require (get-ulqui-module-path "../command-core.rkt")
+                  'run-command))
+
+(define (list-commands)
+  (let* ([command-dir (get-path +ulqui-dir+ "../commands/")]
+         [commands    (~>> (directory-list command-dir)
+                        (map path->string)
+                        (filter #λ(string-ends-with? % ".rkt"))
+                        (map #λ(regexp-replace #px"\\.rkt$" % "")))])
+    commands))
+
+
+(define (display-help)
+  (displayln
+   @str{Usage: ulqui <command> [options] ...
+
+Ulquikit is yet another literate programming tool, with the main tasks of
+generating code and documentation from literate source.
+
+Supported markup language: AsciiDoc.
+Supported output formats for documentation: HTML.
+
+Available commands:
+
+})
+  (let* ([commands   (list-commands)]
+         
+         [full-helps (map #λ(with-output-to-string
+                              (λ ()
+                                (run-help %))) commands)]
+         
+         [helps      (for/list ([text full-helps])
+                       (let* ([lines (string-split text "\n" #:trim? #f)]
+                              [usage-omitted (dropf lines
+                                                    #λ(not (string=? % "")))]
+                              [help (takef (rest usage-omitted)
+                                           #λ(not (string=? % "")))])
+                         (string-join help "\n")))])
+    (map (λ (command help)
+           (displayln (str (format (~a command
+                                       #:width 15))
+                           " :: "
+                           help)))
+         commands
+         helps))
+  (newline)
+  (displayln
+   @str{
+Use 'ulqui help' or 'ulqui --help' to bring this help.
+Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
+command.})
+  (newline))
+
+
+(module+ main
+  (void
+   (let* ([arguments (vector->list (current-command-line-arguments))]
+          [arg-list  (if (empty? arguments)
+                         '("help")
+                         arguments)]
+          [command   (first arg-list)]
+          [args      (rest arg-list)])
+     (cond [(string=? "help" command)
+            (if (empty? args)
+                (display-help)
+                (run-help (first args)))]
+           [else
+            (run-command command args)]))))
