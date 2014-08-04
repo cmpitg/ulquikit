@@ -1481,8 +1481,15 @@ and all functions which are imported need to be ++require++d manually:
 ----
 
 
-Finally, putting all things mentioned above together, we have this +ulqui+
-script:
+Putting all things mentioned above together, we have the following +ulqui+
+script.  To make the script as practical as possible, certain things should be
+clarified:
+
+* By default, running +ulqui+ alone usually means users need some help.  Thus
+  running +ulqui+ is equivalent to running +ulqui help+.
+
+* If users execute invalid command, this script also fallbacks to +ulqui
+  help+ with a small error message.
 
 .file::bin/ulqui
 [source,racket,linenums]
@@ -1503,7 +1510,8 @@ script:
 
 (module+ main
   (void
-   (let* ([arguments (vector->list (current-command-line-arguments))]
+   (let* ([command-list (list-commands)]
+          [arguments (vector->list (current-command-line-arguments))]
           [arg-list  (if (empty? arguments)
                          '("help")
                          arguments)]
@@ -1513,6 +1521,9 @@ script:
             (if (empty? args)
                 (display-help)
                 (run-help (first args)))]
+           [(not (member command command-list))
+            (displayln (str "-> Invalid command " command ".\n"))
+            (display-help)]
            [else
             (run-command command args)]))))
 
