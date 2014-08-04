@@ -185,6 +185,18 @@ a look at 3 types of code block to see how we could tackle this problem:
 Content of the code block
 ----                            <4>
 ..........
++
+or
++
+[listing]
+..........
+[source]                        <2>
+.code::title-of-the-code-block  <1>
+----                            <3>
+Content of the code block
+----                            <4>
+..........
+
 
 * A _file snippet_ shares the same structure as a _code snippet_:
 +
@@ -196,6 +208,18 @@ Content of the code block
 Content of the code block
 ----                            <4>
 ..........
++
+or
++
+[listing]
+..........
+[source]                        <2>
+.file::title-of-the-code-block  <1>
+----                            <3>
+Content of the code block
+----                            <4>
+..........
+
 
 * A non-snippet code block is any block without +code::...+ or +file::...+ as
   its title:
@@ -259,7 +283,7 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
          [lines        (string-split file-content "\n" #:trim? #f)]
 
          [snippets        (box {'file {}
-                                'code {}})]
+                                      'code {}})]
 
          [prev-prev-line  (box "")]
          [prev-line       (box "")]
@@ -290,13 +314,17 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
                                         #:lines (unbox snippet-lines)))]
             [(is-block-delimiter? line)
 
-             (when (is-block-title? (unbox prev-prev-line))
-               (box-set! inside-snippet #t)
+             (when (or (is-block-title? (unbox prev-prev-line))
+                       (is-block-title? (unbox prev-line)))
+               (let ([title-line (if (is-block-title? (unbox prev-prev-line))
+                                     (unbox prev-prev-line)
+                                     (unbox prev-line))])
+                 (box-set! inside-snippet #t)
 
-               (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
-               (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-               (box-set! snippet-lines '())
-               (box-set! snippet-linenum (dec line-num)))])
+                 (box-set! snippet-type (get-snippet-type title-line))
+                 (box-set! snippet-name (get-snippet-name title-line))
+                 (box-set! snippet-lines '())
+                 (box-set! snippet-linenum (dec line-num))))])
 
       ;; Always update previous line
       (box-set! prev-prev-line (unbox prev-line))
@@ -473,8 +501,8 @@ format>> defined above.
                          ""
                          "Just a hello world program"
                          ""
-                         ".file::/tmp/tmp.rkt"
                          "[source,racket,linenums]"
+                         ".file::/tmp/tmp.rkt"
                          "----"
                          (expected-file-snippets "/tmp/tmp.rkt")
                          "----"
