@@ -1,0 +1,1 @@
+("6.0.1" ("759ba631180bdcca87f8ee31ec241018631bab53" . "81b7c697cba3b4db28c82dff0ddfc5de67b63075") (collects #"ulquikit" #"utils" #"utils.rkt") (collects #"racket" #"runtime-config.rkt") (collects #"rackunit" #"main.rkt") (collects #"rackjure" #"main.rkt") (collects #"syntax" #"parse" #"private" #"runtime-report.rkt") (collects #"rackjure" #"lang" #"reader.rkt"))

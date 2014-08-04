@@ -173,7 +173,7 @@
          [lines        (string-split file-content "\n" #:trim? #f)]
 
          [snippets        (box {'file {}
-                                'code {}})]
+                                      'code {}})]
 
          [prev-prev-line  (box "")]
          [prev-line       (box "")]
@@ -204,13 +204,17 @@
                                         #:lines (unbox snippet-lines)))]
             [(is-block-delimiter? line)
 
-             (when (is-block-title? (unbox prev-prev-line))
-               (box-set! inside-snippet #t)
+             (when (or (is-block-title? (unbox prev-prev-line))
+                       (is-block-title? (unbox prev-line)))
+               (let ([title-line (if (is-block-title? (unbox prev-prev-line))
+                                     (unbox prev-prev-line)
+                                     (unbox prev-line))])
+                 (box-set! inside-snippet #t)
 
-               (box-set! snippet-type (get-snippet-type (unbox prev-prev-line)))
-               (box-set! snippet-name (get-snippet-name (unbox prev-prev-line)))
-               (box-set! snippet-lines '())
-               (box-set! snippet-linenum (dec line-num)))])
+                 (box-set! snippet-type (get-snippet-type title-line))
+                 (box-set! snippet-name (get-snippet-name title-line))
+                 (box-set! snippet-lines '())
+                 (box-set! snippet-linenum (dec line-num))))])
 
       ;; Always update previous line
       (box-set! prev-prev-line (unbox prev-line))
@@ -275,8 +279,8 @@
                          ""
                          "Just a hello world program"
                          ""
-                         ".file::/tmp/tmp.rkt"
                          "[source,racket,linenums]"
+                         ".file::/tmp/tmp.rkt"
                          "----"
                          (expected-file-snippets "/tmp/tmp.rkt")
                          "----"
