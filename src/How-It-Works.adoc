@@ -1638,7 +1638,6 @@ Simply removing +generated-html+ and +generated-src+ directories:
 (define (clean-up)
   (displayln "=> Removing generated-html")
   (delete-directory/files "generated-html" #:must-exist? #f)
-  (newline)
   (displayln "=> Removing generated-src")
   (delete-directory/files "generated-src" #:must-exist? #f)
   (newline))
