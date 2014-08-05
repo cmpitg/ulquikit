@@ -104,6 +104,8 @@ vice versa.
 
 * Ruby 1.9.3+
 
+* [Rackjure](https://github.com/greghendershott/rackjure)
+
 * [AsciiDoctor](http://asciidoctor.org/)
 
 ## Installation ##
@@ -115,59 +117,63 @@ Ruby is to use RVM.  Visit:
 
 * https://rvm.io/ for RVM and Ruby installation instruction
 
-### Quick installation for Ulquikit hackers ###
+### Quick installation ###
 
-```sh
-# Install Racket
-# Install Ruby
-gem install -V asciidoctor
-cd /path/to/src
-git clone https://github.com/cmpitg/ulquikit
-raco pkg install rackjure
-raco pkg install --link ulquikit
+* Install [Racket](http://racket-lang.org/download/) and Ruby.
 
-# To generate src
-cd /path/to/ulquikit
-src/bootstrap/generate-src.rkt
+  If you don't have Ruby installed, the following script might be helpful.
+  It installs latest Ruby 1.9 using RVM in single-user mode:
 
-# To generate docs
-cd /path/to/ulquikit
-src/bootstrap/generate-docs.rkt
+  ```sh
+  \curl -sSL https://get.rvm.io | bash -s stable
+  echo "source $HOME/.rvm/scripts/rvm" >> ~/.bashrc  # For Bash users
+  echo "source $HOME/.rvm/scripts/rvm" >> ~/.zshrc   # For Zsh users
+  source $HOME/.rvm/scripts/rvm
+  rvm install 1.9
+  rvm use 1.9 --default
+  ```
 
-# To test
-cd /path/to/ulquikit
-raco test generated-src/*
-```
+* Then install necessary dependencies:
 
-### Quick Installation (not yet available) ###
+  ```sh
+  gem install -V asciidoctor
+  raco pkg install rackjure
+  ```
 
-#### If you have Ruby installed ####
+* Suppose we're installing Ulquikit to `$HOME/ulquikit`, we set `ULQUI_DIR` to
+  `$HOME`.  You can install to any other place just by changing the value of
+  `ULQUI_DIR`.
 
-For Debian-based system:
 
-```sh
-raco install ulquikit
-ulquikit install-dependencies
-```
+  ```sh
+  ULQUI_DIR=$HOME
+  cd $ULQUI_DIR
+  git clone https://github.com/cmpitg/ulquikit
+  ```
 
-#### If you don't have Ruby installed ####
+  And add `release/ulquikit/bin` to your `PATH` environment variable in your
+  favorite shell RC file.  For example:
 
-```sh
-raco install ulquikit
-ulquikit install-dependencies-with-ruby
-```
+  - With Bash
 
-This will install Ruby using RVM with single-user mode.  Behind the scene, the
-following commands are executed:
+    ```sh
+    echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.bashrc
+    ```
 
-```sh
-\curl -sSL https://get.rvm.io | bash -s stable
-echo "source $HOME/.rvm/scripts/rvm" >> ~/.profile
-source $HOME/.rvm/scripts/rvm
-rvm install 1.9
-rvm use 1.9 --default
-gem install asciidoctor
-```
+  - With Zsh
+
+    ```sh
+    echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.zshrc
+    ```
+
+  Note that `$PATH` is surrounded by a pair of quotes, since we want to expand
+  `$ULQUI_DIR`, not `$PATH`, when writing to RC files.
+
+  Lastly, for the change to take immediate effect:
+
+  ```sh
+  export PATH=$ULQUI_DIR/release/ulquikit/bin:$PATH
+  ```
 
 ## Trivia ##
 
