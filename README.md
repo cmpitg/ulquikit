@@ -173,12 +173,12 @@ Ruby is to use RVM.  Visit:
 Ulquikit uses a small script called [`schiffer`](./schiffer) to manage source
 code and all.
 
-* Generating source code and give executable permission to appropriate files:
+* Generate source code and give executable permission to appropriate files:
   `./schiffer generate-src`
 
-* Generating HTML: `./schiffer generate-html`
+* Generate HTML: `./schiffer generate-html`
 
-* Generating everything: `./schiffer generate-all`
+* Generate everything: `./schiffer generate-all`
 
 * Clean up generated resources: `./schiffer clean`
 
