@@ -1,0 +1,106 @@
+#!/usr/bin/env racket
+
+;;
+;; This file is part of Ulquikit project.
+;;
+;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;;
+;; Ulquikit is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation, either version 3 of the License, or (at your option)
+;; any later version.
+;;
+;; Ulquikit is distributed in the hope that it will be useful, but WITHOUT ANY
+;; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+;;
+;; You should have received a copy of the GNU General Public License along
+;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
+;;
+
+#lang rackjure
+
+(current-curly-dict hash)
+
+(define (generate-src)
+  (system "ulqui generate-src")
+
+  (displayln "=> Giving executable permission to generated-src/bin/*")
+  (system "chmod +x generated-src/bin/*")
+  (newline)
+
+  (displayln "=> Moving schiffer to current directory")
+  (rename-file-or-directory "generated-src/bin/schiffer" "schiffer-dev" #t)
+  (displayln "   generated-src/bin/schiffer => ./schiffer-dev")
+  (newline))
+
+(define (generate-html)
+  (system "ulqui generate-html")
+  (newline))
+
+(define (generate-all)
+  (generate-src)
+  (generate-html))
+
+
+(define (update-self)
+  (displayln "=> Replacing schiffer with schiffer-dev")
+  (copy-file "schiffer-dev" "schiffer" #t)
+  (displayln "   ./schiffer-dev -> ./schiffer")
+  (newline))
+
+
+(define (mark-stable)
+  (displayln "=> Removing current stable")
+  (delete-directory/files "release" #:must-exist? #f)
+  (newline)
+
+  (displayln "=> Creating stable directory: release/ulquikit")
+  (make-directory* "release/ulquikit")
+  (newline)
+
+  (displayln "=> Marking current generated source as stable")
+  (displayln "   generated-src -> release/ulquikit")
+  (copy-directory/files "generated-src" "release/ulquikit")
+  (newline))
+
+
+(define (ulqui-dev args)
+  (system (str "generated-src/bin/ulqui "
+               (string-join args " ")))
+  (newline))
+
+
+(define (clean-up)
+  (displayln "=> Removing generated-html")
+  (delete-directory/files "generated-html" #:must-exist? #f)
+  (displayln "=> Removing generated-src")
+  (delete-directory/files "generated-src" #:must-exist? #f)
+  (newline))
+
+(define (run-tests)
+  (system "raco test generated-src/*")
+  (newline))
+
+
+(module+ main
+  (void
+   (let* ([args    (current-command-line-arguments)]
+          [command (vector-ref (if (zero? (vector-length args))
+                                   #("")
+                                   args)
+                               0)])
+     (match command
+       ["generate-src"     (generate-src)]
+       ["generate-html"    (generate-html)]
+       ["clean"            (clean-up)]
+       ["update-self"      (update-self)]
+       ["mark-stable"      (mark-stable)]
+       [(or "ulqui-dev"
+            "run-dev")     (ulqui-dev (vector->list (vector-drop args 1)))]
+       [(or "test"
+            "run-tests")   (run-tests)]
+       [(or "generate-all"
+            "build")       (generate-all)]
+       [_ (displayln "=> Invalid command")]))))
