@@ -1603,6 +1603,20 @@ Marking current generated source code as stable by replacing
 
 ----
 
+=== Running Ulquikit current dev version
+
+Running current Ulquikit dev version by calling +generated-src/bin/ulqui+.
+
+.code::schiffer/ulqui-dev
+[source,racket,linenums]
+----
+(define (ulqui-dev . args)
+  (system (str "generated-src/bin/ulqui "
+               (string-join args " "))))
+
+----
+
+
 
 == Misc
 
