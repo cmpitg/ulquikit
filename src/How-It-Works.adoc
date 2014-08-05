@@ -1568,7 +1568,20 @@ generated, it's moved outside +generated-src+.  Also, all files in
 
 === Update-self
 
-This function simply copy and replace +schiffer+ command
+This function simply copy and replace +schiffer+ script with +schiffer-dev+
+after generating source code again.
+
+.code::schiffer/update-self
+[source,racket,linenums]
+----
+(define (update-self)
+  (generate-src)
+
+  (displayln "=> Replacing schiffer with schiffer-dev")
+  (copy-file "schiffer-dev" "schiffer" #t)
+  (displayln "   ./schiffer-dev -> ./schiffer"))
+
+----
 
 
 == Misc
