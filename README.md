@@ -168,6 +168,32 @@ Ruby is to use RVM.  Visit:
   export PATH=$ULQUI_DIR/release/ulquikit/bin:$PATH
   ```
 
+## Quick hacking guide ##
+
+Ulquikit uses a small script called [`schiffer`](./schiffer) to manage source
+code and all.
+
+* Generating source code and give executable permission to appropriate files:
+  `./schiffer generate-src`
+
+* Generating HTML: `./schiffer generate-html`
+
+* Generating everything: `./schiffer generate-all`
+
+* Clean up generated resources: `./schiffer clean`
+
+* Run dev version of Ulquikit (i.e. executing
+  [`generated-src/bin/ulqui`](generated-src/bin/ulqui)): `./schiffer ulqui-dev`
+
+* Mark currently generated version as stable (replacing
+  [`release/ulquikit`](release/ulquikit)): `./schiffer mark-stable`
+
+* Run currently generated version of `schiffer` (after `generate-src`
+  command): `./schiffer-dev`
+
+* Update `schiffer` (by replacing itself with [`schiffer-dev`](schiffer-dev)):
+  `./schiffer update-self`
+
 ## Trivia ##
 
 * Ulquikit is named after
