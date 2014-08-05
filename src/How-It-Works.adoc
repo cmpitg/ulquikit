@@ -1555,7 +1555,7 @@ generated, it's moved outside +generated-src+.  Also, all files in
 
   (displayln "=> Moving schiffer to current directory")
   (rename-file-or-directory "generated-src/bin/schiffer" "schiffer-dev" #t)
-  (displayln "   generated-src/bin/schiffer => ./schiffer"))
+  (displayln "   generated-src/bin/schiffer => ./schiffer-dev"))
 
 (define (generate-html)
   (system "ulqui generate-html"))
