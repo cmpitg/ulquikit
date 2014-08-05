@@ -126,8 +126,8 @@ Ruby is to use RVM.  Visit:
 
   ```sh
   \curl -sSL https://get.rvm.io | bash -s stable
-  echo "source $HOME/.rvm/scripts/rvm" >> ~/.bashrc  # For Bash users
-  echo "source $HOME/.rvm/scripts/rvm" >> ~/.zshrc   # For Zsh users
+  echo 'source $HOME/.rvm/scripts/rvm' >> ~/.bashrc  # For Bash users
+  echo 'source $HOME/.rvm/scripts/rvm' >> ~/.zshrc   # For Zsh users
   source $HOME/.rvm/scripts/rvm
   rvm install 1.9
   rvm use 1.9 --default
@@ -154,17 +154,10 @@ Ruby is to use RVM.  Visit:
   And add `release/ulquikit/bin` to your `PATH` environment variable in your
   favorite shell RC file.  For example:
 
-  - With Bash
-
-    ```sh
-    echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.bashrc
-    ```
-
-  - With Zsh
-
-    ```sh
-    echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.zshrc
-    ```
+  ```sh
+  echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.bashrc  # For Bash users
+  echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.zshrc   # For Zsh users
+  ```
 
   Note that `$PATH` is surrounded by a pair of quotes, since we want to expand
   `$ULQUI_DIR`, not `$PATH`, when writing to RC files.
