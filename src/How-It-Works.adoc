@@ -1544,9 +1544,15 @@ and <<command/generate-html,generate-html>> commands.
 .code::schiffer/generate-all
 [source,racket,linenums]
 ----
-(define (generate-all)
-  (system "ulqui generate-src")
+(define (generate-src)
+  (system "ulqui generate-src"))
+
+(define (generate-html)
   (system "ulqui generate-html"))
+
+(define (generate-all)
+  (generate-src)
+  (generate-html))
 
 ----
 
