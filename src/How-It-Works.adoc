@@ -1554,7 +1554,7 @@ generated, it's moved outside +generated-src+.  Also, all files in
   (system "chmod +x generated-src/bin/*")
 
   (displayln "=> Moving schiffer to current directory")
-  (rename-file-or-directory "generated-src/bin/schiffer" "schiffer" #t)
+  (rename-file-or-directory "generated-src/bin/schiffer" "schiffer-dev" #t)
   (displayln "   generated-src/bin/schiffer => ./schiffer"))
 
 (define (generate-html)
