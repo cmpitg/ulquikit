@@ -1529,7 +1529,21 @@ clarified:
 
 ----
 
-== Packaging
+== Managing Ulquikit source code
+
+As Ulquikit grows, the need for a script/tool to manage source code,
+release, ... arises.  This +schiffer+ script (named after last name of
+http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Ulquiorra
+Schiffer]) is born to fulfilled that need.
+
+=== Generating source code and HTML documents, all at once
+
+.code::schiffer/generate-all
+[source,racket,linenums]
+----
+
+----
+
 
 == Misc
 
