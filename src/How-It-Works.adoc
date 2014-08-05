@@ -1538,9 +1538,21 @@ Schiffer]) is born to fulfilled that need.
 
 === Generating source code and HTML documents, all at once
 
+This function simply makes a call to <<command/generate-src,+generate-src+>>
+and <<command/generate-html,generate-html>> commands.
+
 .code::schiffer/generate-all
 [source,racket,linenums]
 ----
+(define (generate-all #:from [from "src"]
+                      #:to-html [to-html "generated-html"]
+                      #:to-src  [to-src  "generated-src"])
+  (system (str "ulqui generate-src"
+               " --from " from
+               " --to "   to-src))
+  (system (str "ulqui generate-html"
+               " --from " from
+               " --to "   to-html)))
 
 ----
 
