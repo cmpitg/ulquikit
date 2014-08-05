@@ -1610,12 +1610,64 @@ Running current Ulquikit dev version by calling +generated-src/bin/ulqui+.
 .code::schiffer/ulqui-dev
 [source,racket,linenums]
 ----
-(define (ulqui-dev . args)
+(define (ulqui-dev args)
   (system (str "generated-src/bin/ulqui "
                (string-join args " "))))
 
 ----
 
+=== Run tests
+
+By calling +raco test generated-src/*+.
+
+.code::schiffer/run-tests
+[source,racket,linenums]
+----
+(define (run-tests)
+  (system "raco test generated-src/*"))
+
+----
+
+=== Combine into +schiffer+
+
+.file::bin/schiffer
+[source,racket,linenums]
+----
+#!/usr/bin/env racket
+
+;; include::license-header
+
+;; include::use-rackjure
+
+;; include::schiffer/generate-all
+
+;; include::schiffer/update-self
+
+;; include::schiffer/mark-stable
+
+;; include::schiffer/ulqui-dev
+
+;; include::schiffer/run-tests
+
+(module+ main
+  (void
+   (let* ([args    (current-command-line-arguments)]
+          [command (vector-ref (if (zero? (vector-length args))
+                                   #("")
+                                   args)
+                               0)])
+     (match command
+       ["generate-src"   (generate-src)]
+       ["generate-html"  (generate-html)]
+       ["generate-all"   (generate-all)]
+       ["update-self"    (update-self)]
+       ["mark-stable"    (mark-stable)]
+       [(or "ulqui-dev"
+            "run-dev")   (ulqui-dev (vector->list (vector-drop args 1)))]
+       [(or "test"
+            "run-tests") (run-tests)]
+       [_ (displayln "=> Invalid command")]))))
+----
 
 
 == Misc
