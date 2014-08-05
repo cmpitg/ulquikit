@@ -1552,13 +1552,16 @@ generated, it's moved outside +generated-src+.  Also, all files in
 
   (displayln "=> Giving executable permission to generated-src/bin/*")
   (system "chmod +x generated-src/bin/*")
+  (newline)
 
   (displayln "=> Moving schiffer to current directory")
   (rename-file-or-directory "generated-src/bin/schiffer" "schiffer-dev" #t)
-  (displayln "   generated-src/bin/schiffer => ./schiffer-dev"))
+  (displayln "   generated-src/bin/schiffer => ./schiffer-dev")
+  (newline))
 
 (define (generate-html)
-  (system "ulqui generate-html"))
+  (system "ulqui generate-html")
+  (newline))
 
 (define (generate-all)
   (generate-src)
@@ -1577,7 +1580,8 @@ without re-generating source code.
 (define (update-self)
   (displayln "=> Replacing schiffer with schiffer-dev")
   (copy-file "schiffer-dev" "schiffer" #t)
-  (displayln "   ./schiffer-dev -> ./schiffer"))
+  (displayln "   ./schiffer-dev -> ./schiffer")
+  (newline))
 
 ----
 
@@ -1593,13 +1597,16 @@ Marking current generated source code as stable by replacing
 (define (mark-stable)
   (displayln "=> Removing current stable")
   (delete-directory/files "release" #:must-exist? #f)
+  (newline)
 
   (displayln "=> Creating stable directory: release/ulquikit")
   (make-directory* "release/ulquikit")
+  (newline)
 
   (displayln "=> Marking current generated source as stable")
   (displayln "   generated-src -> release/ulquikit")
-  (copy-directory/files "generated-src" "release/ulquikit"))
+  (copy-directory/files "generated-src" "release/ulquikit")
+  (newline))
 
 ----
 
@@ -1612,7 +1619,8 @@ Running current Ulquikit dev version by calling +generated-src/bin/ulqui+.
 ----
 (define (ulqui-dev args)
   (system (str "generated-src/bin/ulqui "
-               (string-join args " "))))
+               (string-join args " ")))
+  (newline))
 
 ----
 
@@ -1624,7 +1632,8 @@ By calling +raco test generated-src/*+.
 [source,racket,linenums]
 ----
 (define (run-tests)
-  (system "raco test generated-src/*"))
+  (system "raco test generated-src/*")
+  (newline))
 
 ----
 
