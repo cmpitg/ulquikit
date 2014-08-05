@@ -1581,6 +1581,28 @@ without re-generating source code.
 
 ----
 
+=== Mark current source as stable
+
+Marking current generated source code as stable by replacing
++release/ulquikit+ with +generated-src+.  Note that this function/command does
+*not* re-generate source code.
+
+.code::schiffer/mark-stable
+[source,racket,linenums]
+----
+(define (mark-stable)
+  (displayln "=> Removing current stable")
+  (remove-dir "release")
+
+  (displayln "=> Creating stable directory: release/ulquikit")
+  (create-dir "release/ulquikit")
+
+  (displayln "=> Marking current generated source as stable")
+  (displayln "   generated-src -> release/ulquikit")
+  (copy-directory/files "generated-src" "release/ulquikit"))
+
+----
+
 
 == Misc
 
