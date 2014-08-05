@@ -1539,13 +1539,23 @@ Schiffer]) is born to fulfilled that need.
 === Generating source code and HTML documents, all at once
 
 This function simply makes a call to <<command/generate-src,+generate-src+>>
-and <<command/generate-html,generate-html>> commands.
+and <<command/generate-html,generate-html>> commands.  Note that the
++schiffer+ script only has its use inside Ulquikit project, so when it's
+generated, it's moved outside +generated-src+.  Also, all files in
++generated-src/bin/+ directory should be given executable permission.
 
 .code::schiffer/generate-all
 [source,racket,linenums]
 ----
 (define (generate-src)
-  (system "ulqui generate-src"))
+  (system "ulqui generate-src")
+
+  (displayln "=> Giving executable permission to generated-src/bin/*")
+  (system "chmod +x generated-src/bin/*")
+
+  (displayln "=> Moving schiffer to current directory")
+  (rename-file-or-directory "generated-src/bin/schiffer" "schiffer" #t)
+  (displayln "   generated-src/bin/schiffer => ./schiffer"))
 
 (define (generate-html)
   (system "ulqui generate-html"))
@@ -1555,6 +1565,10 @@ and <<command/generate-html,generate-html>> commands.
   (generate-html))
 
 ----
+
+=== Update-self
+
+This function simply copy and replace +schiffer+ command
 
 
 == Misc
