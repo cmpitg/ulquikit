@@ -76,7 +76,7 @@
 
   (displayln "=> Copying docs")
   (displayln "   generated-html -> release/ulquikit/docs")
-  (copy-directory/files "generated-src" "release/ulquikit/docs")
+  (copy-directory/files "generated-html" "release/ulquikit/docs")
   (newline))
 
 
