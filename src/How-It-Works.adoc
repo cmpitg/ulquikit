@@ -1810,6 +1810,20 @@ else
     echo "-> Found Ruby.  MAKE SURE you have Ruby 1.9+"
 fi
 ----
+
+==== Install AsciiDoctor if necessary
+
+.code::quick-install/asciidoc
+[source,sh,linenums]
+----
+if [ `which asciidoctor >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
+    echo "-> AsciiDoctor found."
+else
+    echo "-> Installing AsciiDoctor for AsciiDoc rendering."
+    gem install -V asciidoctor
+fi
+
+----
 == License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
