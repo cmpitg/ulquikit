@@ -119,6 +119,15 @@ Ruby is to use RVM.  Visit:
 
 ### Quick installation ###
 
+Note that this script is interactive and tries to be as user-friendly as
+possible:
+
+```sh
+wget -qO- https://raw.githubusercontent.com/cmpitg/ulquikit/master/quick-install.sh | bash
+```
+
+### Detailed instruction ###
+
 * Install [Racket](http://racket-lang.org/download/) and Ruby.
 
   If you don't have Ruby installed, the following script might be helpful.
