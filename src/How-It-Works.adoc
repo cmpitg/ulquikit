@@ -1776,6 +1776,40 @@ else
 fi
 
 ----
+
+==== Make sure Ruby is installed, if not, install it with RVM
+
+.code::quick-install/ruby
+[source,sh,linenums]
+----
+if [ `which ruby >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
+    echo "-> Ruby not found."
+    echo "   You might refer to your OS's package manager to install Ruby."
+    echo "   However, this script could install Ruby for you using RVM stable."
+    echo "   Please refer to http://rvm.io for further information."
+
+    echo -n "-> Would you like to install RVM stable single-user mode? [Y/n] "
+    read DO_INSTALL_RVM
+
+    if [ "$DO_INSTALL_RVM" == "" ] \
+        || [ "$DO_INSTALL_RVM" == "y" ] \
+        || [ "$DO_INSTALL_RVM" == "Y" ]; then
+        echo "-> Installing Ruby 1.9 and RVM"
+
+        \curl -sSL https://get.rvm.io | bash -s stable
+        [[ -f ~/.bashrc ]] && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.bashrc)
+        [[ -f ~/.zshrc  ]] && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.zshrc)
+        source $HOME/.rvm/scripts/rvm
+        rvm install 1.9
+        rvm use 1.9 --default
+    else
+        echo "-> Installation aborted."
+        exit 1
+    fi
+else
+    echo "-> Found Ruby.  MAKE SURE you have Ruby 1.9+"
+fi
+----
 == License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
