@@ -1608,8 +1608,8 @@ Marking current generated source code as stable by replacing
   (delete-directory/files "release" #:must-exist? #f)
   (newline)
 
-  (displayln "=> Creating stable directory: release/ulquikit")
-  (make-directory* "release/ulquikit")
+  (displayln "=> Creating stable directory: release")
+  (make-directory* "release")
   (newline)
 
   (displayln "=> Marking current generated source as stable")
