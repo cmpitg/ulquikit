@@ -1733,6 +1733,19 @@ decide upon how it looks like:
 
 ----
 
+Bourne shell is a horrible language, so even a simple check-and-make-decision
+might end up look like:
+
+[source,sh,linenums]
+----
+if [ `which some-exec >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
+   # Do-something
+fi
+----
+
+Unfortunately, each part of this +quick-install.sh+ script requires that kind
+of check.  Let's walk through them one by one.
+
 == License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
