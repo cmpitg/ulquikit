@@ -1848,7 +1848,7 @@ NOTE: +DOWNLOAD_URL+ needs to change everytime there's new release.
 ----
 DOWNLOAD_URL=https://github.com/cmpitg/ulquikit/releases/download/v0.1/ulquikit-0.1.zip
 
-echo -n "-> Where to you want to install Ulquikit? (default: $HOME/) "
+echo -n "-> Where to you want to install/update Ulquikit? (default: $HOME/) "
 read ULQUIKIT_DEST
 eval ULQUIKIT_DEST=$ULQUIKIT_DEST
 
@@ -1871,6 +1871,8 @@ if [ `which ulqui >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
     echo '-> Adding ulquikit/bin to your $PATH'
     [[ -f ~/.bashrc ]] && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.bashrc)
     [[ -f ~/.zshrc ]] && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.zshrc)
+
+    echo "-> Done!  Enjoy your time with literate programming!"
 else
     echo '-> Found ulqui command in your $PATH.'
 fi
