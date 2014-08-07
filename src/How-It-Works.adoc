@@ -1730,15 +1730,15 @@ decide upon how it looks like:
 ----
 #!/bin/sh
 
-;; include::quick-install/racket
+## include::quick-install/racket
 
-;; include::quick-install/ruby
+## include::quick-install/ruby
 
-;; include::quick-install/asciidoctor
+## include::quick-install/asciidoctor
 
-;; include::quick-install/rackjure
+## include::quick-install/rackjure
 
-;; include::quick-install/ulquikit
+## include::quick-install/ulquikit
 
 ----
 
