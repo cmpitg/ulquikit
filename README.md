@@ -119,11 +119,10 @@ Ruby is to use RVM.  Visit:
 
 ### Quick installation ###
 
-Note that this script is interactive and tries to be as user-friendly as
-possible:
+This script is interactive and tries to be as user-friendly as possible:
 
 ```sh
-wget -qO- https://raw.githubusercontent.com/cmpitg/ulquikit/master/quick-install.sh | bash
+cd /tmp/ && wget -q https://raw.githubusercontent.com/cmpitg/ulquikit/master/quick-install.sh && bash quick-install.sh
 ```
 
 ### Detailed instruction ###
