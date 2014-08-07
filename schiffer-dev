@@ -31,8 +31,17 @@
   (newline)
 
   (displayln "=> Moving schiffer to current directory")
-  (rename-file-or-directory "generated-src/bin/schiffer" "schiffer-dev" #t)
+  (rename-file-or-directory "generated-src/bin/schiffer"
+                            "schiffer-dev"
+                            #t)
   (displayln "   generated-src/bin/schiffer => ./schiffer-dev")
+  (newline)
+
+  (displayln "=> Moving quick installation script to current directory")
+  (rename-file-or-directory "generated-src/bin/quick-install.sh"
+                            "quick-install.sh"
+                            #t)
+  (displayln "   generated-src/bin/quick-install.sh => ./quick-install.sh")
   (newline))
 
 (define (generate-html)
