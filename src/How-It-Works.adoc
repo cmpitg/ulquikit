@@ -1836,6 +1836,45 @@ else
     echo "-> Installing Rackjure..."
     raco pkg install rackjure
 fi
+
+----
+
+==== Install Ulquikit
+
+NOTE: +DOWNLOAD_URL+ needs to change everytime there's new release.
+
+.code::quick-install/ulquikit
+[source,sh,linenums]
+----
+DOWNLOAD_URL=https://github.com/cmpitg/ulquikit/releases/download/v0.1/ulquikit-0.1.zip
+
+echo -n "-> Where to you want to install Ulquikit? (default: $HOME/) "
+read ULQUIKIT_DEST
+eval ULQUIKIT_DEST=$ULQUIKIT_DEST
+
+if [ "$ULQUIKIT_DEST" == "" ]; then
+    ULQUIKIT_DEST=$HOME/
+fi
+
+cd $ULQUIKIT_DEST
+
+echo "-> Downloading latest version..."
+wget -q "$DOWNLOAD_URL" -O ulquikit.zip
+
+echo "-> Unpacking..."
+unzip ulquikit.zip
+
+echo "-> Removing zip file..."
+rm -f ulquikit.zip
+
+if [ `which ulqui >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
+    echo '-> Adding ulquikit/bin to your $PATH'
+    [[ -f ~/.bashrc ]] && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.bashrc)
+    [[ -f ~/.zshrc ]] && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.zshrc)
+else
+    echo '-> Found ulqui command in your $PATH.'
+fi
+
 ----
 
 == License header
