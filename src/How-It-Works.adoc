@@ -1755,6 +1755,26 @@ fi
 Unfortunately, each part of this +quick-install.sh+ script requires that kind
 of check.  Let's walk through them one by one.
 
+==== Make sure Racket is installed
+
+This task is simple done by checking whether +racket+ executable is found.
+Note that it doesn't check Racket version.  The script fails if Racket is not
+installed, thus the +exit 1+ command.
+
+.code::quick-install/racket
+[source,sh,linenums]
+----
+if [ `which racket >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
+    echo "-> Racket not found, please install it first."
+    echo "   You might refer to your OS's package manager to install Racket,"
+    echo "   or download it from: http://racket-lang.org/download/"
+    echo "   Please MAKE SURE you have Racket 6+."
+    exit 1
+else
+    echo "-> Found Racket.  MAKE SURE you have Racket 6+."
+fi
+
+----
 == License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
