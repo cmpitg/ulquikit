@@ -1769,6 +1769,7 @@ if [ `which racket >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
     echo "   You might refer to your OS's package manager to install Racket,"
     echo "   or download it from: http://racket-lang.org/download/"
     echo "   Please MAKE SURE you have Racket 6+."
+    echo "-> Installation aborted."
     exit 1
 else
     echo "-> Found Racket.  MAKE SURE you have Racket 6+."
