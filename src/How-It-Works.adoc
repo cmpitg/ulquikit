@@ -1813,7 +1813,7 @@ fi
 
 ==== Install AsciiDoctor if necessary
 
-.code::quick-install/asciidoc
+.code::quick-install/asciidoctor
 [source,sh,linenums]
 ----
 if [ `which asciidoctor >/dev/null 2>&1 && echo t || echo f` == "t" ]; then
