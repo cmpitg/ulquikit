@@ -1816,7 +1816,7 @@ fi
 .code::quick-install/asciidoc
 [source,sh,linenums]
 ----
-if [ `which asciidoctor >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
+if [ `which asciidoctor >/dev/null 2>&1 && echo t || echo f` == "t" ]; then
     echo "-> AsciiDoctor found."
 else
     echo "-> Installing AsciiDoctor..."
@@ -1830,7 +1830,7 @@ fi
 .code::quick-install/rackjure
 [source,sh,linenums]
 ----
-if [ `(raco pkg show | grep rackjure) >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
+if [ `(raco pkg show | grep rackjure) >/dev/null 2>&1 && echo t || echo f` == "t" ]; then
     echo "-> Rackjure found."
 else
     echo "-> Installing Rackjure..."
