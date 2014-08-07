@@ -1612,9 +1612,14 @@ Marking current generated source code as stable by replacing
   (make-directory* "release")
   (newline)
 
-  (displayln "=> Marking current generated source as stable")
+  (displayln "=> Copying current generated source to stable")
   (displayln "   generated-src -> release/ulquikit")
   (copy-directory/files "generated-src" "release/ulquikit")
+  (newline)
+
+  (displayln "=> Copying docs")
+  (displayln "   generated-html -> release/ulquikit/docs")
+  (copy-directory/files "generated-src" "release/ulquikit/docs")
   (newline))
 
 ----
