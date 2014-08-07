@@ -1652,7 +1652,6 @@ Simply removing +generated-html+ and +generated-src+ directories:
   (newline))
 ----
 
-
 === Combine into +schiffer+
 
 .file::bin/schiffer
