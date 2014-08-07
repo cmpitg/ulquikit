@@ -1709,6 +1709,31 @@ Simply removing +generated-html+ and +generated-src+ directories:
 (current-curly-dict hash)
 ----
 
+=== Quick installation script
+
+This comes in handy at times.  This script assumes that *users have already
+installed Racket and Ruby*.
+
+The user-friendliness provided by the script is the most important, so let's
+decide upon how it looks like:
+
+.file::bin/quick-install.sh
+[source,sh,linenums]
+----
+#!/bin/sh
+
+;; include::quick-install/racket
+
+;; include::quick-install/ruby
+
+;; include::quick-install/asciidoctor
+
+;; include::quick-install/rackjure
+
+;; include::quick-install/ulquikit
+
+----
+
 == License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
