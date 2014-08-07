@@ -1777,7 +1777,7 @@ fi
 
 ----
 
-==== Make sure Ruby is installed, if not, install it with RVM
+==== Install Ruby 1.9 (using RVM) if necessary
 
 .code::quick-install/ruby
 [source,sh,linenums]
