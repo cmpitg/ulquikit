@@ -1794,7 +1794,7 @@ if [ `which ruby >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
     if [ "$DO_INSTALL_RVM" == "" ] \
         || [ "$DO_INSTALL_RVM" == "y" ] \
         || [ "$DO_INSTALL_RVM" == "Y" ]; then
-        echo "-> Installing Ruby 1.9 and RVM"
+        echo "-> Installing Ruby 1.9 and RVM..."
 
         \curl -sSL https://get.rvm.io | bash -s stable
         [[ -f ~/.bashrc ]] && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.bashrc)
@@ -1807,7 +1807,7 @@ if [ `which ruby >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
         exit 1
     fi
 else
-    echo "-> Found Ruby.  MAKE SURE you have Ruby 1.9+"
+    echo "-> Found Ruby.  MAKE SURE you have Ruby 1.9+."
 fi
 ----
 
@@ -1819,11 +1819,25 @@ fi
 if [ `which asciidoctor >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
     echo "-> AsciiDoctor found."
 else
-    echo "-> Installing AsciiDoctor for AsciiDoc rendering."
+    echo "-> Installing AsciiDoctor..."
     gem install -V asciidoctor
 fi
 
 ----
+
+==== Install Rackjure if necessary
+
+.code::quick-install/rackjure
+[source,sh,linenums]
+----
+if [ `(raco pkg show | grep rackjure) >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
+    echo "-> Rackjure found."
+else
+    echo "-> Installing Rackjure..."
+    raco pkg install rackjure
+fi
+----
+
 == License header
 
 Of course, since Ulquikit is distributed under the terms of GPLv3, the license
