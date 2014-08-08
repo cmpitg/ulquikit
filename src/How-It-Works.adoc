@@ -946,8 +946,9 @@ ulqui generate-src [--from from] [--to to]
 
 Generate source code from literate documents.
 
-  --from location where literate source code is stored, default: "src"
-  --to   location where source are generated, default: "generated-src"
+  --from   either path to a directory literate documents are stored, or path
+           to one literate document; default: "src"
+  --to     directory where source code are generated, default: "generated-src"
 
 Examples
 
