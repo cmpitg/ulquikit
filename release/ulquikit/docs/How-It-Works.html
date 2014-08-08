@@ -457,10 +457,11 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_generating_source_code_and_html_documents_all_at_once">7.1. Generating source code and HTML documents, all at once</a></li>
 <li><a href="#_update_self">7.2. Update-self</a></li>
 <li><a href="#_mark_current_source_as_stable">7.3. Mark current source as stable</a></li>
-<li><a href="#_running_ulquikit_current_dev_version">7.4. Running Ulquikit current dev version</a></li>
-<li><a href="#_run_tests">7.5. Run tests</a></li>
-<li><a href="#_clean_up">7.6. Clean up</a></li>
-<li><a href="#_combine_into_code_schiffer_code">7.7. Combine into <code>schiffer</code></a></li>
+<li><a href="#_releasing">7.4. Releasing</a></li>
+<li><a href="#_running_ulquikit_current_dev_version">7.5. Running Ulquikit current dev version</a></li>
+<li><a href="#_run_tests">7.6. Run tests</a></li>
+<li><a href="#_clean_up">7.7. Clean up</a></li>
+<li><a href="#_combine_into_code_schiffer_code">7.8. Combine into <code>schiffer</code></a></li>
 </ul>
 </li>
 <li><a href="#_misc">8. Misc</a></li>
@@ -2115,7 +2116,9 @@ below.</p>
 14
 15
 16
-17</div></td><td class="code"><span class="tok-c1">;; lang racket</span>
+17
+18
+19</div></td><td class="code"><span class="tok-c1">;; lang racket</span>
 
 <span class="tok-c1">;; include::create-snippet</span>
 
@@ -2129,7 +2132,9 @@ below.</p>
                       <span class="tok-kd">#:to</span>   <span class="tok-p">[</span><span class="tok-nf">to</span>   <span class="tok-s">&quot;generated-src&quot;</span><span class="tok-p">])</span>
   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">from</span> <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">from</span><span class="tok-p">)]</span>
          <span class="tok-p">[</span><span class="tok-nf">to</span>   <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">to</span><span class="tok-p">)])</span>
-    <span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-nf">extract-snippets</span> <span class="tok-nv">from</span><span class="tok-p">)</span>
+    <span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nb">file-exists? </span><span class="tok-nv">from</span><span class="tok-p">)</span>
+            <span class="tok-p">(</span><span class="tok-nf">extract-snippets-from-file</span> <span class="tok-nv">from</span><span class="tok-p">)</span>
+            <span class="tok-p">(</span><span class="tok-nf">extract-snippets</span> <span class="tok-nv">from</span><span class="tok-p">))</span>
       <span class="tok-p">(</span><span class="tok-nf">include-file-snippets</span><span class="tok-p">)</span>
       <span class="tok-p">(</span><span class="tok-nf">generate-src-files</span> <span class="tok-nv">to</span><span class="tok-p">))))</span>
 </td></tr></table></code></pre>
@@ -2213,12 +2218,14 @@ helpers for <code>generate-src</code>.</p>
 14
 15
 16
-17</div></td><td class="code">ulqui generate-src [--from from] [--to to]
+17
+18</div></td><td class="code">ulqui generate-src [--from from] [--to to]
 
-Generate source code from a location to another location.
+Generate source code from literate documents.
 
-  --from location where literate source code is stored, default: &quot;src&quot;
-  --to   location where source are generated, default: &quot;generated-src&quot;
+  --from   either path to a directory literate documents are stored, or path
+           to one literate document; default: &quot;src&quot;
+  --to     directory where source code are generated, default: &quot;generated-src&quot;
 
 Examples
 
@@ -2765,12 +2772,16 @@ HTML documents with some default options.</p>
 16
 17
 18
-19</div></td><td class="code">Usage: generate-html [--from from] [--to to]
+19
+20
+21</div></td><td class="code">Usage: generate-html [--from from] [--to to]
 
-Generate HTMLs from a location containing AsciiDoc recursively.
+Generate HTMLs from literate documents.
 
-  --from       location where AsciiDoc documents are stored, default: &quot;src&quot;
-  --to         location where HTMLs are generated, default: &quot;generated-html&quot;
+  --from   either path to a directory where literate documents are stored, or
+           path to one literate document, default: &quot;src&quot;
+
+  --to     directory where HTMLs are generated, default: &quot;generated-html&quot;
 
 Examples
 
@@ -2796,19 +2807,27 @@ documents) and destination (where HTML documents are generated), namedly
 <div class="listingblock">
 <div class="title">code::generate-html</div>
 <div class="content">
-<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
-2
-3
-4
-5
-6
-7
-8
-9</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">generate-html</span> <span class="tok-kd">#:from</span>      <span class="tok-p">[</span><span class="tok-nf">from</span> <span class="tok-s">&quot;src&quot;</span><span class="tok-p">]</span>
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">generate-html</span> <span class="tok-kd">#:from</span>      <span class="tok-p">[</span><span class="tok-nf">from</span> <span class="tok-s">&quot;src&quot;</span><span class="tok-p">]</span>
                        <span class="tok-kd">#:to</span>        <span class="tok-p">[</span><span class="tok-nf">to</span> <span class="tok-s">&quot;generated-html&quot;</span><span class="tok-p">])</span>
   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">from</span>  <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">from</span><span class="tok-p">)]</span>
          <span class="tok-p">[</span><span class="tok-nf">to</span>    <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">to</span><span class="tok-p">)]</span>
-         <span class="tok-p">[</span><span class="tok-nf">docs</span>  <span class="tok-p">(</span><span class="tok-nf">list-all-adocs</span> <span class="tok-nv">from</span><span class="tok-p">)])</span>
+         <span class="tok-p">[</span><span class="tok-nf">docs</span>  <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nb">file-exists? </span><span class="tok-nv">from</span><span class="tok-p">)</span>
+                    <span class="tok-p">(</span><span class="tok-k">let </span><span class="tok-p">([</span><span class="tok-nf">file</span> <span class="tok-p">(</span><span class="tok-nb">list </span><span class="tok-nv">from</span><span class="tok-p">)])</span>
+                      <span class="tok-p">(</span><span class="tok-k">set! </span><span class="tok-nv">from</span> <span class="tok-p">(</span><span class="tok-nf">path-&gt;directory</span> <span class="tok-nv">from</span><span class="tok-p">))</span>
+                      <span class="tok-nv">file</span><span class="tok-p">)</span>
+                    <span class="tok-p">(</span><span class="tok-nf">list-all-adocs</span> <span class="tok-nv">from</span><span class="tok-p">))])</span>
     <span class="tok-p">(</span><span class="tok-k">parameterize </span><span class="tok-p">([</span><span class="tok-nf">current-directory</span> <span class="tok-nv">from</span><span class="tok-p">])</span>
       <span class="tok-p">(</span><span class="tok-nf">for</span> <span class="tok-p">([</span><span class="tok-nf">doc</span> <span class="tok-nv">docs</span><span class="tok-p">])</span>
         <span class="tok-p">(</span><span class="tok-nf">render-asciidoc</span> <span class="tok-nv">doc</span>
@@ -3349,7 +3368,41 @@ without re-generating source code.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_running_ulquikit_current_dev_version">7.4. Running Ulquikit current dev version</h3>
+<h3 id="_releasing">7.4. Releasing</h3>
+<div class="listingblock">
+<div class="title">code::schiffer/mark-release</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">mark-release</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nf">mark-stable</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">latest-tag</span> <span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-nf">process</span> <span class="tok-s">&quot;git tag&quot;</span><span class="tok-p">)</span>
+                       <span class="tok-nv">first</span>
+                       <span class="tok-nv">port-&gt;string</span>
+                       <span class="tok-nv">string-split</span>
+                       <span class="tok-nv">last</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">filename</span>   <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-s">&quot;ulquikit-~a.zip&quot;</span> <span class="tok-nv">latest-tag</span><span class="tok-p">)]</span>
+         <span class="tok-p">[</span><span class="tok-nf">command</span>    <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-s">&quot;zip -r ~a ulquikit&quot;</span> <span class="tok-nv">filename</span><span class="tok-p">)])</span>
+    <span class="tok-p">(</span><span class="tok-k">parameterize </span><span class="tok-p">[(</span><span class="tok-nb">current-directory </span><span class="tok-s">&quot;release&quot;</span><span class="tok-p">)]</span>
+      <span class="tok-p">(</span><span class="tok-nb">displayln </span><span class="tok-p">(</span><span class="tok-nf">str</span> <span class="tok-s">&quot;=&gt; Creating release/&quot;</span> <span class="tok-nv">filename</span><span class="tok-p">))</span>
+      <span class="tok-p">(</span><span class="tok-nb">void </span><span class="tok-p">(</span><span class="tok-nf">system</span> <span class="tok-nv">command</span><span class="tok-p">)))</span>
+    <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">)))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_running_ulquikit_current_dev_version">7.5. Running Ulquikit current dev version</h3>
 <div class="paragraph">
 <p>Running current Ulquikit dev version by calling <code>generated-src/bin/ulqui</code>.</p>
 </div>
@@ -3368,7 +3421,7 @@ without re-generating source code.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_run_tests">7.5. Run tests</h3>
+<h3 id="_run_tests">7.6. Run tests</h3>
 <div class="paragraph">
 <p>By calling <code>raco test generated-src/*</code>.</p>
 </div>
@@ -3385,7 +3438,7 @@ without re-generating source code.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_clean_up">7.6. Clean up</h3>
+<h3 id="_clean_up">7.7. Clean up</h3>
 <div class="paragraph">
 <p>Simply removing <code>generated-html</code> and <code>generated-src</code> directories:</p>
 </div>
@@ -3408,7 +3461,7 @@ without re-generating source code.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_combine_into_code_schiffer_code">7.7. Combine into <code>schiffer</code></h3>
+<h3 id="_combine_into_code_schiffer_code">7.8. Combine into <code>schiffer</code></h3>
 <div class="listingblock">
 <div class="title">file::bin/schiffer</div>
 <div class="content">
@@ -3449,7 +3502,10 @@ without re-generating source code.</p>
 35
 36
 37
-38</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
+38
+39
+40
+41</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
 
 <span class="tok-c1">;; include::license-header</span>
 
@@ -3460,6 +3516,8 @@ without re-generating source code.</p>
 <span class="tok-c1">;; include::schiffer/update-self</span>
 
 <span class="tok-c1">;; include::schiffer/mark-stable</span>
+
+<span class="tok-c1">;; include::schiffer/mark-release</span>
 
 <span class="tok-c1">;; include::schiffer/ulqui-dev</span>
 
@@ -3480,6 +3538,7 @@ without re-generating source code.</p>
        <span class="tok-p">[</span><span class="tok-s">&quot;clean&quot;</span>            <span class="tok-p">(</span><span class="tok-nf">clean-up</span><span class="tok-p">)]</span>
        <span class="tok-p">[</span><span class="tok-s">&quot;update-self&quot;</span>      <span class="tok-p">(</span><span class="tok-nf">update-self</span><span class="tok-p">)]</span>
        <span class="tok-p">[</span><span class="tok-s">&quot;mark-stable&quot;</span>      <span class="tok-p">(</span><span class="tok-nf">mark-stable</span><span class="tok-p">)]</span>
+       <span class="tok-p">[</span><span class="tok-s">&quot;mark-release&quot;</span>     <span class="tok-p">(</span><span class="tok-nf">mark-release</span><span class="tok-p">)]</span>
        <span class="tok-p">[(</span><span class="tok-k">or </span><span class="tok-s">&quot;ulqui-dev&quot;</span>
             <span class="tok-s">&quot;run-dev&quot;</span><span class="tok-p">)</span>     <span class="tok-p">(</span><span class="tok-nf">ulqui-dev</span> <span class="tok-p">(</span><span class="tok-nb">vector-&gt;list </span><span class="tok-p">(</span><span class="tok-nf">vector-drop</span> <span class="tok-nv">args</span> <span class="tok-mi">1</span><span class="tok-p">)))]</span>
        <span class="tok-p">[(</span><span class="tok-k">or </span><span class="tok-s">&quot;test&quot;</span>
@@ -3745,7 +3804,7 @@ installed, thus the <code>exit 1</code> command.</p>
 29
 30</div></td><td class="code"><span class="tok-nv">DOWNLOAD_URL</span><span class="tok-o">=</span>https://github.com/cmpitg/ulquikit/releases/download/v0.1/ulquikit-0.1.zip
 
-<span class="tok-nb">echo</span> -n <span class="tok-s2">&quot;-&gt; Where to you want to install/update Ulquikit? (default: $HOME/) &quot;</span>
+<span class="tok-nb">echo</span> -n <span class="tok-s2">&quot;-&gt; Where would you like to install/update Ulquikit? (default: $HOME/) &quot;</span>
 <span class="tok-nb">read </span>ULQUIKIT_DEST
 <span class="tok-nb">eval </span><span class="tok-nv">ULQUIKIT_DEST</span><span class="tok-o">=</span><span class="tok-nv">$ULQUIKIT_DEST</span>
 
@@ -3838,7 +3897,7 @@ header is necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-08-08 03:05:53 ICT
+Last updated 2014-08-09 01:41:37 ICT
 </div>
 </div>
 </body>

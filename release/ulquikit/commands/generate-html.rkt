@@ -51,7 +51,11 @@
                        #:to        [to "generated-html"])
   (let* ([from  (get-path from)]
          [to    (get-path to)]
-         [docs  (list-all-adocs from)])
+         [docs  (if (file-exists? from)
+                    (let ([file (list from)])
+                      (set! from (path->directory from))
+                      file)
+                    (list-all-adocs from))])
     (parameterize ([current-directory from])
       (for ([doc docs])
         (render-asciidoc doc
