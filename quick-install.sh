@@ -58,7 +58,7 @@ fi
 
 DOWNLOAD_URL=https://github.com/cmpitg/ulquikit/releases/download/v0.1/ulquikit-0.1.zip
 
-echo -n "-> Where to you want to install/update Ulquikit? (default: $HOME/) "
+echo -n "-> Where would you like to install/update Ulquikit? (default: $HOME/) "
 read ULQUIKIT_DEST
 eval ULQUIKIT_DEST=$ULQUIKIT_DEST
 
