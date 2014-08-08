@@ -944,7 +944,7 @@ And of course, we need to define help string for +generate-src+:
 ----
 ulqui generate-src [--from from] [--to to]
 
-Generate source code from a location to another location.
+Generate source code from literate documents.
 
   --from location where literate source code is stored, default: "src"
   --to   location where source are generated, default: "generated-src"
@@ -1263,7 +1263,7 @@ First, let's decide upon how this command is used:
 ----
 Usage: generate-html [--from from] [--to to]
 
-Generate HTMLs from a location containing AsciiDoc recursively.
+Generate HTMLs from literate documents.
 
   --from       location where AsciiDoc documents are stored, default: "src"
   --to         location where HTMLs are generated, default: "generated-html"
