@@ -1265,8 +1265,10 @@ Usage: generate-html [--from from] [--to to]
 
 Generate HTMLs from literate documents.
 
-  --from       location where AsciiDoc documents are stored, default: "src"
-  --to         location where HTMLs are generated, default: "generated-html"
+  --from   either path to a directory where literate documents are stored, or
+           path to one literate document, default: "src"
+            
+  --to     directory where HTMLs are generated, default: "generated-html"
 
 Examples
 
