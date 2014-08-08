@@ -1624,6 +1624,28 @@ Marking current generated source code as stable by replacing
 
 ----
 
+=== Releasing
+
+.code::schiffer/mark-release
+[source,racket,linenums]
+----
+(define (mark-release)
+  (mark-stable)
+  (let* ([latest-tag (~> (process "git tag")
+                       first
+                       port->string
+                       string-split
+                       last)]
+         [filename   (format "ulquikit-~a.zip" latest-tag)]
+         [command    (format "zip -r ~a ulquikit" filename)])
+    (parameterize [(current-directory "release")]
+      (displayln (str "=> Creating release/" filename))
+      (void (system command)))
+    (newline)))
+
+----
+
+
 === Running Ulquikit current dev version
 
 Running current Ulquikit dev version by calling +generated-src/bin/ulqui+.
@@ -1683,6 +1705,8 @@ Simply removing +generated-html+ and +generated-src+ directories:
 
 ;; include::schiffer/mark-stable
 
+;; include::schiffer/mark-release
+
 ;; include::schiffer/ulqui-dev
 
 ;; include::schiffer/clean-up
@@ -1702,6 +1726,7 @@ Simply removing +generated-html+ and +generated-src+ directories:
        ["clean"            (clean-up)]
        ["update-self"      (update-self)]
        ["mark-stable"      (mark-stable)]
+       ["mark-release"     (mark-release)]
        [(or "ulqui-dev"
             "run-dev")     (ulqui-dev (vector->list (vector-drop args 1)))]
        [(or "test"
