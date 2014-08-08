@@ -594,7 +594,9 @@
                       #:to   [to   "generated-src"])
   (let* ([from (get-path from)]
          [to   (get-path to)])
-    (~> (extract-snippets from)
+    (~> (if (file-exists? from)
+            (extract-snippets-from-file from)
+            (extract-snippets from))
       (include-file-snippets)
       (generate-src-files to))))
 
