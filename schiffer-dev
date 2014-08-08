@@ -80,6 +80,21 @@
   (newline))
 
 
+(define (mark-release)
+  (mark-stable)
+  (let* ([latest-tag (~> (process "git tag")
+                       first
+                       port->string
+                       string-split
+                       last)]
+         [filename   (format "ulquikit-~a.zip" latest-tag)]
+         [command    (format "zip -r ~a ulquikit" filename)])
+    (parameterize [(current-directory "release")]
+      (displayln (str "=> Creating release/" filename))
+      (void (system command)))
+    (newline)))
+
+
 (define (ulqui-dev args)
   (system (str "generated-src/bin/ulqui "
                (string-join args " ")))
@@ -111,6 +126,7 @@
        ["clean"            (clean-up)]
        ["update-self"      (update-self)]
        ["mark-stable"      (mark-stable)]
+       ["mark-release"     (mark-release)]
        [(or "ulqui-dev"
             "run-dev")     (ulqui-dev (vector->list (vector-drop args 1)))]
        [(or "test"
