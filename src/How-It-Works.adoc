@@ -1664,7 +1664,8 @@ Running current Ulquikit dev version by calling +generated-src/bin/ulqui+.
 ----
 (define (ulqui-dev args)
   (system (str "generated-src/bin/ulqui "
-               (string-join args " ")))
+               (~> (map #λ(string-append "'" % "'") args)
+                 (string-join " "))))
   (newline))
 
 ----
