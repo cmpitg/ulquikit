@@ -1697,6 +1697,42 @@ Simply removing +generated-html+ and +generated-src+ directories:
   (newline))
 ----
 
+=== Help
+
+Of course, help is particularly useful.
+
+.code::schiffer/help
+[source,racket,linenums]
+----
+(define (help)
+  (displayln @str{
+Usage: schiffer <command> [options] ...
+
+Schiffer is a simple build script for Ulquikit.
+
+Available commands:
+
+  generate-src  :: Generate Ulquikit source code to 'generated-src'.
+  generate-html :: Generate Ulquikit HTML docs to 'generated-html'.
+  generate-all  :: Call 'generate-src', then 'generate-html'.
+  update-self   :: Update Schiffer, replace itself with './schiffer-dev'.
+  mark-stable   :: Mark current 'generated-src' as stable by copying it into
+                   'release/ulquikit'
+  mark-release  :: Mark current stable in 'release/ulquikit' as release by
+                   zipping it with latest Git tag name.  E.g.
+                  'release/ulquikit' is zipped into 'release/ulquikit-v2.0.zip'.
+  ulqui-dev     :: Analogous to 'generated-src/bin/ulqui'.
+  clean-up      :: Clean up generated source and HTML.
+  run-tests     :: Run all Ulquikit tests in 'generated-src/'.
+  help          :: Print this help.
+
+Note that only 'ulqui-dev' takes options.
+})
+  (newline))
+
+----
+
+
 === Combine into +schiffer+
 
 .file::bin/schiffer
@@ -1724,6 +1760,8 @@ Simply removing +generated-html+ and +generated-src+ directories:
 
 ;; include::schiffer/run-tests
 
+;; include::schiffer/help
+
 (module+ main
   (void
    (let* ([args    (current-command-line-arguments)]
@@ -1744,7 +1782,7 @@ Simply removing +generated-html+ and +generated-src+ directories:
             "run-tests")   (run-tests)]
        [(or "generate-all"
             "build")       (generate-all)]
-       [_ (displayln "=> Invalid command")]))))
+       [_                  (help)]))))
 ----
 
 
