@@ -1706,7 +1706,9 @@ Simply removing +generated-html+ and +generated-src+ directories:
 
 ;; include::license-header
 
-;; include::use-rackjure
+#lang at-exp rackjure
+
+(current-curly-dict hash)
 
 ;; include::schiffer/generate-all
 
