@@ -461,7 +461,8 @@ span.icon > [class^="icon-"], span.icon > [class*=" icon-"] { cursor: default; }
 <li><a href="#_running_ulquikit_current_dev_version">7.5. Running Ulquikit current dev version</a></li>
 <li><a href="#_run_tests">7.6. Run tests</a></li>
 <li><a href="#_clean_up">7.7. Clean up</a></li>
-<li><a href="#_combine_into_code_schiffer_code">7.8. Combine into <code>schiffer</code></a></li>
+<li><a href="#_help">7.8. Help</a></li>
+<li><a href="#_combine_into_code_schiffer_code">7.9. Combine into <code>schiffer</code></a></li>
 </ul>
 </li>
 <li><a href="#_misc">8. Misc</a></li>
@@ -2634,7 +2635,14 @@ and passes necessary arguments.</p>
 14
 15
 16
-17</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
+17
+18
+19
+20
+21
+22
+23
+24</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">run-command</span> <span class="tok-nv">command</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">let* </span><span class="tok-p">([</span><span class="tok-nf">module-location</span> <span class="tok-p">(</span><span class="tok-nf">string-&gt;path</span>
                            <span class="tok-p">(</span><span class="tok-nf">get-path</span> <span class="tok-nv">+this-directory+</span>
                                      <span class="tok-p">(</span><span class="tok-nb">format </span><span class="tok-s">&quot;commands/~a.rkt&quot;</span>
@@ -2646,10 +2654,17 @@ and passes necessary arguments.</p>
          <span class="tok-p">[</span><span class="tok-nf">main-args</span>       <span class="tok-p">(</span><span class="tok-nf">args</span> <span class="tok-ss">&#39;arguments</span><span class="tok-p">)]</span>
          <span class="tok-p">[</span><span class="tok-nf">keyword-list</span>    <span class="tok-p">(</span><span class="tok-nf">hash-keys</span> <span class="tok-p">(</span><span class="tok-nf">args</span> <span class="tok-ss">&#39;options</span><span class="tok-p">))]</span>
          <span class="tok-p">[</span><span class="tok-nf">val-list</span>        <span class="tok-p">(</span><span class="tok-nf">hash-values</span> <span class="tok-p">(</span><span class="tok-nf">args</span> <span class="tok-ss">&#39;options</span><span class="tok-p">))])</span>
-    <span class="tok-p">(</span><span class="tok-nf">keyword-apply</span> <span class="tok-nv">run-func</span>
-                   <span class="tok-nv">keyword-list</span>
-                   <span class="tok-nv">val-list</span>
-                   <span class="tok-nv">main-args</span><span class="tok-p">)</span>
+    <span class="tok-p">(</span><span class="tok-k">if </span><span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-nv">args</span> <span class="tok-ss">&#39;options</span> <span class="tok-o">&#39;</span><span class="tok-kd">#:help)</span>
+        <span class="tok-p">(</span><span class="tok-nf">run-help</span> <span class="tok-nv">command</span><span class="tok-p">)</span>
+        <span class="tok-p">(</span><span class="tok-k">with-handlers </span><span class="tok-p">([</span><span class="tok-nf">exn:fail:contract?</span>
+                         <span class="tok-p">(</span><span class="tok-err">λ</span> <span class="tok-p">(</span><span class="tok-nf">e</span><span class="tok-p">)</span>
+                           <span class="tok-p">(</span><span class="tok-nb">displayln </span><span class="tok-s">&quot;=&gt; Invalid option(s)&quot;</span><span class="tok-p">)</span>
+                           <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">)</span>
+                           <span class="tok-p">(</span><span class="tok-nf">run-help</span> <span class="tok-nv">command</span><span class="tok-p">))])</span>
+          <span class="tok-p">(</span><span class="tok-nf">keyword-apply</span> <span class="tok-nv">run-func</span>
+                         <span class="tok-nv">keyword-list</span>
+                         <span class="tok-nv">val-list</span>
+                         <span class="tok-nv">main-args</span><span class="tok-p">)))</span>
     <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">)))</span>
 </td></tr></table></code></pre>
 </div>
@@ -3412,9 +3427,11 @@ without re-generating source code.</p>
 <pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
 3
-4</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">ulqui-dev</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
+4
+5</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">ulqui-dev</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-nf">system</span> <span class="tok-p">(</span><span class="tok-nf">str</span> <span class="tok-s">&quot;generated-src/bin/ulqui &quot;</span>
-               <span class="tok-p">(</span><span class="tok-nf">string-join</span> <span class="tok-nv">args</span> <span class="tok-s">&quot; &quot;</span><span class="tok-p">)))</span>
+               <span class="tok-p">(</span><span class="tok-nf">~&gt;</span> <span class="tok-p">(</span><span class="tok-nb">map </span><span class="tok-o">#</span><span class="tok-err">λ</span><span class="tok-p">(</span><span class="tok-nb">string-append </span><span class="tok-s">&quot;&#39;&quot;</span> <span class="tok-nv">%</span> <span class="tok-s">&quot;&#39;&quot;</span><span class="tok-p">)</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
+                 <span class="tok-p">(</span><span class="tok-nf">string-join</span> <span class="tok-s">&quot; &quot;</span><span class="tok-p">))))</span>
   <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">))</span>
 </td></tr></table></code></pre>
 </div>
@@ -3461,7 +3478,68 @@ without re-generating source code.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_combine_into_code_schiffer_code">7.8. Combine into <code>schiffer</code></h3>
+<h3 id="_help">7.8. Help</h3>
+<div class="paragraph">
+<p>Of course, help is particularly useful.</p>
+</div>
+<div class="listingblock">
+<div class="title">code::schiffer/help</div>
+<div class="content">
+<pre class="pygments highlight"><code class="racket language-racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define </span><span class="tok-p">(</span><span class="tok-nf">help</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nb">displayln </span><span class="tok-nv">@str</span><span class="tok-p">{</span>
+<span class="tok-nv">Usage:</span> <span class="tok-nv">schiffer</span> <span class="tok-nv">&lt;command&gt;</span> <span class="tok-p">[</span><span class="tok-nf">options</span><span class="tok-p">]</span> <span class="tok-o">...</span>
+
+<span class="tok-nv">Schiffer</span> <span class="tok-nv">is</span> <span class="tok-nv">a</span> <span class="tok-nv">simple</span> <span class="tok-nv">build</span> <span class="tok-nv">script</span> <span class="tok-nv">for</span> <span class="tok-nv">Ulquikit</span><span class="tok-o">.</span>
+
+<span class="tok-nv">Available</span> <span class="tok-nv">commands:</span>
+
+  <span class="tok-nv">generate-src</span>  <span class="tok-nv">::</span> <span class="tok-nv">Generate</span> <span class="tok-nv">Ulquikit</span> <span class="tok-nv">source</span> <span class="tok-nv">code</span> <span class="tok-nv">to</span> <span class="tok-ss">&#39;generated-src</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">generate-html</span> <span class="tok-nv">::</span> <span class="tok-nv">Generate</span> <span class="tok-nv">Ulquikit</span> <span class="tok-nv">HTML</span> <span class="tok-nv">docs</span> <span class="tok-nv">to</span> <span class="tok-ss">&#39;generated-html</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">generate-all</span>  <span class="tok-nv">::</span> <span class="tok-nv">Call</span> <span class="tok-ss">&#39;generate-src&#39;,</span> <span class="tok-nv">then</span> <span class="tok-ss">&#39;generate-html</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">update-self</span>   <span class="tok-nv">::</span> <span class="tok-nv">Update</span> <span class="tok-nv">Schiffer,</span> <span class="tok-nv">replace</span> <span class="tok-nv">itself</span> <span class="tok-nv">with</span> <span class="tok-o">&#39;.</span><span class="tok-nv">/schiffer-dev</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">mark-stable</span>   <span class="tok-nv">::</span> <span class="tok-nv">Mark</span> <span class="tok-nv">current</span> <span class="tok-ss">&#39;generated-src</span><span class="tok-o">&#39;</span> <span class="tok-nv">as</span> <span class="tok-nv">stable</span> <span class="tok-nv">by</span> <span class="tok-nv">copying</span> <span class="tok-nv">it</span> <span class="tok-nv">into</span>
+                   <span class="tok-ss">&#39;release/ulquikit</span><span class="tok-o">&#39;</span>
+  <span class="tok-nv">mark-release</span>  <span class="tok-nv">::</span> <span class="tok-nv">Mark</span> <span class="tok-nv">current</span> <span class="tok-nv">stable</span> <span class="tok-nv">in</span> <span class="tok-ss">&#39;release/ulquikit</span><span class="tok-o">&#39;</span> <span class="tok-nv">as</span> <span class="tok-nv">release</span> <span class="tok-nv">by</span>
+                   <span class="tok-nv">zipping</span> <span class="tok-nv">it</span> <span class="tok-nv">with</span> <span class="tok-nv">latest</span> <span class="tok-nv">Git</span> <span class="tok-nv">tag</span> <span class="tok-nv">name</span><span class="tok-o">.</span>  <span class="tok-nv">E</span><span class="tok-o">.</span><span class="tok-nv">g</span><span class="tok-o">.</span>
+                  <span class="tok-ss">&#39;release/ulquikit</span><span class="tok-o">&#39;</span> <span class="tok-nv">is</span> <span class="tok-nv">zipped</span> <span class="tok-nv">into</span> <span class="tok-ss">&#39;release/ulquikit-v2</span><span class="tok-o">.</span><span class="tok-mi">0</span><span class="tok-o">.</span><span class="tok-nv">zip</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">ulqui-dev</span>     <span class="tok-nv">::</span> <span class="tok-nv">Analogous</span> <span class="tok-nv">to</span> <span class="tok-ss">&#39;generated-src/bin/ulqui</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">clean-up</span>      <span class="tok-nv">::</span> <span class="tok-nv">Clean</span> <span class="tok-nv">up</span> <span class="tok-nv">generated</span> <span class="tok-nv">source</span> <span class="tok-k">and </span><span class="tok-nv">HTML</span><span class="tok-o">.</span>
+  <span class="tok-nv">run-tests</span>     <span class="tok-nv">::</span> <span class="tok-nv">Run</span> <span class="tok-nv">all</span> <span class="tok-nv">Ulquikit</span> <span class="tok-nv">tests</span> <span class="tok-nv">in</span> <span class="tok-ss">&#39;generated-src/</span><span class="tok-o">&#39;.</span>
+  <span class="tok-nv">help</span>          <span class="tok-nv">::</span> <span class="tok-nv">Print</span> <span class="tok-nv">this</span> <span class="tok-nv">help</span><span class="tok-o">.</span>
+
+<span class="tok-nv">Note</span> <span class="tok-nv">that</span> <span class="tok-nv">only</span> <span class="tok-ss">&#39;ulqui-dev</span><span class="tok-o">&#39;</span> <span class="tok-nv">takes</span> <span class="tok-nv">options</span><span class="tok-o">.</span>
+<span class="tok-p">})</span>
+  <span class="tok-p">(</span><span class="tok-nf">newline</span><span class="tok-p">))</span>
+</td></tr></table></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_combine_into_code_schiffer_code">7.9. Combine into <code>schiffer</code></h3>
 <div class="listingblock">
 <div class="title">file::bin/schiffer</div>
 <div class="content">
@@ -3505,11 +3583,17 @@ without re-generating source code.</p>
 38
 39
 40
-41</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
+41
+42
+43
+44
+45</div></td><td class="code"><span class="tok-o">#</span><span class="tok-nv">!/usr/bin/env</span> <span class="tok-nv">racket</span>
 
 <span class="tok-c1">;; include::license-header</span>
 
-<span class="tok-c1">;; include::use-rackjure</span>
+<span class="tok-kn">#lang at-exp</span> <span class="tok-nv">rackjure</span>
+
+<span class="tok-p">(</span><span class="tok-nf">current-curly-dict</span> <span class="tok-nv">hash</span><span class="tok-p">)</span>
 
 <span class="tok-c1">;; include::schiffer/generate-all</span>
 
@@ -3524,6 +3608,8 @@ without re-generating source code.</p>
 <span class="tok-c1">;; include::schiffer/clean-up</span>
 
 <span class="tok-c1">;; include::schiffer/run-tests</span>
+
+<span class="tok-c1">;; include::schiffer/help</span>
 
 <span class="tok-p">(</span><span class="tok-nf">module+</span> <span class="tok-nv">main</span>
   <span class="tok-p">(</span><span class="tok-nf">void</span>
@@ -3545,7 +3631,7 @@ without re-generating source code.</p>
             <span class="tok-s">&quot;run-tests&quot;</span><span class="tok-p">)</span>   <span class="tok-p">(</span><span class="tok-nf">run-tests</span><span class="tok-p">)]</span>
        <span class="tok-p">[(</span><span class="tok-k">or </span><span class="tok-s">&quot;generate-all&quot;</span>
             <span class="tok-s">&quot;build&quot;</span><span class="tok-p">)</span>       <span class="tok-p">(</span><span class="tok-nf">generate-all</span><span class="tok-p">)]</span>
-       <span class="tok-p">[</span><span class="tok-nf">_</span> <span class="tok-p">(</span><span class="tok-nb">displayln </span><span class="tok-s">&quot;=&gt; Invalid command&quot;</span><span class="tok-p">)]))))</span>
+       <span class="tok-p">[</span><span class="tok-nf">_</span>                  <span class="tok-p">(</span><span class="tok-nf">help</span><span class="tok-p">)]))))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -3802,7 +3888,7 @@ installed, thus the <code>exit 1</code> command.</p>
 27
 28
 29
-30</div></td><td class="code"><span class="tok-nv">DOWNLOAD_URL</span><span class="tok-o">=</span>https://github.com/cmpitg/ulquikit/releases/download/v0.1/ulquikit-0.1.zip
+30</div></td><td class="code"><span class="tok-nv">DOWNLOAD_URL</span><span class="tok-o">=</span>https://github.com/cmpitg/ulquikit/releases/download/v0.2/ulquikit-v0.2.zip
 
 <span class="tok-nb">echo</span> -n <span class="tok-s2">&quot;-&gt; Where would you like to install/update Ulquikit? (default: $HOME/) &quot;</span>
 <span class="tok-nb">read </span>ULQUIKIT_DEST
@@ -3897,7 +3983,7 @@ header is necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2014-08-09 01:41:37 ICT
+Last updated 2014-08-10 02:03:09 ICT
 </div>
 </div>
 </body>

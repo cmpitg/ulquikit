@@ -156,10 +156,17 @@
          [main-args       (args 'arguments)]
          [keyword-list    (hash-keys (args 'options))]
          [val-list        (hash-values (args 'options))])
-    (keyword-apply run-func
-                   keyword-list
-                   val-list
-                   main-args)
+    (if (~> args 'options '#:help)
+        (run-help command)
+        (with-handlers ([exn:fail:contract?
+                         (λ (e)
+                           (displayln "=> Invalid option(s)")
+                           (newline)
+                           (run-help command))])
+          (keyword-apply run-func
+                         keyword-list
+                         val-list
+                         main-args)))
     (newline)))
 
 
