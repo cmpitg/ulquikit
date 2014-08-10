@@ -1580,7 +1580,7 @@ release, ... arises.  This +schiffer+ script (named after last name of
 http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Ulquiorra
 Schiffer]) is born to fulfilled that need.
 
-=== Generating source code and HTML documents, all at once
+=== Generate source code and HTML documents, all at once
 
 This function simply makes a call to <<command/generate-src,+generate-src+>>
 and <<command/generate-html,generate-html>> commands.  Note that the
@@ -1668,7 +1668,7 @@ Marking current generated source code as stable by replacing
 
 ----
 
-=== Releasing
+=== Release
 
 .code::schiffer/mark-release
 [source,racket,linenums]
@@ -1690,9 +1690,10 @@ Marking current generated source code as stable by replacing
 ----
 
 
-=== Running Ulquikit current dev version
+=== Run current dev version of Ulquikit
 
-Running current Ulquikit dev version by calling +generated-src/bin/ulqui+.
+Running current Ulquikit dev version is done by calling
++generated-src/bin/ulqui+.
 
 .code::schiffer/ulqui-dev
 [source,racket,linenums]
@@ -1835,7 +1836,7 @@ by running:
 ulqui update
 ----
 
-=== Getting latest version
+=== Retrieve latest version
 
 Ulquikit is officially released via
 https://help.github.com/articles/about-releases[Github Releases], which
@@ -1881,6 +1882,9 @@ http://docs.racket-lang.org/net/url.html#%28def._%28%28lib._net%2Furl..rkt%29._h
 instead of
 http://docs.racket-lang.org/net/url.html#%28def._%28%28lib._net%2Furl..rkt%29._head-pure-port%29%29[+head-pure-port+]
 as the response might content body.
+
+=== Download and replace Ulquikit
+
 
 
 == Misc
