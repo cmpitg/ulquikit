@@ -1782,6 +1782,8 @@ Note that only 'ulqui-dev' takes options.
 
 (current-curly-dict hash)
 
+(require net/url)
+
 ;; include::schiffer/generate-all
 
 ;; include::schiffer/update-self
@@ -1833,6 +1835,52 @@ by running:
 ulqui update
 ----
 
+=== Getting latest version
+
+Ulquikit is officially released via
+https://help.github.com/articles/about-releases[Github Releases], which
+provides this URL https://github.com/cmpitg/ulquikit/releases/latest pointing
+to latest release.
+
+First of all, let's +curl+ this URL to see how it's redirected:
+
+[source,sh,linenums]
+----
+curl --head https://github.com/cmpitg/ulquikit/releases/latest
+
+# HTTP/1.1 302 Found
+# Server: GitHub.com
+[snip]
+# Location: https://github.com/cmpitg/ulquikit/releases/tag/v0.2
+[snip]
+----
+
+So that's how it works, simple and straightforward.  The job now is to get the
+"Location" attribute from HTTP header and grab the version.  With Racket's
+http://docs.racket-lang.org/net/url.html[+net/url+] library, it becomes trivial:
+
+.code::ulqui/latest-version
+[source,racket,linenums]
+----
+(define +latest-release-url+
+  (string->url "https://github.com/cmpitg/ulquikit/releases/latest"))
+
+(define (get-latest-version)
+  (~> (head-impure-port +latest-release-url+)
+    port->string
+    string-split
+    (dropf #λ(not (string=? "Location:" %)))
+    second
+    (#λ(regexp-match #rx"v(.*)" %))
+    second))
+
+----
+
+Note that we use
+http://docs.racket-lang.org/net/url.html#%28def._%28%28lib._net%2Furl..rkt%29._head-impure-port%29%29[+head-impure-port+]
+instead of
+http://docs.racket-lang.org/net/url.html#%28def._%28%28lib._net%2Furl..rkt%29._head-pure-port%29%29[+head-pure-port+]
+as the response might content body.
 
 
 == Misc
