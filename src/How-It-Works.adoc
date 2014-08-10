@@ -1793,6 +1793,19 @@ Note that only 'ulqui-dev' takes options.
        [_                  (help)]))))
 ----
 
+== Updating Ulquikit
+
+As more versions of Ulquikit are released, having a way to update Ulquikit
+from the command line is very helpful.  One way to do this is by adding
++update+ command, so that users could update Ulquikit to latest version just
+by running:
+
+[source,sh]
+----
+ulqui update
+----
+
+
 
 == Misc
 
