@@ -9,6 +9,17 @@
 :pygments-css: class
 :website: http://reference-error.org/projects/ulquikit
 
+Current version:
+
+.code::ulquikit-version
+[source,racket,linenums]
+----
+(define +ulquikit-version+ "0.2")
+----
+
+
+'''
+
 Ulquikit is written in literate programming itself with a small bootstrap
 code.  This document is Ulquikit's literate source code.
 
@@ -1517,6 +1528,8 @@ clarified:
 #lang at-exp rackjure
 
 (current-curly-dict hash)
+
+;; include::ulquikit-version
 
 ;; include::ulqui/require-utils
 
