@@ -134,8 +134,10 @@ cd /tmp/ && wget -q https://raw.githubusercontent.com/cmpitg/ulquikit/master/qui
 
   ```sh
   \curl -sSL https://get.rvm.io | bash -s stable
-  echo 'source $HOME/.rvm/scripts/rvm' >> ~/.bashrc  # For Bash users
-  echo 'source $HOME/.rvm/scripts/rvm' >> ~/.zshrc   # For Zsh users
+  [[ -f ~/.bashrc ]] \
+      && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.bashrc) # For Bash users
+  [[ -f ~/.zshrc  ]] \
+      && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.zshrc)  # For Zsh users
   source $HOME/.rvm/scripts/rvm
   rvm install 1.9
   rvm use 1.9 --default
@@ -163,8 +165,13 @@ cd /tmp/ && wget -q https://raw.githubusercontent.com/cmpitg/ulquikit/master/qui
   favorite shell RC file.  For example:
 
   ```sh
-  echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.bashrc  # For Bash users
-  echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> /etc/.zshrc   # For Zsh users
+  # For Bash users
+  [[ -f ~/.bashrc ]] \
+      && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.bashrc)
+
+  # For Zsh users
+  [[ -f ~/.zshrc ]] \
+      && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.zshrc)
   ```
 
   Note that `$PATH` is surrounded by a pair of quotes, since we want to expand
