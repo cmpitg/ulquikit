@@ -1464,9 +1464,10 @@ Available commands:
   (newline)
   (displayln
    @str{
-Use 'ulqui help' or 'ulqui --help' to bring this help.
+Use 'ulqui help' or 'ulqui --help' to bring up this help.
 Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
-command.})
+command.
+Use 'ulqui --version' to display current running version of Ulquikit.})
   (newline))
 
 ----
@@ -1531,6 +1532,8 @@ clarified:
 
 ;; include::ulquikit-version
 
+;; include::ulqui/display-version
+
 ;; include::ulqui/require-utils
 
 ;; include::ulqui/list-commands
@@ -1550,6 +1553,8 @@ clarified:
             (if (empty? args)
                 (display-help)
                 (run-help (first args)))]
+           [(string=? "--version" command)
+            (display-version)]
            [(not (member command command-list))
             (displayln (str "-> Invalid command " command ".\n"))
             (display-help)]
@@ -1557,6 +1562,16 @@ clarified:
             (run-command command args)]))))
 
 ----
+
+Oh, and let's not forget this small but useful function: +display-version+
+
+.code::ulqui/display-version
+[source,racket,linenums]
+----
+(define (display-version)
+  (displayln (str "Ulquikit v" +ulquikit-version+)))
+----
+
 
 == Managing Ulquikit source code
 
