@@ -23,6 +23,9 @@
 
 (current-curly-dict hash)
 
+(define (display-version)
+  (displayln (str "Ulquikit v" +ulquikit-version+)))
+
 (define +ulqui-script-path+
   (resolve-path (syntax-source #'here)))
 
@@ -33,6 +36,10 @@
 
 (define get-ulqui-module-path
   #λ(build-path +ulqui-dir+ %))
+
+(define +ulquikit-version+
+ (dynamic-require (get-ulqui-module-path "../ulquikit.rkt")
+                  '+ulquikit-version+))
 
 (define string-ends-with?
  (dynamic-require (get-ulqui-module-path "../utils/string.rkt")
@@ -95,9 +102,10 @@ Available commands:
   (newline)
   (displayln
    @str{
-Use 'ulqui help' or 'ulqui --help' to bring this help.
+Use 'ulqui help' or 'ulqui --help' to bring up this help.
 Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
-command.})
+command.
+Use 'ulqui --version' to display current running version of Ulquikit.})
   (newline))
 
 
@@ -114,6 +122,8 @@ command.})
             (if (empty? args)
                 (display-help)
                 (run-help (first args)))]
+           [(string=? "--version" command)
+            (display-version)]
            [(not (member command command-list))
             (displayln (str "-> Invalid command " command ".\n"))
             (display-help)]
