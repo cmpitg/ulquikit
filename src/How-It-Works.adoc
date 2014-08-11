@@ -1959,6 +1959,57 @@ result.
 
 ----
 
+=== The +update+ command
+
+.file::commands/update.rkt
+[source,racket,linenums]
+----
+;; include::license-header
+
+;; include::use-rackjure
+
+(require net/url)
+
+(require "../ulquikit.rkt")
+(require "../command-core.rkt")
+(require "../utils/path.rkt")
+
+(provide run)
+
+(require racket/runtime-path)
+(define-runtime-path +this-directory+ ".")
+
+;; include::ulqui/latest-version
+
+;; include::ulqui/construct-download-url
+
+;; include::ulqui/download-and-unzip
+
+(define (run)
+  (display-command "Updating Ulquikit")
+  (displayln (str "-> Current version: " +ulquikit-version+))
+  (let ([latest-version (get-latest-version)]
+        [ulquikit-dir   (get-path +this-directory+ "../")])
+    (displayln (str "   Latest version:  " latest-version))
+    (cond [(string=? latest-version +ulquikit-version+)
+           (newline)
+           (displayln (str "   Congratulations! You are running latest version of Ulquikit!"))]
+          [else
+           (download-and-unzip latest-version ulquikit-dir)])))
+
+----
+
+Of course, a little piece of help text is always necessary.
+
+.file::commands/update.help.txt
+[source,text,linenums]
+----
+Usage: update
+
+Update Ulquikit to latest version.
+
+----
+
 == Misc
 
 .code::use-rackjure
