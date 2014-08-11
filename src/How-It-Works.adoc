@@ -1491,6 +1491,10 @@ and all functions which are imported need to be ++require++d manually:
 (define get-ulqui-module-path
   #λ(build-path +ulqui-dir+ %))
 
+(define +ulquikit-version+
+ (dynamic-require (get-ulqui-module-path "../ulquikit.rkt")
+                  '+ulquikit-version+))
+
 (define string-ends-with?
  (dynamic-require (get-ulqui-module-path "../utils/string.rkt")
                   'string-ends-with?))
@@ -1529,8 +1533,6 @@ clarified:
 #lang at-exp rackjure
 
 (current-curly-dict hash)
-
-;; include::ulquikit-version
 
 ;; include::ulqui/display-version
 
@@ -2061,10 +2063,28 @@ fi
 
 ----
 
+== Other meta-information
+
+I figure out it's a good practice to good the application's meta-information
+into one module.  Currently, it only contain version information.
+
+.file::ulquikit.rkt
+[source,racket,linenums]
+----
+;; include::license-header
+
+#lang racket
+
+(provide +ulquikit-version+)
+
+;; include::ulquikit-version
+----
+
+
 == License header
 
-Of course, since Ulquikit is distributed under the terms of GPLv3, the license
-header is necessary.
+Since Ulquikit is distributed under the terms of GPLv3, the license header is
+necessary.
 
 .code::license-header
 [source,racket]
