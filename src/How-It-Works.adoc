@@ -1889,6 +1889,25 @@ as the response might content body.
 
 === Download and replace Ulquikit
 
+==== Construct download URL
+
+Let's have a closer look: Version 2.0 has
+https://github.com/cmpitg/ulquikit/releases/download/v0.2/ulquikit-v0.2.zip as
+its download URL.  The filename +ulquikit-v0.2.zip+ certainly depends on
+naming convention, which <<schiffer/mark-release,+schiffer+>> has got us
+covered.  So all download URLs follow the following format:
++https://github.com/cmpitg/ulquikit/releases/download/v{latest-version}/ulquikit-v{latest-version}.zip+.
+Based on that, we have this function to construct download URL of the latest
+version:
+
+.code::ulqui/construct-download-url
+[source,racket,linenums]
+----
+(define (construct-download-url [version (get-latest-version)])
+  (format "https://github.com/cmpitg/ulquikit/releases/download/v~a/ulquikit-v~a.zip"
+          version
+          version))
+----
 
 
 == Misc
