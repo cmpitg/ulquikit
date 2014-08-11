@@ -23,8 +23,6 @@
 
 (current-curly-dict hash)
 
-(define +ulquikit-version+ "0.2")
-
 (define (display-version)
   (displayln (str "Ulquikit v" +ulquikit-version+)))
 
@@ -38,6 +36,10 @@
 
 (define get-ulqui-module-path
   #λ(build-path +ulqui-dir+ %))
+
+(define +ulquikit-version+
+ (dynamic-require (get-ulqui-module-path "../ulquikit.rkt")
+                  '+ulquikit-version+))
 
 (define string-ends-with?
  (dynamic-require (get-ulqui-module-path "../utils/string.rkt")
