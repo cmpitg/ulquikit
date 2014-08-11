@@ -1670,6 +1670,7 @@ Marking current generated source code as stable by replacing
 
 === Release
 
+[[schiffer/mark-release]]
 .code::schiffer/mark-release
 [source,racket,linenums]
 ----
@@ -1867,8 +1868,9 @@ http://docs.racket-lang.org/net/url.html[+net/url+] library, it becomes trivial:
   (string->url "https://github.com/cmpitg/ulquikit/releases/latest"))
 
 (define (get-latest-version)
-  (~> (head-impure-port +latest-release-url+)
-    port->string
+  (~> (call/input-url +latest-release-url+
+                      head-impure-port
+                      port->string)
     string-split
     (dropf #λ(not (string=? "Location:" %)))
     second
