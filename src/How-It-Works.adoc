@@ -1909,6 +1909,55 @@ version:
           version))
 ----
 
+==== Download and unzip
+
+There are a couple of ways to download and unzip the release file, among which
+the following 2 are the most commonly used:
+
+* Using Racket's own API - bad in performance and memory space.
+
+* Calling shell commands - platform-dependant but much better in performance.
+
+Let's make this work first then improve later.  I'm going to choose the 2^nd^
+option for now.
+
+Note that +system+ is used to call external commands, which in turn produce
+some data to standard output and standard error.  Thus we make standard output
+and standard error unbeffered during to +system+ call to achieve the best
+result.
+
+.code::ulqui/download-and-unzip
+[source,racket,linenums]
+----
+(define (download-and-unzip version to-dir)
+  (parameterize ([current-directory to-dir])
+    (let ([url              (construct-download-url version)]
+          [filename         (format "ulquikit-v~a.zip" version)]
+          [out-buffer-mode  (file-stream-buffer-mode (current-output-port))]
+          [err-buffer-mode  (file-stream-buffer-mode (current-error-port))])
+
+      (with-handlers ([exn:fail?
+                       (λ (_)
+                         (file-stream-buffer-mode (current-output-port)
+                                                  out-buffer-mode)
+                         (file-stream-buffer-mode (current-error-port)
+                                                  err-buffer-mode))])
+        (file-stream-buffer-mode (current-output-port) 'none)
+        (file-stream-buffer-mode (current-error-port) 'none)
+
+        (displayln (str "-> Downloading from " url))
+        (system (str "curl -O " url))
+
+        (displayln (str "-> Unzipping " filename ", replacing old version with new version"))
+        (system (str "unzip -o " filename))
+
+        (displayln (str "-> Removing " filename))
+        (delete-directory/files filename)
+
+        (file-stream-buffer-mode (current-output-port) out-buffer-mode)
+        (file-stream-buffer-mode (current-error-port) err-buffer-mode)))))
+
+----
 
 == Misc
 
