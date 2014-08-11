@@ -1903,7 +1903,7 @@ as the response might content body.
 
 === Quick installation script
 
-This comes in handy at times.  This script assumes that *users have already
+This comes in handy at times.  The script assumes that *users have already
 installed Racket and Ruby*.
 
 The user-friendliness provided by the script is the most important, so let's
