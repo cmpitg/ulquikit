@@ -96,6 +96,14 @@ vice versa.
 
 * Making literate programming fun and productive again.
 
+## Communication Channels ##
+
+* For announcements, please join
+  [Ulquikit Announcement mailing list](https://groups.google.com/d/forum/ulquikit-announce).
+
+* For users and developers, should you have any questions or feedbacks, please
+  [raise an issue on Github](https://github.com/cmpitg/ulquikit/issues).
+
 ## Examples ##
 
 ## Requirements ##
