@@ -1678,17 +1678,25 @@ Marking current generated source code as stable by replacing
 ----
 (define (mark-release)
   (mark-stable)
-  (let* ([latest-tag (~> (process "git tag")
-                       first
-                       port->string
-                       string-split
-                       last)]
-         [filename   (format "ulquikit-~a.zip" latest-tag)]
-         [command    (format "zip -r ~a ulquikit" filename)])
+  (let* ([latest-tag       (~> (process "git tag")
+                             first
+                             port->string
+                             string-split
+                             last)]
+         [filename         (format "ulquikit-~a.zip" latest-tag)]
+         [zip-command      (format "zip -r ~a ulquikit" filename)]
+         [checksum-command (format "md5sum ~a > ~a.md5"
+                                   filename
+                                   filename)])
     (parameterize [(current-directory "release")]
       (displayln (str "=> Creating release/" filename))
-      (void (system command)))
-    (newline)))
+      (system zip-command)
+      (newline)
+
+      (displayln (str "=> Creating checksum for release/" filename))
+      (system checksum-command)
+      (displayln (str "   release/" filename " => release/" filename ".md5"))
+      (newline))))
 
 ----
 
