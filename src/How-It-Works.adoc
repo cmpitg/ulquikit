@@ -938,7 +938,7 @@ helpers for +generate-src+.
 
 (define (generate-src-files snippets to)
   (for ([(name snippet) (get-file-snippets snippets)])
-    (let* ([path    (path->string (get-relative-path to name))]
+    (let* ([path    (get-path to name)]
            [content (get-snippet-content snippet)])
       (create-dir (path->directory path))
       (displayln (~a "-> Writing " path))
