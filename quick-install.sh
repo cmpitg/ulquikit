@@ -79,8 +79,8 @@ rm -f ulquikit.zip
 
 if [ `which ulqui >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
     echo '-> Adding ulquikit/bin to your $PATH'
-    [[ -f ~/.bashrc ]] && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.bashrc)
-    [[ -f ~/.zshrc ]] && (echo export PATH=$ULQUI_DIR/release/ulquikit/bin:'$PATH' >> ~/.zshrc)
+    [[ -f ~/.bashrc ]] && (echo export PATH=$ULQUI_DEST/ulquikit/bin:'$PATH' >> ~/.bashrc)
+    [[ -f ~/.zshrc ]] && (echo export PATH=$ULQUI_DEST/ulquikit/bin:'$PATH' >> ~/.zshrc)
 
     echo "-> Done!  Enjoy your time with literate programming!"
 else
