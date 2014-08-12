@@ -133,7 +133,7 @@ This script is interactive and tries to be as user-friendly as possible:
 cd /tmp/ && wget -q https://raw.githubusercontent.com/cmpitg/ulquikit/master/quick-install.sh && bash quick-install.sh
 ```
 
-### Detailed instruction ###
+### Detailed instruction from Github ###
 
 * Install [Racket](http://racket-lang.org/download/) and Ruby.
 
