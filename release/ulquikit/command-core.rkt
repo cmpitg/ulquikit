@@ -161,6 +161,7 @@
         (with-handlers ([exn:fail:contract?
                          (λ (e)
                            (displayln "=> Invalid option(s)")
+                           (displayln e)
                            (newline)
                            (run-help command))])
           (keyword-apply run-func
