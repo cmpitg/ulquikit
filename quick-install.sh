@@ -87,3 +87,5 @@ else
     echo '-> Found ulqui command in your $PATH.'
 fi
 
+export PATH=$ULQUI_DEST/ulquikit/bin:$PATH
+

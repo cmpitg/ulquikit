@@ -21,6 +21,7 @@
 
 (current-curly-dict hash)
 
+(require "ulquikit.rkt")
 (require "utils/path.rkt")
 (require "utils/string.rkt")
 
@@ -28,9 +29,6 @@
          (rename-out [run-help run-command-help]
                      [run-help run-help])
          display-command)
-
-(require racket/runtime-path)
-(define-runtime-path +this-directory+ ".")
 
 (module+ test
   (require rackunit))
@@ -146,7 +144,7 @@
 
 (define (run-command command args)
   (let* ([module-location (string->path
-                           (get-path +this-directory+
+                           (get-path +ulquikit-location+
                                      (format "commands/~a.rkt"
                                              command)))]
          [run-func        (dynamic-require module-location 'run)]
@@ -172,7 +170,7 @@
 
 
 (define (run-help command)
-  (let* ([help-file (get-path +this-directory+
+  (let* ([help-file (get-path +ulquikit-location+
                               (format "commands/~a.help.txt"
                                       command))])
     (displayln (read-file help-file))))

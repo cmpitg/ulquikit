@@ -29,9 +29,6 @@
 
 (provide run)
 
-(require racket/runtime-path)
-(define-runtime-path +this-directory+ ".")
-
 (define +latest-release-url+
   (string->url "https://github.com/cmpitg/ulquikit/releases/latest"))
 
@@ -83,11 +80,10 @@
 (define (run)
   (display-command "Updating Ulquikit")
   (displayln (str "-> Current version: " +ulquikit-version+))
-  (let ([latest-version (get-latest-version)]
-        [ulquikit-dir   (get-path +this-directory+ "../")])
+  (let ([latest-version (get-latest-version)])
     (displayln (str "   Latest version:  " latest-version))
     (cond [(string=? latest-version +ulquikit-version+)
            (newline)
-           (displayln (str "   Congratulations! You are running latest version of Ulquikit!"))]
+           (displayln (str "   Congratulations! You are running the latest version of Ulquikit!"))]
           [else
-           (download-and-unzip latest-version ulquikit-dir)])))
+           (download-and-unzip latest-version +ulquikit-location+)])))

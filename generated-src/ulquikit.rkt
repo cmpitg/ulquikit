@@ -19,6 +19,13 @@
 
 #lang racket
 
-(provide +ulquikit-version+)
+(require racket/path)
+
+(provide +ulquikit-version+
+         +ulquikit-location+)
 
 (define +ulquikit-version+ "0.2.1")
+
+(define-values (+ulquikit-location+ _ __)
+  (split-path (syntax-source #'here)))
+
