@@ -2206,6 +2206,8 @@ retrieve location of Ulquikit.
 
 #lang racket
 
+(require racket/path)
+
 (provide +ulquikit-version+
          +ulquikit-location+)
 
@@ -2216,14 +2218,13 @@ retrieve location of Ulquikit.
 ----
 
 Retrieving location of Ulquikit is simple and straightforward, we'll use
-+runtime-path+ to do that:
++syntax-source+ to do that:
 
 .code::ulquikit-location
 [source,racket,linenums]
 ----
-(require racket/runtime-path)
-
-(define-runtime-path +ulquikit-location+ ".")
+(define-values (+ulquikit-location+ _ __)
+  (split-path (syntax-source #'here)))
 
 ----
 
