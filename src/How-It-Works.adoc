@@ -2196,7 +2196,8 @@ export PATH=$ULQUI_DEST/ulquikit/bin:$PATH
 == Other meta-information
 
 I figure out it's a good practice to good the application's meta-information
-into one module.  Currently, it only contain version information.
+into one module.  Currently, it only contain version information and a way to
+retrieve location of Ulquikit.
 
 .file::ulquikit.rkt
 [source,racket,linenums]
@@ -2205,11 +2206,26 @@ into one module.  Currently, it only contain version information.
 
 #lang racket
 
-(provide +ulquikit-version+)
+(provide +ulquikit-version+
+         +ulquikit-location+)
 
 ;; include::ulquikit-version
+
+;; include::ulquikit-location
+
 ----
 
+Retrieving location of Ulquikit is simple and straightforward, we'll use
++runtime-path+ to do that:
+
+.code::ulquikit-location
+[source,racket,linenums]
+----
+(require racket/runtime-path)
+
+(define-runtime-path +ulquikit-location+ ".")
+
+----
 
 == License header
 
