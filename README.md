@@ -116,6 +116,9 @@ vice versa.
 
 * [AsciiDoctor](http://asciidoctor.org/)
 
+* [Ruby implementation](https://github.com/tmm1/pygments.rb) of
+  [Pygments](http://pygments.org/)
+
 ## Installation ##
 
 Make sure you have Racket and Ruby installed.  One of the best way to install
@@ -154,7 +157,7 @@ cd /tmp/ && wget -q https://raw.githubusercontent.com/cmpitg/ulquikit/master/qui
 * Then install necessary dependencies:
 
   ```sh
-  gem install -V asciidoctor
+  gem install -V asciidoctor pygments.rb
   raco pkg install rackjure
   ```
 
