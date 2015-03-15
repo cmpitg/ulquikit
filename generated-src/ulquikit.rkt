@@ -24,8 +24,9 @@
 (provide +ulquikit-version+
          +ulquikit-location+)
 
-(define +ulquikit-version+ "0.2.1")
+(define +ulquikit-version+ "0.2.2")
 
 (define-values (+ulquikit-location+ _ __)
-  (split-path (syntax-source #'here)))
+  (split-path (or (syntax-source #'here)
+                  (find-system-path 'run-file))))
 

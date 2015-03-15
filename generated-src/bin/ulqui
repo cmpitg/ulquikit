@@ -27,7 +27,8 @@
   (displayln (str "Ulquikit v" +ulquikit-version+)))
 
 (define +ulqui-script-path+
-  (resolve-path (syntax-source #'here)))
+  (simplify-path (or (syntax-source #'here)
+                     (find-system-path 'run-file))))
 
 (define +ulqui-dir+
   (let-values ([(base name must-be-dir?)
