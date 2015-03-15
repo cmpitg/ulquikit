@@ -1480,7 +1480,8 @@ and all functions which are imported need to be ++require++d manually:
 [source,racket,linenums]
 ----
 (define +ulqui-script-path+
-  (resolve-path (syntax-source #'here)))
+  (simplify-path (or (syntax-source #'here)
+                     (find-system-path 'run-file))))
 
 (define +ulqui-dir+
   (let-values ([(base name must-be-dir?)
@@ -2212,13 +2213,21 @@ retrieve location of Ulquikit.
 ----
 
 Retrieving location of Ulquikit is simple and straightforward, we'll use
-+syntax-source+ to do that:
++find-system-path+ in combination with +syntax-source+ to do that.  The reason
+is that:
+
+* If a file is run as script, +syntax-source+ will return +#f+, and
+  +find-system-path+ returns path to the scirpt, which is what we want
+* If a file is run with +racket <filename>+, +syntax-source+ returns the
+  filename (what we expect), while +find-system-path+ returns path to +racket+
+  executable.
 
 .code::ulquikit-location
 [source,racket,linenums]
 ----
 (define-values (+ulquikit-location+ _ __)
-  (split-path (syntax-source #'here)))
+  (split-path (or (syntax-source #'here)
+                  (find-system-path 'run-file))))
 
 ----
 
