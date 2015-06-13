@@ -30,7 +30,7 @@ For building Ulquikit, the following dependencies are required:
 * An ANSI-compliant Common Lisp implementation, preferably
   http://www.sbcl.org[SBCL], with
 ** https://common-lisp.net/project/asdf[ASDF 3] - build tool
-** https://www.quicklisp.org/beta/[Quicklisp] - library/package management
+** https://www.quicklisp.org/beta/[Quicklisp] - library manager
 ** https://github.com/fukamachi/shelly[Shelly] - shelly-friendly interface
 
 For installation of the above software, please consult their official
