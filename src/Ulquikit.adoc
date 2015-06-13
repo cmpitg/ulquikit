@@ -12,9 +12,9 @@
 Current version:
 
 .code::ulquikit-version
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-(define +ulquikit-version+ "0.2.1")
+(defvar *ulquikit-version* "2.0.0")
 ----
 
 
