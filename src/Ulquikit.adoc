@@ -1,5 +1,5 @@
-= Ulquikit - How it works
-:Author: Nguyễn Hà Dương (cmpitg)
+= Ulquikit
+:Author: Ha-Duong Nguyen (cmpitg)
 :Email: <cmpitg@gmail.com>
 :toc: left
 :toclevels: 4
