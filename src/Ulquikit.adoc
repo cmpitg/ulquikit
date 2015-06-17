@@ -64,7 +64,7 @@ documentations.  On my setup, I use:
 == Extracting and including snippets
 
 Ulquikit works by searching for all AsciiDoc documents inside
-+<project-root>/src+ directory, building a database of snippets, including
+`<project-root>/src` directory, building a database of snippets, including
 them into each other if necessary, then generating documentation and source
 code.  Hence, the following functions are probably the most interesting ones:
 
