@@ -78,9 +78,8 @@ Let's talk about +extract-snippets-from-file+ first:
 [[section/extract-snippets]]
 === Extracting snippets
 
-The first thing to do is probably to decide how snippets are stored.  This is
-very important since every change made to this data structure would affect
-code later one.
+First, we need to decide how snippets are stored.  This is very important as
+every change made to this data structure would affect the code later on.
 
 Each snippet is a hash with following format:
 
