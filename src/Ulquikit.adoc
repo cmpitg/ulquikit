@@ -84,20 +84,23 @@ every change made to this data structure would affect the code later on.
 Each snippet is a hash table with following format:
 
 [[snippet-format]]
-<1> is either +'file+ or +'code+
-<2> is the name of the snippet; e.g. snippet with title +file::something+ has
-+something+ as its name.  Note that snippet name is _a string_.
-<3> is the line number from the literate source code from where the snippet is
-extracted
-<4> is the content of the snippet as a list of lines, this is for performance
-purpose
-<5> determines whether this snippet has been processed? to include others, when
-created for the first time, +'processed?+ is always +#f+.  It's only changed
-after the snippet has been passed through
-<<include-snippet,+include-snippet+>>
+[source,lisp]
+----
+`((:type       . ,snippet-type)  <1>
+  (:name       . ,snippet-name)  <2>
+  (:linenum    . ,line-number)   <3>
+  (:lines      . ,snippet-lines) <4>
+  (:processed? . ,processed?))   <5>
+----
+<1> is either `:file` or `:code`
+<2> is the name of the snippet; e.g. snippet with title `file::something` has `something` as its name.  Note that snippet name is _a string_.
+<3> is the line number from the literate source code from where the snippet is extracted
+<4> is the content of the snippet as a list of lines, necessary for performance purpose
+<5> determines whether this snippet has been processed? to include others, when created for the first time, `'processed?` is always `#f`.  It's only changed after the snippet has been passed through <<include-snippet,+include-snippet+>>
 
-IMPORTANT: Snippets should never be created by directly by using hash.  They
-should be created with <<func/create-snippet,+create-snippet+>>.
+IMPORTANT: Snippets should never be created by directly by using
+`make-hash-table`.  They should be created with
+<<func/create-snippet,`create-snippet`>>.
 
 Since a snippet stores a list of lines as its content, it'd be convenient to
 have a helper that joins those lines into a complete string:
