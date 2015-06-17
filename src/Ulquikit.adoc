@@ -75,7 +75,6 @@ code.  Hence, the following functions are probably the most interesting ones:
 
 Let's talk about `extract-snippets-from-file` first:
 
-[[section/extract-snippets]]
 === Extracting snippets
 
 First, we need to decide how snippets are stored.  This is very important as
@@ -574,7 +573,8 @@ After +extract-snippets+, the next important function is +include-snippet+,
 which is use to include other snippets into one targeted snippet.  Let's see
 how we could implement it.
 
-[[section/include-snippets]]
+anchor:section/include-snippets[]
+
 === Including snippets into each other
 
 +include-snippet+ should take 2 arguments: a hash containing all snippets,
