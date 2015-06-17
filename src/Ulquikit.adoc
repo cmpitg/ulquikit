@@ -81,17 +81,9 @@ Let's talk about `extract-snippets-from-file` first:
 First, we need to decide how snippets are stored.  This is very important as
 every change made to this data structure would affect the code later on.
 
-Each snippet is a hash with following format:
+Each snippet is a hash table with following format:
 
 [[snippet-format]]
-[source,lisp,linenums]
-----
-{'type snippet-type          <1>
- 'name snippet-name          <2>
- 'linenum line-number        <3>
- 'lines snippet-lines        <4>
- 'processed? processed?}     <5>
-----
 <1> is either +'file+ or +'code+
 <2> is the name of the snippet; e.g. snippet with title +file::something+ has
 +something+ as its name.  Note that snippet name is _a string_.
