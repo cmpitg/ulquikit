@@ -84,7 +84,7 @@ every change made to this data structure would affect the code later on.
 Each snippet is a hash with following format:
 
 [[snippet-format]]
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
 {'type snippet-type          <1>
  'name snippet-name          <2>
