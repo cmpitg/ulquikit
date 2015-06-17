@@ -68,12 +68,12 @@ Ulquikit works by searching for all AsciiDoc documents inside
 them into each other if necessary, then generating documentation and source
 code.  Hence, the following functions are probably the most interesting ones:
 
-* <<func/extract-snippets-from-file,+extract-snippets-from-file+>>, which
+* <<func/extract-snippets-from-file,`extract-snippets-from-file`>>, which
   helps extract snippets from a file
-* <<func/include-snippet,+include-snippet+>>, which helps
+* <<func/include-snippet,`include-snippet`>>, which helps
   <<section/include-snippets,include snippets>> into each other
 
-Let's talk about +extract-snippets-from-file+ first:
+Let's talk about `extract-snippets-from-file` first:
 
 [[section/extract-snippets]]
 === Extracting snippets
