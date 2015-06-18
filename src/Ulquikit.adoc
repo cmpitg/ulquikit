@@ -105,13 +105,10 @@ Since a snippet stores a list of lines as its content, it'd be convenient to
 have a helper that joins those lines into a complete string:
 
 .code::get-snippet-content
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-;; lang racket
-
-(define get-snippet-content
-  #λ(string-join (% 'lines) "\n"))
-
+(defun get-snippet-content (snippet)
+  (format nil "~{~A~^~%~}" (gethash :lines snippet)))
 ----
 
 +create-snippet+ is simply implemented as followed:
