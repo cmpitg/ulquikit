@@ -80,7 +80,7 @@ Let's talk about `extract-snippets-from-file` first:
 First, we need to decide how snippets are stored.  This is very important as
 every change made to this data structure would affect the code later on.
 
-Each snippet is a hash table with following format:
+Each snippet is struct with following alist representation:
 
 [[snippet-format]]
 [source,lisp]
@@ -97,8 +97,21 @@ Each snippet is a hash table with following format:
 <4> is the content of the snippet as a list of lines, necessary for performance purpose
 <5> determines whether this snippet has been processed? to include others, when created for the first time, `'processed?` is always `#f`.  It's only changed after the snippet has been passed through <<include-snippet,+include-snippet+>>
 
+Thus, a struct representation of a snippet is defined as followed:
+
+.code::define-snippet
+[source,lisp,linenums]
+----
+(defstruct snippet
+  (type :code     :type keyword)
+  (name ""        :type string)
+  (linenum 0      :type integer)
+  (lines (list)   :type list)
+  (processed? nil :type boolean))
+----
+
 IMPORTANT: Snippets should never be created by directly by using
-`make-hash-table`.  They should be created with
+`make-snippet`.  They should be created with
 <<func/create-snippet,`create-snippet`>>.
 
 Since a snippet stores a list of lines as its content, it'd be convenient to
