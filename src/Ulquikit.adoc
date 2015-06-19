@@ -135,25 +135,18 @@ anchor:func/create-snippet[]
 ----
 ;; include::get-snippet-content
 
-(define (create-snippet #:type type
-                        #:name name
-                        #:linenum linenum
-                        #:lines lines
-                        #:processed? [processed? #f])
-  (let ([type (if (symbol? type)
-                  type
-                  (string->symbol type))]
-        [name (if (symbol? name)
-                  (symbol->string name)
-                  name)]
-        [lines (if (string? lines)
-                   (string-split lines "\n" #:trim? #f)
-                   lines)])
-    {'type type
-     'name name
-     'linenum linenum
-     'lines lines
-     'processed? processed?}))
+(defun create-snippet (&key type name linenum lines (processed? nil))
+  "Helper to create snippet."
+  (let ((type (->keyword type))
+        (name (->string name))
+        (lines (if (stringp lines)
+                   (split-sequence #\Newline lines)
+                 lines)))
+    (the snippet (make-snippet :type type
+                               :name name
+                               :linenum linenum
+                               :lines lines
+                               :processed? processed?))))
 
 (module+ test
   (check-equal? (create-snippet #:type 'file
