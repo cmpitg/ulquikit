@@ -121,7 +121,10 @@ have a helper that joins those lines into a complete string:
 [source,lisp,linenums]
 ----
 (defun get-snippet-content (snippet)
-  (format nil "~{~A~^~%~}" (gethash :lines snippet)))
+  "Returns the content of a snippet, i.e. all of its lines are joined by
+newline characters."
+  (declare (type (snippet snippet)))
+  (format nil "~{~A~^~%~}" (snippet-lines snippet)))
 ----
 
 `create-snippet` is simply implemented as followed:
