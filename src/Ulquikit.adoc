@@ -111,14 +111,12 @@ have a helper that joins those lines into a complete string:
   (format nil "~{~A~^~%~}" (gethash :lines snippet)))
 ----
 
-+create-snippet+ is simply implemented as followed:
+`create-snippet` is simply implemented as followed:
 
-[[func/create-snippet]]
+anchor:func/create-snippet[]
 .code::create-snippet
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-;; #lang racket
-
 ;; include::get-snippet-content
 
 (define (create-snippet #:type type
