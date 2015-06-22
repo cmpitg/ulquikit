@@ -75,6 +75,18 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
 
 (in-package #:ulquikit)
 ----
+
+Along with the main package comes the test one.  I decide to use
+https://github.com/capitaomorte/fiasco[Fiasco] since it has very nice
+interface and helpful messages.
+
+.code::defpackage-ulquikit-tests
+[source,lisp,linenums]
+----
+(fiasco:define-test-package #:ulquikit-tests
+  (:use :cl :ulquikit))
+----
+
 == Extracting and including snippets
 
 Ulquikit works by searching for all AsciiDoc documents inside
