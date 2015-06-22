@@ -66,6 +66,15 @@ documentations.  On my setup, I use:
 Before going into any detail, I would like to define the interfaces that
 Ulquikit uses to interact with the outside world as a Common Lisp package.
 
+.code::defpackage-ulquikit
+[source,lisp,linenums]
+----
+(defpackage #:ulquikit
+  (:use :cl :alexandria :split-sequence)
+  (:export "generate-src" "generate-html"))
+
+(in-package #:ulquikit)
+----
 == Extracting and including snippets
 
 Ulquikit works by searching for all AsciiDoc documents inside
