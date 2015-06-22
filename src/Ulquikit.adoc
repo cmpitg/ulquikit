@@ -61,6 +61,11 @@ documentations.  On my setup, I use:
    include::some-snippet-name */`, or XML-style `<!--
    include::some-snippet-name -->`.
 
+== Interfaces
+
+Before going into any detail, I would like to define the interfaces that
+Ulquikit uses to interact with the outside world as a Common Lisp package.
+
 == Extracting and including snippets
 
 Ulquikit works by searching for all AsciiDoc documents inside
