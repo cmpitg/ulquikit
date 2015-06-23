@@ -66,7 +66,7 @@ documentations.  On my setup, I use:
 Before going into any detail, I would like to define the interfaces that
 Ulquikit uses to interact with the outside world as a Common Lisp package.
 
-.code::defpackage-ulquikit
+.code::src/package.lisp
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit
@@ -82,7 +82,7 @@ Along with the main package comes the test one.  I decide to use
 https://github.com/capitaomorte/fiasco[Fiasco] since it has very nice
 interface and helpful messages.
 
-.code::defpackage-ulquikit-tests
+.code::src/package-test.lisp
 [source,lisp,linenums]
 ----
 (fiasco:define-test-package #:ulquikit-tests
