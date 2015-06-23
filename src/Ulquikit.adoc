@@ -73,7 +73,8 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
   (:use :cl :alexandria :split-sequence :fiasco)
   (:export #:generate-src
            #:generate-html
-           #:snippet))
+           #:snippet
+           #:create-snippet))
 
 (in-package #:ulquikit)
 ----
