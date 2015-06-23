@@ -183,25 +183,33 @@ anchor:func/create-snippet[]
                                :lines lines
                                :processed? processed?))))
 
-(module+ test
-  (check-equal? (create-snippet #:type 'file
-                                #:name 'hello-world
-                                #:linenum 10
-                                #:lines '("Hmm"))
-                {'type 'file
-                 'name "hello-world"
-                 'linenum 10
-                 'lines '("Hmm")
-                 'processed? #f})
-  (check-equal? (create-snippet #:type "string"
-                                #:name "string"
-                                #:linenum 100
-                                #:lines "string")
-                {'type 'string
-                 'name "string"
-                 'linenum 100
-                 'lines '("string")
-                 'processed? #f}))
+(in-package #:ulquikit-tests)
+
+(deftest snippet-creation ()
+  (is (equalp #S(snippet
+                 :type :file
+                 :name "hello-world"
+                 :linenum 10
+                 :lines ("Hmm")
+                 :processed? nil)
+              (create-snippet :type :file
+                              :name 'hello-world
+                              :linenum 10
+                              :lines '("Hmm"))))
+  (is (equalp #S(snippet
+                 :type :string
+                 :name "string"
+                 :linenum 100
+                 :lines ("string")
+                 :processed? t)
+              (create-snippet :type "string"
+                              :name "string"
+                              :linenum 100
+                              :lines "string"
+                              :processed? t))))
+
+;;; (run-package-tests)
+
 
 ----
 
