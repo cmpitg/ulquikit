@@ -131,6 +131,8 @@ Thus, a struct representation of a snippet is defined as followed:
 .code::define-snippet
 [source,lisp,linenums]
 ----
+(in-package #:ulquikit)
+
 (defstruct snippet
   (type :code     :type keyword)
   (name ""        :type string)
@@ -149,6 +151,8 @@ have a helper that joins those lines into a complete string:
 .code::get-snippet-content
 [source,lisp,linenums]
 ----
+(in-package #:ulquikit)
+
 (defun get-snippet-content (snippet)
   "Returns the content of a snippet, i.e. all of its lines are joined by
 newline characters."
@@ -163,6 +167,8 @@ anchor:func/create-snippet[]
 [source,lisp,linenums]
 ----
 ;; include::get-snippet-content
+
+(in-package #:ulquikit)
 
 (defun create-snippet (&key type name linenum lines (processed? nil))
   "Helper to create snippet."
