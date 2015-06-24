@@ -399,23 +399,29 @@ anchor:func/extract-snippets-from-file[]
 
     (unbox snippets)))
 
-----
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Of course, for +extract-snippets-from-file+ to function, the following helpers are
-necessary:
+(in-package #:ulquikit)
 
-.code::extract-snippets-from-file-helpers
-[source,racket,linenums]
-----
 (define is-block-delimiter?
   #λ(regexp-match? #rx"^----( *)$" %))
 
+(defun is-block-delimiter? ()
+  t)
+
+(in-package #:ulquikit-tests)
+
+(deftest is-block-delimiter? ()
+  (is (equal t   (is-block-delimiter? "----")))
+  (is (equal nil (is-block-delimiter? " ----")))
+  (is (equal t   (is-block-delimiter? "---- ")))
+  (is (equal t   (is-block-delimiter? "----  ")))
+  (is (equal nil (is-block-delimiter? "----a"))))
+
 (module+ test
-  (check-equal? (is-block-delimiter? "----")    #t)
-  (check-equal? (is-block-delimiter? " ----")   #f)
-  (check-equal? (is-block-delimiter? "---- ")   #t)
-  (check-equal? (is-block-delimiter? "----  ")  #t)
-  (check-equal? (is-block-delimiter? "----a")   #f))
+  )
 
 (define is-block-title?
   #λ(regexp-match? #rx"^\\.(file|code)::" %))
@@ -490,7 +496,6 @@ necessary:
                                          'linenum 100
                                          'lines '("Something else")
                                          'processed? #f}}}))
-
 ----
 
 As a result, +extract-snippets+, which extracts snippets from all AsciiDoc
