@@ -236,8 +236,8 @@ Now the helper +create-snippet+ is ready.  Let's move on to
 
 +extract-snippets-from-file+ needs to determine whether _a line in a code
 block_ belongs to a _code snippet_, or _file snippet_, or none of those; then
-extracts the content of the code block and store it if necessary.  Let's have
-a look at 3 types of code block to see how we could tackle this problem:
+extracts the content of the code block and store it if necessary.  The 3 types
+of code block that we deal with are as followed:
 
 * A _code snippet_ has the following format:
 +
@@ -312,10 +312,9 @@ delimiters is stored as the content of the snippet.
 
 Hence, we have the following algorithm for +extract-snippets-from-file+:
 
-* Read the content of a file
+* Read the content of a file;
 
-* Break the content into lines preserving line numbers (call +string-split+
-  with +#:trim? #f+).
+* Break the content into lines, preserving line numbers;
 
 * For each line:
 
