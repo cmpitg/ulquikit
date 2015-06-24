@@ -89,7 +89,9 @@ interface and helpful messages.
 [source,lisp,linenums]
 ----
 (fiasco:define-test-package #:ulquikit-tests
-  (:use :cl :ulquikit))
+  (:use :cl :ulquikit)
+  (:import-from #:ulquikit
+                #:is-block-delimiter?))
 ----
 
 == Extracting and including snippets
