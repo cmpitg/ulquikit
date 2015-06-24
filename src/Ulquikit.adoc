@@ -343,7 +343,7 @@ anchor:func/extract-snippets-from-file[]
 .code::extract-snippets-from-file
 [source,lisp,linenums]
 ----
-;; include::extract-snippets-from-file-helpers
+(in-package #:ulquikit)
 
 (define (extract-snippets-from-file path)
   (let* ([file-content (read-file path)]
