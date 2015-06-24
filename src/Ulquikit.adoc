@@ -335,9 +335,9 @@ Hence, we have the following algorithm for +extract-snippets-from-file+:
 
 *** If this block does not mark the beginning of a snippet, ignore it.
 
-[[func/extract-snippets-from-file]]
+anchor:func/extract-snippets-from-file[]
 .code::extract-snippets-from-file
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
 ;; include::extract-snippets-from-file-helpers
 
