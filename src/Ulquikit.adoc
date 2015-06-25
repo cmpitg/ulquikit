@@ -456,11 +456,13 @@ TODO: Make this extensible."
       (append '(""))
       (list-ref 1)))
 
-(module+ test
-  (check-equal? (get-snippet-name ".file::")     "")
-  (check-equal? (get-snippet-name ".code::")     "")
-  (check-equal? (get-snippet-name ".file::abc")  "abc")
-  (check-equal? (get-snippet-name ".code::a b")  "a b"))
+(in-package #:ulquikit-tests)
+
+(deftest retrieve-snippet-name ()
+  (is (equal (get-snippet-name ".file::")     ""))
+  (is (equal (get-snippet-name ".code::")     ""))
+  (is (equal (get-snippet-name ".file::abc")  "abc"))
+  (is (equal (get-snippet-name ".code::a b")  "a b")))
 
 (define (add-snippets snippets snippet)
   (let* ([type (snippet 'type)]
