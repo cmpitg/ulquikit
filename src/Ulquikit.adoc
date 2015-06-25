@@ -450,15 +450,22 @@ TODO: Make this extensible."
   (is (equal (get-snippet-type ".file::") :file))
   (is (equal (get-snippet-type ".code::") :code)))
 
-(define get-snippet-name
-  #λ(~> (string-rest %)
-      (string-split "::")
-      (append '(""))
-      (list-ref 1)))
+(in-package #:ulquikit)
+
+(defun get-snippet-name (title)
+  "Extracts snippet type.  `title' is one of the following formats: .file::
+or .code::
+
+TODO: Make this extensible."
+  (multiple-value-bind
+        (_ res) (scan-to-strings "\.(file|code)::(.*)" title)
+    (declare (ignore _))
+    (aref res 1)))
 
 (in-package #:ulquikit-tests)
 
 (deftest retrieve-snippet-name ()
+  (import 'ulquikit::get-snippet-name)
   (is (equal (get-snippet-name ".file::")     ""))
   (is (equal (get-snippet-name ".code::")     ""))
   (is (equal (get-snippet-name ".file::abc")  "abc"))
