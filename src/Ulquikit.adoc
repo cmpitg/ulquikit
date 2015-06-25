@@ -434,12 +434,12 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit)
 
-(defun get-snippet-type (snippet)
-  "Extracts snippet type.  `snippet' is one of the following formats: .file::
+(defun get-snippet-type (title)
+  "Extracts snippet type.  `title' is one of the following formats: .file::
 or .code::
 
 TODO: Make this extensible."
-  (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::" snippet)
+  (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::" title)
     (declare (ignore _))
     (->keyword (aref res 0))))
 
