@@ -403,21 +403,20 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit)
 
-(defun is-block-delimiter? (str)
+(defun block-delimiter? (str)
   "Determines if a string is a block delimiter.  TODO: Make this extensible."
   (scan "^----( *)$" str))
 
 (in-package #:ulquikit-tests)
 
-(deftest test-is-block-delimiter? ()
-  (is (is-block-delimiter? "----"))
-  (is (not (is-block-delimiter? " ----")))
-  (is (is-block-delimiter? "---- "))
-  (is (is-block-delimiter? "----  "))
-  (is (not (is-block-delimiter? "----a"))))
+(deftest block-delimiter ()
+  (import 'ulquikit::block-delimiter?)
+  (is (block-delimiter? "----"))
+  (is (not (block-delimiter? " ----")))
+  (is (block-delimiter? "---- "))
+  (is (block-delimiter? "----  "))
+  (is (not (block-delimiter? "----a"))))
 
-(define is-block-title?
-  #λ(regexp-match? #rx"^\\.(file|code)::" %))
 
 (module+ test
   (check-equal? (is-block-title? ".file::something")       #t)
