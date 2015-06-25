@@ -432,15 +432,17 @@ anchor:func/extract-snippets-from-file[]
   (is (block-title? ".file::"))
   (is (null (block-title? ".file:something"))))
 
-(define get-snippet-type
-  #λ(~> (string-rest %)
-      (string-split "::")
-      (list-ref 0)
-      string->symbol))
+(in-package #:ulquikit)
 
-(module+ test
-  (check-equal? (get-snippet-type ".file::")  'file)
-  (check-equal? (get-snippet-type ".code::")  'code))
+(defun get-snippet-type (snippet)
+  "Extracts snippet type.  `snippet' is one of the following formats: .file::
+or .code::
+
+TODO: Make this extensible."
+  (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::" snippet)
+    (declare (ignore _))
+    (->keyword (aref res 0))))
+
 
 (define get-snippet-name
   #λ(~> (string-rest %)
