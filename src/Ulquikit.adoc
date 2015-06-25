@@ -411,6 +411,12 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
+(deftest test-is-block-delimiter? ()
+  (is (is-block-delimiter? "----"))
+  (is (not (is-block-delimiter? " ----")))
+  (is (is-block-delimiter? "---- "))
+  (is (is-block-delimiter? "----  "))
+  (is (not (is-block-delimiter? "----a"))))
 
 (define is-block-title?
   #λ(regexp-match? #rx"^\\.(file|code)::" %))
