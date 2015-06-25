@@ -443,6 +443,12 @@ TODO: Make this extensible."
     (declare (ignore _))
     (->keyword (aref res 0))))
 
+(in-package #:ulquikit-tests)
+
+(deftest retrieve-snippet-type ()
+  (import 'ulquikit::get-snippet-type)
+  (is (equal (get-snippet-type ".file::") :file))
+  (is (equal (get-snippet-type ".code::") :code)))
 
 (define get-snippet-name
   #λ(~> (string-rest %)
