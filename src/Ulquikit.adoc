@@ -417,12 +417,20 @@ anchor:func/extract-snippets-from-file[]
   (is (block-delimiter? "----  "))
   (is (not (block-delimiter? "----a"))))
 
+(in-package #:ulquikit)
 
-(module+ test
-  (check-equal? (is-block-title? ".file::something")       #t)
-  (check-equal? (is-block-title? ".file::something else")  #t)
-  (check-equal? (is-block-title? ".file::")                #t)
-  (check-equal? (is-block-title? ".file:something")        #f))
+(defun block-title? (str)
+  "Determines if a string is a block title.  TODO: Make this extensible."
+  (scan "^\\.(file|code)::" str))
+
+(in-package #:ulquikit-tests)
+
+(deftest block-title ()
+  (import 'ulquikit::block-title?)
+  (is (block-title? ".file::something"))
+  (is (block-title? ".file::something else"))
+  (is (block-title? ".file::"))
+  (is (null (block-title? ".file:something"))))
 
 (define get-snippet-type
   #λ(~> (string-rest %)
