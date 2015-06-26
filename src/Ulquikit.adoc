@@ -493,40 +493,55 @@ TODO: Make this extensible."
          [snippets/typed/updated (snippets/typed name snippet)])
     (snippets type snippets/typed/updated)))
 
-(module+ test
-  (check-equal? (add-snippets {'file {}
-                               'code {}}
-                              (create-snippet #:type 'file
-                                              #:name 'hello
-                                              #:linenum 10
-                                              #:lines '("Something")))
-                {'file {"hello" {'type 'file
-                                 'name "hello"
-                                 'linenum 10
-                                 'lines '("Something")
-                                 'processed? #f}}
-                 'code {}})
+(in-package #:ulquikit-tests)
 
-  (check-equal? (add-snippets {'file {"hello" {'type 'file
-                                               'name "hello"
-                                               'linenum 10
-                                               'lines '("Something")
-                                               'processed? #f}}
-                               'code {}}
-                              (create-snippet #:type 'code
-                                              #:name 'say-something
-                                              #:linenum 100
-                                              #:lines '("Something else")))
-                {'file {"hello" {'type 'file
-                                 'name "hello"
-                                 'linenum 10
-                                 'lines '("Something")
-                                 'processed? #f}}
-                 'code {"say-something" {'type 'code
-                                         'name "say-something"
-                                         'linenum 100
-                                         'lines '("Something else")
-                                         'processed? #f}}}))
+(deftest test-collect-snippets ()
+  (import 'ulquikit::snippets)
+  (import 'ulquikit::make-snippets)
+  (import 'ulquikit::collect-snippet)
+  (is (equalp (collect-snippet snippets
+                               (create-snippet :type :file
+                                               :name :hello
+                                               :linenum 10
+                                               :lines '("Something")))
+              (make-snippets
+               :file (alist-hash-table `(("hello" . ,#s(snippet
+                                                        :type :file
+                                                        :name "hello"
+                                                        :linenum 10
+                                                        :lines ("Something")
+                                                        :processed? nil)))
+                                       :test #'equal)
+               :code (make-hash-table :test #'equal))))
+
+  (is (equalp (collect-snippet
+               (make-snippets
+                :file (alist-hash-table `(("hello" . ,#s(snippet
+                                                         :type :file
+                                                         :name "hello"
+                                                         :linenum 10
+                                                         :lines ("Something")
+                                                         :processed? nil))))
+                :code (make-hash-table :test #'equal))
+               (create-snippet :type 'code
+                               :name 'say-something
+                               :linenum 100
+                               :lines '("Something else")))
+              (make-snippets :file (alist-hash-table
+                                    `(("hello" . ,#s(snippet
+                                                     :type :file
+                                                     :name "hello"
+                                                     :linenum 10
+                                                     :lines ("Something")
+                                                     :processed? nil))))
+                             :code (alist-hash-table
+                                    `(("say-something" . #s(snippet
+                                                            :type :code
+                                                            :name "say-something"
+                                                            :linenum 100
+                                                            :lines ("Something else")
+                                                            :processed? nil))))))))
+
 ----
 
 As a result, +extract-snippets+, which extracts snippets from all AsciiDoc
