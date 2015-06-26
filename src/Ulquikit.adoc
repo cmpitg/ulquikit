@@ -485,13 +485,24 @@ TODO: Make this extensible."
 
 (in-package #:ulquikit)
 
-(define (add-snippets snippets snippet)
-  (let* ([type (snippet 'type)]
-         [name (snippet 'name)]
-
-         [snippets/typed         (snippets type)]
-         [snippets/typed/updated (snippets/typed name snippet)])
-    (snippets type snippets/typed/updated)))
+(defun collect-snippet (snippets snippet)
+  "Collects `snippet' into the list of snippets."
+  (declare (type snippets snippets)
+           (type snippet  snippet))
+  (let* ((type (snippet-type snippet))
+         (name (snippet-name snippet))
+         (current-file (snippets-file snippets))
+         (current-code (snippets-code snippets))
+         (file (case type
+                 (:file     (setf (gethash name current-file) snippet)
+                            current-file)
+                 (otherwise current-file)))
+         (code (case type
+                 (:code     (setf (gethash name current-code) snippet)
+                            current-code)
+                 (otherwise current-code))))
+    (the snippets (make-snippets :file file
+                                 :code code))))
 
 (in-package #:ulquikit-tests)
 
