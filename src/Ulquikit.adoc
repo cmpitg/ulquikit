@@ -483,6 +483,8 @@ TODO: Make this extensible."
   (is (equal (get-snippet-name ".file::abc")  "abc"))
   (is (equal (get-snippet-name ".code::a b")  "a b")))
 
+(in-package #:ulquikit)
+
 (define (add-snippets snippets snippet)
   (let* ([type (snippet 'type)]
          [name (snippet 'name)]
