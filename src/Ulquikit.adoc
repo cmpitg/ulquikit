@@ -312,7 +312,19 @@ could be determined by checking 2^nd^ previous line from block delimiter to
 see if it starts with +.file::+ or +.code::+.  Everything between the 2
 delimiters is stored as the content of the snippet.
 
-Hence, we have the following algorithm for +extract-snippets-from-file+:
+Before diving into +extract-snippets-from-file+, let us define a data
+structure for storing all snippets:
+
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defstruct snippets
+  (file (make-hash-table :test #'equal) :type hash-table)
+  (code (make-hash-table :test #'equal) :type hash-table))
+----
+
+We have the following algorithm for +extract-snippets-from-file+:
 
 * Read the content of a file;
 
