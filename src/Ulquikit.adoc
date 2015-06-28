@@ -361,6 +361,12 @@ anchor:func/extract-snippets-from-file[]
 ----
 (in-package #:ulquikit)
 
+(defun read-file (path)
+  "Reads a file as UTF-8 encoded string."
+  (declare (type (or string pathname) path))
+  (the string (with-open-file (in path :element-type '(unsigned-byte 8))
+                (read-utf-8-string in :stop-at-eof t))))
+
 (define (extract-snippets-from-file path)
   (let* ([file-content (read-file path)]
          [lines        (string-split file-content "\n" #:trim? #f)]
