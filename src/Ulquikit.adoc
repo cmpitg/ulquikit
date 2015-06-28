@@ -70,7 +70,12 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit
-  (:use :cl :alexandria :split-sequence :fiasco :cl-ppcre)
+  (:use :cl
+        :alexandria
+        :split-sequence
+        :fiasco
+        :cl-ppcre
+        :cl-cwd)
   (:export #:generate-src
            #:generate-html
 
