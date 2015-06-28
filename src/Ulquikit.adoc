@@ -406,7 +406,7 @@ anchor:func/extract-snippets-from-file[]
             ((and (not inside?) (block-delimiter? line))
 
              (when-let (title (cond ((block-title? prev-line) prev-line)
-                                    ((block-title? prev-prev-line) (prev-prev-line))
+                                    ((block-title? prev-prev-line) prev-prev-line)
                                     (t nil)))
                (multiple-value-bind (type name) (parse-snippet-title title)
                  (setf s/type      type
