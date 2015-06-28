@@ -390,7 +390,7 @@ anchor:func/extract-snippets-from-file[]
 
       (cond ((and inside? (not (block-delimiter? line)))
 
-             (push s/lines/rev line))
+             (push line s/lines/rev))
 
             ((and inside? (block-delimiter? line))
 
