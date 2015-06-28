@@ -55,7 +55,7 @@ supply code*.  Hence, it is not about generating beautiful documentation.
 
 * Harder to debug using traditional tools.
 
-* Cannot apply rapid development (perhaps?).
+* Not really suitable for rapid development.
 
 * When you hate writing documentation.
 
@@ -64,8 +64,7 @@ supply code*.  Hence, it is not about generating beautiful documentation.
 * Making literate programming fun and productive again.
 
 * Using the excellent http://asciidoc.org[AsciiDoc] as the default markup
-  language.  Why not Markdown?  AsciiDoc is more complete in every
-  possible way.
+  language.
 
 * APIs are *designed for human being*.
 
