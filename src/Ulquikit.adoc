@@ -361,12 +361,6 @@ anchor:func/extract-snippets-from-file[]
 ----
 (in-package #:ulquikit)
 
-(defun read-file (path)
-  "Reads a file as UTF-8 encoded string."
-  (declare (type (or string pathname) path))
-  (the string (with-open-file (in path :element-type '(unsigned-byte 8))
-                (read-utf-8-string in :stop-at-eof t))))
-
 (defun extract-snippets-from-file (path)
   "Extracts snippets from a file."
   (declare (type (or string pathname) path))
@@ -431,6 +425,14 @@ anchor:func/extract-snippets-from-file[]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun read-file (path)
+  "Reads a file as UTF-8 encoded string."
+  (declare (type (or string pathname) path))
+  (the string (with-open-file (in path :element-type '(unsigned-byte 8))
+                (read-utf-8-string in :stop-at-eof t))))
 
 (in-package #:ulquikit)
 
