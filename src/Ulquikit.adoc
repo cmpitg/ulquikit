@@ -461,31 +461,6 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit)
 
-(defun get-snippet-type (title)
-  "Extracts snippet type.  `title' is one of the following formats: .file::
-or .code::
-
-TODO: Make this extensible."
-  (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::" title)
-    (declare (ignore _))
-    (->keyword (aref res 0))))
-
-(in-package #:ulquikit-tests)
-
-(deftest retrieve-snippet-type ()
-  (import 'ulquikit::get-snippet-type)
-  (is (equal (get-snippet-type ".file::") :file))
-  (is (equal (get-snippet-type ".code::") :code)))
-
-(in-package #:ulquikit)
-
-(defun get-snippet-name (title)
-  "Extracts snippet type.  `title' is one of the following formats: .file::
-or .code::
-
-TODO: Make this extensible."
-  (multiple-value-bind
-        (_ res) (scan-to-strings "\.(file|code)::(.*)" title)
 (defun parse-snippet-title (title)
   "Parses a snippet title and returns `(values <snippet-type>
 <snippet-name>)'."
@@ -497,12 +472,6 @@ TODO: Make this extensible."
 
 (in-package #:ulquikit-tests)
 
-(deftest retrieve-snippet-name ()
-  (import 'ulquikit::get-snippet-name)
-  (is (equal (get-snippet-name ".file::")     ""))
-  (is (equal (get-snippet-name ".code::")     ""))
-  (is (equal (get-snippet-name ".file::abc")  "abc"))
-  (is (equal (get-snippet-name ".code::a b")  "a b")))
 (deftest test-parse-snippet-title ()
   (import 'ulquikit::parse-snippet-title)
   (dolist (el '((".file::"    . (:file ""))
