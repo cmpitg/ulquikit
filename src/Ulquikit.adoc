@@ -367,59 +367,62 @@ anchor:func/extract-snippets-from-file[]
   (the string (with-open-file (in path :element-type '(unsigned-byte 8))
                 (read-utf-8-string in :stop-at-eof t))))
 
-(define (extract-snippets-from-file path)
-  (let* ([file-content (read-file path)]
-         [lines        (string-split file-content "\n" #:trim? #f)]
+(defun extract-snippets-from-file (path)
+  "Extracts snippets from a file."
+  (declare (type (or string pathname) path))
+  (let* ((text (string-trim '(#\Space #\Newline #\e #\t #\m) (read-file path)))
+         (lines (split-sequence #\Newline text))
 
-         [snippets        (box {'file {}
-                                      'code {}})]
+         (snippets (make-snippets))
 
-         [prev-prev-line  (box "")]
-         [prev-line       (box "")]
+         (prev-prev-line "")
+         (prev-line      "")
+         (linenum        0)             ; current line number
+         (inside?        nil)           ; current inside a snippet?
 
-         [snippet-type    (box null)]
-         [snippet-lines   (box '())]
-         [snippet-name    (box "")]
-         [snippet-linenum (box 0)]
-         [inside-snippet  (box #f)])
+         (s/type       :code)
+         (s/lines/rev  (list))
+         (s/name       "")
+         (s/linenum    0)
+         )
+    (dolist (line lines)
+      (incf linenum)
 
-    (for ([line-num    (in-naturals 1)]
-          [line        (in-list lines)])
+      (cond ((and inside? (not (block-delimiter? line)))
 
-      (cond [(and (unbox inside-snippet)
-                  (not (is-block-delimiter? line)))
+             (push s/lines/rev line))
 
-             (box-swap! snippet-lines append (list line))]
+            ((and inside? (block-delimiter? line))
 
-            [(and (unbox inside-snippet)
-                  (is-block-delimiter? line))
+             ;; Close the current snippet
+             (setf inside?  nil
+                   snippets (collect-snippet snippets
+                                             (create-snippet
+                                              :type s/type
+                                              :name s/name
+                                              :lines (nreverse s/lines/rev)
+                                              :linenum s/linenum))))
 
-             (box-set! inside-snippet #f)
-             (box-swap! snippets
-                        add-snippets
-                        (create-snippet #:type (unbox snippet-type)
-                                        #:name (unbox snippet-name)
-                                        #:linenum (unbox snippet-linenum)
-                                        #:lines (unbox snippet-lines)))]
-            [(is-block-delimiter? line)
+            ((and (not inside?) (block-delimiter? line))
 
-             (when (or (is-block-title? (unbox prev-prev-line))
-                       (is-block-title? (unbox prev-line)))
-               (let ([title-line (if (is-block-title? (unbox prev-prev-line))
-                                     (unbox prev-prev-line)
-                                     (unbox prev-line))])
-                 (box-set! inside-snippet #t)
+             (when-let (title (cond ((block-title? prev-line) prev-line)
+                                    ((block-title? prev-prev-line) (prev-prev-line))
+                                    (t nil)))
+               (multiple-value-bind (type name) (parse-snippet-title title)
+                 (setf s/type      type
+                       s/name      name
+                       s/lines/rev (list)
+                       s/linenum   (1- linenum))))))
 
-                 (box-set! snippet-type (get-snippet-type title-line))
-                 (box-set! snippet-name (get-snippet-name title-line))
-                 (box-set! snippet-lines '())
-                 (box-set! snippet-linenum (dec line-num))))])
+      ;; Update previous lines
+      (unless (zerop (length (string-trim '(#\Space #\Newline #\e #\t #\m) line)))
+        (setf prev-prev-line prev-line
+              prev-line      line)))
 
-      ;; Always update previous line
-      (box-set! prev-prev-line (unbox prev-line))
-      (box-set! prev-line      line))
+    (list linenum (length lines) snippets)))
 
-    (unbox snippets)))
+;; (extract-snippets-from-file "/m/src/ulquikit/src/Ulquikit.adoc")
+;; (time (extract-snippets-from-file "/m/src/ulquikit/src/Ulquikit.adoc"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
