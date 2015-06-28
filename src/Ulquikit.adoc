@@ -486,8 +486,14 @@ or .code::
 TODO: Make this extensible."
   (multiple-value-bind
         (_ res) (scan-to-strings "\.(file|code)::(.*)" title)
+(defun parse-snippet-title (title)
+  "Parses a snippet title and returns `(values <snippet-type>
+<snippet-name>)'."
+  (declare (type string title))
+  (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::(.*)" title)
     (declare (ignore _))
-    (aref res 1)))
+    (values (the keyword (->keyword (aref res 0)))
+            (the string  (aref res 1)))))
 
 (in-package #:ulquikit-tests)
 
@@ -497,6 +503,16 @@ TODO: Make this extensible."
   (is (equal (get-snippet-name ".code::")     ""))
   (is (equal (get-snippet-name ".file::abc")  "abc"))
   (is (equal (get-snippet-name ".code::a b")  "a b")))
+(deftest test-parse-snippet-title ()
+  (import 'ulquikit::parse-snippet-title)
+  (dolist (el '((".file::"    . (:file ""))
+                (".code::"    . (:code ""))
+                (".file::abc" . (:file "abc"))
+                (".code::a b" . (:code "a b"))))
+    (let ((title    (first el))
+          (expected (rest  el)))
+      (multiple-value-bind (type name) (parse-snippet-title title)
+        (is (equal expected (list type name)))))))
 
 (in-package #:ulquikit)
 
