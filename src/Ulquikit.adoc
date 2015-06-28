@@ -383,10 +383,12 @@ anchor:func/extract-snippets-from-file[]
          (s/type       :code)
          (s/lines/rev  (list))
          (s/name       "")
-         (s/linenum    0)
-         )
+         (s/linenum    0))
     (dolist (line lines)
       (incf linenum)
+
+      ;; (format t "~A |> ~A~%" linenum line)
+      ;; (format t "   |> block? ~A~%" (block-delimiter? line))
 
       (cond ((and inside? (not (block-delimiter? line)))
 
@@ -404,12 +406,14 @@ anchor:func/extract-snippets-from-file[]
                                               :linenum s/linenum))))
 
             ((and (not inside?) (block-delimiter? line))
+             ;; (format t "  found snippet > num: ~A~%" linenum)
 
              (when-let (title (cond ((block-title? prev-line) prev-line)
                                     ((block-title? prev-prev-line) prev-prev-line)
                                     (t nil)))
                (multiple-value-bind (type name) (parse-snippet-title title)
-                 (setf s/type      type
+                 (setf inside?     t
+                       s/type      type
                        s/name      name
                        s/lines/rev (list)
                        s/linenum   (1- linenum))))))
