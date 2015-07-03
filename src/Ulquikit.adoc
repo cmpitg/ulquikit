@@ -571,14 +571,27 @@ documents in a directory recursively, makes use of
 `snippets` struct.
 
 .code::extract-snippets
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
 ;; include::extract-snippets-from-file
 
-(define (extract-snippets from-dir)
-  (for/fold ([snippet {}])
-      ([file (list-all-adocs (standardize-path from-dir))])
-    (dict-merge snippet (extract-snippets-from-file file))))
+(in-package #:ulquikit)
+
+(defun extract-snippets (path)
+  "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
+files are found recursively."
+  (declare (type (or string pathname) path))
+  (reduce #'(lambda (snippets adoc-file)
+              (declare (type snippets snippets)
+                       (type (or string pathname) adoc-file))
+              (the snippets
+                   (collect-snippet snippets
+                                    (extract-snippets-from-file adoc-file))))
+          (get-all-adocs path)
+          :initial-value (make-snippets)))
+
+(in-package #:ulquikit-tests)
+
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
