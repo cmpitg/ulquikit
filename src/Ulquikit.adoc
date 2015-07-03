@@ -119,7 +119,8 @@ every change made to this data structure would affect the code later on.
 
 Each snippet is struct with following alist representation:
 
-[[snippet-format]]
+anchor:snippet-format[]
+
 [source,lisp]
 ----
 `((:type       . ,snippet-type)  <1>
