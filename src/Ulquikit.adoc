@@ -566,14 +566,6 @@ anchor:func/extract-snippets-from-file[]
 
 As a result, +extract-snippets+, which extracts snippets from all AsciiDoc
 documents in a directory recursively, makes use of
-+extract-snippets-from-file+ to function.  +extract-snippets+ takes a path and
-return a hash of following format:
-
-[source,racket]
-----
-{'file file-snippets-hash
- 'code code-snippets-hash}
-----
 
 +file-snippets-hash+ and +code-snippets-hash+ follow <<snippet-format,snippet
 format>> defined above.
