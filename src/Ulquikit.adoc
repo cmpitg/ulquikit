@@ -88,8 +88,13 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
 ----
 
 Along with the main package comes the test one.  I decide to use
-https://github.com/capitaomorte/fiasco[Fiasco] since it has very nice
-interface and helpful messages.
+https://github.com/OdonataResearchLLC/lisp-unit[lisp-unit] since it has very
+nice interface and helpful messages.
+
+NOTE: Prior to `lisp-unit`, I have tried
+https://github.com/capitaomorte/fiasco[Fiasco] with little success.  The
+interface is nice inflexible.  There is no easy way to remove test or
+redefining tests and test packages.
 
 .code::src/package-test.lisp
 [source,lisp,linenums]
