@@ -200,30 +200,30 @@ anchor:func/create-snippet[]
 
 (in-package #:ulquikit-tests)
 
-(deftest snippet-creation ()
-  (is (equalp #S(snippet
-                 :type :file
-                 :name "hello-world"
-                 :linenum 10
-                 :lines ("Hmm")
-                 :processed? nil)
-              (create-snippet :type :file
-                              :name 'hello-world
-                              :linenum 10
-                              :lines '("Hmm"))))
-  (is (equalp #S(snippet
-                 :type :string
-                 :name "string"
-                 :linenum 100
-                 :lines ("string")
-                 :processed? t)
-              (create-snippet :type "string"
-                              :name "string"
-                              :linenum 100
-                              :lines "string"
-                              :processed? t))))
+(define-test test-snippet-creation
+  (assert-equalp #S(snippet
+                    :type :file
+                    :name "hello-world"
+                    :linenum 10
+                    :lines ("Hmm")
+                    :processed? nil)
+                 (create-snippet :type :file
+                                 :name 'hello-world
+                                 :linenum 10
+                                 :lines '("Hmm")))
+  (assert-equalp #S(snippet
+                    :type :string
+                    :name "string"
+                    :linenum 100
+                    :lines ("string")
+                    :processed? t)
+                 (create-snippet :type "string"
+                                 :name "string"
+                                 :linenum 100
+                                 :lines "string"
+                                 :processed? t)))
 
-;;; (run-package-tests)
+;;; (run-tests)
 
 (in-package #:ulquikit)
 
