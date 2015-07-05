@@ -449,13 +449,15 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(deftest block-delimiter ()
+(define-test test-block-delimiter ()
   (import 'ulquikit::block-delimiter?)
-  (is (block-delimiter? "----"))
-  (is (not (block-delimiter? " ----")))
-  (is (block-delimiter? "---- "))
-  (is (block-delimiter? "----  "))
-  (is (not (block-delimiter? "----a"))))
+  (assert-true (block-delimiter? "----"))
+  (assert-true (not (block-delimiter? " ----")))
+  (assert-true (block-delimiter? "---- "))
+  (assert-true (block-delimiter? "----  "))
+  (assert-true (not (block-delimiter? "----a"))))
+
+;; (run-tests)
 
 (in-package #:ulquikit)
 
@@ -465,12 +467,14 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(deftest block-title ()
+(define-test test-block-title ()
   (import 'ulquikit::block-title?)
-  (is (block-title? ".file::something"))
-  (is (block-title? ".file::something else"))
-  (is (block-title? ".file::"))
-  (is (null (block-title? ".file:something"))))
+  (assert-true (block-title? ".file::something"))
+  (assert-true (block-title? ".file::something else"))
+  (assert-true (block-title? ".file::"))
+  (assert-true (null (block-title? ".file:something"))))
+
+;; (run-tests)
 
 (in-package #:ulquikit)
 
@@ -485,7 +489,7 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(deftest test-parse-snippet-title ()
+(define-test test-parse-snippet-title ()
   (import 'ulquikit::parse-snippet-title)
   (dolist (el '((".file::"    . (:file ""))
                 (".code::"    . (:code ""))
@@ -494,7 +498,9 @@ anchor:func/extract-snippets-from-file[]
     (let ((title    (first el))
           (expected (rest  el)))
       (multiple-value-bind (type name) (parse-snippet-title title)
-        (is (equal expected (list type name)))))))
+        (assert-equal expected (list type name))))))
+
+;; (run-tests)
 
 (in-package #:ulquikit)
 
@@ -519,55 +525,57 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(deftest test-collect-snippets ()
+(define-test test-collect-snippets ()
   (import 'ulquikit::snippets)
   (import 'ulquikit::make-snippets)
   (import 'ulquikit::collect-snippet)
-  (is (equalp (collect-snippet (make-snippets)
-                               (create-snippet :type :file
-                                               :name :hello
-                                               :linenum 10
-                                               :lines '("Something")))
-              (make-snippets
-               :file (alist-hash-table `(("hello" . ,#s(snippet
+  (assert-equalp (collect-snippet (make-snippets)
+                                  (create-snippet :type :file
+                                                  :name :hello
+                                                  :linenum 10
+                                                  :lines '("Something")))
+                 (make-snippets
+                  :file (alist-hash-table `(("hello" . ,#s(snippet
+                                                           :type :file
+                                                           :name "hello"
+                                                           :linenum 10
+                                                           :lines ("Something")
+                                                           :processed? nil)))
+                                          :test #'equal)
+                  :code (make-hash-table :test #'equal)))
+
+  (assert-equalp (collect-snippet
+                  (make-snippets
+                   :file (alist-hash-table `(("hello" . ,#s(snippet
+                                                            :type :file
+                                                            :name "hello"
+                                                            :linenum 10
+                                                            :lines ("Something")
+                                                            :processed? nil)))
+                                           :test #'equal)
+                   :code (make-hash-table :test #'equal))
+                  (create-snippet :type 'code
+                                  :name 'say-something
+                                  :linenum 100
+                                  :lines '("Something else")))
+                 (make-snippets :file (alist-hash-table
+                                       `(("hello" . ,#s(snippet
                                                         :type :file
                                                         :name "hello"
                                                         :linenum 10
                                                         :lines ("Something")
                                                         :processed? nil)))
                                        :test #'equal)
-               :code (make-hash-table :test #'equal))))
+                                :code (alist-hash-table
+                                       `(("say-something" . #s(snippet
+                                                               :type :code
+                                                               :name "say-something"
+                                                               :linenum 100
+                                                               :lines ("Something else")
+                                                               :processed? nil)))
+                                       :test #'equal))))
 
-  (is (equalp (collect-snippet
-               (make-snippets
-                :file (alist-hash-table `(("hello" . ,#s(snippet
-                                                         :type :file
-                                                         :name "hello"
-                                                         :linenum 10
-                                                         :lines ("Something")
-                                                         :processed? nil)))
-                                        :test #'equal)
-                :code (make-hash-table :test #'equal))
-               (create-snippet :type 'code
-                               :name 'say-something
-                               :linenum 100
-                               :lines '("Something else")))
-              (make-snippets :file (alist-hash-table
-                                    `(("hello" . ,#s(snippet
-                                                     :type :file
-                                                     :name "hello"
-                                                     :linenum 10
-                                                     :lines ("Something")
-                                                     :processed? nil)))
-                                    :test #'equal)
-                             :code (alist-hash-table
-                                    `(("say-something" . #s(snippet
-                                                            :type :code
-                                                            :name "say-something"
-                                                            :linenum 100
-                                                            :lines ("Something else")
-                                                            :processed? nil)))
-                                    :test #'equal)))))
+;; (run-tests)
 
 ----
 
