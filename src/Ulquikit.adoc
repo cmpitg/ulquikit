@@ -76,7 +76,8 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
         :fiasco
         :cl-ppcre
         :cl-cwd
-        :trivial-utf-8)
+        :trivial-utf-8
+        :iterate)
   (:export #:generate-src
            #:generate-html
 
