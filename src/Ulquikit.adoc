@@ -711,6 +711,40 @@ files are found recursively."
           (check-equal? (get-snippet-content snippet)
                         (expected-file-snippets name))))
       (remove-dir temp-dir))))
+
+(deftest test-get-all-adocs ()
+  (import 'ulquikit::get-all-adocs)
+  (let* ((files '("a.adoc"
+                  "b.adoc"
+                  "c.md"
+                  "e.adoc"
+                  "hello/a.adoc"
+                  "hello/b.html"
+                  "hello/world/hola.adoc"
+                  "hello/world/mundo.adoc"))
+         (temppath (merge-pathnames "ulquikit/test-get-all-adocs/"
+                                    (make-pathname
+                                     :directory `(:absolute ,(uiop:getenv "TMPDIR")))))
+         (expected (iterate
+                     (for path in files)
+                     (when (scan "\\.adoc$" path)
+                       (collect (merge-pathnames temppath path))))))
+    ;; Setup
+    (cl-fad:delete-directory-and-files temppath
+                                       :if-does-not-exist :ignore)
+    (dolist (path files)
+      (let ((file (merge-pathnames path temppath)))
+        (ensure-directories-exist (path:dirname file))
+        (with-output-to-file (out file)
+          (princ "Hello world" out))))
+
+    (let ((adocs (get-all-adocs temppath)))
+      (is (equal expected adocs)))
+
+    ;; Tear down
+    (cl-fad:delete-directory-and-files temppath
+                                       :if-does-not-exist :ignore)))
+
 ----
 
 After +extract-snippets+, the next important function is +include-snippet+,
