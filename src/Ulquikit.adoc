@@ -437,7 +437,7 @@ anchor:func/extract-snippets-from-file[]
 
 (defun read-file (path)
   "Reads a file as UTF-8 encoded string."
-  (declare (type (or string pathname) path))
+  (declare ((or string pathname) path))
   (the string (with-open-file (in path :element-type '(unsigned-byte 8))
                 (read-utf-8-string in :stop-at-eof t))))
 
@@ -481,7 +481,7 @@ anchor:func/extract-snippets-from-file[]
 (defun parse-snippet-title (title)
   "Parses a snippet title and returns `(values <snippet-type>
 <snippet-name>)'."
-  (declare (type string title))
+  (declare (string title))
   (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::(.*)" title)
     (declare (ignore _))
     (values (the keyword (->keyword (aref res 0)))
@@ -506,8 +506,8 @@ anchor:func/extract-snippets-from-file[]
 
 (defun collect-snippet (snippets snippet)
   "Collects `snippet' into the list of snippets."
-  (declare (type snippets snippets)
-           (type snippet  snippet))
+  (declare (snippets snippets)
+           (snippet  snippet))
   (let* ((type (snippet-type snippet))
          (name (snippet-name snippet))
          (current-file (snippets-file snippets))
@@ -594,7 +594,7 @@ documents in a directory recursively, makes use of
 (defun extract-snippets (path)
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
 files are found recursively."
-  (declare (type (or string pathname) path))
+  (declare ((or string pathname) path))
   (reduce #'(lambda (snippets adoc-file)
               (declare (type snippets snippets)
                        (type (or string pathname) adoc-file))
