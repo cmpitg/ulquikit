@@ -100,8 +100,8 @@ redefining tests and test packages.
 .code::src/package-test.lisp
 [source,lisp,linenums]
 ----
-(fiasco:define-test-package #:ulquikit-tests
-  (:use :cl :ulquikit :alexandria))
+(defpackage #:ulquikit-tests
+  (:use :cl :ulquikit :alexandria :cl-ppcre :lisp-unit :iterate))
 ----
 
 == Extracting and including snippets
