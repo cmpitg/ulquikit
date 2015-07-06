@@ -453,7 +453,7 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(define-test test-block-delimiter ()
+(define-test test-block-delimiter
   (import 'ulquikit::block-delimiter?)
   (assert-true (block-delimiter? "----"))
   (assert-true (not (block-delimiter? " ----")))
@@ -471,7 +471,7 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(define-test test-block-title ()
+(define-test test-block-title
   (import 'ulquikit::block-title?)
   (assert-true (block-title? ".file::something"))
   (assert-true (block-title? ".file::something else"))
@@ -493,7 +493,7 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(define-test test-parse-snippet-title ()
+(define-test test-parse-snippet-title
   (import 'ulquikit::parse-snippet-title)
   (dolist (el '((".file::"    . (:file ""))
                 (".code::"    . (:code ""))
@@ -529,7 +529,7 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(define-test test-collect-snippets ()
+(define-test test-collect-snippets
   (import 'ulquikit::snippets)
   (import 'ulquikit::make-snippets)
   (import 'ulquikit::collect-snippet)
