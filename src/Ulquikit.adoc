@@ -784,11 +784,18 @@ extensible."
           (princ "Hello world" out))))
 
     (let ((adocs (get-all-adocs temppath)))
-      (is (equal expected adocs)))
+      (assert-equalp (sort expected #'(lambda (path1 path2)
+                                        (string< (namestring path1)
+                                                 (namestring path2))))
+                     (sort adocs #'(lambda (path1 path2)
+                                     (string< (namestring path1)
+                                              (namestring path2))))))
 
     ;; Tear down
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)))
+
+;; (run-tests)
 
 ----
 
