@@ -352,16 +352,16 @@ We have the following algorithm for +extract-snippets-from-file+:
 ** If we're already inside a snippet:
 
 *** Complete a snippet and add it to snippet list if current line is a block
-    delimiter (i.e. +----+)
+    delimiter (i.e. `----`)
 
 *** Add current line to the current snippet's content if current line is not a
     block delimiter
 
 ** If we're outside a snippet, we only care if current line is a block
-   delimiter (i.e. +----+):
+   delimiter (i.e. `----`):
 
 *** If this block has a title that marks the beginning of a snippet (i.e. the
-    2^nd^ previous line starts with +.file::+ or +.code::+), extract snippet
+    2^nd^ previous line starts with `.file::` or `.code::`), extract snippet
     name and add a new snippet.  Otherwise
 
 *** If this block does not mark the beginning of a snippet, ignore it.
