@@ -751,6 +751,9 @@ extensible."
                            :follow-symlinks t)
     adocs))
 
+(in-package #:ulquikit-tests)
+
+(define-test test-get-all-adocs
   (import 'ulquikit::get-all-adocs)
   (let* ((files '("a.adoc"
                   "b.adoc"
