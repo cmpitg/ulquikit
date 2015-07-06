@@ -73,7 +73,6 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
   (:use :cl
         :alexandria
         :split-sequence
-        :fiasco
         :cl-ppcre
         :cl-cwd
         :trivial-utf-8
