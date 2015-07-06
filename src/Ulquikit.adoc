@@ -730,7 +730,27 @@ files are found recursively."
                         (expected-file-snippets name))))
       (remove-dir temp-dir))))
 
-(deftest test-get-all-adocs ()
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun get-all-adocs (path)
+  "Retrieves all AsciiDoc files in `path' recursively.  TODO: Make this
+extensible."
+  (declare ((or string pathname) path))
+  (format t "Getting all adocs from path: ~A~%" path)
+  (let ((adocs (list)))
+    (cl-fad:walk-directory path #'(lambda (file)
+                                    (push file adocs))
+                           :directories nil
+                           :if-does-not-exist :ignore
+                           :test #'(lambda (file)
+                                     (scan "\\.adoc$" (namestring file)))
+                           :follow-symlinks t)
+    adocs))
+
   (import 'ulquikit::get-all-adocs)
   (let* ((files '("a.adoc"
                   "b.adoc"
