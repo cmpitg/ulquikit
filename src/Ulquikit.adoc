@@ -779,7 +779,8 @@ extensible."
     (dolist (path files)
       (let ((file (merge-pathnames path temppath)))
         (ensure-directories-exist (path:dirname file))
-        (with-output-to-file (out file)
+        (with-open-file (out file :direction :output
+                             :if-exists :supersede)
           (princ "Hello world" out))))
 
     (let ((adocs (get-all-adocs temppath)))
