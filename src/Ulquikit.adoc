@@ -763,9 +763,12 @@ extensible."
                   "hello/b.html"
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
+         (tmpdir   (uiop:getenv "TMPDIR"))
          (temppath (merge-pathnames "ulquikit/test-get-all-adocs/"
-                                    (make-pathname
-                                     :directory `(:absolute ,(uiop:getenv "TMPDIR")))))
+                                    (pathname (if (equal (uiop:pathname-directory-pathname tmpdir)
+                                                         tmpdir)
+                                                  tmpdir
+                                                  (format nil "~A/" tmpdir)))))
          (expected (iterate
                      (for path in files)
                      (when (scan "\\.adoc$" path)
