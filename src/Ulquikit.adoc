@@ -100,7 +100,8 @@ redefining tests and test packages.
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-tests
-  (:use :cl :ulquikit :alexandria :cl-ppcre :lisp-unit :iterate))
+  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate))
+
 ----
 
 == Extracting and including snippets
