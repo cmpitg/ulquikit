@@ -102,6 +102,10 @@ redefining tests and test packages.
 (defpackage #:ulquikit-tests
   (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate))
 
+(in-package #:ulquikit-tests)
+
+;; Print failure details by default
+(setf *print-failures* t)
 ----
 
 == Extracting and including snippets
