@@ -539,30 +539,30 @@ anchor:func/extract-snippets-from-file[]
                                                   :linenum 10
                                                   :lines '("Something")))
                  (make-snippets
-                  :file (alist-hash-table `(("hello" . ,#s(snippet
-                                                           :type :file
-                                                           :name "hello"
-                                                           :linenum 10
-                                                           :lines ("Something")
-                                                           :processed? nil)))
-                                          :test #'equal)
+                  :file (alexandria:alist-hash-table `(("hello" . ,#s(snippet
+                                                                      :type :file
+                                                                      :name "hello"
+                                                                      :linenum 10
+                                                                      :lines ("Something")
+                                                                      :processed? nil)))
+                                                     :test #'equal)
                   :code (make-hash-table :test #'equal)))
 
   (assert-equalp (collect-snippet
                   (make-snippets
-                   :file (alist-hash-table `(("hello" . ,#s(snippet
-                                                            :type :file
-                                                            :name "hello"
-                                                            :linenum 10
-                                                            :lines ("Something")
-                                                            :processed? nil)))
-                                           :test #'equal)
+                   :file (alexandria:alist-hash-table `(("hello" . ,#s(snippet
+                                                                       :type :file
+                                                                       :name "hello"
+                                                                       :linenum 10
+                                                                       :lines ("Something")
+                                                                       :processed? nil)))
+                                                      :test #'equal)
                    :code (make-hash-table :test #'equal))
                   (create-snippet :type 'code
                                   :name 'say-something
                                   :linenum 100
                                   :lines '("Something else")))
-                 (make-snippets :file (alist-hash-table
+                 (make-snippets :file (alexandria:alist-hash-table
                                        `(("hello" . ,#s(snippet
                                                         :type :file
                                                         :name "hello"
@@ -570,7 +570,7 @@ anchor:func/extract-snippets-from-file[]
                                                         :lines ("Something")
                                                         :processed? nil)))
                                        :test #'equal)
-                                :code (alist-hash-table
+                                :code (alexandria:alist-hash-table
                                        `(("say-something" . #s(snippet
                                                                :type :code
                                                                :name "say-something"
