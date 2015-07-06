@@ -772,7 +772,7 @@ extensible."
          (expected (iterate
                      (for path in files)
                      (when (scan "\\.adoc$" path)
-                       (collect (merge-pathnames temppath path))))))
+                       (collect (merge-pathnames path temppath))))))
     ;; Setup
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)
