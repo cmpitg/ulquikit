@@ -765,10 +765,8 @@ extensible."
                   "hello/world/mundo.adoc"))
          (tmpdir   (uiop:getenv "TMPDIR"))
          (temppath (merge-pathnames "ulquikit/test-get-all-adocs/"
-                                    (pathname (if (equal (uiop:pathname-directory-pathname tmpdir)
-                                                         tmpdir)
-                                                  tmpdir
-                                                  (format nil "~A/" tmpdir)))))
+                                    (pathname (cl-fad:pathname-as-directory
+                                               (uiop:getenv "TMPDIR")))))
          (expected (iterate
                      (for path in files)
                      (when (scan "\\.adoc$" path)
