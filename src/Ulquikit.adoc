@@ -643,7 +643,7 @@ The main program includes function `say-hello` from `lib/Say-Hello.adoc` and
 function `say-world` from `lib/Say-World.adoc` and calls them.
 
 .file::/tmp/main.lisp
-----
+\----
 ;; include::say-hello
 
 ;; include::say-world
@@ -651,7 +651,7 @@ function `say-world` from `lib/Say-World.adoc` and calls them.
 \(say-hello\)
 \(say-world\)
 
-----
+\----
 ")
                     ("License" . "Do what you want to do with it!")
                     ("lib/Say-Hello.adoc" . "What do you actually expect in this
@@ -659,27 +659,27 @@ file?  Two snippets, one of which doesn't get captured.
 
 .code::say-hello
 [source,lisp,linenums]
-----
+\----
 \(defun say-hello \(\)
   \(format t \"Hello \"\)\)
-----
+\----
 
 The following snippet doesn't get captured as it has no title:
 
 [source,lisp,linenums]
-----
+\----
 \(defun throw-away \(\)
   \(error \"If you see me, there is at least one error happened!\"\)\)
-----
+\----
 ")
                     ("lib/Say-World.adoc" . "Another way to define code block title with AsciiDoc:
 
 [source,lisp,linenums]
 .code::say-world
-----
+\----
 \(defun say-world \(\)
   \(format t \"world!~%\"\)\)
-----
+\----
 ")))
          (files (mapcar #'(lambda (content-pair)
                             (cons (merge-pathnames (car content-pair) test-dir)
