@@ -250,10 +250,10 @@ anchor:func/create-snippet[]
 
 ----
 
-Now the helper +create-snippet+ is ready.  Let's move on to
-+extract-snippets-from-file+.
+Now the helper `create-snippet` is ready.  Let's move on to
+`extract-snippets-from-file`.
 
-+extract-snippets-from-file+ needs to determine whether _a line in a code
+`extract-snippets-from-file` needs to determine whether _a line in a code
 block_ belongs to a _code snippet_, or _file snippet_, or none of those; then
 extracts the content of the code block and store it if necessary.  The 3 types
 of code block that we deal with are as followed:
@@ -428,7 +428,8 @@ anchor:func/extract-snippets-from-file[]
         (setf prev-prev-line prev-line
               prev-line      line)))
 
-    (list linenum (length lines) snippets)))
+    ;; (list linenum (length lines) snippets)
+    snippets))
 
 ;; (extract-snippets-from-file "/m/src/ulquikit/src/Ulquikit.adoc")
 ;; (time (extract-snippets-from-file "/m/src/ulquikit/src/Ulquikit.adoc"))
