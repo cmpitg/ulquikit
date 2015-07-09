@@ -610,7 +610,7 @@ files are found recursively."
 
 (in-package #:ulquikit-tests)
 
-(deftest test-extract-snippets ()
+(define-test test-extract-snippets
   (import 'ulquikit::extract-snippets)
   (import 'ulquikit::snippets-file)
   (import 'ulquikit::snippets-code)
