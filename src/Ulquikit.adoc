@@ -341,7 +341,7 @@ structure for storing all snippets:
   (code (make-hash-table :test #'equal) :type hash-table))
 ----
 
-We have the following algorithm for +extract-snippets-from-file+:
+We have the following algorithm for `extract-snippets-from-file`:
 
 * Read the content of a file;
 
