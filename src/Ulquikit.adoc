@@ -724,6 +724,12 @@ The following snippet doesn't get captured as it has no title:
 
 (in-package #:ulquikit)
 
+(defun snippet->string (snippet)
+  "Returns the string representation of a snippet."
+  (declare (snippet snippet))
+  (the string (format nil "~{~A~^~%~}" (snippet-lines snippet))))
+
+;;; (snippet->string (make-snippet))
 
 (in-package #:ulquikit-tests)
 
@@ -737,6 +743,8 @@ ueoa"
                 (snippet->string (make-snippet :lines '("aoeu" "ueoa")))))
 
 ;;; (run-tests '(test-snippet->string))
+
+(in-package #:ulquikit)
 
 (defun get-all-adocs (path)
   "Retrieves all AsciiDoc files in `path' recursively.  TODO: Make this
