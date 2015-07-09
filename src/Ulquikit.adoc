@@ -768,7 +768,6 @@ extensible."
                   "hello/b.html"
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
-         (tmpdir   (uiop:getenv "TMPDIR"))
          (temppath (merge-pathnames "ulquikit/test-get-all-adocs/"
                                     (pathname (cl-fad:pathname-as-directory
                                                (uiop:getenv "TMPDIR")))))
