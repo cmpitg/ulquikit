@@ -695,10 +695,10 @@ The following snippet doesn't get captured as it has no title:
           (princ content out))))
 
     (let* ((snippets (extract-snippets test-dir))
-           (file-snippets (alexandria:hash-table-alist (snippets-file snippets)))
-           (code-snippets (alexandria:hash-table-alist (snippets-code snippets))))
-      (assert-equal 1 (length file-snippets))
-      (assert-equal 2 (length code-snippets))
+           (file-snippets (snippets-file snippets))
+           (code-snippets (snippets-code snippets)))
+      (assert-equal 1 (hash-table-count file-snippets))
+      (assert-equal 2 (hash-table-count code-snippets))
 
       (assert-equal ";; include::say-hello
 
@@ -707,13 +707,16 @@ The following snippet doesn't get captured as it has no title:
 \(say-hello\)
 \(say-world\)
 "
-                    (alexandria:assoc-value file-snippets "/tmp/main.lisp"))
+                    (snippet->string (gethash "/tmp/main.lisp" file-snippets)))
       (assert-equal "\(defun say-hello \(\)
   \(format t \"Hello \"\)\)"
-                    (alexandria:assoc-value code-snippets "say-hello"))
+                    (snippet->string (gethash "say-hello" code-snippets)))
       (assert-equal "\(defun say-world \(\)
   \(format t \"world!~%\"\)\)"
-                    (alexandria:assoc-value code-snippets "say-world")))))
+                    (snippet->string (gethash "say-world" code-snippets))))))
+
+;;; (run-tests '(test-extract-snippets))
+;;; (extract-snippets #p"/tmp/cmpitg/ulquikit/test-extract-snippets/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -725,7 +728,7 @@ The following snippet doesn't get captured as it has no title:
   "Retrieves all AsciiDoc files in `path' recursively.  TODO: Make this
 extensible."
   (declare ((or string pathname) path))
-  (format t "Getting all adocs from path: ~A~%" path)
+  ;; (format t "Getting all adocs from path: ~A~%" path)
   (let ((adocs (list)))
     (cl-fad:walk-directory path #'(lambda (file)
                                     (push file adocs))
