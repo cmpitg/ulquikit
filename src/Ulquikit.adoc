@@ -612,6 +612,8 @@ files are found recursively."
 
 (deftest test-extract-snippets ()
   (import 'ulquikit::extract-snippets)
+  (import 'ulquikit::snippets-file)
+  (import 'ulquikit::snippets-code)
   (let* ((test-dir (merge-pathnames
                     "ulquikit/test-extract-snippets/"
                     (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
