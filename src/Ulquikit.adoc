@@ -326,10 +326,10 @@ This is a literal block
 
 As we can clearly see from the 3 examples, _code snippets_ and _file snippets_
 could be determined by checking 2^nd^ previous line from block delimiter to
-see if it starts with +.file::+ or +.code::+.  Everything between the 2
+see if it starts with `.file::` or `.code::`.  Everything between the 2
 delimiters is stored as the content of the snippet.
 
-Before diving into +extract-snippets-from-file+, let us define a data
+Before diving into `extract-snippets-from-file`, let us define a data
 structure for storing all snippets:
 
 [source,lisp,linenums]
