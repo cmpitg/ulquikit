@@ -600,14 +600,28 @@ documents in a directory recursively, makes use of
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
 files are found recursively."
   (declare ((or string pathname) path))
-  (reduce #'(lambda (snippets adoc-file)
-              (declare (type snippets snippets)
+  (reduce #'(lambda (current-snippets adoc-file)
+              (declare (type snippets current-snippets)
                        (type (or string pathname) adoc-file))
-              (the snippets
-                   (collect-snippet snippets
-                                    (extract-snippets-from-file adoc-file))))
+              (let ((new-snippets (extract-snippets-from-file adoc-file)))
+                ;; Merging 2 snippets
+                (maphash #'(lambda (key value)
+                             (setf (gethash key
+                                            (snippets-file current-snippets))
+                                   value))
+                         (snippets-file new-snippets))
+                (maphash #'(lambda (key value)
+                             (setf (gethash key
+                                            (snippets-code current-snippets))
+                                   value))
+                         (snippets-code new-snippets))
+                current-snippets))
           (get-all-adocs path)
           :initial-value (make-snippets)))
+
+;; (extract-snippets #p"/tmp/cmpitg/ulquikit/test-extract-snippets/")
+;; (extract-snippets-from-file "/tmp/cmpitg/ulquikit/test-extract-snippets/lib/Say-Hello.adoc")
+;; (collect-snippet (make-snippets) (extract-snippets-from-file "/tmp/cmpitg/ulquikit/test-extract-snippets/lib/Say-Hello.adoc"))
 
 (in-package #:ulquikit-tests)
 
