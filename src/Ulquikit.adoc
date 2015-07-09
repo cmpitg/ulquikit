@@ -724,6 +724,20 @@ The following snippet doesn't get captured as it has no title:
 
 (in-package #:ulquikit)
 
+
+(in-package #:ulquikit-tests)
+
+(define-test test-snippet->string
+  (import 'ulquikit::snippet->string)
+  (import 'ulquikit::make-snippet)
+  (assert-equal "" (snippet->string (make-snippet)))
+  (assert-equal "aoeu" (snippet->string (make-snippet :lines '("aoeu"))))
+  (assert-equal "aoeu
+ueoa"
+                (snippet->string (make-snippet :lines '("aoeu" "ueoa")))))
+
+;;; (run-tests '(test-snippet->string))
+
 (defun get-all-adocs (path)
   "Retrieves all AsciiDoc files in `path' recursively.  TODO: Make this
 extensible."
