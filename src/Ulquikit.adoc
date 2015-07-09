@@ -670,6 +670,35 @@ The following snippet doesn't get captured as it has no title:
                             (cons (merge-pathnames (car content-pair) test-dir)
                                   (cdr content-pair)))
                         content)))
+    (cl-fad:delete-directory-and-files test-dir :if-does-not-exist :ignore)
+
+    (dolist (path+content files)
+      (let ((path    (car path+content))
+            (content (cdr path+content)))
+        (ensure-directories-exist path)
+        (with-open-file (out path :direction :output)
+          (princ content out))))
+
+    (let* ((snippets (extract-snippets test-dir))
+           (file-snippets (alexandria:hash-table-alist (snippets-file snippets)))
+           (code-snippets (alexandria:hash-table-alist (snippets-code snippets))))
+      (assert-equal 1 (length file-snippets))
+      (assert-equal 2 (length code-snippets))
+
+      (assert-equal ";; include::say-hello
+
+;; include::say-world
+
+\(say-hello\)
+\(say-world\)
+"
+                    (alexandria:assoc-value file-snippets "/tmp/main.lisp"))
+      (assert-equal "\(defun say-hello \(\)
+  \(format t \"Hello \"\)\)"
+                    (alexandria:assoc-value code-snippets "say-hello"))
+      (assert-equal "\(defun say-world \(\)
+  \(format t \"world!~%\"\)\)"
+                    (alexandria:assoc-value code-snippets "say-world")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
