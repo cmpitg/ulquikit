@@ -580,13 +580,13 @@ anchor:func/extract-snippets-from-file[]
                                                                :processed? nil)))
                                        :test #'equal))))
 
-;; (run-tests)
+;; (run-tests '(test-collect-snippets))
 
 ----
 
-As a result, +extract-snippets+, which extracts snippets from all AsciiDoc
+As a result, `extract-snippets`, which extracts snippets from all AsciiDoc
 documents in a directory recursively, makes use of
-+extract-snippets-from-file+.  +extract-snippets+ takes a path and returns a
+`extract-snippets-from-file`.  `extract-snippets` takes a path and returns a
 `snippets` struct.
 
 .code::extract-snippets
