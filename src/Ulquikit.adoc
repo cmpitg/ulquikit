@@ -619,10 +619,6 @@ files are found recursively."
           (get-all-adocs path)
           :initial-value (make-snippets)))
 
-;; (extract-snippets #p"/tmp/cmpitg/ulquikit/test-extract-snippets/")
-;; (extract-snippets-from-file "/tmp/cmpitg/ulquikit/test-extract-snippets/lib/Say-Hello.adoc")
-;; (collect-snippet (make-snippets) (extract-snippets-from-file "/tmp/cmpitg/ulquikit/test-extract-snippets/lib/Say-Hello.adoc"))
-
 (in-package #:ulquikit-tests)
 
 (define-test test-extract-snippets
@@ -716,7 +712,6 @@ The following snippet doesn't get captured as it has no title:
                     (snippet->string (gethash "say-world" code-snippets))))))
 
 ;;; (run-tests '(test-extract-snippets))
-;;; (extract-snippets #p"/tmp/cmpitg/ulquikit/test-extract-snippets/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -802,8 +797,6 @@ extensible."
     ;; Tear down
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)))
-
-;; (run-tests)
 
 ----
 
