@@ -610,6 +610,29 @@ files are found recursively."
 
 (in-package #:ulquikit-tests)
 
+(deftest test-extract-snippets ()
+  (import 'ulquikit::extract-snippets)
+  (let* ((test-dir (merge-pathnames
+                    "ulquikit/test-extract-snippets/"
+                    (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
+
+         (expected-code-snippets
+          `(("main-program"   . ";; include::utils
+
+\(module+ main
+  \(displayln \(string-reverse \"¡Hola mundo!\"\)\)\)
+")
+            ("use-rackjure"   . " #lang rackjure
+\(current-curly-dict hash\)")
+            ("license-header" . ";; Just a sample license header.")
+            ("utils"          . ";; include::utils-string")
+            ("utils-string"   . "\(define \(string-reverse str\)
+  \(~> \(string->list str\)
+    reverse
+    list->string\)\)")))
+
+         (expected-file-snippets
+          `(("/tmp/tmp.rkt"   . ";; include::license-header
 
 (module+ test
   (let* ([temp-dir (get-relative-path (get-temp-dir)
