@@ -373,7 +373,7 @@ anchor:func/extract-snippets-from-file[]
 (in-package #:ulquikit)
 
 (defun extract-snippets-from-file (path)
-  "Extracts snippets from a file."
+  "Extracts snippets from a file and return a `snippets' struct."
   (declare (type (or string pathname) path))
   (let* ((text (string-trim '(#\Space #\Newline #\e #\t #\m) (read-file path)))
          (lines (split-sequence #\Newline text))
