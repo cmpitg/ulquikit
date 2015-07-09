@@ -618,142 +618,58 @@ files are found recursively."
                     "ulquikit/test-extract-snippets/"
                     (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
 
-         (expected-code-snippets
-          `(("main-program"   . ";; include::utils
+         (content `(("Main.adoc" . "= A sample program
 
-\(module+ main
-  \(displayln \(string-reverse \"¡Hola mundo!\"\)\)\)
+This program consists of several snippets and a hello
+
+== Main program
+
+The main program includes function `say-hello` from `lib/Say-Hello.adoc` and
+function `say-world` from `lib/Say-World.adoc` and calls them.
+
+.file::/tmp/main.lisp
+----
+;; include::say-hello
+
+;; include::say-world
+
+\(say-hello\)
+\(say-world\)
+
+----
 ")
-            ("use-rackjure"   . " #lang rackjure
-\(current-curly-dict hash\)")
-            ("license-header" . ";; Just a sample license header.")
-            ("utils"          . ";; include::utils-string")
-            ("utils-string"   . "\(define \(string-reverse str\)
-  \(~> \(string->list str\)
-    reverse
-    list->string\)\)")))
+                    ("License" . "Do what you want to do with it!")
+                    ("lib/Say-Hello.adoc" . "What do you actually expect in this
+file?  Two snippets, one of which doesn't get captured.
 
-         (expected-file-snippets
-          `(("/tmp/tmp.rkt"   . ";; include::license-header
+.code::say-hello
+[source,lisp,linenums]
+----
+\(defun say-hello \(\)
+  \(format t \"Hello \"\)\)
+----
 
-(module+ test
-  (let* ([temp-dir (get-relative-path (get-temp-dir)
-                                      "./ulqui-extract-snippets")]
+The following snippet doesn't get captured as it has no title:
 
-         [expected-code-snippets
-          {"main-program" (string-join
-                           '(";; include::utils"
-                             ""
-                             "(module+ main"
-                             "  (displayln (string-reverse \"¡Hola mundo!\")))"
-                             "")
-                           "\n")
-           "use-rackjure" (string-join
-                           '("#lang rackjure"
-                             "(current-curly-dict hash)")
-                           "\n")
-           "license-header" ";; Just a sample license header."
-           "utils" ";; include::utils-string"
-           "utils-string" (string-join
-                           '("(define (string-reverse str)"
-                             "  (~> (string->list str)"
-                             "    reverse"
-                             "    list->string))")
-                           "\n")}]
+[source,lisp,linenums]
+----
+\(defun throw-away \(\)
+  \(error \"If you see me, there is at least one error happened!\"\)\)
+----
+")
+                    ("lib/Say-World.adoc" . "Another way to define code block title with AsciiDoc:
 
-         [expected-file-snippets
-          {"/tmp/tmp.rkt" (string-join
-                           '(";; include::license-header"
-                             ""
-                             ";; include::use-rackjure"
-                             ""
-                             ";; include::main-program"
-                             ""
-                             "== Main program"
-                             "")
-                           "\n")}]
-
-         [file-list '("Main"
-                      "License"
-                      "inside/Utils"
-                      "inside/Utils-String")]
-         [source-files (for/list ([name (in-list file-list)])
-                         (get-relative-path (format "~a./~a.adoc"
-                                                    temp-dir
-                                                    name)))]
-         [content
-          {"Main" (string-join
-                   (list "= A document"
-                         ""
-                         "Just a hello world program"
-                         ""
-                         "[source,racket,linenums]"
-                         ".file::/tmp/tmp.rkt"
-                         "----"
-                         (expected-file-snippets "/tmp/tmp.rkt")
-                         "----"
-                         ".code::main-program"
-                         "[source,racket,linenums]"
-                         "----"
-                         (expected-code-snippets "main-program")
-                         "----"
-                         ".code::use-rackjure"
-                         "[source]"
-                         "----"
-                         (expected-code-snippets "use-rackjure")
-                         "----"
-                         "")
-                   "\n")
-           "License" (string-join
-                      (list "= License header"
-                            ""
-                            ".code::license-header"
-                            "[source,racket]"
-                            "----"
-                            (expected-code-snippets "license-header")
-                            "----")
-                      "\n")
-           "inside/Utils" (string-join
-                           (list "= Utils"
-                                 ""
-                                 "Right now, we just want to include string utililities."
-                                 ""
-                                 ".code::utils"
-                                 "[source,racket,linenums]"
-                                 "----"
-                                 (expected-code-snippets "utils")
-                                 "----")
-                           "\n")
-           "inside/Utils-String" (string-join
-                                  (list "= String Utilities"
-                                        ""
-                                        ".code::utils-string"
-                                        "[source,racket,linenums]"
-                                        "----"
-                                        (expected-code-snippets "utils-string")
-                                        "----")
-                                  "\n")}])
-    (with-handlers ([exn:fail? #λ(remove-dir temp-dir)])
-      (remove-dir temp-dir)
-      (create-dir (get-relative-path temp-dir
-                                     "./inside"))
-      (for ([(filename content) (in-hash content)])
-        (let ([path (get-relative-path temp-dir
-                                       (format "./~a.adoc" filename))])
-          (display-to-file content path)))
-
-      (let* ([snippets (extract-snippets temp-dir)]
-             [code-snippet (get-code-snippets snippets)]
-             [file-snippet (get-file-snippets snippets)])
-
-        (for ([(name snippet) code-snippet])
-          (check-equal? (get-snippet-content snippet)
-                        (expected-code-snippets name)))
-
-        (for ([(name snippet) file-snippet])
-          (check-equal? (get-snippet-content snippet)
-                        (expected-file-snippets name))))
-      (remove-dir temp-dir))))
+[source,lisp,linenums]
+.code::say-world
+----
+\(defun say-world \(\)
+  \(format t \"world!~%\"\)\)
+----
+")))
+         (files (mapcar #'(lambda (content-pair)
+                            (cons (merge-pathnames (car content-pair) test-dir)
+                                  (cdr content-pair)))
+                        content)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
