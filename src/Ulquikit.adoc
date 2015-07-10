@@ -807,63 +807,31 @@ anchor:section/include-snippets[]
 
 === Including snippets into each other
 
-+include-snippet+ should take 2 arguments: a hash containing all snippets,
-and the snippet which needs to be checked and included.  Thus this function
-has the following signature: +(include-snippet snippets target)+
-+include-snippet+ working by browsing its content, one line at a time, then
-replace the line with +include+ directive with the corresponding _code
-snippet_.  If no snippet is found, leave that line as-is.
+`include-snippet` should take 2 arguments representing 2 ``snippets``s:
+`(include-snippet snippets target)`.  `include-snippet` works by browsing
+``target``'s content one line at a time, then replacing lines with `include::`
+directives with the corresponding __code snippet__s in `snippets`.  If no
+snippet is found, the line is left as-is.
 
-Note that there are a couple things to bring into concern there:
+Note that:
 
-* Snippet A includes snippet B, snippets B includes snippets C and D.  So the
-  best scenario is to include C and D into B while we're actually
-  processing A.  I.e. +include-snippet+ should be recursive to accumulate the
+* If snippet A includes snippet B, and snippet B includes snippets C and D, so
+  the best scenario is to include C and D into B while we're actually
+  processing A.  I.e. `include-snippet` should be recursive to accumulate the
   results.
 
-* Also because of the above reason, +snippets+ should be able to receive the
-  changes across all calls recursive to +include-snippet+.  I.e. consider
-  this dummy, incorrect implementation:
-+
-[source,racket,linenums]
-----
-(define (include-snippet snippets target)
-  (unless (= (snippets 'a) 12)
-    ;; Increase (snippets 'a)
-    (include-snippet snippets new-target)))
+* Also because of the above reason, `snippets` should be able to receive the
+  changes across all recursive calls to `include-snippet`.
 
-(let ([snippets {'a 10}])
- (include-snippet snippets some-target))
+* If snippet A includes snippet B, then snippet B includes snippet A again, we
+  have a circular dependency problem.  To prevent this, a list of currently
+  included snippet must be kept track of.  If a snippet has already been in
+  the track, include it but don't process it.
 
-(displayln (snippets 'a))
-;; ⇨ 12
+WARNING: Circular dependency produces *undefined* results.  Make sure your
+snippets are well managed.
 
-----
-+
-As you can see after returning from any call, the value of snippets should be
-changed as it is changed inside those calls.
-+
-One of the solutions for this is to construct a helper and put +snippets+ into
-a +box+ to make it safely immutable, then change it value for each time the
-helper is call.
-
-.+box+ and mutability
-[TIP]
-This is a perfect example of safe use mutable values in combination with
-http://docs.racket-lang.org/reference/boxes.html[+box+].
-
-* Snippet A includes snippet B, then snippet B includes snippet A again,
-  creating circular dependency.  To prevent this, a list of currently included
-  snippet must be kept track of.  If a snippet has already been in the track,
-  include it but don't process it.
-
-WARNING: In case of circular dependency, the results are *unexpected*.  Thus,
-make sure snippets are well-managed.
-
-Henceforth, our helper will takes the signature: +(process-include-snippet
-target track)+
-
-With all the reasons stated above, we have this implementation:
+As a result, we have this implementation:
 
 [[func/include-snippet]]
 .code::include-snippet
