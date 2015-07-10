@@ -833,7 +833,8 @@ snippets are well managed.
 
 As a result, we have this implementation:
 
-[[func/include-snippet]]
+anchor:func/include-snippet[]
+
 .code::include-snippet
 [source,racket,linenums]
 ----
