@@ -799,9 +799,9 @@ extensible."
 
 ----
 
-After +extract-snippets+, the next important function is +include-snippet+,
-which is use to include other snippets into one targeted snippet.  Let's see
-how we could implement it.
+After `extract-snippets`, the next important function is `include-snippet`,
+used to include snippets into each other.  Let's see how we could
+implement it.
 
 anchor:section/include-snippets[]
 
