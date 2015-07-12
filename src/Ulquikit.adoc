@@ -931,6 +931,7 @@ This function returns multiple values:
 
 (import 'ulquikit::make-snippet)
 (import 'ulquikit::snippet-name)
+(import 'ulquikit::snippet-lines)
 (import 'ulquikit::snippets-file)
 (import 'ulquikit::snippets-code)
 (import 'ulquikit::include-snippet!)
@@ -967,11 +968,17 @@ This function returns multiple values:
                            (gethash "A" snippets/code) snp/code/A
                            (gethash "B" snippets/code) snp/code/B
                            (gethash "C" snippets/code) snp/code/C)
+                     ;; Don't add D right away
                      res)))
     (multiple-value-bind (snippets _ processed?)
-        (include-snippet! snippets snp/file)
-      (assert-true (gethash '(:file . "/tmp/tmp.lisp")
-                            processed?)))))
+        (include-snippet! snippets snp/code/A)
+      (assert-true (gethash '(:code . "A") processed?) "A is now processed")
+      (assert-equal '("World"
+                      "Hello"
+                      ";; include::D")
+                    (snippet-lines snp/code/A)))))
+
+;;; (run-tests '(test-include-snippet))
 
 (module+ test
   (let* ([boxed (box snippets)])
