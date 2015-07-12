@@ -903,6 +903,51 @@ anchor:func/include-snippet[]
                                         #:processed? #t)])
       (update-snippet/boxed boxed new-snippet))))
 
+(in-package #:ulquikit-tests)
+
+(import 'ulquikit::make-snippet)
+(import 'ulquikit::snippet-name)
+(import 'ulquikit::snippets-file)
+(import 'ulquikit::snippets-code)
+(import 'ulquikit::include-snippet)
+(define-test test-include-snippet
+  (let* ((snp/file (make-snippet :name "/tmp/tmp.lisp"
+                                 :type :file
+                                 :lines '(";; include::A")
+                                 :linenum 10))
+         (snp/code/A (make-snippet :name "A"
+                                   :type :code
+                                   :lines '("World"
+                                            ";; include::B"
+                                            ";; include::D"
+                                            )
+                                   :linenum 20))
+         (snp/code/B (make-snippet :name "B"
+                                   :type :code
+                                   :lines '("Hello")
+                                   :linenum 30))
+         (snp/code/C (make-snippet :name "C"
+                                   :type :code
+                                   :lines '("Not processed")
+                                   :linenum 15))
+         ;; Circular dependency
+         (snp/code/D (make-snippet :name "D"
+                                   :type :code
+                                   :lines '(";; include A")
+                                   :linenum 100))
+
+         (snippets (let* ((res (make-snippets))
+                          (snippets/file (snippets-file res))
+                          (snippets/code (snippets-code res)))
+                     (setf (gethash "/tmp/tmp.lisp" snippets/file) snp/file
+                           (gethash "A" snippets/code) snp/code/A
+                           (gethash "B" snippets/code) snp/code/B
+                           (gethash "C" snippets/code) snp/code/C)
+                     res)))
+    (multiple-value-bind (snippets _ processed?)
+        (include-snippets snippets snp/file)
+      (assert-true (gethash '(:file . "/tmp/tmp.lisp")
+                            processed?)))))
 (module+ test
   (let* ([file-snippet-tmp {'name "/tmp/tmp.rkt"
                             'type 'file
