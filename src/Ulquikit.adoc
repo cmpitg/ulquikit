@@ -852,12 +852,8 @@ As a result, we have this implementation:
 anchor:func/include-snippet[]
 
 .code::include-snippet
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-;; lang racket
-
-;; include::include-snippet-helpers
-
 (define (include-snippet boxed
                          target
                          [included? {}])
@@ -906,13 +902,38 @@ anchor:func/include-snippet[]
                                         #:processed? #t)])
       (update-snippet/boxed boxed new-snippet))))
 
+(in-package #:ulquikit)
+
+(defun include-snippet! (snippets target
+                         &optional
+                           (processed? (make-hash-table :test #'equalp)))
+  "Processed `target' by replacing all of its \"include\" directives with the
+corresponding snippets found in `snippets'.  `processed?' helps solving
+circular dependency by recording the list of processed snippets up to the
+current point.
+
+This function returns multiple values:
+* the processed `snippets' after `target' is included,
+* `target' after included,
+* `processed?' after `target' is included"
+  (declare (snippets   snippets)
+           (snippet    target)
+           (hash-table processed?))
+  (let* ((snp/type (snippet-type target))
+         (snp/name (snippet-name target))
+         (snp/repr (cons snp/type snp/name)))
+    (setf (gethash snp/repr processed?) t)
+    (values snippets target processed?)))
+
 (in-package #:ulquikit-tests)
+
+;;; (run-tests '(test-include-snippet))
 
 (import 'ulquikit::make-snippet)
 (import 'ulquikit::snippet-name)
 (import 'ulquikit::snippets-file)
 (import 'ulquikit::snippets-code)
-(import 'ulquikit::include-snippet)
+(import 'ulquikit::include-snippet!)
 (define-test test-include-snippet
   (let* ((snp/file (make-snippet :name "/tmp/tmp.lisp"
                                  :type :file
@@ -948,29 +969,12 @@ anchor:func/include-snippet[]
                            (gethash "C" snippets/code) snp/code/C)
                      res)))
     (multiple-value-bind (snippets _ processed?)
-        (include-snippets snippets snp/file)
+        (include-snippet! snippets snp/file)
       (assert-true (gethash '(:file . "/tmp/tmp.lisp")
                             processed?)))))
+
 (module+ test
-  (let* ([file-snippet-tmp {'name "/tmp/tmp.rkt"
-                            'type 'file
-                            'lines '(";; include::A")
-                            'linenum 10}]
-         [snippets {'file {"/tmp/tmp.rkt" file-snippet-tmp}
-                    'code {"A" {'name "A"
-                                'type 'code
-                                'lines '("World" ";; include::B")
-                                'linenum 20}
-                           "B" {'name "B"
-                                'type 'code
-                                'lines '("Hello")
-                                'linenum 30}
-                           "C" {'name "C"
-                                'type 'code
-                                'lines '("Unprocessed")
-                                'linenum 30
-                                'processed? #f}}}]
-         [boxed (box snippets)])
+  (let* ([boxed (box snippets)])
     (include-snippet boxed file-snippet-tmp {})
     (check-equal? (unbox boxed)
                   {'file {"/tmp/tmp.rkt" {'name "/tmp/tmp.rkt"
@@ -2477,12 +2481,12 @@ Since Ulquikit is distributed under the terms of GPLv3, the license header is
 necessary.
 
 .code::license-header
-[source,racket]
+[source,lisp]
 ----
 ;;
 ;; This file is part of Ulquikit project.
 ;;
-;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;; Copyright (C) 2014-2015 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
 ;;
 ;; Ulquikit is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -2500,10 +2504,6 @@ necessary.
 ----
 
 == Extras
-
-== Utility functions
-
-See link:Utilities.html[Utilities].
 
 === Command list
 
