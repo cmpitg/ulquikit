@@ -1049,14 +1049,19 @@ This function returns multiple values:
 (in-package #:ulquikit)
 
 (defun snippet-exists? (snippet snippets)
-  "Determines if `snippet' is in `snippets'."
-  (declare (snippet snippet)
+  "Determines if the corresponding snippet is in `snippets'."
+  (declare ((or snippet string) snippet)
            (snippets snippets))
-  (let ((name (snippet-name snippet))
-        (type (snippet-type snippet)))
-    (case type
-      (:code (not (null (gethash name (snippets-code snippets)))))
-      (:file (not (null (gethash name (snippets-file snippets))))))))
+  (typecase snippet
+    (snippet
+     (let ((name (snippet-name snippet))
+           (type (snippet-type snippet)))
+       (case type
+         (:code (not (null (gethash name (snippets-code snippets)))))
+         (:file (not (null (gethash name (snippets-file snippets))))))))
+    (string
+     (or (not (null (gethash snippet (snippets-code snippets))))
+         (not (null (gethash snippet (snippets-file snippets))))))))
 
 (in-package #:ulquikit-tests)
 
@@ -1072,8 +1077,10 @@ This function returns multiple values:
                      res)))
     (assert-eq t   (snippet-exists? code/a snippets))
     (assert-eq t   (snippet-exists? file/a snippets))
+    (assert-eq t   (snippet-exists? "a"    snippets))
     (assert-eq nil (snippet-exists? code/b snippets))
-    (assert-eq nil (snippet-exists? file/b snippets))))
+    (assert-eq nil (snippet-exists? file/b snippets))
+    (assert-eq nil (snippet-exists? "b"    snippets))))
 
 ;;; (run-tests '(test-snippet-exists?))
 
