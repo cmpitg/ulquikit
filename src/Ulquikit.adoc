@@ -810,8 +810,8 @@ anchor:section/include-snippets[]
 
 `include-snippet!` takes 2 arguments:
 * the current list of snippets,
-* a snippet name that belongs to a snippet being processed, this snippet must
-  be a part of the current list of snippets,
+* a cons of format `(type . name)` representing the snippet being processed,
+  this snippet must be a part of the current list of snippets,
 
 This function returns the new list of snippets that have been processed.
 
