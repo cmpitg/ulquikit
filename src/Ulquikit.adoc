@@ -1122,8 +1122,10 @@ modifies `snippets' in-place and returns it after processing."
 (define-test test-join-lines
   (assert-equal "" (join-lines '()))
   (assert-equal "a" (join-lines '("a")))
-  (assert-equal (format nil "a~Ab") (join-lines '("a" "b")))
-  (assert-equal (format nil "a~Ab~A") (join-lines '("a" "b" ""))))
+  (assert-equal (format nil "a~%b") (join-lines '("a" "b")))
+  (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
+
+;;; (run-tests '(test-join-lines))
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
