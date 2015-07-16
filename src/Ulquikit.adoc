@@ -830,16 +830,8 @@ Note that:
   processing A.  I.e. `include-snippet` should be recursive to accumulate the
   results.
 
-* Also because of the above reason, `snippets` should be able to receive the
-  changes across all recursive calls to `include-snippet`.
-
-* If snippet A includes snippet B, then snippet B includes snippet A again, we
-  have a circular dependency problem.  To prevent this, a list of currently
-  included snippet must be kept track of.  If a snippet has already been in
-  the track, include it but don't process it.
-
-WARNING: The result of circular dependency is *undefined*.  Make sure your
-snippets are well managed.
+WARNING: The result of circular dependency, e.g. snippet A includes itself, is
+*undefined*.  Make sure your snippets are well managed.
 
 As a result, we have this implementation:
 
