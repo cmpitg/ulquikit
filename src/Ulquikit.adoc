@@ -1082,6 +1082,27 @@ modifies `snippets' in-place and returns it after processing."
     (assert-equal "world" (gethash :second hash))))
 
 ;;; (run-tests '(test-macro-sethash))
+
+(in-package #:ulquikit)
+
+(defun include-directive? (line)
+  "Determines of the corresponding line is a include directive.  TODO: Make this extensible."
+  line)
+
+(in-package #:ulquikit-test)
+
+(import 'ulquikit::include-directive?)
+(define-test test-include-directive?
+  (assert-eq t   (include-directive? "  ;; include::"))
+  (assert-eq t   (include-directive? ";; include::"))
+  (assert-eq nil (include-directive? "a;; include::"))
+  (assert-eq t   (include-directive? ";; include::something"))
+  (assert-eq t   (include-directive? "## include::something"))
+  (assert-eq t   (include-directive? "// include::something"))
+  (assert-eq t   (include-directive? "/* include::something */"))
+  (assert-eq t   (include-directive? "<!-- include::something -->"))
+  (assert-eq nil (include-directive? "a <!-- include::something -->")))
+
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
