@@ -1092,6 +1092,12 @@ This function returns multiple values:
 
 ;;; (run-tests '(test-snippet-exists?))
 
+(in-package #:ulquikit)
+
+(defmacro sethash (obj hash value)
+  "Helper macro, used to directly set hash value."
+  `(setf (gethash ,obj ,hash) ,value))
+
 (in-package #:ulquikit-tests)
 
 (define-test test-macro-sethash
