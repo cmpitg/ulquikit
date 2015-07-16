@@ -1087,7 +1087,11 @@ modifies `snippets' in-place and returns it after processing."
 
 (defun include-directive? (line)
   "Determines of the corresponding line is a include directive.  TODO: Make this extensible."
-  line)
+  (declare (string line))
+  (let ((line (string-trim '(#\Space #\e #\t #\m) line)))
+    (not (null (or (scan "^[#;/-]{2} include::.*" line)
+                   (scan "^<!-- include::.* -->" line)
+                   (scan "^/\\* include::.* \\*/" line))))))
 
 (in-package #:ulquikit-test)
 
@@ -1102,6 +1106,8 @@ modifies `snippets' in-place and returns it after processing."
   (assert-eq t   (include-directive? "/* include::something */"))
   (assert-eq t   (include-directive? "<!-- include::something -->"))
   (assert-eq nil (include-directive? "a <!-- include::something -->")))
+
+;;; (run-tests '(test-include-directive?))
 
 ----
 
