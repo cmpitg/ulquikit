@@ -1056,6 +1056,30 @@ This function returns multiple values:
 ;;                              #:name snippet-name
 ;;                              #:included {})))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit-tests)
+
+(import 'ulquikit::snippet-exists?)
+(define-test test-snippet-exists?
+  (let* ((code/a (make-snippet :name "a" :type :code))
+         (code/b (make-snippet :name "b" :type :code))
+         (file/a (make-snippet :name "a" :type :file))
+         (file/b (make-snippet :name "b" :type :file))
+         (snippets (let ((res (make-snippets)))
+                     (setf (gethash "a" (snippets-code res)) code/a)
+                     (setf (gethash "a" (snippets-file res)) file/a)
+                     res)))
+    (assert-eq t   (snippet-exists? code/a snippets))
+    (assert-eq t   (snippet-exists? file/a snippets))
+    (assert-eq nil (snippet-exists? code/b snippets))
+    (assert-eq nil (snippet-exists? file/b snippets))))
+
+;;; (run-tests '(test-snippet-exists?))
+
+
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
