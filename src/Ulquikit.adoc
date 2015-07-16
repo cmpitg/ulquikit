@@ -808,24 +808,17 @@ anchor:section/include-snippets[]
 
 === Including snippets into each other
 
-`include-snippet!` takes 2 mandatory arguments and an optional hash table
-representing:
+`include-snippet!` takes 2 arguments:
 * the current list of snippets,
-* the targeted snippet -- the one is being processed, this snippet should be a
-  part of the current list of snippets,
-* and the hash table determining whether or not a snippet has been processed
-  (to prevent circular dependency)
+* a snippet name that belongs to a snippet being processed, this snippet must
+  be a part of the current list of snippets,
 
-This function returns multiple values, in the following order:
-* the list of snippets that have been processed,
-* the targeted snippet that has been included,
-* and the hash table determining whether or not a snippet has been processed
-  after the targeted snippet has been included
+This function returns the new list of snippets that have been processed.
 
-`include-snippet!` works by browsing ``target``'s content, one line at a time,
-then replacing lines with `include::` directives with the corresponding __code
-snippet__s in `snippets`.  If no snippet is found, the line is left as-is.
-`snippets` should contain `target`.
+`include-snippet!` works by browsing the target snippet's content, one line at
+a time, then replacing lines with `include::` directives with the
+corresponding __code snippet__s in `snippets`.  If no snippet is found, the
+line is left as-is.
 
 Note that:
 
