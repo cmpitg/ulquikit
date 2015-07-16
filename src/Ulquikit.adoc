@@ -921,9 +921,12 @@ This function returns multiple values:
            (hash-table processed?))
   (let* ((snp/type (snippet-type target))
          (snp/name (snippet-name target))
-         (snp/repr (cons snp/type snp/name)))
-    (setf (gethash snp/repr processed?) t)
-    (values snippets target processed?)))
+         (snp/repr (cons snp/type snp/name))
+         (lines    (snippet-lines target)))
+    ;; Only process `target' if not included and this snippet is in the list
+    (unless (or (gethash snp/repr processed?)
+                (and (not (gethash snp/name (snippets-file snippets)))
+                     (not (gethash snp/name (snippets-code snippets)))))
 
 (in-package #:ulquikit-tests)
 
