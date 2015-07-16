@@ -1050,12 +1050,16 @@ This function returns multiple values:
 
 (defun snippet-exists? (snippet snippets)
   "Determines if the corresponding snippet is in `snippets'."
-  (declare ((or snippet string) snippet)
+  (declare ((or snippet string cons) snippet)
            (snippets snippets))
   (typecase snippet
-    (snippet
-     (let ((name (snippet-name snippet))
-           (type (snippet-type snippet)))
+    ((or cons snippet)
+     (let ((name (typecase snippet
+                   (cons    (cdr snippet))
+                   (snippet (snippet-name snippet))))
+           (type (typecase snippet
+                   (cons    (car snippet))
+                   (snippet (snippet-type snippet)))))
        (case type
          (:code (not (null (gethash name (snippets-code snippets)))))
          (:file (not (null (gethash name (snippets-file snippets))))))))
@@ -1078,6 +1082,9 @@ This function returns multiple values:
     (assert-eq t   (snippet-exists? code/a snippets))
     (assert-eq t   (snippet-exists? file/a snippets))
     (assert-eq t   (snippet-exists? "a"    snippets))
+    (assert-eq t   (snippet-exists? `(:code . "a") snippets))
+    (assert-eq t   (snippet-exists? `(:file . "a") snippets))
+    (assert-eq nil (snippet-exists? `(:code . "b") snippets))
     (assert-eq nil (snippet-exists? code/b snippets))
     (assert-eq nil (snippet-exists? file/b snippets))
     (assert-eq nil (snippet-exists? "b"    snippets))))
