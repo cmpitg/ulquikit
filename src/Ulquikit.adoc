@@ -1060,6 +1060,18 @@ This function returns multiple values:
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(in-package #:ulquikit)
+
+(defun snippet-exists? (snippet snippets)
+  "Determines if `snippet' is in `snippets'."
+  (declare (snippet snippet)
+           (snippets snippets))
+  (let ((name (snippet-name snippet))
+        (type (snippet-type snippet)))
+    (case type
+      (:code (not (null (gethash name (snippets-code snippets)))))
+      (:file (not (null (gethash name (snippets-file snippets))))))))
+
 (in-package #:ulquikit-tests)
 
 (import 'ulquikit::snippet-exists?)
