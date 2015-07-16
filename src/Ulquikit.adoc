@@ -1109,6 +1109,21 @@ modifies `snippets' in-place and returns it after processing."
 
 ;;; (run-tests '(test-include-directive?))
 
+(in-package #:ulquikit)
+
+(defun join-lines (lines)
+  "Joins a list of strings with newline as separator."
+  (declare (list lines))
+  lines)
+
+(in-package #:ulquikit-tests)
+
+(import 'ulquikit::join-lines)
+(define-test test-join-lines
+  (assert-equal "" (join-lines '()))
+  (assert-equal "a" (join-lines '("a")))
+  (assert-equal (format nil "a~Ab") (join-lines '("a" "b")))
+  (assert-equal (format nil "a~Ab~A") (join-lines '("a" "b" ""))))
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
