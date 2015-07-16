@@ -82,7 +82,8 @@ Ulquikit uses to interact with the outside world as a Common Lisp package.
 
            #:snippet
            #:create-snippet
-           #:extract-snippets-from-file))
+           #:extract-snippets-from-file
+           #:sethash))
 
 (in-package #:ulquikit)
 ----
@@ -1091,7 +1092,16 @@ This function returns multiple values:
 
 ;;; (run-tests '(test-snippet-exists?))
 
+(in-package #:ulquikit-tests)
 
+(define-test test-macro-sethash
+  (let ((hash (make-hash-table)))
+    (sethash :first hash "hello")
+    (sethash :second hash "world")
+    (assert-equal "hello" (gethash :first hash))
+    (assert-equal "world" (gethash :second hash))))
+
+;;; (run-tests '(test-macro-sethash))
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
