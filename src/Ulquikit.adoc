@@ -1114,7 +1114,7 @@ modifies `snippets' in-place and returns it after processing."
 (defun join-lines (lines)
   "Joins a list of strings with newline as separator."
   (declare (list lines))
-  lines)
+  (format nil "~{~A~^~%~}" lines))
 
 (in-package #:ulquikit-tests)
 
