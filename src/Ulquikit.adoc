@@ -896,20 +896,21 @@ modifies `snippets' in-place and returns it after processing."
 (import 'ulquikit::make-snippet)
 (import 'ulquikit::snippet-name)
 (import 'ulquikit::snippet-lines)
+(import 'ulquikit::snippet-processed?)
 (import 'ulquikit::snippets-file)
 (import 'ulquikit::snippets-code)
 (import 'ulquikit::include-snippet!)
 (define-test test-include-snippet
   (let* ((snp/file (make-snippet :name "/tmp/tmp.lisp"
                                  :type :file
-                                 :lines '(";; include::A")
+                                 :lines '(";; include::A"
+                                          ";; The end")
                                  :linenum 10))
          (snp/code/A (make-snippet :name "A"
                                    :type :code
                                    :lines '("World"
                                             ";; include::B"
-                                            ";; include::D"
-                                            )
+                                            ";; include::D")
                                    :linenum 20))
          (snp/code/B (make-snippet :name "B"
                                    :type :code
@@ -931,16 +932,26 @@ modifies `snippets' in-place and returns it after processing."
                      (setf (gethash "/tmp/tmp.lisp" snippets/file) snp/file
                            (gethash "A" snippets/code) snp/code/A
                            (gethash "B" snippets/code) snp/code/B
-                           (gethash "C" snippets/code) snp/code/C)
+                           (gethash "C" snippets/code) snp/code/C
+                           (gethash "D" snippets/code) snp/code/D)
                      ;; Don't add D right away
                      res)))
-    (multiple-value-bind (snippets _ processed?)
-        (include-snippet! snippets snp/code/A)
-      (assert-true (gethash '(:code . "A") processed?) "A is now processed")
-      (assert-equal '("World"
-                      "Hello"
-                      ";; include::D")
-                    (snippet-lines snp/code/A)))))
+    (setf snippets (include-snippet! snippets `(:code . "A")))
+    (assert-true t)
+    (assert-true (snippet-processed? snp/code/A))
+    (assert-true (snippet-processed? snp/code/B))
+    (assert-true (snippet-processed? snp/code/D))
+    (assert-false (snippet-processed? snp/code/C))
+    (assert-false (snippet-processed? snp/file))
+    (assert-true (scan "^World\\nHello\\n"
+                       (nth 0 (snippet-lines snp/code/A))))
+
+    (setf snippets (include-snippet! snippets `(:file . "/tmp/tmp.lisp")))
+    (let ((content (nth 0 (snippet-lines snp/file))))
+      (assert-true (snippet-processed? snp/file))
+      (assert-true (scan "^World\\nHello\\n" content))
+      (format t "Content: ~A~%" content)
+      (assert-true (scan ";; The end$" content)))))
 
 ;;; (run-tests '(test-include-snippet))
 
