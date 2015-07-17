@@ -1093,6 +1093,34 @@ for detailed information on input/output format.  TODO: make this extensible."
                              "<!-- include::something -->")))
 
 ;;; (run-tests '(test-include-directive))
+
+(in-package #:ulquikit)
+
+(snippets/get-snippet snippets
+                      :type target/type
+                      :name target/name)
+
+(in-package #:ulquikit-tests)
+
+(import 'ulquikit::snippets/get-snippet)
+(define-test test-snippets/get-snippet
+  (let* ((snp/code/a (make-snippet :type :code :name "a"))
+         (snp/code/b (make-snippet :type :code :name "b"))
+         (snp/file/c (make-snippet :type :file :name "c.lisp"))
+         (snippets (let ((res (make-snippets)))
+                     (sethash "a" (snippets-code res) snp/code/a)
+                     (sethash "b" (snippets-code res) snp/code/b)
+                     (sethash "c" (snippets-file res) snp/file/c)
+                     res)))
+    (assert-equal snp/code/a (snippets/get-snippet snippets
+                                                   :type :code
+                                                   :name "a"))
+    (assert-equal snp/code/b (snippets/get-snippet snippets
+                                                   :type :code
+                                                   :name "b"))
+    (assert-equal snp/file/c (snippets/get-snippet snippets
+                                                   :type :file
+                                                   :name "c"))))
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
