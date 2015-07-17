@@ -962,7 +962,6 @@ modifies `snippets' in-place and returns it after processing."
     (let ((content (nth 0 (snippet-lines snp/file))))
       (assert-true (snippet-processed? snp/file))
       (assert-true (scan "^World\\nHello\\n" content))
-      (format t "Content: ~A~%" content)
       (assert-true (scan ";; The end$" content)))))
 
 ;;; (run-tests '(test-include-snippet))
