@@ -253,3 +253,24 @@ with current working directory of the path is relative.
 ;; Using hashtable with curly-dict notation
 (current-curly-dict hash)
 ----
+
+'''''
+
+[source,lisp,linenums]
+----
+(ql:quickload "split-sequence")
+(ql:quickload "alexandria")
+
+(defun ->keyword (s)
+  s)
+
+(defun ->string s
+  s
+  )
+
+(defun split-sequence)
+
+----
+
+
+'''''
