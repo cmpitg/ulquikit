@@ -1058,12 +1058,24 @@ modifies `snippets' in-place and returns it after processing."
 
 (defun parse-include-directive (str)
   "Parses and extracts snippet name from an include directive.  See its tests
-for detailed information on input/output format."
+for detailed information on input/output format.  TODO: make this extensible."
   (declare (string str))
-  str)
+  (if (include-directive? str)
+      (let ((input (cond ((and (scan " -->$" str) (scan "^<!-- " str))
+                          (subseq str 0 (- (length str) (length " -->"))))
+                         ((and (scan " \\*/$" str) (scan "^/\\* " str))
+                          (subseq str 0 (- (length str) (length " */"))))
+                         (t
+                          str))))
+        (multiple-value-bind (_ name/array)
+            (scan-to-strings "include::(.*)$" input)
+          (declare (ignore _))
+          (elt name/array 0)))
+    ""))
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::parse-include-directive)
 (define-test test-include-directive
   (assert-equal "" (parse-include-directive "  ;; include::"))
   (assert-equal "" (parse-include-directive ";; include::"))
