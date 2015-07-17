@@ -849,6 +849,8 @@ introduces circular dependency, the result is undefined.  This function
 modifies `snippets' in-place and returns it after processing."
   (declare (cons type+name) (snippets snippets))
 
+  ;; (format t "→ including snippet ~A~%" type+name)
+
   ;; Ignore of the target snippet doesn't exist in the list of snippets
   (when (snippet-exists? type+name snippets)
     (let* ((target/type (car type+name))
@@ -865,24 +867,34 @@ modifies `snippets' in-place and returns it after processing."
 
         ;; Now, recollect lines
         (dolist (line lines)
-          (when (include-directive? line)
-            (let* ((includee-name (parse-include-directive line))
-                   (includee      (snippets/get-snippet snippets
-                                                        :type :code
-                                                        :name includee-name)))
-              (cond ((snippet-processed? includee)
-                     (push (join-lines (snippet-lines includee))
-                           lines-final))
+          ;; (format t "  Processing ~A~%" line)
+          (if (include-directive? line)
+              (let* ((includee-name (parse-include-directive line))
+                     (includee      (snippets/get-snippet snippets
+                                                          :type :code
+                                                          :name includee-name)))
+                (cond ((null includee)
+                       ;; No such snippet to include
+                       (push line lines-final))
 
-                    ((not (snippet-exists? includee snippets))
-                     (push line lines-final))
+                      ((snippet-processed? includee)
+                       (push (join-lines (snippet-lines includee))
+                             lines-final))
 
-                    (t
-                     (setf snippets (include-snippet!
-                                     snippets
-                                     `(:code . includee-name)))
-                     (push (join-lines (snippet-lines includee)) 
-                           lines-final))))))
+                      ((not (snippet-exists? includee snippets))
+                       (push line lines-final))
+
+                      (t
+                       (setf snippets (include-snippet!
+                                       snippets
+                                       `(:code . ,includee-name)))
+                       (push (join-lines (snippet-lines includee)) 
+                             lines-final))))
+            (push line lines-final)))
+
+        ;; (format t "Snippet: ~A; result: ~A~%"
+        ;;         (cdr type+name)
+        ;;         (join-lines (reverse (copy-list lines-final))))
 
         ;; Then, collect result
         (setf (snippet-lines target)
