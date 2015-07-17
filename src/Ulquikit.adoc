@@ -1079,6 +1079,8 @@ for detailed information on input/output format."
                              "/* include::something */"))
   (assert-equal "something" (parse-include-directive
                              "<!-- include::something -->")))
+
+;;; (run-tests '(test-include-directive))
 ----
 
 As we can see, +include-snippet+ makes use of a lot of helpers.  All of them
