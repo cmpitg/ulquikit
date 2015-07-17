@@ -1156,10 +1156,12 @@ for detailed information on input/output format.  TODO: make this extensible."
 ;;; (run-tests '(test-snippets/get-snippet))
 ----
 
-And that concludes the most important functions of Ulquikit.  Those functions
-are used to implement the <<section/generate-source,+generate-src+>> right below.
+And that concludes the most important functions of Ulquikit.  Those are used
+to implement the higher-level <<section/generate-source,+generate-src+>> right
+below.
 
-[[command/generate-src]]
+anchor:command/generate-src[]
+
 == Generating source code
 
 Once snippets are extracted and included into each other, the act of
