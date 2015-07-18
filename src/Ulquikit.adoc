@@ -1172,6 +1172,8 @@ files are retrieved recursively.
 .code::generate-src
 [source,lisp,linenums]
 ----
+(in-package #:ulquikit)
+
 (defun generate-src (&key (from "src")
                        (to "generated-src"))
   "Generates source code from all literate source files in `from' to directory
