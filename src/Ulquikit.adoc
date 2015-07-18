@@ -1186,6 +1186,20 @@ files are retrieved recursively.
                      (extract-snippets from))))
     (write-src-files (include-file-snippets snippets) to)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit-tests)
+
+(import 'ulquikit::file?)
+(define-test test-file?
+  (assert-true (file? "tmp.txt"))
+  (assert-true (file? #p"tmp.txt"))
+  (assert-false (file? "tmp.txt/"))
+  (assert-false (file? #p"tmp.txt/")))
+
+;;; (run-tests '(test-file?))
 ----
 
 The ultimate goal of generating source code is to produce files, so we only
