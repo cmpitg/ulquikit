@@ -1157,7 +1157,7 @@ for detailed information on input/output format.  TODO: make this extensible."
 ----
 
 And that concludes the most important functions of Ulquikit.  Those are used
-to implement the higher-level <<section/generate-source,+generate-src+>> right
+to implement the higher-level <<section/generate-source,`generate-src`>> right
 below.
 
 anchor:command/generate-src[]
