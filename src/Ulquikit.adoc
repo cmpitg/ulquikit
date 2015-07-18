@@ -101,7 +101,7 @@ redefining tests and test packages.
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-tests
-  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate))
+  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate :cl-fad))
 
 (in-package #:ulquikit-tests)
 
@@ -1172,24 +1172,17 @@ files are retrieved recursively.
 .code::generate-src
 [source,lisp,linenums]
 ----
-
-;; include::create-snippet
-
-;; include::extract-snippets
-
-;; include::include-snippet
-
-;; include::generate-snippets-helpers
-
-(define (generate-src #:from [from "src"]
-                      #:to   [to   "generated-src"])
-  (let* ([from (get-path from)]
-         [to   (get-path to)])
-    (~> (if (file-exists? from)
-            (extract-snippets-from-file from)
-            (extract-snippets from))
-      (include-file-snippets)
-      (generate-src-files to))))
+(defun generate-src (&key (from "src")
+                       (to "generated-src"))
+  "Generates source code from all literate source files in `from' to directory
+`to'.  `from' is either a directory or a single literate source file."
+  (declare ((or string pathname) from to))
+  (let* ((from     (uiop:merge-pathnames* from (uiop:getcwd)))
+         (to       (uiop:merge-pathnames* to (uiop:getcwd)))
+         (snippets (if (file? from)
+                       (extract-snippets-from-file from)
+                     (extract-snippets from))))
+    (generate-src-files (include-file-snippets snippets) to)))
 
 ----
 
