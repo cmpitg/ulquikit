@@ -1162,16 +1162,16 @@ below.
 
 anchor:command/generate-src[]
 
-== Generating source code
+=== Generating source code
 
-Once snippets are extracted and included into each other, the act of
-generateing source code becomes trivial, as implemented in +generate-src+
-below.
+`generate-src` generates source code from the `from` argument, which denotes a
+directory containing literate source files, to the `to` argument, which
+denotes a directory containing the generated source code.  The literate source
+files are retrieved recursively.
 
 .code::generate-src
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-;; lang racket
 
 ;; include::create-snippet
 
