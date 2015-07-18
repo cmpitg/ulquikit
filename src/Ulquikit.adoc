@@ -1190,6 +1190,13 @@ files are retrieved recursively.
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(in-package #:ulquikit)
+
+(defun file? (path)
+  "Determines if path represents a file."
+  (declare ((or string pathname) path))
+  (null (scan "/$" (namestring path))))
+
 (in-package #:ulquikit-tests)
 
 (import 'ulquikit::file?)
