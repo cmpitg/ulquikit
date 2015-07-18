@@ -1210,15 +1210,16 @@ files are retrieved recursively.
 ----
 
 The ultimate goal of generating source code is to produce files, so we only
-need to include other snippets into file snippets.  +include-file-snippets+
-does exactly that.  This function takes a hash of snippets as a result of the
-call to +extract-snippets+ and returns a hash of snippets with all file
-snippets <<section/include-snippets,included>>.  Let's combine the implement
-of +include-file-snippets+ and +generate-src-files+ to make a complete set of
-helpers for +generate-src+.
+need to include other snippets into file snippets.  That's the job of
+`include-file-snippets` function.  This function takes list of snippets (of an
+instance of `snippets` struct) returns an instance of `snippets` with all file
+snippets <<section/include-snippets,included>>.
 
-.code::generate-snippets-helpers
-[source,racket,linenums]
+Note that for performance reason, this function is destructive, hence its name
+is prefixed with a bang (``!``).
+
+.code::include-file-snippets
+[source,lisp,linenums]
 ----
 ;; lang racket
 
