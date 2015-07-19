@@ -1245,14 +1245,11 @@ file snippets included.  Note that this function modifies its argument."
           (ensure-directories-exist path)
           (write-file path content))))
 
-(define (generate-src-files snippets to)
-  (for ([(name snippet) (get-file-snippets snippets)])
-    (let* ([path    (get-path to name)]
-           [content (get-snippet-content snippet)])
-      (create-dir (path->directory path))
-      (displayln (~a "-> Writing " path))
-      (display-to-file content path #:exists 'truncate/replace))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(in-package #:ulquikit)
 ----
 
 And of course, we need to define help string for +generate-src+:
