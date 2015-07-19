@@ -1232,11 +1232,18 @@ file snippets included.  Note that this function modifies its argument."
           (include-snippet! snippets `(:file . ,name))))
   snippets)
 
-(in-package #:ulquikit-tests)
-
-(define-test test-include-file-snippets!
-  (let (()))
-  )
+(defun write-src-files (snippets to)
+  "Writes all source snippets as files to `to'."
+  (iter (for (name snippet) in-hashtable (snippets-file snippet))
+        (let ((path (uiop:merge-pathnames*
+                     name
+                     (uiop:merge-pathnames*
+                      to
+                      (uiop:getcwd))))
+              (content (join-lines (snippet-lines snippet))))
+          (format t "→ Writing ~A~%" path)
+          (ensure-directories-exist path)
+          (write-file path content))))
 
 (define (generate-src-files snippets to)
   (for ([(name snippet) (get-file-snippets snippets)])
