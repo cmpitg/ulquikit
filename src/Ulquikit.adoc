@@ -1234,6 +1234,8 @@ file snippets included.  Note that this function modifies its argument."
 
 (defun write-src-files (snippets to)
   "Writes all source snippets as files to `to'."
+  (declare (snippets snippets)
+           ((or string pathname) to))
   (iter (for (name snippet) in-hashtable (snippets-file snippets))
         (let ((path (uiop:merge-pathnames*
                      name
