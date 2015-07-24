@@ -131,7 +131,7 @@ Hence, the following functions are the most important:
 First, we need to decide how snippets are stored.  This is very important as
 every change made to this data structure would affect the code later on.
 
-Each snippet is a struct with following alist representation:
+Each snippet is a struct with the following alist representation:
 
 anchor:snippet-format[]
 
