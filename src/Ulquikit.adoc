@@ -241,6 +241,7 @@ anchor:func/create-snippet[]
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::create-snippet)
 (define-test test-snippet-creation
   (assert-equalp #S(snippet
                     :type :file
