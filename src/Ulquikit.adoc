@@ -415,7 +415,7 @@ anchor:func/extract-snippets-from-file[]
 
 (defun extract-snippets-from-file (path)
   "Extracts snippets from a file and return a `snippets' struct."
-  (declare (type (or string pathname) path))
+  (declare ((or string pathname) path))
   (let* ((text (string-trim '(#\Space #\Newline #\e #\t #\m) (read-file path)))
          (lines (split-sequence #\Newline text))
 
@@ -491,6 +491,7 @@ anchor:func/extract-snippets-from-file[]
 
 (defun block-delimiter? (str)
   "Determines if a string is a block delimiter.  TODO: Make this extensible."
+  (declare (string str))
   (scan "^----( *)$" str))
 
 (in-package #:ulquikit-tests)
@@ -509,6 +510,7 @@ anchor:func/extract-snippets-from-file[]
 
 (defun block-title? (str)
   "Determines if a string is a block title.  TODO: Make this extensible."
+  (declare (string str))
   (scan "^\\.(file|code)::" str))
 
 (in-package #:ulquikit-tests)
