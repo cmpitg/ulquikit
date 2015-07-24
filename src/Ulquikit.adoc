@@ -180,10 +180,33 @@ have a helper that joins those lines into a complete string:
 (in-package #:ulquikit)
 
 (defun get-snippet-content (snippet)
-  "Returns the content of a snippet, i.e. all of its lines are joined by
-newline characters."
-  (declare (type snippet snippet))
-  (format nil "~{~A~^~%~}" (snippet-lines snippet)))
+  "Returns the content of a snippet as string."
+  (declare (snippet snippet))
+  (join-lines (snippet/lines snippet)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun join-lines (lines)
+  "Joins a list of strings with newline as separator."
+  (declare (list lines))
+  (format nil "~{~A~^~%~}" lines))
+
+(in-package #:ulquikit-tests)
+
+(import 'ulquikit::join-lines)
+(define-test test-join-lines
+  (assert-equal "" (join-lines '()))
+  (assert-equal "a" (join-lines '("a")))
+  (assert-equal (format nil "a~%b") (join-lines '("a" "b")))
+  (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
+
+;;; (run-tests '(test-join-lines))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 `create-snippet` is simply implemented as followed:
@@ -1063,24 +1086,6 @@ modifies `snippets' in-place and returns it after processing."
   (assert-eq nil (include-directive? "a <!-- include::something -->")))
 
 ;;; (run-tests '(test-include-directive?))
-
-(in-package #:ulquikit)
-
-(defun join-lines (lines)
-  "Joins a list of strings with newline as separator."
-  (declare (list lines))
-  (format nil "~{~A~^~%~}" lines))
-
-(in-package #:ulquikit-tests)
-
-(import 'ulquikit::join-lines)
-(define-test test-join-lines
-  (assert-equal "" (join-lines '()))
-  (assert-equal "a" (join-lines '("a")))
-  (assert-equal (format nil "a~%b") (join-lines '("a" "b")))
-  (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
-
-;;; (run-tests '(test-join-lines))
 
 (in-package #:ulquikit)
 
