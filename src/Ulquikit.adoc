@@ -97,7 +97,7 @@ https://github.com/capitaomorte/fiasco[Fiasco] with little success.  The
 interface is nice but inflexible.  There is no easy way to remove or redefine
 tests/test packages.
 
-.code::src/package-test.lisp
+.code::defpackage-ulquikit-tests
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-tests
