@@ -376,7 +376,8 @@ structure for storing all snippets:
 ----
 (in-package #:ulquikit)
 
-(defstruct snippets
+(defstruct (snippets
+             (:conc-name snippets/))
   (file (make-hash-table :test #'equal) :type hash-table)
   (code (make-hash-table :test #'equal) :type hash-table))
 ----
