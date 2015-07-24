@@ -144,14 +144,17 @@ anchor:snippet-format[]
   (:processed? . ,processed?))   <5>
 ----
 <1> is either `:file` or `:code`
-<2> is the name of the snippet; e.g. snippet with title `file::something` has `something` as its name.  Note that snippet name is _a string_.
-<3> is the line number from the literate source code from where the snippet is extracted
-<4> is the content of the snippet as a list of lines, necessary for performance purpose
-<5> determines whether this snippet has been processed? to include others, when created for the first time, `'processed?` is always `#f`.  It's only changed after the snippet has been passed through <<include-snippet,+include-snippet+>>
+<2> is the name of the snippet; e.g. snippet with title `file::something` has
+`something` as its name.  Snippet name is _a string_.
+<3> is the line number from the literate source code from where the snippet is
+extracted
+<4> is the content of the snippet as a list of lines
+<5> determines whether this snippet has been processed?, when created for the
+first time, `:processed?` is always `nil`.  It is only changed after the
+snippet has been passed through <<func/include-snippet,+include-snippet!+>>
 
-Thus, a struct representation of a snippet is defined as followed:
+Thus, the struct representation of a snippet is defined as followed:
 
-.code::define-snippet
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
