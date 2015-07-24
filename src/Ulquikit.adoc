@@ -111,24 +111,27 @@ tests/test packages.
 
 == Extracting and including snippets
 
-Ulquikit works by searching for all AsciiDoc documents inside
-`<project-root>/src` directory, building a database of snippets, including
-them into each other if necessary, then generating documentation and source
-code.  Hence, the following functions are probably the most interesting ones:
+Ulquikit works by
 
-* <<func/extract-snippets-from-file,`extract-snippets-from-file`>>, which
-  helps extract snippets from a file
-* <<func/include-snippet,`include-snippet`>>, which helps
-  <<section/include-snippets,include snippets>> into each other
+. searching for all AsciiDoc documents inside `<project-root>/src` directory,
+. building a database of snippets,
+. including them into each other if necessary, then,
+. generating documentation and source code.
 
-Let's talk about `extract-snippets-from-file` first:
+Hence, the following functions are the most important:
+
+* <<func/extract-snippets-from-file,`extract-snippets-from-file`>>, that
+  extracts snippets from a file
+
+* <<func/include-snippet,`include-snippet!`>>, that serves as a building block
+  to <<section/include-snippets,include snippets>> into each other
 
 === Extracting snippets
 
 First, we need to decide how snippets are stored.  This is very important as
 every change made to this data structure would affect the code later on.
 
-Each snippet is struct with following alist representation:
+Each snippet is a struct with following alist representation:
 
 anchor:snippet-format[]
 
