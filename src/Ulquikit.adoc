@@ -1225,7 +1225,8 @@ is prefixed with a bang (``!``).
 
 (defun include-file-snippets! (snippets)
   "Includes all file snippets in `snippets' and return a `snippets' with all
-file snippets included.  Note that this function modifies its argument."
+file snippets included.  This function is destructive, i.e. it modifies its
+arguments."
   (declare (snippets snippets))
   (let ((file-snippets (snippets-file snippets)))
     (iter (for (name _) in-hashtable file-snippets)
