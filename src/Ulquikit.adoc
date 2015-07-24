@@ -424,7 +424,7 @@ anchor:func/extract-snippets-from-file[]
          (prev-prev-line "")
          (prev-line      "")
          (linenum        0)             ; current line number
-         (inside?        nil)           ; current inside a snippet?
+         (inside?        nil)           ; currently inside a snippet?
 
          (s/type       :code)
          (s/lines/rev  (list))
