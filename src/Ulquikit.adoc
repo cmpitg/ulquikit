@@ -155,11 +155,12 @@ snippet has been passed through <<func/include-snippet,+include-snippet!+>>
 
 Thus, the struct representation of a snippet is defined as followed:
 
+.code::defstruct-snippet
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
 
-(defstruct snippet
+(defstruct (snippet (:conc-name snippet/))
   (type :code     :type keyword)
   (name ""        :type string)
   (linenum 0      :type integer)
