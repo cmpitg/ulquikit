@@ -215,12 +215,19 @@ anchor:func/create-snippet[]
 .code::create-snippet
 [source,lisp,linenums]
 ----
-;; include::get-snippet-content
-
 (in-package #:ulquikit)
 
-(defun create-snippet (&key type name linenum lines (processed? nil))
+(defun create-snippet (&key
+                         (type :code)
+                         (name "")
+                         (linenum 1)
+                         (lines (list))
+                         (processed? nil))
   "Helper to create snippet."
+  (declare ((or string symbol) type name)
+           ((or string list) lines)
+           (integer linenum)
+           (boolean processed?))
   (let ((type (->keyword type))
         (name (->string name))
         (lines (if (stringp lines)
@@ -259,9 +266,11 @@ anchor:func/create-snippet[]
 
 ;;; (run-tests)
 
-(in-package #:ulquikit)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Utils
+(in-package #:ulquikit)
 
 (defun ->keyword (val)
   "Converts a symbol or string into keyword."
@@ -278,6 +287,7 @@ anchor:func/create-snippet[]
                 (string val)
                 ((or symbol keyword) (string-downcase (symbol-name val))))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 Now the helper `create-snippet` is ready.  Let's move on to
