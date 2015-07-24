@@ -1211,8 +1211,8 @@ files are retrieved recursively.
 
 The ultimate goal of generating source code is to produce files, so we only
 need to include other snippets into file snippets.  That's the job of
-`include-file-snippets` function.  This function takes list of snippets (of an
-instance of `snippets` struct) returns an instance of `snippets` with all file
+`include-file-snippets!` function.  This function takes a list of snippets (of
+of `snippets` type) and returns an instance of `snippets` with all file
 snippets <<section/include-snippets,included>>.
 
 Note that for performance reason, this function is destructive, hence its name
