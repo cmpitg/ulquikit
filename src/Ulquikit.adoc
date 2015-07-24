@@ -1259,7 +1259,7 @@ arguments."
   (declare ((or pathname string) path)
            (string content))
   (with-output-to-file (out path :if-exists :supersede)
-    (format out content)))
+    (format out "~A" content)))
 ----
 
 And of course, we need to define help string for +generate-src+:
