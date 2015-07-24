@@ -168,9 +168,8 @@ Thus, the struct representation of a snippet is defined as followed:
   (processed? nil :type boolean))
 ----
 
-IMPORTANT: Snippets should never be created by directly by using
-`make-snippet`.  They should be created with
-<<func/create-snippet,`create-snippet`>>.
+IMPORTANT: Snippets should never be created directly with `make-snippet`.
+They should be created with <<func/create-snippet,`create-snippet`>>.
 
 Since a snippet stores a list of lines as its content, it'd be convenient to
 have a helper that joins those lines into a complete string:
