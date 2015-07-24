@@ -496,15 +496,15 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::block-delimiter?)
 (define-test test-block-delimiter
-  (import 'ulquikit::block-delimiter?)
   (assert-true (block-delimiter? "----"))
   (assert-true (not (block-delimiter? " ----")))
   (assert-true (block-delimiter? "---- "))
   (assert-true (block-delimiter? "----  "))
   (assert-true (not (block-delimiter? "----a"))))
 
-;; (run-tests)
+;; (run-tests '(test-block-delimiter))
 
 (in-package #:ulquikit)
 
@@ -515,14 +515,14 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::block-title?)
 (define-test test-block-title
-  (import 'ulquikit::block-title?)
   (assert-true (block-title? ".file::something"))
   (assert-true (block-title? ".file::something else"))
   (assert-true (block-title? ".file::"))
   (assert-true (null (block-title? ".file:something"))))
 
-;; (run-tests)
+;; (run-tests '(test-block-title))
 
 (in-package #:ulquikit)
 
@@ -537,8 +537,8 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::parse-snippet-title)
 (define-test test-parse-snippet-title
-  (import 'ulquikit::parse-snippet-title)
   (dolist (el '((".file::"    . (:file ""))
                 (".code::"    . (:code ""))
                 (".file::abc" . (:file "abc"))
@@ -548,7 +548,7 @@ anchor:func/extract-snippets-from-file[]
       (multiple-value-bind (type name) (parse-snippet-title title)
         (assert-equal expected (list type name))))))
 
-;; (run-tests)
+;; (run-tests '(test-parse-snippet-title))
 
 (in-package #:ulquikit)
 
@@ -573,10 +573,15 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::snippet)
+(import 'ulquikit::snippets)
+(import 'ulquikit::snippet/type)
+(import 'ulquikit::snippet/name)
+(import 'ulquikit::snippets/file)
+(import 'ulquikit::snippets/code)
+(import 'ulquikit::make-snippets)
+(import 'ulquikit::collect-snippet)
 (define-test test-collect-snippets
-  (import 'ulquikit::snippets)
-  (import 'ulquikit::make-snippets)
-  (import 'ulquikit::collect-snippet)
   (assert-equalp (collect-snippet (make-snippets)
                                   (create-snippet :type :file
                                                   :name :hello
@@ -625,6 +630,7 @@ anchor:func/extract-snippets-from-file[]
 
 ;; (run-tests '(test-collect-snippets))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 As a result, `extract-snippets`, which extracts snippets from all AsciiDoc
