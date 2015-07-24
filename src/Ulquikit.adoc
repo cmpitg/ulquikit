@@ -44,9 +44,9 @@ documentations.  On my setup, I use:
 
 * A *code block* is an AsciiDoc code block.
 
-* A *snippet* is a code block with Ulquikit-defined title and delimiter
-  `----`.  By default, a code block title that starts `file::` and `code::`
-  defines a _file snippet_ and _code snippet_, respectively:
+* A *snippet* is a code block with Ulquikit-defined title.  By default, a code
+  block title that starts with `file::` and `code::` defines a _file snippet_
+  and _code snippet_, respectively:
 
 ** A *file snippet* is a snippet producing a source file.
 ** A *code snippet* is a snippet storing source code that can be included into
@@ -56,17 +56,17 @@ documentations.  On my setup, I use:
 
 ** belongs to a snippet
 ** has the format of `xx include::some-snippet-name` where `xx` are two
-   identical characters denoting a comment.  Ulquikit can recogize the
-   following comment types: `//`, `;;`, `##`, `--`, or C-stype `/*
+   identical characters denoting a comment.  Ulquikit can also recogize the
+   following comment types: `//`, `;;`, `##`, `--`, C-stype `/*
    include::some-snippet-name */`, or XML-style `<!--
    include::some-snippet-name -->`.
 
 == Interfaces
 
-Before going into any detail, I would like to define the interfaces that
-Ulquikit uses to interact with the outside world as a Common Lisp package.
+Before going into any detail, let us define the interface that Ulquikit uses
+to interact with the outside world as a Common Lisp package.
 
-.code::src/package.lisp
+.code::defpackage-ulquikit
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit
