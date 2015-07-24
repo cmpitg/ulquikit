@@ -182,7 +182,7 @@ have a helper that joins those lines into a complete string:
 (defun get-snippet-content (snippet)
   "Returns the content of a snippet as string."
   (declare (snippet snippet))
-  (join-lines (snippet/lines snippet)))
+  (the string (join-lines (snippet/lines snippet))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -193,7 +193,7 @@ have a helper that joins those lines into a complete string:
 (defun join-lines (lines)
   "Joins a list of strings with newline as separator."
   (declare (list lines))
-  (format nil "~{~A~^~%~}" lines))
+  (the string (format nil "~{~A~^~%~}" lines)))
 
 (in-package #:ulquikit-tests)
 
@@ -265,7 +265,7 @@ anchor:func/create-snippet[]
 
 (defun ->keyword (val)
   "Converts a symbol or string into keyword."
-  (declare (type (or keyword symbol string) val))
+  (declare ((or symbol string) val))
   (the keyword (etypecase val
                  (keyword val)
                  (symbol (intern (string-upcase (symbol-name val)) 'keyword))
@@ -273,7 +273,7 @@ anchor:func/create-snippet[]
 
 (defun ->string (val)
   "Converts a symbol or keyword into string."
-  (declare (type (or keyword symbol string) val))
+  (declare ((or symbol string) val))
   (the string (etypecase val
                 (string val)
                 ((or symbol keyword) (string-downcase (symbol-name val))))))
