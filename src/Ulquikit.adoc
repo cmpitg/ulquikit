@@ -1184,7 +1184,7 @@ files are retrieved recursively.
          (snippets (if (file? from)
                        (extract-snippets-from-file from)
                      (extract-snippets from))))
-    (write-src-files (include-file-snippets snippets) to)))
+    (write-src-files (include-file-snippets! snippets) to)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
