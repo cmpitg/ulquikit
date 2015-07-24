@@ -291,12 +291,12 @@ anchor:func/create-snippet[]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
-Now the helper `create-snippet` is ready.  Let's move on to
+Now all snippet creation utilities are ready.  Let's move on to
 `extract-snippets-from-file`.
 
 `extract-snippets-from-file` needs to determine whether _a line in a code
-block_ belongs to a _code snippet_, or _file snippet_, or none of those; then
-extracts the content of the code block and store it if necessary.  The 3 types
+block_ belongs to a _code snippet_, or _file snippet_, or none of those, then
+extracts content of the code block and store it if necessary.  The 3 types
 of code block that we deal with are as followed:
 
 * A _code snippet_ has the following format:
@@ -344,7 +344,6 @@ Content of the code block
 ----                            <4>
 ..........
 
-
 * A non-snippet code block is any block without +code::...+ or +file::...+ as
   its title:
 +
@@ -368,7 +367,7 @@ This is a literal block
 As we can clearly see from the 3 examples, _code snippets_ and _file snippets_
 could be determined by checking 2^nd^ previous line from block delimiter to
 see if it starts with `.file::` or `.code::`.  Everything between the 2
-delimiters is stored as the content of the snippet.
+delimiters is stored as content of the snippet.
 
 Before diving into `extract-snippets-from-file`, let us define a data
 structure for storing all snippets:
@@ -384,7 +383,7 @@ structure for storing all snippets:
 
 We have the following algorithm for `extract-snippets-from-file`:
 
-* Read the content of a file;
+* Read the content of the file;
 
 * Break the content into lines, preserving line numbers;
 
