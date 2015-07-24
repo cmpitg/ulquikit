@@ -1253,6 +1253,13 @@ arguments."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package #:ulquikit)
+
+(defun write-file (path content)
+  "Writes to a file."
+  (declare ((or pathname string) path)
+           (string content))
+  (with-output-to-file (out path :if-exists :supersede)
+    (format out content)))
 ----
 
 And of course, we need to define help string for +generate-src+:
