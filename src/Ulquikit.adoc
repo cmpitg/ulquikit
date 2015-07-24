@@ -556,10 +556,10 @@ anchor:func/extract-snippets-from-file[]
   "Collects `snippet' into the list of snippets."
   (declare (snippets snippets)
            (snippet  snippet))
-  (let* ((type (snippet-type snippet))
-         (name (snippet-name snippet))
-         (current-file (snippets-file snippets))
-         (current-code (snippets-code snippets))
+  (let* ((type (snippet/type snippet))
+         (name (snippet/name snippet))
+         (current-file (snippets/file snippets))
+         (current-code (snippets/code snippets))
          (file (case type
                  (:file     (setf (gethash name current-file) snippet)
                             current-file)
