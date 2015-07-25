@@ -656,24 +656,24 @@ files are found recursively."
                 ;; Merging 2 snippets
                 (maphash #'(lambda (key value)
                              (setf (gethash key
-                                            (snippets-file current-snippets))
+                                            (snippets/file current-snippets))
                                    value))
-                         (snippets-file new-snippets))
+                         (snippets/file new-snippets))
                 (maphash #'(lambda (key value)
                              (setf (gethash key
-                                            (snippets-code current-snippets))
+                                            (snippets/code current-snippets))
                                    value))
-                         (snippets-code new-snippets))
+                         (snippets/code new-snippets))
                 current-snippets))
           (get-all-adocs path)
           :initial-value (make-snippets)))
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::extract-snippets)
+(import 'ulquikit::snippets/file)
+(import 'ulquikit::snippets/code)
 (define-test test-extract-snippets
-  (import 'ulquikit::extract-snippets)
-  (import 'ulquikit::snippets-file)
-  (import 'ulquikit::snippets-code)
   (let* ((test-dir (merge-pathnames
                     "ulquikit/test-extract-snippets/"
                     (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
@@ -740,8 +740,8 @@ The following snippet doesn't get captured as it has no title:
           (princ content out))))
 
     (let* ((snippets (extract-snippets test-dir))
-           (file-snippets (snippets-file snippets))
-           (code-snippets (snippets-code snippets)))
+           (file-snippets (snippets/file snippets))
+           (code-snippets (snippets/code snippets)))
       (assert-equal 1 (hash-table-count file-snippets))
       (assert-equal 2 (hash-table-count code-snippets))
 
