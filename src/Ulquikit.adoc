@@ -1231,10 +1231,35 @@ literate source files are retrieved recursively.
 
 (in-package #:ulquikit)
 
+(defun write-src-files (snippets to)
+  "Writes all source snippets as files to `to'."
+  (declare (snippets snippets)
+           ((or string pathname) to))
+  (iter (for (name snippet) in-hashtable (snippets/file snippets))
+        (let ((path (uiop:merge-pathnames*
+                     name
+                     (uiop:merge-pathnames*
+                      to
+                      (uiop:getcwd))))
+              (content (snippet->string snippet)))
+          (format t "→ Writing ~A~%" path)
+          (ensure-directories-exist path)
+          (write-file path content))))
+
+(defun write-file (path content)
+  "Writes to a file."
+  (declare ((or pathname string) path)
+           (string content))
+  (with-output-to-file (out path :if-exists :supersede)
+    (format out "~A" content)))
+
+(in-package #:ulquikit)
+
 (defun file? (path)
   "Determines if path represents a file."
   (declare ((or string pathname) path))
-  (null (scan "/$" (namestring path))))
+  (the boolean
+       (null (scan "/$" (namestring path)))))
 
 (in-package #:ulquikit-tests)
 
@@ -1246,6 +1271,8 @@ literate source files are retrieved recursively.
   (assert-false (file? #p"tmp.txt/")))
 
 ;;; (run-tests '(test-file?))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 The ultimate goal of generating source code is to produce files, so we only
@@ -1271,34 +1298,6 @@ arguments."
     (iter (for (name _) in-hashtable file-snippets)
           (include-snippet! snippets `(:file . ,name))))
   snippets)
-
-(defun write-src-files (snippets to)
-  "Writes all source snippets as files to `to'."
-  (declare (snippets snippets)
-           ((or string pathname) to))
-  (iter (for (name snippet) in-hashtable (snippets-file snippets))
-        (let ((path (uiop:merge-pathnames*
-                     name
-                     (uiop:merge-pathnames*
-                      to
-                      (uiop:getcwd))))
-              (content (snippet->string snippet)))
-          (format t "→ Writing ~A~%" path)
-          (ensure-directories-exist path)
-          (write-file path content))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helpers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package #:ulquikit)
-
-(defun write-file (path content)
-  "Writes to a file."
-  (declare ((or pathname string) path)
-           (string content))
-  (with-output-to-file (out path :if-exists :supersede)
-    (format out "~A" content)))
 ----
 
 And of course, we need to define help string for +generate-src+:
