@@ -950,8 +950,7 @@ modifies `snippets' in-place and returns it after processing."
                        (push line lines-final))
 
                       ((snippet-processed? includee)
-                       (push (join-lines (snippet-lines includee))
-                             lines-final))
+                       (push (snippet->string includee) lines-final))
 
                       ((not (snippet-exists? includee snippets))
                        (push line lines-final))
@@ -960,8 +959,7 @@ modifies `snippets' in-place and returns it after processing."
                        (setf snippets (include-snippet!
                                        snippets
                                        `(:code . ,includee-name)))
-                       (push (join-lines (snippet-lines includee)) 
-                             lines-final))))
+                       (push (snippet->string includee) lines-final))))
             (push line lines-final)))
 
         ;; (format t "Snippet: ~A; result: ~A~%"
@@ -1280,7 +1278,7 @@ arguments."
                      (uiop:merge-pathnames*
                       to
                       (uiop:getcwd))))
-              (content (join-lines (snippet-lines snippet))))
+              (content (snippet->string snippet)))
           (format t "→ Writing ~A~%" path)
           (ensure-directories-exist path)
           (write-file path content))))
