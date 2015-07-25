@@ -732,7 +732,10 @@ The following snippet doesn't get captured as it has no title:
                             (cons (merge-pathnames (car content-pair) test-dir)
                                   (cdr content-pair)))
                         content)))
-    (cl-fad:delete-directory-and-files test-dir :if-does-not-exist :ignore)
+    ;; Some how cl-fad doesn't work
+    ;; (cl-fad:delete-directory-and-files test-dir :if-does-not-exist :ignore)
+    (uiop:run-program (format nil "rm -rf ~A" test-dir) :shell t)
+    (format t "Test dir: ~A~%" test-dir)
 
     (dolist (path+content files)
       (let ((path    (car path+content))
@@ -1197,10 +1200,10 @@ anchor:command/generate-src[]
 
 === Generating source code
 
-`generate-src` generates source code from the `from` argument, which denotes a
-directory containing literate source files, to the `to` argument, which
-denotes a directory containing the generated source code.  The literate source
-files are retrieved recursively.
+`generate-src` generates source code from the `from` argument, which
+representing a directory containing literate source files, to the `to`
+argument, which denotes a directory containing the generated source code.  The
+literate source files are retrieved recursively.
 
 .code::generate-src
 [source,lisp,linenums]
