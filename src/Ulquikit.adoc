@@ -650,8 +650,8 @@ documents in a directory recursively, makes use of
 files are found recursively."
   (declare ((or string pathname) path))
   (reduce #'(lambda (current-snippets adoc-file)
-              (declare (type snippets current-snippets)
-                       (type (or string pathname) adoc-file))
+              (declare (snippets current-snippets)
+                       ((or string pathname) adoc-file))
               (let ((new-snippets (extract-snippets-from-file adoc-file)))
                 ;; Merging 2 snippets
                 (maphash #'(lambda (key value)
