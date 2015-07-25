@@ -771,6 +771,23 @@ The following snippet doesn't get captured as it has no title:
 
 (in-package #:ulquikit)
 
+(defmacro sethash (obj hash value)
+  "Helper macro, used to directly set hash value."
+  `(setf (gethash ,obj ,hash) ,value))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-macro-sethash
+  (let ((hash (make-hash-table)))
+    (sethash :first hash "hello")
+    (sethash :second hash "world")
+    (assert-equal "hello" (gethash :first hash))
+    (assert-equal "world" (gethash :second hash))))
+
+;;; (run-tests '(test-macro-sethash))
+
+(in-package #:ulquikit)
+
 (defun snippet->string (snippet)
   "Returns the string representation of a snippet."
   (declare (snippet snippet))
@@ -1071,23 +1088,6 @@ modifies `snippets' in-place and returns it after processing."
     (assert-eq nil (snippet-exists? "b"    snippets))))
 
 ;;; (run-tests '(test-snippet-exists?))
-
-(in-package #:ulquikit)
-
-(defmacro sethash (obj hash value)
-  "Helper macro, used to directly set hash value."
-  `(setf (gethash ,obj ,hash) ,value))
-
-(in-package #:ulquikit-tests)
-
-(define-test test-macro-sethash
-  (let ((hash (make-hash-table)))
-    (sethash :first hash "hello")
-    (sethash :second hash "world")
-    (assert-equal "hello" (gethash :first hash))
-    (assert-equal "world" (gethash :second hash))))
-
-;;; (run-tests '(test-macro-sethash))
 
 (in-package #:ulquikit)
 
