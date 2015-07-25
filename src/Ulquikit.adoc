@@ -645,28 +645,31 @@ documents in a directory recursively, makes use of
 
 (in-package #:ulquikit)
 
+;; TODO: Refactor me
+
 (defun extract-snippets (path)
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
 files are found recursively."
   (declare ((or string pathname) path))
-  (reduce #'(lambda (current-snippets adoc-file)
-              (declare (snippets current-snippets)
-                       ((or string pathname) adoc-file))
-              (let ((new-snippets (extract-snippets-from-file adoc-file)))
-                ;; Merging 2 snippets
-                (maphash #'(lambda (key value)
-                             (setf (gethash key
-                                            (snippets/file current-snippets))
-                                   value))
-                         (snippets/file new-snippets))
-                (maphash #'(lambda (key value)
-                             (setf (gethash key
-                                            (snippets/code current-snippets))
-                                   value))
-                         (snippets/code new-snippets))
-                current-snippets))
-          (get-all-adocs path)
-          :initial-value (make-snippets)))
+  (labels ((merge-snippets (current-snippets adoc-file)
+             (declare (snippets current-snippets)
+                      ((or string pathname) adoc-file))
+             (let ((new-snippets (extract-snippets-from-file adoc-file)))
+               ;; Merging 2 snippets
+               (maphash #'(lambda (key value)
+                            (setf (gethash key
+                                           (snippets/file current-snippets))
+                                  value))
+                        (snippets/file new-snippets))
+               (maphash #'(lambda (key value)
+                            (setf (gethash key
+                                           (snippets/code current-snippets))
+                                  value))
+                        (snippets/code new-snippets))
+               (the snippets current-snippets))))
+    (reduce #'merge-snippets
+            (get-all-adocs path)
+            :initial-value (make-snippets))))
 
 (in-package #:ulquikit-tests)
 
