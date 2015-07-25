@@ -561,11 +561,11 @@ anchor:func/extract-snippets-from-file[]
          (current-file (snippets/file snippets))
          (current-code (snippets/code snippets))
          (file (case type
-                 (:file     (setf (gethash name current-file) snippet)
+                 (:file     (sethash name current-file snippet)
                             current-file)
                  (otherwise current-file)))
          (code (case type
-                 (:code     (setf (gethash name current-code) snippet)
+                 (:code     (sethash name current-code snippet)
                             current-code)
                  (otherwise current-code))))
     (the snippets (make-snippets :file file
@@ -1072,8 +1072,8 @@ modifies `snippets' in-place and returns it after processing."
          (file/a (make-snippet :name "a" :type :file))
          (file/b (make-snippet :name "b" :type :file))
          (snippets (let ((res (make-snippets)))
-                     (setf (gethash "a" (snippets-code res)) code/a)
-                     (setf (gethash "a" (snippets-file res)) file/a)
+                     (sethash "a" (snippets-code res) code/a)
+                     (sethash "a" (snippets-file res) file/a)
                      res)))
     (assert-eq t   (snippet-exists? code/a snippets))
     (assert-eq t   (snippet-exists? file/a snippets))
