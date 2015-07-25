@@ -82,6 +82,7 @@ to interact with the outside world as a Common Lisp package.
 
            #:snippet
            #:create-snippet
+           #:extract-snippets
            #:extract-snippets-from-file
            #:sethash))
 
