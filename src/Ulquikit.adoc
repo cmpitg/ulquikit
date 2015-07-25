@@ -771,15 +771,15 @@ The following snippet doesn't get captured as it has no title:
 (defun snippet->string (snippet)
   "Returns the string representation of a snippet."
   (declare (snippet snippet))
-  (the string (format nil "~{~A~^~%~}" (snippet-lines snippet))))
+  (the string (get-snippet-content snippet)))
 
 ;;; (snippet->string (make-snippet))
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::snippet->string)
+(import 'ulquikit::make-snippet)
 (define-test test-snippet->string
-  (import 'ulquikit::snippet->string)
-  (import 'ulquikit::make-snippet)
   (assert-equal "" (snippet->string (make-snippet)))
   (assert-equal "aoeu" (snippet->string (make-snippet :lines '("aoeu"))))
   (assert-equal "aoeu
