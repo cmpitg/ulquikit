@@ -922,12 +922,12 @@ modifies `snippets' in-place and returns it after processing."
            (target      (snippets/get-snippet snippets
                                               :type target/type
                                               :name target/name))
-           (lines       (snippet-lines target))
+           (lines       (snippet/lines target))
            (lines-final (list)))
       ;; Also, we ignore if this snippet has already been processed
-      (unless (snippet-processed? target)
+      (unless (snippet/processed? target)
         ;; Consider this snippet processed
-        (setf (snippet-processed? target) t)
+        (setf (snippet/processed? target) t)
 
         ;; Now, recollect lines
         (dolist (line lines)
@@ -941,7 +941,7 @@ modifies `snippets' in-place and returns it after processing."
                        ;; No such snippet to include
                        (push line lines-final))
 
-                      ((snippet-processed? includee)
+                      ((snippet/processed? includee)
                        (push (snippet->string includee) lines-final))
 
                       ((not (snippet-exists? includee snippets))
@@ -959,7 +959,7 @@ modifies `snippets' in-place and returns it after processing."
         ;;         (join-lines (reverse (copy-list lines-final))))
 
         ;; Then, collect result
-        (setf (snippet-lines target)
+        (setf (snippet/lines target)
               (list (join-lines (nreverse lines-final)))))))
   snippets)
 
@@ -968,11 +968,11 @@ modifies `snippets' in-place and returns it after processing."
 ;;; (run-tests '(test-include-snippet))
 
 (import 'ulquikit::make-snippet)
-(import 'ulquikit::snippet-name)
-(import 'ulquikit::snippet-lines)
-(import 'ulquikit::snippet-processed?)
-(import 'ulquikit::snippets-file)
-(import 'ulquikit::snippets-code)
+(import 'ulquikit::snippet/name)
+(import 'ulquikit::snippet/lines)
+(import 'ulquikit::snippet/processed?)
+(import 'ulquikit::snippets/file)
+(import 'ulquikit::snippets/code)
 (import 'ulquikit::include-snippet!)
 (define-test test-include-snippet
   (let* ((snp/file (make-snippet :name "/tmp/tmp.lisp"
@@ -1001,8 +1001,8 @@ modifies `snippets' in-place and returns it after processing."
                                    :linenum 100))
 
          (snippets (let* ((res (make-snippets))
-                          (snippets/file (snippets-file res))
-                          (snippets/code (snippets-code res)))
+                          (snippets/file (snippets/file res))
+                          (snippets/code (snippets/code res)))
                      (setf (gethash "/tmp/tmp.lisp" snippets/file) snp/file
                            (gethash "A" snippets/code) snp/code/A
                            (gethash "B" snippets/code) snp/code/B
@@ -1012,17 +1012,17 @@ modifies `snippets' in-place and returns it after processing."
                      res)))
     (setf snippets (include-snippet! snippets `(:code . "A")))
     (assert-true t)
-    (assert-true (snippet-processed? snp/code/A))
-    (assert-true (snippet-processed? snp/code/B))
-    (assert-true (snippet-processed? snp/code/D))
-    (assert-false (snippet-processed? snp/code/C))
-    (assert-false (snippet-processed? snp/file))
+    (assert-true (snippet/processed? snp/code/A))
+    (assert-true (snippet/processed? snp/code/B))
+    (assert-true (snippet/processed? snp/code/D))
+    (assert-false (snippet/processed? snp/code/C))
+    (assert-false (snippet/processed? snp/file))
     (assert-true (scan "^World\\nHello\\n"
-                       (nth 0 (snippet-lines snp/code/A))))
+                       (nth 0 (snippet/lines snp/code/A))))
 
     (setf snippets (include-snippet! snippets `(:file . "/tmp/tmp.lisp")))
-    (let ((content (nth 0 (snippet-lines snp/file))))
-      (assert-true (snippet-processed? snp/file))
+    (let ((content (nth 0 (snippet/lines snp/file))))
+      (assert-true (snippet/processed? snp/file))
       (assert-true (scan "^World\\nHello\\n" content))
       (assert-true (scan ";; The end$" content)))))
 
@@ -1042,16 +1042,16 @@ modifies `snippets' in-place and returns it after processing."
     ((or cons snippet)
      (let ((name (typecase snippet
                    (cons    (cdr snippet))
-                   (snippet (snippet-name snippet))))
+                   (snippet (snippet/name snippet))))
            (type (typecase snippet
                    (cons    (car snippet))
-                   (snippet (snippet-type snippet)))))
+                   (snippet (snippet/type snippet)))))
        (case type
-         (:code (not (null (gethash name (snippets-code snippets)))))
-         (:file (not (null (gethash name (snippets-file snippets))))))))
+         (:code (not (null (gethash name (snippets/code snippets)))))
+         (:file (not (null (gethash name (snippets/file snippets))))))))
     (string
-     (or (not (null (gethash snippet (snippets-code snippets))))
-         (not (null (gethash snippet (snippets-file snippets))))))))
+     (or (not (null (gethash snippet (snippets/code snippets))))
+         (not (null (gethash snippet (snippets/file snippets))))))))
 
 (in-package #:ulquikit-tests)
 
@@ -1062,8 +1062,8 @@ modifies `snippets' in-place and returns it after processing."
          (file/a (make-snippet :name "a" :type :file))
          (file/b (make-snippet :name "b" :type :file))
          (snippets (let ((res (make-snippets)))
-                     (sethash "a" (snippets-code res) code/a)
-                     (sethash "a" (snippets-file res) file/a)
+                     (sethash "a" (snippets/code res) code/a)
+                     (sethash "a" (snippets/file res) file/a)
                      res)))
     (assert-eq t   (snippet-exists? code/a snippets))
     (assert-eq t   (snippet-exists? file/a snippets))
@@ -1082,10 +1082,11 @@ modifies `snippets' in-place and returns it after processing."
 (defun include-directive? (line)
   "Determines of the corresponding line is a include directive.  TODO: Make this extensible."
   (declare (string line))
-  (let ((line (string-trim '(#\Space #\e #\t #\m) line)))
-    (not (null (or (scan "^[#;/-]{2} include::.*" line)
-                   (scan "^<!-- include::.* -->" line)
-                   (scan "^/\\* include::.* \\*/" line))))))
+  (the boolean
+       (let ((line (string-trim '(#\Space #\e #\t #\m) line)))
+         (not (null (or (scan "^[#;/-]{2} include::.*" line)
+                        (scan "^<!-- include::.* -->" line)
+                        (scan "^/\\* include::.* \\*/" line)))))))
 
 (in-package #:ulquikit-test)
 
@@ -1109,18 +1110,20 @@ modifies `snippets' in-place and returns it after processing."
   "Parses and extracts snippet name from an include directive.  See its tests
 for detailed information on input/output format.  TODO: make this extensible."
   (declare (string str))
-  (if (include-directive? str)
-      (let ((input (cond ((and (scan " -->$" str) (scan "^<!-- " str))
-                          (subseq str 0 (- (length str) (length " -->"))))
-                         ((and (scan " \\*/$" str) (scan "^/\\* " str))
-                          (subseq str 0 (- (length str) (length " */"))))
-                         (t
-                          str))))
-        (multiple-value-bind (_ name/array)
-            (scan-to-strings "include::(.*)$" input)
-          (declare (ignore _))
-          (elt name/array 0)))
-    ""))
+  (the
+   string
+   (if (include-directive? str)
+       (let ((input (cond ((and (scan " -->$" str) (scan "^<!-- " str))
+                           (subseq str 0 (- (length str) (length " -->"))))
+                          ((and (scan " \\*/$" str) (scan "^/\\* " str))
+                           (subseq str 0 (- (length str) (length " */"))))
+                          (t
+                           str))))
+         (multiple-value-bind (_ name/array)
+             (scan-to-strings "include::(.*)$" input)
+           (declare (ignore _))
+           (elt name/array 0)))
+     "")))
 
 (in-package #:ulquikit-tests)
 
@@ -1153,10 +1156,10 @@ for detailed information on input/output format.  TODO: make this extensible."
            (keyword  type)
            (string   name))
   (let ((hash (case type
-                (:code (snippets-code snippets))
-                (:file (snippets-file snippets))
+                (:code (snippets/code snippets))
+                (:file (snippets/file snippets))
                 (otherwise (make-hash-table)))))
-    (gethash name hash)))
+    (the (or boolean snippet) (gethash name hash))))
 
 (in-package #:ulquikit-tests)
 
@@ -1166,9 +1169,9 @@ for detailed information on input/output format.  TODO: make this extensible."
          (snp/code/b (make-snippet :type :code :name "b"))
          (snp/file/c (make-snippet :type :file :name "c.lisp"))
          (snippets (let ((res (make-snippets)))
-                     (sethash "a" (snippets-code res) snp/code/a)
-                     (sethash "b" (snippets-code res) snp/code/b)
-                     (sethash "c" (snippets-file res) snp/file/c)
+                     (sethash "a" (snippets/code res) snp/code/a)
+                     (sethash "b" (snippets/code res) snp/code/b)
+                     (sethash "c" (snippets/file res) snp/file/c)
                      res)))
     (assert-equal snp/code/a (snippets/get-snippet snippets
                                                    :type :code
@@ -1181,6 +1184,8 @@ for detailed information on input/output format.  TODO: make this extensible."
                                                    :name "c"))))
 
 ;;; (run-tests '(test-snippets/get-snippet))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 And that concludes the most important functions of Ulquikit.  Those are used
