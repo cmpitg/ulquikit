@@ -645,8 +645,6 @@ documents in a directory recursively, makes use of
 
 (in-package #:ulquikit)
 
-;; TODO: Refactor me
-
 (defun extract-snippets (path)
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
 files are found recursively."
@@ -657,14 +655,14 @@ files are found recursively."
              (let ((new-snippets (extract-snippets-from-file adoc-file)))
                ;; Merging 2 snippets
                (maphash #'(lambda (key value)
-                            (setf (gethash key
-                                           (snippets/file current-snippets))
-                                  value))
+                            (sethash key
+                                     (snippets/file current-snippets)
+                                     value))
                         (snippets/file new-snippets))
                (maphash #'(lambda (key value)
-                            (setf (gethash key
-                                           (snippets/code current-snippets))
-                                  value))
+                            (sethash key
+                                     (snippets/code current-snippets)
+                                     value))
                         (snippets/code new-snippets))
                (the snippets current-snippets))))
     (reduce #'merge-snippets
