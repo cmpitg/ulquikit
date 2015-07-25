@@ -800,15 +800,18 @@ extensible."
                                     (push file adocs))
                            :directories nil
                            :if-does-not-exist :ignore
-                           :test #'(lambda (file)
-                                     (scan "\\.adoc$" (namestring file)))
+                           :test
+                           #'(lambda (file)
+                               (and
+                                (null (scan "^(\\.|\\#)" (namestring file)))
+                                (scan "\\.adoc$" (namestring file))))
                            :follow-symlinks t)
     adocs))
 
 (in-package #:ulquikit-tests)
 
+(import 'ulquikit::get-all-adocs)
 (define-test test-get-all-adocs
-  (import 'ulquikit::get-all-adocs)
   (let* ((files '("a.adoc"
                   "b.adoc"
                   "c.md"
@@ -846,6 +849,9 @@ extensible."
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)))
 
+;;; (run-tests '(test-get-all-adocs))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 After `extract-snippets`, the next important function is `include-snippet`,
