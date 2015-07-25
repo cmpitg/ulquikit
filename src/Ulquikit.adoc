@@ -872,40 +872,32 @@ extensible."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
-After `extract-snippets`, the next important function is `include-snippet`,
-used to include snippets into each other.  Let's see how we could
-implement it.
+After `extract-snippets`, we need a function to include snippets into each
+other.
 
 anchor:section/include-snippets[]
 
 === Including snippets into each other
 
+Let us call the function `include-snippet!`:
+
 `include-snippet!` takes 2 arguments:
 * the current list of snippets,
-* a cons of format `(type . name)` representing the snippet being processed,
-  this snippet must be a part of the current list of snippets,
+* a `(type . name)` cons representing the snippet being processed, this
+  snippet must be a part of the current list of snippets,
 
-This function returns the new list of snippets that have been processed.
+This function returns the new list of snippets after included.
 
 `include-snippet!` works by browsing the target snippet's content, one line at
 a time, then replacing lines with `include::` directives with the
 corresponding __code snippet__s in `snippets`.  If no snippet is found, the
-line is left as-is.
+line doesn't change.
 
-Note that:
-
-* To prevent unnecessary copy, this function has side effects for all of its
-  arguments, hence its name is suffixed with a bang (`!`).
-
-* If snippet A includes snippet B, and snippet B includes snippets C and D, so
-  the best scenario is to include C and D into B while we're actually
-  processing A.  I.e. `include-snippet` should be recursive to accumulate the
-  results.
+Note that to prevent unnecessary copy, this function has side effects for all
+of its arguments, hence its name is suffixed with a bang (`!`).
 
 WARNING: The result of circular dependency, e.g. snippet A includes itself, is
 *undefined*.  Make sure your snippets are well managed.
-
-As a result, we have this implementation:
 
 anchor:func/include-snippet[]
 
