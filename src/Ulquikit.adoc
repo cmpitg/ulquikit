@@ -1220,7 +1220,10 @@ literate source files are retrieved recursively.
          (snippets (if (file? from)
                        (extract-snippets-from-file from)
                      (extract-snippets from))))
+    ;; (format t "Generating src from: ~A to: ~A~%" from to)
     (write-src-files (include-file-snippets! snippets) to)))
+
+;;; (generate-src :from "src/" :to "/tmp/ulquikit-test/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
