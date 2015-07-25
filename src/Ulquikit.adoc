@@ -1294,7 +1294,7 @@ is prefixed with a bang (``!``).
 file snippets included.  This function is destructive, i.e. it modifies its
 arguments."
   (declare (snippets snippets))
-  (let ((file-snippets (snippets-file snippets)))
+  (let ((file-snippets (snippets/file snippets)))
     (iter (for (name _) in-hashtable file-snippets)
           (include-snippet! snippets `(:file . ,name))))
   snippets)
