@@ -1331,7 +1331,7 @@ Generate source code from ../literate-source/ to ../source/
 Once all functions are ready, let's put them together into a command to
 generate source code.
 
-.code::defpackage-command-line
+.code::defpackage-ulquikit-cmd
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-cmd
