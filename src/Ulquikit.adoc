@@ -1335,7 +1335,7 @@ generate source code.
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-cmd
-  (:use :cl :ulquikit))
+  (:use :cl))
 ----
 
 .file::commands/generate-src.lisp
