@@ -1347,14 +1347,13 @@ The `generate-src` command might look like so:
 
 (in-package #:ulquikit-cmd)
 
-;; include::generate-src
-
-(defun cmd/generate-src (&key (from "src")
+(defun generate-src (&key (from "src")
                           (to "generated-src"))
   "Command: generate source code."
   (declare ((or string pathname) from to))
   (display-command "Generating source")
-  (generate-src :from from :to to))
+  (ulquikit:generate-src :from from :to to))
+----
 
 ----
 
