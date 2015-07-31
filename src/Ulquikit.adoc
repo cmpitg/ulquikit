@@ -1338,29 +1338,21 @@ generate source code.
   (:use :cl :ulquikit))
 ----
 
+.file::commands/generate-src.lisp
+[source,lisp,linenums]
 ----
 ;; include::license-header
 
-;; include::use-rackjure
-
-(require "../command-core.rkt")
-
-(require "../utils/utils.rkt")
-(require "../utils/path.rkt")
-(require "../utils/string.rkt")
-
-(provide run)
-
-(module+ test
-  (require rackunit))
+(in-package #:ulquikit-cmd)
 
 ;; include::generate-src
 
-(define (run #:from [from "src"]
-             #:to   [to   "generated-src"])
+(defun cmd/generate-src (&key (from "src")
+                          (to "generated-src"))
+  "Command: generate source code."
+  (declare ((or string pathname) from to))
   (display-command "Generating source")
-  (generate-src #:from from
-                #:to   to))
+  (generate-src :from from :to to))
 
 ----
 
