@@ -1372,9 +1372,10 @@ for other commands.
 
 == Anatomy of a Ulquikit command
 
-Ulquikit commands are actually a Racket modules, residing in +commands/+.  The
-name of the module (without +.rkt+ extension of course) is the actual command.
-E.g. +commands/generate-src.rkt+ implements +generate-src+ command.
+Ulquikit commands are Common Lisp functions residing in `commands/`.  By
+convention, each command has its own Common Lisp source code whose name is the
+same as the command, i.e. the `generate-src` command has its file
+`commands/generate-src.lisp`.
 
 As a rule of thumb, each command has to provide at least 2 functions: +run+
 and +help+:
