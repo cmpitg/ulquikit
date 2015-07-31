@@ -1300,7 +1300,8 @@ arguments."
   snippets)
 ----
 
-And of course, we need to define help string for +generate-src+:
+And of course, we need help string for `generate-src` command that we'll talk
+about right away:
 
 .file::commands/generate-src.help.txt
 [source,text,linenums]
