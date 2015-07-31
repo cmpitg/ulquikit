@@ -1368,7 +1368,7 @@ Of course, with some utilities:
 ----
 
 That's basically how a command should be defined.  Let's generalize this idea
-to define other commands.
+for other commands.
 
 == Anatomy of a Ulquikit command
 
