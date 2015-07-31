@@ -1356,8 +1356,8 @@ generate source code.
 
 ----
 
-That's how +generate-src+ should be done.  It's time to generalize this
-structure for defining other commands as well.
+That's basically how a command should be defined.  Let's generalize this idea
+to define other commands.
 
 == Anatomy of a Ulquikit command
 
