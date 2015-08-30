@@ -1377,8 +1377,8 @@ convention, each command has its own Common Lisp source code whose name is the
 same as the command, i.e. the `generate-src` command has its file
 `commands/generate-src.lisp`.
 
-As a rule of thumb, each command has to provide at least 2 functions: +run+
-and +help+:
+As a rule of thumb, each command provides at least 2 functions: one to run,
+and the other to get help:
 
 * Command line arguments are parsed and passed through +run+ function.  Named
   arguments are automatically converted to either boolean or number and passed
