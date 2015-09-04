@@ -1380,12 +1380,14 @@ does not exist, the correponding functionality does nothing.
 
 Commands are loaded in the alphabetical order of their source code files.  By
 this way, one can override commands by making it load later than the original
-version.  E.g. if command `extract-text` is defined in `extract-text.lisp` and
-command `help` is defined in `help.lisp`, `extract-text` is loaded before
-`help` as `extract-text.lisp` precedes `help.lisp` alphabetically.  If
-`extract-text` is onec again defined/modified in `z-extract-text.lisp`, those
-changes override `extract-text.lisp` as `z-extract-text.lisp` comes after
-`extract-text.lisp` in alphabetical order.
+version.  E.g. if command `extract-text` is defined in
+`commands/extract-text.lisp` and command `help` is defined in
+`commands/help.lisp`, `extract-text` is loaded before `help` as
+`commands/extract-text.lisp` precedes `commands/help.lisp` alphabetically.  If
+`extract-text` is once again defined/modified in
+`commands/z-extract-text.lisp`, those changes override
+`commands/extract-text.lisp` as `commands/z-extract-text.lisp` comes after
+`commands/extract-text.lisp` in alphabetical order.
 
 
 As a rule of thumb, each command provides at least 2 functions: one to run,
