@@ -1389,20 +1389,22 @@ version.  E.g. if command `extract-text` is defined in
 `commands/extract-text.lisp` as `commands/z-extract-text.lisp` comes after
 `commands/extract-text.lisp` in alphabetical order.
 
+More details of a command invocation:
 
-As a rule of thumb, each command provides at least 2 functions: one to run,
-and the other to get help:
-
-* Command line arguments are parsed and passed through +run+ function.  Named
-  arguments are automatically converted to either boolean or number and passed
-  as Racket keywords.
+* Command line arguments are parsed and passed through `run` function.
 +
 E.g.
 
-** +ulqui generate-src+ calls ++commands/generate-src++'s +(run)+.
-** +ulqui generate-src some-file+ calls ++commands/generate-src++'s +(run "some-file")+.
-** +ulqui generate-src --from file1 --to file2+ calls
-   ++commands/generate-src++'s +(run #:from "file1" #:to "file2")+.
+** `ulqui generate-src` calls `run` function of `generate-src` package.  Note
+   that this function might be private.  However, it's recommended to make it
+   public.
+
+** `ulqui generate-src some-file` calls `(generate-src:run "some-file")` or
+   `(generate-src::run "some-file")`, depending on the visibility of `run`.
+
+** `ulqui generate-src --from file1 --to file2` calls `(generate:run :from
+   "file1" :to "file2")` or `(generate::run :from "file1" :to "file2"),
+   depending on the visibility of `run`.
 
 * When +ulqui help command-name+ or +ulqui command-name --help+ is invoked,
   the +help+ function that belongs to +commands/command-name.rkt+ module is
