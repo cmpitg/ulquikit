@@ -1422,7 +1422,7 @@ E.g.
 
 Let's move on to the function used to parse command line arguments.
 
-=== Parsing command line arguments +parse-command-args+
+=== Parsing command line arguments `parse-command-args`
 
 This function takes all arguments passed to the command line as a list of
 string and returns a map of following format:
