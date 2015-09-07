@@ -1373,10 +1373,10 @@ for other commands.
 == Anatomy of a Ulquikit command
 
 Following convention over configuration principle, Ulquikit commands are
-automatically detected.  A command is actually a Common Lisp package, residing
+automatically loaded.  A command is actually a Common Lisp package, residing
 in `commands/` directory.  Each has `help` and `run` functions, which are
-called when user runs or gets help, respectively.  Should one of the function
-does not exist, the correponding functionality does nothing.
+called when user runs the command or gets help respectively.  Should one of
+the function does not exist, the correponding action does nothing.
 
 Commands are loaded in the alphabetical order of their source code files.  By
 this way, one can override commands by making it load later than the original
