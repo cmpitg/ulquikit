@@ -1418,11 +1418,9 @@ E.g.
   of <<command/generate-src,`generate-src`>> for more details on
   <<help/generate-src,how help string>> is stored.
 
-* All commands must import +command-core.rkt+ (relative to command directory:
-  +../command-core.rkt+).
+* All command packages must use `command-core` package.
 
-With all that has been said, let's move on to the function which is used to
-parse command line arguments.
+Let's move on to the function used to parse command line arguments.
 
 === Parsing command line arguments +parse-command-args+
 
