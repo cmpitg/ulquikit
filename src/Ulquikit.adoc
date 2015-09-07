@@ -1395,9 +1395,8 @@ More details of a command invocation:
 +
 E.g.
 
-** `ulqui generate-src` calls `run` function of `generate-src` package.  Note
-   that this function might be private.  However, it's recommended to make it
-   public.
+** `ulqui generate-src` calls `run` function of `generate-src` package.  This
+   function might be private.  However, it's recommended to make it public.
 
 ** `ulqui generate-src some-file` calls `(generate-src:run "some-file")` or
    `(generate-src::run "some-file")`, depending on the visibility of `run`.
