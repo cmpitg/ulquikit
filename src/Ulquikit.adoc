@@ -1405,11 +1405,10 @@ E.g.
    "file1" :to "file2")` or `(generate::run :from "file1" :to "file2"),
    depending on the visibility of `run`.
 
-* When +ulqui help command-name+ or +ulqui command-name --help+ is invoked,
-  the +help+ function that belongs to +commands/command-name.rkt+ module is
-  called.  The same effect could be achieved by calling +(run #:help #t)+.
-  This the +help+ function takes no arguments and returns a string that would
-  be displayed as help.
+* When `ulqui help command-name` or `ulqui command-name --help` is invoked,
+  `command-name:help` or `command-help::help` (depending on the visibility of
+  `help` function in `command-name` package) is called.  The `help` function
+  takes no arguments and returns a string that would be displayed as help.
 
 * Usually, in a typical program, help strings are hardcoded into the source
   code, which makes the maintenance of help strings harder that necessary, not
