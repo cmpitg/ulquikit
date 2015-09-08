@@ -1425,13 +1425,14 @@ Let's move on to the function used to parse command line arguments.
 === Parsing command line arguments `parse-command-args`
 
 This function takes all arguments passed to the command line as a list of
-string and returns a map of following format:
+string and returns an alist of the following format:
 
-[source,racket]
+[source,lisp,linenums]
 ----
-{'arguments list-of-arguments  <1>
- 'options   hash-of-options}   <2>
+'(:arguments list-of-arguments <1>
+  :options   alist-of-options) <2>
 ----
+
 <1> main arguments collected as a list, with the same order as they are at the
 command line
 <2> options are collected a hash; options that have no values are set to +#t+
