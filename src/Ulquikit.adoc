@@ -1455,6 +1455,7 @@ followed:
   (:use :cl :lisp-unit))
 ----
 
+
 [[func/parse-command-args]]
 .code::parse-command-args
 [source,racket,linenums]
@@ -1489,10 +1490,22 @@ followed:
   (check-equal? (parse-command-args '())
                 {'arguments '()
                  'options   {}})
+(in-package #:command-core-test)
 
   (check-equal? (parse-command-args '("hello-world"))
                 {'arguments '("hello-world")
                  'options   {}})
+(import 'command-core:parse-cmd-args)
+(define-test test-parse-cmd-args
+  (assert-equal `((:arguments . ())
+                  (:options   . ()))
+                (parse-cmd-args '()))
+  (assert-equal `((:arguments . ("hello-world"))
+                  (:options   . ()))
+                (parse-cmd-args '("hello-world")))
+  (assert-equal `((:arguments . ("hello" "world"))
+                  (:options   . ()))
+                (parse-cmd-args '("hello" "world"))))
 
   (check-equal? (parse-command-args '("hello" "world"))
                 {'arguments '("hello" "world")
