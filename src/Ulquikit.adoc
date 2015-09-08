@@ -138,11 +138,11 @@ anchor:snippet-format[]
 
 [source,lisp]
 ----
-`((:type       . ,snippet-type)  <1>
-  (:name       . ,snippet-name)  <2>
-  (:linenum    . ,line-number)   <3>
-  (:lines      . ,snippet-lines) <4>
-  (:processed? . ,processed?))   <5>
+((:type       . ,snippet-type)  <1>
+ (:name       . ,snippet-name)  <2>
+ (:linenum    . ,line-number)   <3>
+ (:lines      . ,snippet-lines) <4>
+ (:processed? . ,processed?))   <5>
 ----
 <1> is either `:file` or `:code`
 <2> is the name of the snippet; e.g. snippet with title `file::something` has
