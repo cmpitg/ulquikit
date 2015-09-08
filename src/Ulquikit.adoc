@@ -1440,6 +1440,21 @@ command line
 In Ulquikit, options are prefixed with one or two dashes (`-` or `--`), while
 arguments are not.
 
+The `command-core` package and its test counterpart could be declared as
+followed:
+
+[source,lisp,linenums]
+----
+(in-package #:cl)
+
+(defpackage #:command-core
+  (:use :cl)
+  (:export #:parse-command-args))
+
+(defpackage #:command-core-tests
+  (:use :cl :lisp-unit))
+----
+
 [[func/parse-command-args]]
 .code::parse-command-args
 [source,racket,linenums]
