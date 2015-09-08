@@ -1435,7 +1435,10 @@ string and returns an alist of the following format:
 
 <1> main arguments collected as a list, with the same order as they are at the
 command line
-<2> options are collected a hash; options that have no values are set to +#t+
+<2> options are collected as alist; options that have no values are set to `t`
+
+In Ulquikit, options are prefixed with one or two dashes (`-` or `--`), while
+arguments are not.
 
 [[func/parse-command-args]]
 .code::parse-command-args
