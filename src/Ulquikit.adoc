@@ -1429,8 +1429,8 @@ string and returns an alist of the following format:
 
 [source,lisp,linenums]
 ----
-'(:arguments list-of-arguments <1>
-  :options   alist-of-options) <2>
+((:arguments . list-of-arguments) <1>
+ (:options   . alist-of-options)) <2>
 ----
 
 <1> main arguments collected as a list, with the same order as they are at the
