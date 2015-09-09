@@ -1521,17 +1521,23 @@ followed:
 
 (in-package #:command-core)
 
-(define is-argument? #λ(not (string-starts-with? % "-")))
+(defun argument? (str)
+  "Determines if a string is considered an argument.  An argument is not
+prefixed with a dash \"-\"."
+  (declare (string str))
+  (the boolean (not (alexandria:starts-with #\- str))))
 
 (in-package #:command-core-tests)
 
-(import 'command-core:arguments?)
+(import 'command-core:argument?)
 (define-test test-argument?
   (assert-equal t   (argument? ""))
   (assert-equal t   (argument? "a"))
   (assert-equal nil (argument? "-a"))
   (assert-equal nil (argument? "--a"))
   (assert-equal nil (argument? "-")))
+
+;; (run-tests '(test-argument?))
 
 (define is-option? #λ(not (is-argument? %)))
 
