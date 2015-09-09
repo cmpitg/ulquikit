@@ -1508,11 +1508,11 @@ followed:
                 (parse-cmd-args '("hello" "--help" "world" "args")))
   (assert-equal `((:arguments . ())
                   (:options   . ((:help . "hello"))))
-                (parse-command-args '("--help" "hello")))
+                (parse-cmd-args '("--help" "hello")))
   (assert-equal `((:arguments . ("hello" "world"))
-                  (:options   . ((:help . t)
+                  (:options   . ((:help    . t)
                                  (:set-tab . "4"))))
-                (parse-command-args '("hello" "world" "--help" "--set-tab" "4"))))
+                (parse-cmd-args '("hello" "world" "--help" "--set-tab" "4"))))
 
 
 
