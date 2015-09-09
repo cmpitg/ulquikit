@@ -1438,7 +1438,8 @@ command line
 <2> options are collected as alist; options that have no values are set to `t`
 
 In Ulquikit, options are prefixed with one or two dashes (`-` or `--`), while
-arguments are not.
+arguments are not.  Option values are attempted to convert to number or
+boolean (e.g. in case of ``1``, ``t``, ``true``, ``false``, ...).
 
 The `command-core` package and its test counterpart could be declared as
 followed:
