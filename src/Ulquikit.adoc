@@ -1451,7 +1451,8 @@ followed:
   (:use :cl)
   (:export #:parse-command-args
            #:argument?
-           #:option?))
+           #:option?
+           #:option->keyword))
 
 (defpackage #:command-core-tests
   (:use :cl :lisp-unit))
@@ -1569,10 +1570,11 @@ a dash \"-\"."
                        (dropf (λ (ch) (eq? #\- ch)))
                        list->string)))
 
-(module+ test
-  (check-equal? (option->keyword "-h")      '#:h)
-  (check-equal? (option->keyword "--help")  '#:help)
-  (check-equal? (option->keyword "---help") '#:help))
+(import 'command-core:option->keyword)
+(define-test test-option->keyword
+  (assert-equal :h    (option->keyword "-h"))
+  (assert-equal :help (option->keyword "--help"))
+  (assert-equal :help (option->keyword "---help")))
 
 (define try-convert-value
   #λ(if-let [value (string->number %)]
