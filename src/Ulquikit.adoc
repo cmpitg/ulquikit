@@ -1458,10 +1458,8 @@ followed:
 
 [[func/parse-command-args]]
 .code::parse-command-args
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-;; include::parse-command-args-helpers
-
 (define (parse-command-args args)
   (let ([arguments (takef args is-argument?)]
         [rest-args (dropf args is-argument?)])
@@ -1486,15 +1484,8 @@ followed:
             (parse-options rest-args
                            (options name values)))))))
 
-(module+ test
-  (check-equal? (parse-command-args '())
-                {'arguments '()
-                 'options   {}})
 (in-package #:command-core-test)
 
-  (check-equal? (parse-command-args '("hello-world"))
-                {'arguments '("hello-world")
-                 'options   {}})
 (import 'command-core:parse-cmd-args)
 (define-test test-parse-cmd-args
   (assert-equal `((:arguments . ())
@@ -1505,32 +1496,25 @@ followed:
                 (parse-cmd-args '("hello-world")))
   (assert-equal `((:arguments . ("hello" "world"))
                   (:options   . ()))
-                (parse-cmd-args '("hello" "world"))))
+                (parse-cmd-args '("hello" "world")))
+  (assert-equal `((:arguments . ())
+                  (:options   . ((:help . t))))
+                (parse-cmd-args '("--help")))
+  (assert-equal `((:arguments . ("hello"))
+                  (:options   . ((:help . t))))
+                (parse-cmd-args '("hello" "--help")))
+  (assert-equal `((:arguments . ("hello"))
+                  (:options   . ((:help . ("world" "args")))))
+                (parse-cmd-args '("hello" "--help" "world" "args")))
+  (assert-equal `((:arguments . ())
+                  (:options   . ((:help . "hello"))))
+                (parse-command-args '("--help" "hello")))
+  (assert-equal `((:arguments . ("hello" "world"))
+                  (:options   . ((:help . t)
+                                 (:set-tab . "4"))))
+                (parse-command-args '("hello" "world" "--help" "--set-tab" "4"))))
 
-  (check-equal? (parse-command-args '("hello" "world"))
-                {'arguments '("hello" "world")
-                 'options   {}})
 
-  (check-equal? (parse-command-args '("--help"))
-                {'arguments '()
-                 'options   {'#:help #t}})
-
-  (check-equal? (parse-command-args '("hello" "--help"))
-                {'arguments '("hello")
-                 'options   {'#:help #t}})
-
-  (check-equal? (parse-command-args '("hello" "--help" "world" "args"))
-                {'arguments '("hello")
-                 'options   {'#:help '("world" "args")}})
-
-  (check-equal? (parse-command-args '("--help" "hello"))
-                {'arguments '()
-                 'options   {'#:help "hello"}})
-
-  (check-equal? (parse-command-args '("hello" "world" "--help" "--set-tab" "4"))
-                {'arguments '("hello" "world")
-                 'options   {'#:help #t
-                             '#:set-tab 4}}))
 
 ----
 
