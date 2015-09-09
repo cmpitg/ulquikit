@@ -1565,16 +1565,30 @@ a dash \"-\"."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define option->keyword
-  #λ(string->keyword (~> (string->list %)
-                       (dropf (λ (ch) (eq? #\- ch)))
-                       list->string)))
+(in-package #:command-core)
+
+(defun option->keyword (opt)
+  "Converts option as string to Common Lisp keyword."
+  (declare ((or symbol string) opt))
+  (typecase opt
+    (keyword opt)
+    (symbol  (intern (symbol-name opt) :keyword))
+    (string  (multiple-value-bind (_ xs)
+                 (cl-ppcre:scan-to-strings "^-+([^-])+$" opt)
+               (declare (ignore _))
+               (if (zerop (length xs))
+                   (error "~S is not a valid option" xs)
+                 (aref opt 0))))))
+
+(in-package #:command-core-tests)
 
 (import 'command-core:option->keyword)
 (define-test test-option->keyword
   (assert-equal :h    (option->keyword "-h"))
   (assert-equal :help (option->keyword "--help"))
   (assert-equal :help (option->keyword "---help")))
+
+;; (run-tests '(test-option->keyword))
 
 (define try-convert-value
   #λ(if-let [value (string->number %)]
