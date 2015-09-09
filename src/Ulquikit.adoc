@@ -1450,7 +1450,8 @@ followed:
 (defpackage #:command-core
   (:use :cl)
   (:export #:parse-command-args
-           #:argument?))
+           #:argument?
+           #:option?))
 
 (defpackage #:command-core-tests
   (:use :cl :lisp-unit))
@@ -1541,7 +1542,13 @@ prefixed with a dash \"-\"."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define is-option? #λ(not (is-argument? %)))
+(in-package #:command-core)
+
+(defun option? (str)
+  "Determines if a string is considered an option.  An option is prefixed with
+a dash \"-\"."
+  (declare (string str))
+  (the boolean (not (argument? str))))
 
 (in-package #:command-core-tests)
 
@@ -1552,6 +1559,8 @@ prefixed with a dash \"-\"."
   (assert-equal t   (option? "-a"))
   (assert-equal t   (option? "--a"))
   (assert-equal t   (option? "-")))
+
+;; (run-tests '(test-option?))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
