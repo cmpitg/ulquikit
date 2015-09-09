@@ -1539,14 +1539,21 @@ prefixed with a dash \"-\"."
 
 ;; (run-tests '(test-argument?))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define is-option? #λ(not (is-argument? %)))
 
-(module+ test
-  (check-equal? (is-option? "")     #f)
-  (check-equal? (is-option? "a")    #f)
-  (check-equal? (is-option? "-a")   #t)
-  (check-equal? (is-option? "--a")  #t)
-  (check-equal? (is-option? "-")    #t))
+(in-package #:command-core-tests)
+
+(import 'command-core:option?)
+(define-test test-option?
+  (assert-equal nil (option? ""))
+  (assert-equal nil (option? "a"))
+  (assert-equal t   (option? "-a"))
+  (assert-equal t   (option? "--a"))
+  (assert-equal t   (option? "-")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (define option->keyword
   #λ(string->keyword (~> (string->list %)
