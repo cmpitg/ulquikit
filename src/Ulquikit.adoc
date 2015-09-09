@@ -1449,7 +1449,8 @@ followed:
 
 (defpackage #:command-core
   (:use :cl)
-  (:export #:parse-command-args))
+  (:export #:parse-command-args
+           #:argument?))
 
 (defpackage #:command-core-tests
   (:use :cl :lisp-unit))
@@ -1514,26 +1515,23 @@ followed:
                                  (:set-tab . "4"))))
                 (parse-cmd-args '("hello" "world" "--help" "--set-tab" "4"))))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
-----
-
-As always, it's a good style to implement some helpers for
-<<func/parse-command-args,+parse-command-args+>>.
-
-.code::parse-command-args-helpers
-[source,racket,linenums]
-----
-;; #lang racket
+(in-package #:command-core)
 
 (define is-argument? #λ(not (string-starts-with? % "-")))
 
-(module+ test
-  (check-equal? (is-argument? "")     #t)
-  (check-equal? (is-argument? "a")    #t)
-  (check-equal? (is-argument? "-a")   #f)
-  (check-equal? (is-argument? "--a")  #f)
-  (check-equal? (is-argument? "-")    #f))
+(in-package #:command-core-tests)
+
+(import 'command-core:arguments?)
+(define-test test-argument?
+  (assert-equal t   (argument? ""))
+  (assert-equal t   (argument? "a"))
+  (assert-equal nil (argument? "-a"))
+  (assert-equal nil (argument? "--a"))
+  (assert-equal nil (argument? "-")))
 
 (define is-option? #λ(not (is-argument? %)))
 
