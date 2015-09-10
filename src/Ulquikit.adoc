@@ -1464,29 +1464,44 @@ followed:
 .code::parse-command-args
 [source,lisp,linenums]
 ----
-(define (parse-command-args args)
-  (let ([arguments (takef args is-argument?)]
-        [rest-args (dropf args is-argument?)])
-    (let parse-options ([rest-args  rest-args]
-                        [options    {}])
-      (if (empty? rest-args)
-          {'arguments arguments
-           'options   options}
-          (let* ([option-name   (first rest-args)]
-                 [option-values (takef (drop rest-args 1) is-argument?)]
-                 [rest-args     (dropf (rest rest-args)   is-argument?)]
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-                 [option-values/converted (map try-convert-value option-values)]
+(in-package #:command-core)
 
-                 [name   (option->keyword option-name)]
-                 [values (cond [(zero? (length option-values/converted))
-                                #t]
-                               [(= (length option-values/converted) 1)
-                                (first option-values/converted)]
-                               [else
-                                option-values/converted])])
-            (parse-options rest-args
-                           (options name values)))))))
+(defun parse-cmd-args (args)
+  (let ((arguments (take-while #'argument? args))
+        (rest-args (drop-while #'argument? args)))
+    (labels ((parse-options (rest-args current-opts)
+               (declare (list rest-args current-opts))
+               (if (null rest-args)
+
+                   ;; No more option to parse
+                   current-opts
+
+                 (let* ((option-name   (first rest-args))
+                        (option-values (take-while #'argument? (rest rest-args)))
+                        (rest-args     (drop-while #'argument? (rest rest-args)))
+
+                        (option-values/converted (mapcar #'try-convert-value option-values))
+                        (option-name/keyword     (option->keyword option-name))
+
+                        (option-values/res
+                         (cond
+                           ((null option-values)         ;; --help → (:help . t)
+                            t)
+
+                           ((= 1 (length option-values)) ;; --help a → (:help . "a")
+                            (first option-values/converted)) ;
+
+                           (t                            ;; --help a b → (:help . ("a" "b"))
+                            option-values/converted)))
+                        
+                        (new-option (cons option-name/keyword option-values/res)))
+                   (parse-options rest-args
+                                  (push new-option
+                                        current-opts))))))
+      `((:arguments . ,arguments)
+        (:options   . ,(parse-options rest-args (list)))))))
 
 (in-package #:command-core-test)
 
