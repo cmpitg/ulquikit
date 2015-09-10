@@ -1530,7 +1530,7 @@ followed:
                 (parse-cmd-args '("--help" "hello")))
   (assert-equal `((:arguments . ("hello" "world"))
                   (:options   . ((:help    . t)
-                                 (:set-tab . "4"))))
+                                 (:set-tab . 4))))
                 (parse-cmd-args '("hello" "world" "--help" "--set-tab" "4"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
