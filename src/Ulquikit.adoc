@@ -1603,11 +1603,19 @@ a dash \"-\"."
             [else
              %])))
 
-(module+ test
-  (check-equal? (try-convert-value "1") 1)
-  (check-equal? (try-convert-value "a") "a")
-  (check-equal? (try-convert-value "true")  #t)
-  (check-equal? (try-convert-value "false") #f))
+(in-package #:command-core)
+
+(defun try-convert-value (value)
+  "Tries converting a string value as number, boolean, or returns itself."
+  (declare (string value))
+  (cond ((string-equal "true" value) t)
+        ((string-equal "false" value) nil)
+        ((string-equal "t" value) "t")
+        ((string-equal "nil" value) "nil")
+        (t (let ((res (read-from-string value)))
+             (if (numberp res)
+                 res
+               value)))))
 
 (in-package #:command-core-tests)
 
