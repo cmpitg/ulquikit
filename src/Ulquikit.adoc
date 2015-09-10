@@ -1591,6 +1591,8 @@ a dash \"-\"."
 
 ;; (run-tests '(test-option->keyword))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (define try-convert-value
   #λ(if-let [value (string->number %)]
       value
@@ -1607,6 +1609,17 @@ a dash \"-\"."
   (check-equal? (try-convert-value "true")  #t)
   (check-equal? (try-convert-value "false") #f))
 
+(in-package #:command-core-tests)
+
+(import 'command-core::try-convert-value)
+(define-test test-try-convert-value
+  (assert-equal 1    (try-convert-value "1"))
+  (assert-equal "a"  (try-convert-value "a"))
+  (assert-equal t    (try-convert-value "true"))
+  (assert-equal t    (try-convert-value "true"))
+  (assert-equal nil  (try-convert-value "false")))
+
+;; (run-tests '(test-try-convert-value))
 ----
 
 === Calling corresponding command
