@@ -1538,6 +1538,14 @@ followed:
 
 (in-package #:command-core)
 
+(defun take-while (fn xs)
+  "Starting from the beginning of `xs' builds a new list with the same order
+until `fn' returns `nil'"
+  (declare (function fn) (sequence xs))
+  (the list (iterate (for x in xs)
+                     (while (apply fn x))
+                     (collect x))))
+
 (in-package #:command-core-tests)
 
 (import 'command-core::take-while)
