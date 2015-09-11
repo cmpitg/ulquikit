@@ -1568,6 +1568,26 @@ E.g.
 
 (in-package #:command-core)
 
+(defun drop-while (fn xs)
+  "Starting from the first item of `xs' that `\(funcall fn item\)' returns
+`nil', builds a list with the rest of `xs'.
+
+E.g.
+
+  \(drop-while #'oddp '\(\)\)            ;; ⇨ '\(\)
+  \(drop-while #'oddp '\(1 1 5 7\)\)     ;; ⇨ '\(\)
+  \(drop-while #'oddp '\(1 2 5 2 3 4\)\) ;; ⇨ '\(2 3 4\)
+  \(drop-while #'oddp '\(2 3 4\)\)       ;; ⇨ '\(2 3 4\)"
+  (declare (function fn) (sequence xs))
+  (the list (labels ((helper (xs)
+                       (cond ((null xs)
+                              (list))
+                             ((not (funcall fn (first xs)))
+                              xs)
+                             (t
+                              (helper (rest xs))))))
+              (helper xs))))
+
 (in-package #:command-core-tests)
 
 (import 'command-core::drop-while)
