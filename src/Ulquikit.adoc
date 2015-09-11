@@ -1557,8 +1557,9 @@ E.g.
 
 (import 'command-core::take-while)
 (define-test test-take-while
+  (assert-equal '()      (take-while #'oddp '()))
   (assert-equal '()      (take-while #'oddp '(2 3 4)))
-  (assert-equal '(2 3 4) (take-while #'evenp '(2 3 4)))
+  (assert-equal '(2 2 4) (take-while #'evenp '(2 2 4)))
   (assert-equal '(2 2)   (take-while #'evenp '(2 2 1 3))))
 
 ;; (run-tests '(test-take-while))
