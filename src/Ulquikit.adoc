@@ -1459,7 +1459,6 @@ followed:
   (:use :cl :lisp-unit))
 ----
 
-
 [[func/parse-command-args]]
 .code::parse-command-args
 [source,lisp,linenums]
@@ -1535,6 +1534,20 @@ followed:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(in-package #:command-core-tests)
+
+(import 'command-core::take-while)
+(define-test test-take-while
+  (assert-equal '()      (take-while #'oddp '(2 3 4)))
+  (assert-equal '(2 3 4) (take-while #'evenp '(2 3 4)))
+  (assert-equal '(2 2)   (take-while #'evenp '(2 2 1 3))))
+
+;; (run-tests '(test-take-while))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package #:command-core)
