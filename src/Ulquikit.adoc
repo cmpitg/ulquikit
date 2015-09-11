@@ -1568,6 +1568,19 @@ E.g.
 
 (in-package #:command-core)
 
+(in-package #:command-core-tests)
+
+(import 'command-core::drop-while)
+(define-test test-drop-while
+  (assert-equal '()      (drop-while #'oddp '()))
+  (assert-equal '()      (drop-while #'oddp '(1 1 5 7)))
+  (assert-equal '(2 3 4) (drop-while #'oddp '(1 2 5 2 3 4)))
+  (assert-equal '(2 3 4) (drop-while #'oddp '(2 3 4))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
 (defun argument? (str)
   "Determines if a string is considered an argument.  An argument is not
 prefixed with a dash \"-\"."
