@@ -1550,7 +1550,7 @@ E.g.
   \(take-while #'evenp '\(2 2 1 3\)\)  ;; ⇨ '\(2 2\)"
   (declare (function fn) (sequence xs))
   (the list (iterate (for x in xs)
-                     (while (apply fn x))
+                     (while (funcall fn x))
                      (collect x))))
 
 (in-package #:command-core-tests)
