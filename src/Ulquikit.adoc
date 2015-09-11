@@ -1449,7 +1449,7 @@ followed:
 (in-package #:cl)
 
 (defpackage #:command-core
-  (:use :cl)
+  (:use :cl :iterate)
   (:export #:parse-command-args
            #:argument?
            #:option?
