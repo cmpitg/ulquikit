@@ -1539,8 +1539,15 @@ followed:
 (in-package #:command-core)
 
 (defun take-while (fn xs)
-  "Starting from the beginning of `xs' builds a new list with the same order
-until `fn' returns `nil'"
+  "Takes each `item' of `xs' from the beginning and builds a list until
+`\(funcall fn item\)' returns `nil'.
+
+E.g.
+
+  \(take-while #'oddp '\(\)\)          ;; ⇨ '\(\)
+  \(take-while #'oddp '\(2 3 4\)\)     ;; ⇨ '\(\)
+  \(take-while #'evenp '\(2 2 4\)\)    ;; ⇨ '\(2 2 4\)
+  \(take-while #'evenp '\(2 2 1 3\)\)  ;; ⇨ '\(2 2\)"
   (declare (function fn) (sequence xs))
   (the list (iterate (for x in xs)
                      (while (apply fn x))
