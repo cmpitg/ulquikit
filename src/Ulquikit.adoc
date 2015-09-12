@@ -1665,9 +1665,10 @@ a dash \"-\"."
 
 (import 'command-core:option->keyword)
 (define-test test-option->keyword
-  (assert-equal :h    (option->keyword "-h"))
-  (assert-equal :help (option->keyword "--help"))
-  (assert-equal :help (option->keyword "---help")))
+  (assert-equal :h       (option->keyword "-h"))
+  (assert-equal :help    (option->keyword "--help"))
+  (assert-equal :help    (option->keyword "---help"))
+  (assert-equal :help-me (option->keyword "---help-me")))
 
 ;; (run-tests '(test-option->keyword))
 
