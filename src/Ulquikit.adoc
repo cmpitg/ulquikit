@@ -1528,9 +1528,11 @@ followed:
                   (:options   . ((:help . "hello"))))
                 (parse-cmd-args '("--help" "hello")))
   (assert-equal `((:arguments . ("hello" "world"))
-                  (:options   . ((:help    . t)
-                                 (:set-tab . 4))))
+                  (:options   . ((:set-tab . 4)
+                                 (:help    . t))))
                 (parse-cmd-args '("hello" "world" "--help" "--set-tab" "4"))))
+
+;; (run-tests '(test-parse-cmd-args))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
