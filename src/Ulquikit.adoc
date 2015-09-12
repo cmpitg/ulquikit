@@ -1658,7 +1658,7 @@ a dash \"-\"."
                (declare (ignore _))
                (if (zerop (length xs))
                    (error "~S is not a valid option" xs)
-                 (aref opt 0))))))
+                 (intern (string-upcase (aref xs 0)) :keyword))))))
 
 (in-package #:command-core-tests)
 
