@@ -1650,15 +1650,16 @@ a dash \"-\"."
 (defun option->keyword (opt)
   "Converts option as string to Common Lisp keyword."
   (declare ((or symbol string) opt))
-  (typecase opt
-    (keyword opt)
-    (symbol  (intern (symbol-name opt) :keyword))
-    (string  (multiple-value-bind (_ xs)
-                 (cl-ppcre:scan-to-strings "^-+([^-]+)$" opt)
-               (declare (ignore _))
-               (if (zerop (length xs))
-                   (error "~S is not a valid option" xs)
-                 (intern (string-upcase (aref xs 0)) :keyword))))))
+  (the keyword
+       (typecase opt
+         (keyword opt)
+         (symbol  (intern (symbol-name opt) :keyword))
+         (string  (multiple-value-bind (_ xs)
+                      (cl-ppcre:scan-to-strings "^-+([^-]+)$" opt)
+                    (declare (ignore _))
+                    (if (zerop (length xs))
+                        (error "~S is not a valid option" xs)
+                        (intern (string-upcase (aref xs 0)) :keyword)))))))
 
 (in-package #:command-core-tests)
 
