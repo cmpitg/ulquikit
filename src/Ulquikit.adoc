@@ -1654,7 +1654,7 @@ a dash \"-\"."
     (keyword opt)
     (symbol  (intern (symbol-name opt) :keyword))
     (string  (multiple-value-bind (_ xs)
-                 (cl-ppcre:scan-to-strings "^-+([^-])+$" opt)
+                 (cl-ppcre:scan-to-strings "^-+([^-]+)$" opt)
                (declare (ignore _))
                (if (zerop (length xs))
                    (error "~S is not a valid option" xs)
