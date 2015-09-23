@@ -1756,7 +1756,16 @@ the corresponding package."
                  (otherwise func))))
     func))
 
+(in-package #:command-core-tests)
+(import 'command-core::get-function)
 
+(define-test test-get-function
+  (assert-equal #'command-core:run-cmd (get-function "RUN-CMD" "COMMAND-CORE"))
+  (assert-equal #'command-core:run-cmd (get-function 'run-cmd "COMMAND-CORE"))
+  (assert-equal #'command-core:run-cmd (get-function :run-cmd :command-core))
+  (assert-error 'undefined-function (get-function :doesnt-exist :command-core)))
+
+;;; (run-tests '(test-get-function))
 ----
 
 Besides <<func/run-command,+run-command+>>, we also have +run-help+ as a
