@@ -1459,6 +1459,9 @@ followed:
 
 (defpackage #:command-core-tests
   (:use :cl :lisp-unit))
+
+(setf lisp-unit:*print-failures* t
+      lisp-unit:*print-errors*   t)
 ----
 
 [[func/parse-command-args]]
