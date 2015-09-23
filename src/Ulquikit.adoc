@@ -1720,9 +1720,6 @@ a dash \"-\"."
 
 === Calling corresponding command
 
-Function +run-command+ does exactly that, i.e. it calls corresponding command
-and passes necessary arguments.
-
 [[func/run-command]]
 .code::run-command
 [source,racket,linenums]
