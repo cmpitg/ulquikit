@@ -1733,6 +1733,29 @@ the corresponding package."
   (let ((func (get-function "RUN" cmd)))  ; TODO: make this extensible
     (funcall func args)))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(defun get-function (func &optional (package *package*))
+  "Retrieves a function from a package or throws error if not found."
+  (declare ((or string symbol function) func)
+           ((or string symbol package) package))
+  (let* ((package (find-package (typecase package
+                                  (string (string-upcase package))
+                                  (otherwise package))))
+         (func (typecase func
+                 (string    (fdefinition
+                             (find-symbol (string-upcase func)
+                                          package)))
+                 (symbol    (fdefinition
+                             (find-symbol (symbol-name func)
+                                          package)))
+                 (otherwise func))))
+    func))
+
 
 ----
 
