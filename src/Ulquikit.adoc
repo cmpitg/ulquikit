@@ -1453,7 +1453,9 @@ followed:
   (:export #:parse-cmd-args
            #:argument?
            #:option?
-           #:option->keyword))
+           #:option->keyword
+           #:run-cmd
+           #:help))
 
 (defpackage #:command-core-tests
   (:use :cl :lisp-unit))
