@@ -1720,35 +1720,19 @@ a dash \"-\"."
 
 === Calling corresponding command
 
-[[func/run-command]]
 .code::run-command
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-(define (run-command command args)
-  (let* ([module-location (string->path
-                           (get-path +ulquikit-location+
-                                     (format "commands/~a.rkt"
-                                             command)))]
-         [run-func        (dynamic-require module-location 'run)]
-         [args            (if (hash? args)
-                              args
-                              (parse-command-args args))]
-         [main-args       (args 'arguments)]
-         [keyword-list    (hash-keys (args 'options))]
-         [val-list        (hash-values (args 'options))])
-    (if (~> args 'options '#:help)
-        (run-help command)
-        (with-handlers ([exn:fail:contract?
-                         (λ (e)
-                           (displayln "=> Invalid option(s)")
-                           (displayln e)
-                           (newline)
-                           (run-help command))])
-          (keyword-apply run-func
-                         keyword-list
-                         val-list
-                         main-args)))
-    (newline)))
+(in-package #:command-core)
+
+(defun run-cmd (cmd args)
+  "Runs command with appropriate arguments by calling the `run' function in
+the corresponding package."
+  (declare ((or string symbol package) cmd)
+           (list args))
+  (let ((func (get-function "RUN" cmd)))  ; TODO: make this extensible
+    (funcall func args)))
+
 
 ----
 
