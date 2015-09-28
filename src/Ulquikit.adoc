@@ -1499,7 +1499,7 @@ followed:
 
                            (t                            ;; --help a b → (:help . ("a" "b"))
                             option-values/converted)))
-                        
+
                         (new-option (cons option-name/keyword option-values/res)))
                    (parse-options rest-args
                                   (push new-option
