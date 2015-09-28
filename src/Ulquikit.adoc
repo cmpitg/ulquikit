@@ -1768,9 +1768,8 @@ the corresponding package."
 ;;; (run-tests '(test-get-function))
 ----
 
-Besides <<func/run-command,+run-command+>>, we also have +run-help+ as a
-helper to display help of a command.  +run-help+ simply reads the help file of
-the corresponding command and returns its content.
+We also have `run-help` to display help of a command.  `run-help` simply reads
+the help file of the corresponding command and returns its content.
 
 .code::run-help
 [source,racket,linenums]
