@@ -1789,6 +1789,28 @@ of the corresponding function."
                                                    ; extensible
     (format t "~A~%" (documentation run-func 'function))))
 
+(defpackage #:foobar-help
+  (:use :cl)
+  (:export #:run))
+
+(in-package #:foobar-help)
+
+(defun run ()
+  "A function with documentation string as help."
+  t)
+
+(in-package #:command-core-tests)
+
+(import 'command-core:help)
+(define-test test-help
+  (let* ((output (make-string-output-stream))
+         (*standard-output* output))
+    (help "foobar-help")
+    (assert-equal "A function with documentation string as help.
+"
+                  (get-output-stream-string output))))
+
+;; (run-tests '(test-help))
 
 ----
 
