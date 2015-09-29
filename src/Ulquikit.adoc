@@ -1819,8 +1819,6 @@ of the corresponding function."
 
 (in-package #:command-core)
 
-;; include::c
-
 (defun display-cmd (msg)
   "Nicely formats and displays a command."
   (format t "==== ~A ====~%" msg))
