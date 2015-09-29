@@ -1806,33 +1806,24 @@ of the corresponding function."
 
 === Putting all command helpers together
 
-.file::command-core.rkt
-[source,racket,linenums]
+.file::command-core.lisp
+[source,lisp,linenums]
 ----
 ;; include::license-header
 
-;; include::use-rackjure
+;; include::command-core/defpackage
 
-(require "ulquikit.rkt")
-(require "utils/path.rkt")
-(require "utils/string.rkt")
+;; include::command-core/run
 
-(provide run-command
-         (rename-out [run-help run-command-help]
-                     [run-help run-help])
-         display-command)
+;; include:;command-core/help
 
-(module+ test
-  (require rackunit))
+(in-package #:command-core)
 
-(define (display-command title)
-  (displayln (str "==== " title " ====")))
+;; include::c
 
-;; include::parse-command-args
-
-;; include::run-command
-
-;; include::run-help
+(defun display-cmd (msg)
+  "Nicely formats and displays a command."
+  (format t "==== ~A ====~%" msg))
 
 ----
 
