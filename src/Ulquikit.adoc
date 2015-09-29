@@ -1825,8 +1825,8 @@ of the corresponding function."
 
 ----
 
-The next big piece of Ulquikit is the +generate-html+ command which generates
-HTML documents with some default options.
+The next big piece of Ulquikit is the `generate-html` command which generates
+HTML documents with default options.
 
 == Generating HTML
 
