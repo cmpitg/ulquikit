@@ -1444,6 +1444,7 @@ boolean (e.g. in case of ``1``, ``t``, ``true``, ``false``, ...).
 The `command-core` package and its test counterpart could be declared as
 followed:
 
+.code::command-core/defpackage
 [source,lisp,linenums]
 ----
 (in-package #:cl)
@@ -1464,8 +1465,7 @@ followed:
       lisp-unit:*print-errors*   t)
 ----
 
-[[func/parse-command-args]]
-.code::parse-command-args
+.code::command-core/parse-cmd-args
 [source,lisp,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1720,7 +1720,7 @@ a dash \"-\"."
 
 === Calling corresponding command
 
-.code::run-command
+.code::command-core/run
 [source,lisp,linenums]
 ----
 (in-package #:command-core)
@@ -1771,7 +1771,7 @@ the corresponding package."
 We also have `run-help` to display help of a command.  `run-help` simply reads
 the help file of the corresponding command and returns its content.
 
-.code::run-help
+.code::command-core/help
 [source,lisp,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
