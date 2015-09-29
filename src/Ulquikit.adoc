@@ -1804,10 +1804,7 @@ of the corresponding function."
 
 ----
 
-=== Putting all command things together
-
-With all necessary functions implemented, module +command-core+ which all
-other commands have to +required+ comes down to this little piece below:
+=== Putting all command helpers together
 
 .file::command-core.rkt
 [source,racket,linenums]
@@ -1855,7 +1852,7 @@ Generate HTMLs from literate documents.
 
   --from   either path to a directory where literate documents are stored, or
            path to one literate document, default: "src"
-            
+
   --to     directory where HTMLs are generated, default: "generated-html"
 
 Examples
@@ -2009,11 +2006,11 @@ Available commands:
 
 })
   (let* ([commands   (list-commands)]
-         
+
          [full-helps (map #λ(with-output-to-string
                               (λ ()
                                 (run-help %))) commands)]
-         
+
          [helps      (for/list ([text full-helps])
                        (let* ([lines (string-split text "\n" #:trim? #f)]
                               [usage-omitted (dropf lines
