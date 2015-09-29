@@ -1681,16 +1681,6 @@ a dash \"-\"."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define try-convert-value
-  #λ(if-let [value (string->number %)]
-      value
-      (cond [(string=? "true" %)
-             #t]
-            [(string=? "false" %)
-             #f]
-            [else
-             %])))
-
 (in-package #:command-core)
 
 (defun try-convert-value (value)
