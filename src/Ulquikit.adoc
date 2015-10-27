@@ -484,6 +484,27 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit)
 
+(defun sethash (key hash value &rest args)
+  "Conveniently combining `setf' and `gethash'.
+
+`\(setf \(gethash o hash\) obj\)' ⬄ `\(sethash o hash obj\)'
+`\(setf \(gethash o hash\) obj
+      \(gethash a hash\) abj\)'
+⬄
+`\(sethash o hash obj
+         a hash abj\)'
+"
+  (declare (hash-table hash))
+  (unless (zerop (mod (length args) 3))
+    (error "number of arguments must be divisible by 3."))
+
+  (setf (gethash key hash) value)
+
+  (unless (null args)
+    (apply #'sethash (first args) (second args) (third args) (subseq args 3))))
+
+(in-package #:ulquikit)
+
 (defun read-file (path)
   "Reads a file as UTF-8 encoded string."
   (declare ((or string pathname) path))
