@@ -245,23 +245,22 @@ anchor:func/create-snippet[]
 (in-package #:ulquikit-tests)
 
 (import 'ulquikit::create-snippet)
+(import 'ulquikit::snippet)
 (define-test test-snippet-creation
-  (assert-equalp #S(snippet
-                    :type :file
-                    :name "hello-world"
-                    :linenum 10
-                    :lines ("Hmm")
-                    :processed? nil)
+  (assert-equalp (make-snippet :type :file
+                               :name "hello-world"
+                               :linenum 10
+                               :lines ("Hmm")
+                               :processed? nil)
                  (create-snippet :type :file
                                  :name 'hello-world
                                  :linenum 10
                                  :lines '("Hmm")))
-  (assert-equalp #S(snippet
-                    :type :string
-                    :name "string"
-                    :linenum 100
-                    :lines ("string")
-                    :processed? t)
+  (assert-equalp (make-snippet :type :string
+                               :name "string"
+                               :linenum 100
+                               :lines ("string")
+                               :processed? t)
                  (create-snippet :type "string"
                                  :name "string"
                                  :linenum 100
@@ -590,8 +589,8 @@ anchor:func/extract-snippets-from-file[]
                                                   :name :hello
                                                   :linenum 10
                                                   :lines '("Something")))
-                 (make-snippets
-                  :file (alexandria:alist-hash-table `(("hello" . ,#s(snippet
+                 (ulquikit::make-snippets
+                  :file (alexandria:alist-hash-table `(("hello" . ,(ulquikit::make-snippet
                                                                       :type :file
                                                                       :name "hello"
                                                                       :linenum 10
@@ -601,8 +600,8 @@ anchor:func/extract-snippets-from-file[]
                   :code (make-hash-table :test #'equal)))
 
   (assert-equalp (collect-snippet
-                  (make-snippets
-                   :file (alexandria:alist-hash-table `(("hello" . ,#s(snippet
+                  (ulquikit::make-snippets
+                   :file (alexandria:alist-hash-table `(("hello" . ,(ulquikit::make-snippet
                                                                        :type :file
                                                                        :name "hello"
                                                                        :linenum 10
@@ -614,8 +613,8 @@ anchor:func/extract-snippets-from-file[]
                                   :name 'say-something
                                   :linenum 100
                                   :lines '("Something else")))
-                 (make-snippets :file (alexandria:alist-hash-table
-                                       `(("hello" . ,#s(snippet
+                 (ulquikit::make-snippets :file (alexandria:alist-hash-table
+                                       `(("hello" . ,(ulquikit::make-snippet
                                                         :type :file
                                                         :name "hello"
                                                         :linenum 10
@@ -623,7 +622,7 @@ anchor:func/extract-snippets-from-file[]
                                                         :processed? nil)))
                                        :test #'equal)
                                 :code (alexandria:alist-hash-table
-                                       `(("say-something" . #s(snippet
+                                       `(("say-something" . (ulquikit::make-snippet
                                                                :type :code
                                                                :name "say-something"
                                                                :linenum 100
