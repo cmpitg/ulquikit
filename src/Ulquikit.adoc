@@ -80,10 +80,13 @@ to interact with the outside world as a Common Lisp package.
   (:export #:generate-src
            #:generate-html
 
+           #:snippet->string
+
            #:snippet
            #:create-snippet
            #:extract-snippets
            #:extract-snippets-from-file
+           #:collect-snippet
            #:sethash))
 
 (in-package #:ulquikit)
