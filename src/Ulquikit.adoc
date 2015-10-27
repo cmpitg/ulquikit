@@ -201,12 +201,11 @@ have a helper that joins those lines into a complete string:
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::join-lines)
 (define-test test-join-lines
-  (assert-equal "" (join-lines '()))
-  (assert-equal "a" (join-lines '("a")))
-  (assert-equal (format nil "a~%b") (join-lines '("a" "b")))
-  (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
+  (assert-equal "" (ulquikit::join-lines '()))
+  (assert-equal "a" (ulquikit::join-lines '("a")))
+  (assert-equal (format nil "a~%b") (ulquikit::join-lines '("a" "b")))
+  (assert-equal (format nil "a~%b~%") (ulquikit::join-lines '("a" "b" ""))))
 
 ;;; (run-tests '(test-join-lines))
 
