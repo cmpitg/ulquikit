@@ -186,7 +186,7 @@ have a helper that joins those lines into a complete string:
 (defun get-snippet-content (snippet)
   "Returns the content of a snippet as string."
   (declare (snippet snippet))
-  (the string (join-lines (snippet/lines snippet))))
+  (join-lines (snippet/lines snippet)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -488,8 +488,8 @@ anchor:func/extract-snippets-from-file[]
 (defun read-file (path)
   "Reads a file as UTF-8 encoded string."
   (declare ((or string pathname) path))
-  (the string (with-open-file (in path :element-type '(unsigned-byte 8))
-                (read-utf-8-string in :stop-at-eof t))))
+  (with-open-file (in path :element-type '(unsigned-byte 8))
+    (read-utf-8-string in :stop-at-eof t)))
 
 (in-package #:ulquikit)
 
