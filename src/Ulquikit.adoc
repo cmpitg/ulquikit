@@ -2814,3 +2814,51 @@ necessary.
 === Command list
 
 === Story: How the Racket version of Ulquikit was actually developed
+
+=== Emacs Lisp snippets to quickly compile snippets
+
+[source,emacs-lisp,linenums]
+----
+(defun ~cl/next-snippet ()
+  "Jumps to the next `eval'-able AsciiDoc snippet."
+  (interactive)
+  (cond ((re-search-forward "\\.code.*\n\\[source,lisp" (point-max) t)
+         (search-forward "----")
+         (next-line)
+         (beginning-of-line)
+         (point))
+        (t
+         -1)))
+
+(defun ~cl/compile-snippet ()
+  "Compiles the current snippet with Common Lisp's Slime.  Note
+that this function would not work reliably if the current point
+is not inside a snippet."
+  (interactive)
+  (save-excursion
+    (cond ((member major-mode '(lisp-mode common-lisp-mode))
+           (beginning-of-buffer)
+           (let ((start (point)))
+             (end-of-buffer)
+             (slime-compile-region start (point))))
+          (t
+           (re-search-backward "^----$")
+           (next-line)
+           (beginning-of-line)
+           (let ((start (point)))
+             (re-search-forward "^----$")
+             (previous-line)
+             (end-of-line)
+             (slime-compile-region start (point)))))))
+
+
+(global-set-key (kbd "<f5>") '~cl/next-snippet)
+(global-set-key (kbd "<f6>") '~cl/compile-snippet)
+
+;;; Or binding key with bind-key library
+;; (bind-key "<f5>" '~cl/next-snippet)
+;; (bind-key "<f6>" '~cl/compile-snippet)
+----
+
+
+=== Enhancing narrow-region functionality in Emacs
