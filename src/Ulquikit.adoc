@@ -520,13 +520,12 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::block-delimiter?)
 (define-test test-block-delimiter
-  (assert-true (block-delimiter? "----"))
-  (assert-true (not (block-delimiter? " ----")))
-  (assert-true (block-delimiter? "---- "))
-  (assert-true (block-delimiter? "----  "))
-  (assert-true (not (block-delimiter? "----a"))))
+  (assert-true (ulquikit::block-delimiter? "----"))
+  (assert-true (not (ulquikit::block-delimiter? " ----")))
+  (assert-true (ulquikit::block-delimiter? "---- "))
+  (assert-true (ulquikit::block-delimiter? "----  "))
+  (assert-true (not (ulquikit::block-delimiter? "----a"))))
 
 ;; (run-tests '(test-block-delimiter))
 
@@ -539,12 +538,11 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::block-title?)
 (define-test test-block-title
-  (assert-true (block-title? ".file::something"))
-  (assert-true (block-title? ".file::something else"))
-  (assert-true (block-title? ".file::"))
-  (assert-true (null (block-title? ".file:something"))))
+  (assert-true (ulquikit::block-title? ".file::something"))
+  (assert-true (ulquikit::block-title? ".file::something else"))
+  (assert-true (ulquikit::block-title? ".file::"))
+  (assert-true (null (ulquikit::block-title? ".file:something"))))
 
 ;; (run-tests '(test-block-title))
 
@@ -561,7 +559,6 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::parse-snippet-title)
 (define-test test-parse-snippet-title
   (dolist (el '((".file::"    . (:file ""))
                 (".code::"    . (:code ""))
@@ -569,7 +566,7 @@ anchor:func/extract-snippets-from-file[]
                 (".code::a b" . (:code "a b"))))
     (let ((title    (first el))
           (expected (rest  el)))
-      (multiple-value-bind (type name) (parse-snippet-title title)
+      (multiple-value-bind (type name) (ulquikit::parse-snippet-title title)
         (assert-equal expected (list type name))))))
 
 ;; (run-tests '(test-parse-snippet-title))
@@ -603,10 +600,8 @@ anchor:func/extract-snippets-from-file[]
 (import 'ulquikit::snippet/name)
 (import 'ulquikit::snippets/file)
 (import 'ulquikit::snippets/code)
-(import 'ulquikit::make-snippets)
-(import 'ulquikit::collect-snippet)
 (define-test test-collect-snippets
-  (assert-equalp (collect-snippet (make-snippets)
+  (assert-equalp (collect-snippet (ulquikit::make-snippets)
                                   (create-snippet :type :file
                                                   :name :hello
                                                   :linenum 10
@@ -822,8 +817,6 @@ The following snippet doesn't get captured as it has no title:
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::snippet->string)
-(import 'ulquikit::make-snippet)
 (define-test test-snippet->string
   (assert-equal "" (snippet->string (make-snippet)))
   (assert-equal "aoeu" (snippet->string (make-snippet :lines '("aoeu"))))
