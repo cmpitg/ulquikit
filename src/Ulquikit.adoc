@@ -374,6 +374,7 @@ delimiters is stored as content of the snippet.
 Before diving into `extract-snippets-from-file`, let us define a data
 structure for storing all snippets:
 
+.code::defstruct-snippets
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
