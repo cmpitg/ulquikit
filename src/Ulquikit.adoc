@@ -1504,7 +1504,7 @@ followed:
       `((:arguments . ,arguments)
         (:options   . ,(parse-options rest-args (list)))))))
 
-(in-package #:command-core-test)
+(in-package #:command-core-tests)
 
 (import 'command-core:parse-cmd-args)
 (define-test test-parse-cmd-args
