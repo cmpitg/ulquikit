@@ -1066,7 +1066,6 @@ modifies `snippets' in-place and returns it after processing."
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::snippet-exists?)
 (define-test test-snippet-exists?
   (let* ((code/a (make-snippet :name "a" :type :code))
          (code/b (make-snippet :name "b" :type :code))
@@ -1099,7 +1098,7 @@ modifies `snippets' in-place and returns it after processing."
                         (scan "^<!-- include::.* -->" line)
                         (scan "^/\\* include::.* \\*/" line)))))))
 
-(in-package #:ulquikit-test)
+(in-package #:ulquikit-tests)
 
 (define-test test-include-directive?
   (assert-eq t   (ulquikit::include-directive? "  ;; include::"))
@@ -1172,7 +1171,6 @@ for detailed information on input/output format.  TODO: make this extensible."
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::snippets/get-snippet)
 (define-test test-snippets/get-snippet
   (let* ((snp/code/a (make-snippet :type :code :name "a"))
          (snp/code/b (make-snippet :type :code :name "b"))
