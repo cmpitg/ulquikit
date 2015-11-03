@@ -1355,22 +1355,17 @@ The `generate-src` command might look like so:
   (declare ((or string pathname) from to))
   (display-command "Generating source")
   (ulquikit:generate-src :from from :to to))
-----
 
-Of course, with some utilities:
-
-.code::command-utils/display-command
-[source,lisp,linenums]
-----
 (defun display-command (command &optional (stream t))
   "Displays a command."
   (declare (string command)
            ((or stream boolean) stream))
   (format stream "==== ~A ====~%" command))
+
 ----
 
-That's basically how a command should be defined.  Let's generalize this idea
-for other commands.
+That is how a command should be defined.  Let's generalize this idea for other
+commands.
 
 == Anatomy of a Ulquikit command
 
