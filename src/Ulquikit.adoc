@@ -1501,7 +1501,6 @@ followed:
 
 (in-package #:command-core-tests)
 
-(import 'command-core:parse-cmd-args)
 (define-test test-parse-cmd-args
   (assert-equal `((:arguments . ())
                   (:options   . ()))
@@ -1554,12 +1553,11 @@ E.g.
 
 (in-package #:command-core-tests)
 
-(import 'command-core::take-while)
 (define-test test-take-while
-  (assert-equal '()      (take-while #'oddp '()))
-  (assert-equal '()      (take-while #'oddp '(2 3 4)))
-  (assert-equal '(2 2 4) (take-while #'evenp '(2 2 4)))
-  (assert-equal '(2 2)   (take-while #'evenp '(2 2 1 3))))
+  (assert-equal '()      (command-core::take-while #'oddp '()))
+  (assert-equal '()      (command-core::take-while #'oddp '(2 3 4)))
+  (assert-equal '(2 2 4) (command-core::take-while #'evenp '(2 2 4)))
+  (assert-equal '(2 2)   (command-core::take-while #'evenp '(2 2 1 3))))
 
 ;; (run-tests '(test-take-while))
 
@@ -1589,12 +1587,11 @@ E.g.
 
 (in-package #:command-core-tests)
 
-(import 'command-core::drop-while)
 (define-test test-drop-while
-  (assert-equal '()      (drop-while #'oddp '()))
-  (assert-equal '()      (drop-while #'oddp '(1 1 5 7)))
-  (assert-equal '(2 3 4) (drop-while #'oddp '(1 1 5 2 3 4)))
-  (assert-equal '(2 3 4) (drop-while #'oddp '(2 3 4))))
+  (assert-equal '()      (command-core::drop-while #'oddp '()))
+  (assert-equal '()      (command-core::drop-while #'oddp '(1 1 5 7)))
+  (assert-equal '(2 3 4) (command-core::drop-while #'oddp '(1 1 5 2 3 4)))
+  (assert-equal '(2 3 4) (command-core::drop-while #'oddp '(2 3 4))))
 
 ;; (run-tests '(test-drop-while))
 
@@ -1610,7 +1607,6 @@ prefixed with a dash \"-\"."
 
 (in-package #:command-core-tests)
 
-(import 'command-core:argument?)
 (define-test test-argument?
   (assert-equal t   (argument? ""))
   (assert-equal t   (argument? "a"))
@@ -1632,7 +1628,6 @@ a dash \"-\"."
 
 (in-package #:command-core-tests)
 
-(import 'command-core:option?)
 (define-test test-option?
   (assert-equal nil (option? ""))
   (assert-equal nil (option? "a"))
@@ -1662,7 +1657,6 @@ a dash \"-\"."
 
 (in-package #:command-core-tests)
 
-(import 'command-core:option->keyword)
 (define-test test-option->keyword
   (assert-equal :h       (option->keyword "-h"))
   (assert-equal :help    (option->keyword "--help"))
@@ -1689,13 +1683,12 @@ a dash \"-\"."
 
 (in-package #:command-core-tests)
 
-(import 'command-core::try-convert-value)
 (define-test test-try-convert-value
-  (assert-equal 1    (try-convert-value "1"))
-  (assert-equal "a"  (try-convert-value "a"))
-  (assert-equal t    (try-convert-value "true"))
-  (assert-equal t    (try-convert-value "true"))
-  (assert-equal nil  (try-convert-value "false")))
+  (assert-equal 1    (command-core::try-convert-value "1"))
+  (assert-equal "a"  (command-core::try-convert-value "a"))
+  (assert-equal t    (command-core::try-convert-value "true"))
+  (assert-equal t    (command-core::try-convert-value "true"))
+  (assert-equal nil  (command-core::try-convert-value "false")))
 
 ;; (run-tests '(test-try-convert-value))
 ----
@@ -1739,13 +1732,12 @@ the corresponding package."
     func))
 
 (in-package #:command-core-tests)
-(import 'command-core::get-function)
 
 (define-test test-get-function
-  (assert-equal #'command-core:run-cmd (get-function "RUN-CMD" "COMMAND-CORE"))
-  (assert-equal #'command-core:run-cmd (get-function 'run-cmd "COMMAND-CORE"))
-  (assert-equal #'command-core:run-cmd (get-function :run-cmd :command-core))
-  (assert-error 'undefined-function (get-function :doesnt-exist :command-core)))
+  (assert-equal #'command-core:run-cmd (command-core::get-function "RUN-CMD" "COMMAND-CORE"))
+  (assert-equal #'command-core:run-cmd (command-core::get-function 'run-cmd "COMMAND-CORE"))
+  (assert-equal #'command-core:run-cmd (command-core::get-function :run-cmd :command-core))
+  (assert-error 'undefined-function (command-core::get-function :doesnt-exist :command-core)))
 
 ;;; (run-tests '(test-get-function))
 ----
@@ -1783,7 +1775,6 @@ of the corresponding function."
 
 (in-package #:command-core-tests)
 
-(import 'command-core:help)
 (define-test test-help
   (let* ((output (make-string-output-stream))
          (*standard-output* output))
