@@ -692,9 +692,6 @@ files are found recursively."
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::extract-snippets)
-(import 'ulquikit::snippets/file)
-(import 'ulquikit::snippets/code)
 (define-test test-extract-snippets
   (let* ((test-dir (merge-pathnames
                     "ulquikit/test-extract-snippets/"
@@ -764,9 +761,9 @@ The following snippet doesn't get captured as it has no title:
         (with-open-file (out path :direction :output)
           (princ content out))))
 
-    (let* ((snippets (extract-snippets test-dir))
-           (file-snippets (snippets/file snippets))
-           (code-snippets (snippets/code snippets)))
+    (let* ((snippets (ulquikit::extract-snippets test-dir))
+           (file-snippets (ulquikit::snippets/file snippets))
+           (code-snippets (ulquikit::snippets/code snippets)))
       (assert-equal 1 (hash-table-count file-snippets))
       (assert-equal 2 (hash-table-count code-snippets))
 
@@ -850,7 +847,6 @@ extensible."
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::get-all-adocs)
 (define-test test-get-all-adocs
   (let* ((files '("a.adoc"
                   "b.adoc"
@@ -989,62 +985,55 @@ modifies `snippets' in-place and returns it after processing."
 
 ;;; (run-tests '(test-include-snippet))
 
-(import 'ulquikit::make-snippet)
-(import 'ulquikit::snippet/name)
-(import 'ulquikit::snippet/lines)
-(import 'ulquikit::snippet/processed?)
-(import 'ulquikit::snippets/file)
-(import 'ulquikit::snippets/code)
-(import 'ulquikit::include-snippet!)
 (define-test test-include-snippet
-  (let* ((snp/file (make-snippet :name "/tmp/tmp.lisp"
+  (let* ((snp/file (ulquikit::make-snippet :name "/tmp/tmp.lisp"
                                  :type :file
                                  :lines '(";; include::A"
                                           ";; The end")
                                  :linenum 10))
-         (snp/code/A (make-snippet :name "A"
+         (snp/code/A (ulquikit::make-snippet :name "A"
                                    :type :code
                                    :lines '("World"
                                             ";; include::B"
                                             ";; include::D")
                                    :linenum 20))
-         (snp/code/B (make-snippet :name "B"
+         (snp/code/B (ulquikit::make-snippet :name "B"
                                    :type :code
                                    :lines '("Hello")
                                    :linenum 30))
-         (snp/code/C (make-snippet :name "C"
+         (snp/code/C (ulquikit::make-snippet :name "C"
                                    :type :code
                                    :lines '("Not processed")
                                    :linenum 15))
          ;; Circular dependency
-         (snp/code/D (make-snippet :name "D"
+         (snp/code/D (ulquikit::make-snippet :name "D"
                                    :type :code
                                    :lines '(";; include A")
                                    :linenum 100))
 
-         (snippets (let* ((res (make-snippets))
-                          (snippets/file (snippets/file res))
-                          (snippets/code (snippets/code res)))
-                     (setf (gethash "/tmp/tmp.lisp" snippets/file) snp/file
-                           (gethash "A" snippets/code) snp/code/A
-                           (gethash "B" snippets/code) snp/code/B
-                           (gethash "C" snippets/code) snp/code/C
-                           (gethash "D" snippets/code) snp/code/D)
+         (snippets (let* ((res (ulquikit::make-snippets))
+                          (ulquikit::snippets/file (ulquikit::snippets/file res))
+                          (ulquikit::snippets/code (ulquikit::snippets/code res)))
+                     (setf (gethash "/tmp/tmp.lisp" ulquikit::snippets/file) snp/file
+                           (gethash "A" ulquikit::snippets/code) snp/code/A
+                           (gethash "B" ulquikit::snippets/code) snp/code/B
+                           (gethash "C" ulquikit::snippets/code) snp/code/C
+                           (gethash "D" ulquikit::snippets/code) snp/code/D)
                      ;; Don't add D right away
                      res)))
-    (setf snippets (include-snippet! snippets `(:code . "A")))
+    (setf snippets (ulquikit::include-snippet! snippets `(:code . "A")))
     (assert-true t)
-    (assert-true (snippet/processed? snp/code/A))
-    (assert-true (snippet/processed? snp/code/B))
-    (assert-true (snippet/processed? snp/code/D))
-    (assert-false (snippet/processed? snp/code/C))
-    (assert-false (snippet/processed? snp/file))
+    (assert-true (ulquikit::snippet/processed? snp/code/A))
+    (assert-true (ulquikit::snippet/processed? snp/code/B))
+    (assert-true (ulquikit::snippet/processed? snp/code/D))
+    (assert-false (ulquikit::snippet/processed? snp/code/C))
+    (assert-false (ulquikit::snippet/processed? snp/file))
     (assert-true (scan "^World\\nHello\\n"
-                       (nth 0 (snippet/lines snp/code/A))))
+                       (nth 0 (ulquikit::snippet/lines snp/code/A))))
 
-    (setf snippets (include-snippet! snippets `(:file . "/tmp/tmp.lisp")))
-    (let ((content (nth 0 (snippet/lines snp/file))))
-      (assert-true (snippet/processed? snp/file))
+    (setf snippets (ulquikit::include-snippet! snippets `(:file . "/tmp/tmp.lisp")))
+    (let ((content (nth 0 (ulquikit::snippet/lines snp/file))))
+      (assert-true (ulquikit::snippet/processed? snp/file))
       (assert-true (scan "^World\\nHello\\n" content))
       (assert-true (scan ";; The end$" content)))))
 
