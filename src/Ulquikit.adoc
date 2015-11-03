@@ -1375,9 +1375,9 @@ in `commands/` directory.  Each has `help` and `run` functions, which are
 called when user runs the command or gets help respectively.  Should one of
 the function does not exist, the correponding action does nothing.
 
-Commands are loaded in the alphabetical order of their source code files.  By
-this way, one can override commands by making it load later than the original
-version.  E.g. if command `extract-text` is defined in
+Commands are loaded in the alphabetical order of their source code files.
+This way, one can override commands by adding another definition to load later
+than its original version.  E.g. if command `extract-text` is defined in
 `commands/extract-text.lisp` and command `help` is defined in
 `commands/help.lisp`, `extract-text` is loaded before `help` as
 `commands/extract-text.lisp` precedes `commands/help.lisp` alphabetically.  If
@@ -1386,14 +1386,14 @@ version.  E.g. if command `extract-text` is defined in
 `commands/extract-text.lisp` as `commands/z-extract-text.lisp` comes after
 `commands/extract-text.lisp` in alphabetical order.
 
-More details of a command invocation:
+More details of command invocation:
 
 * Command line arguments are parsed and passed through `run` function.
 +
 E.g.
 
 ** `ulqui generate-src` calls `run` function of `generate-src` package.  This
-   function might be private.  However, it's recommended to make it public.
+   function might be private.  It's recommended to make it public, though.
 
 ** `ulqui generate-src some-file` calls `(generate-src:run "some-file")` or
    `(generate-src::run "some-file")`, depending on the visibility of `run`.
