@@ -1076,15 +1076,15 @@ modifies `snippets' in-place and returns it after processing."
                      (sethash "a" (snippets/code res) code/a)
                      (sethash "a" (snippets/file res) file/a)
                      res)))
-    (assert-eq t   (snippet-exists? code/a snippets))
-    (assert-eq t   (snippet-exists? file/a snippets))
-    (assert-eq t   (snippet-exists? "a"    snippets))
-    (assert-eq t   (snippet-exists? `(:code . "a") snippets))
-    (assert-eq t   (snippet-exists? `(:file . "a") snippets))
-    (assert-eq nil (snippet-exists? `(:code . "b") snippets))
-    (assert-eq nil (snippet-exists? code/b snippets))
-    (assert-eq nil (snippet-exists? file/b snippets))
-    (assert-eq nil (snippet-exists? "b"    snippets))))
+    (assert-eq t   (ulquikit::snippet-exists? code/a snippets))
+    (assert-eq t   (ulquikit::snippet-exists? file/a snippets))
+    (assert-eq t   (ulquikit::snippet-exists? "a"    snippets))
+    (assert-eq t   (ulquikit::snippet-exists? `(:code . "a") snippets))
+    (assert-eq t   (ulquikit::snippet-exists? `(:file . "a") snippets))
+    (assert-eq nil (ulquikit::snippet-exists? `(:code . "b") snippets))
+    (assert-eq nil (ulquikit::snippet-exists? code/b snippets))
+    (assert-eq nil (ulquikit::snippet-exists? file/b snippets))
+    (assert-eq nil (ulquikit::snippet-exists? "b"    snippets))))
 
 ;;; (run-tests '(test-snippet-exists?))
 
@@ -1101,17 +1101,16 @@ modifies `snippets' in-place and returns it after processing."
 
 (in-package #:ulquikit-test)
 
-(import 'ulquikit::include-directive?)
 (define-test test-include-directive?
-  (assert-eq t   (include-directive? "  ;; include::"))
-  (assert-eq t   (include-directive? ";; include::"))
-  (assert-eq nil (include-directive? "a;; include::"))
-  (assert-eq t   (include-directive? ";; include::something"))
-  (assert-eq t   (include-directive? "## include::something"))
-  (assert-eq t   (include-directive? "// include::something"))
-  (assert-eq t   (include-directive? "/* include::something */"))
-  (assert-eq t   (include-directive? "<!-- include::something -->"))
-  (assert-eq nil (include-directive? "a <!-- include::something -->")))
+  (assert-eq t   (ulquikit::include-directive? "  ;; include::"))
+  (assert-eq t   (ulquikit::include-directive? ";; include::"))
+  (assert-eq nil (ulquikit::include-directive? "a;; include::"))
+  (assert-eq t   (ulquikit::include-directive? ";; include::something"))
+  (assert-eq t   (ulquikit::include-directive? "## include::something"))
+  (assert-eq t   (ulquikit::include-directive? "// include::something"))
+  (assert-eq t   (ulquikit::include-directive? "/* include::something */"))
+  (assert-eq t   (ulquikit::include-directive? "<!-- include::something -->"))
+  (assert-eq nil (ulquikit::include-directive? "a <!-- include::something -->")))
 
 ;;; (run-tests '(test-include-directive?))
 
@@ -1138,21 +1137,20 @@ for detailed information on input/output format.  TODO: make this extensible."
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::parse-include-directive)
 (define-test test-include-directive
-  (assert-equal "" (parse-include-directive "  ;; include::"))
-  (assert-equal "" (parse-include-directive ";; include::"))
-  (assert-equal "" (parse-include-directive
+  (assert-equal "" (ulquikit::parse-include-directive "  ;; include::"))
+  (assert-equal "" (ulquikit::parse-include-directive ";; include::"))
+  (assert-equal "" (ulquikit::parse-include-directive
                     "a <!-- include::something -->"))
-  (assert-equal "something" (parse-include-directive
+  (assert-equal "something" (ulquikit::parse-include-directive
                              ";; include::something"))
-  (assert-equal "something" (parse-include-directive
+  (assert-equal "something" (ulquikit::parse-include-directive
                              "## include::something"))
-  (assert-equal "something" (parse-include-directive
+  (assert-equal "something" (ulquikit::parse-include-directive
                              "// include::something"))
-  (assert-equal "something" (parse-include-directive
+  (assert-equal "something" (ulquikit::parse-include-directive
                              "/* include::something */"))
-  (assert-equal "something" (parse-include-directive
+  (assert-equal "something" (ulquikit::parse-include-directive
                              "<!-- include::something -->")))
 
 ;;; (run-tests '(test-include-directive))
@@ -1184,15 +1182,15 @@ for detailed information on input/output format.  TODO: make this extensible."
                      (sethash "b" (snippets/code res) snp/code/b)
                      (sethash "c" (snippets/file res) snp/file/c)
                      res)))
-    (assert-equal snp/code/a (snippets/get-snippet snippets
-                                                   :type :code
-                                                   :name "a"))
-    (assert-equal snp/code/b (snippets/get-snippet snippets
-                                                   :type :code
-                                                   :name "b"))
-    (assert-equal snp/file/c (snippets/get-snippet snippets
-                                                   :type :file
-                                                   :name "c"))))
+    (assert-equal snp/code/a (ulquikit::snippets/get-snippet snippets
+                                                             :type :code
+                                                             :name "a"))
+    (assert-equal snp/code/b (ulquikit::snippets/get-snippet snippets
+                                                             :type :code
+                                                             :name "b"))
+    (assert-equal snp/file/c (ulquikit::snippets/get-snippet snippets
+                                                             :type :file
+                                                             :name "c"))))
 
 ;;; (run-tests '(test-snippets/get-snippet))
 
@@ -2849,6 +2847,5 @@ is not inside a snippet."
 ;; (bind-key "<f5>" '~cl/next-snippet)
 ;; (bind-key "<f6>" '~cl/compile-snippet)
 ----
-
 
 === Enhancing narrow-region functionality in Emacs
