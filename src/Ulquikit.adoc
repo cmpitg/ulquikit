@@ -810,7 +810,7 @@ The following snippet doesn't get captured as it has no title:
 (defun snippet->string (snippet)
   "Returns the string representation of a snippet."
   (declare (snippet snippet))
-  (the string (get-snippet-content snippet)))
+  (get-snippet-content snippet))
 
 ;;; (snippet->string (make-snippet))
 
