@@ -81,13 +81,15 @@ to interact with the outside world as a Common Lisp package.
            #:generate-html
 
            #:snippet->string
+           #:sethash
+           #:file?
 
            #:snippet
            #:create-snippet
            #:extract-snippets
            #:extract-snippets-from-file
            #:collect-snippet
-           #:sethash))
+           #:get-all-adocs))
 
 (in-package #:ulquikit)
 ----
