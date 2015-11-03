@@ -1414,7 +1414,7 @@ E.g.
 
 Let's move on to the function to parse command line arguments.
 
-=== Parsing command line arguments `parse-command-args`
+=== Parsing command line arguments with `parse-command-args`
 
 This function takes all arguments passed to the command line as a list of
 string and returns an alist of the following format:
