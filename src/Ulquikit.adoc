@@ -1407,17 +1407,12 @@ E.g.
   `help` function in `command-name` package) is called.  The `help` function
   takes no arguments and returns a string that would be displayed as help.
 
-* Usually, in a typical program, help strings are hardcoded into source code,
-  which makes the maintenance of help strings harder that necessary, not to
-  mention the code looks ugly that way.  Ulquikit defines a convention for
-  writing and maintaining helps more effectively: command `do-something` has
-  its help stored in `commands/do-something.help.txt`.  See the implementation
-  of <<command/generate-src,`generate-src`>> for more details on
-  <<help/generate-src,how help string>> is stored.
+* Documentation of a command is stored in docstring of the `run` function of
+  the corresponding command.
 
 * All command packages must use `command-core` package.
 
-Let's move on to the function used to parse command line arguments.
+Let's move on to the function to parse command line arguments.
 
 === Parsing command line arguments `parse-command-args`
 
