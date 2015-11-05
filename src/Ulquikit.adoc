@@ -1846,32 +1846,149 @@ Generate HTMLs from literate-source/ to generated-documents/
     --from literate-source/ \\
     --to generated-documents
 "
-  (let* ((from (get-path from))
-         (to   (get-path to))
+----
+
+=== Defining package
+
+.file::commands/generate-html.lisp
+[source,lisp,linenums]
+----
+(defpackage #:ulqui/generate-html
+  (:use :cl :cl-cwd)
+  (:export #:run))
+
+(defpackage #:ulqui/generate-html-tests
+  (:use :cl :lisp-unit))
+
+(in-package #:ulqui/generate-html)
+
+;; include::generate-html/run
+
+;; include::generate-html/render-asciidoc
+----
+
+=== The main function
+
+.code::generate-html/run
+[source,lisp,linenums]
+----
+(in-package #:ulqui/generate-html)
+
+(defun run (&key (from "src")
+              (to "generated-html"))
+  ;; include::generate-html/doc
+  (let* ((from (full-path from))
+         (to   (full-path to))
          (docs (list-all-adocs from)))
     (cl-cwd:with-cwd from
       (dolist (doc docs)
-        (render-asciidoc doc (merge-pathnames (file-part doc) to))))))
+        (uiop:ensure-all-directories-exist (list to))
+        
+        ;; merge-pathnames actually replaces the extension
+        (render-asciidoc doc (uiop:merge-pathnames*
+                              (html-namepart doc)
+                              to))))))
 
+;; include::
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulqui/generate-html)
+
+(defun html-namepart (file)
+  "Extracts only the name part of the file and replaces its extension with
+HTML."
+  (declare ((or string pathname) file))
+  (let* ((file (namestring (path:basename file)))
+         (last-dot (search "." file :from-end t))
+         (namepart-only (if last-dot
+                            (subseq file 0 last-dot)
+                          file)))
+    (the string (format nil "~A.html" namepart-only))))
+
+(in-package #:ulqui/generate-html-tests)
+
+(define-test test-html-namepart
+  (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello"))
+  (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello.adoc"))
+  (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello.txt")))
+
+;; (run-tests '(test-html-namepart))
 ----
 
-Let's dig into some helpers for this function.  The first helper to notice is
-+render-asciidoc+, used to build and run rendering command with AsciiDoctor.
-
-By default, AsciiDoctor is invoked with +--doctype book+.  Customization could
-be added later.
+=== Rendering a ASCIIDoc document to HTML
 
 .code::render-asciidoc
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-(define asciidoctor-format-command
-  #λ(format "asciidoctor ~a -d book -o ~a" %1 %2))
+(in-package #:ulqui/generate-html)
 
-(define (render-asciidoc input-file output-file)
-  (displayln (str "-> " input-file " => " output-file))
-  (system (asciidoctor-format-command input-file output-file)))
+(defun asciidoctor-command (input output)
+  "Builds and returns command to render `input' to `output' with ASCIIDoctor."
+  (declare ((or string pathname) input output))
+  (the string (format nil "asciidoctor ~A -d book -o ~A" input output)))
+
+(defun render-asciidoc (input output)
+  "Renders an ASCIIDoc `input' to `output' as HTML.  TODO: make this
+extensible."
+  (format t "→ ~A ⇨ ~A~%" input output)
+  (!cmd (asciidoctor-command input output)))
+
+(defun !cmd (cmd &key (output t)
+                 (error-output t)
+                 (force-shell t))
+  "Runs command by calling `uiou:run-program'."
+  (declare (string cmd)
+           (boolean force-shell)
+           ((or boolean stream) output error-output))
+  (uiop:run-program cmd :output output
+                    :error-output error-output
+                    :force-shell force-shell))
 
 ----
+
+=== Listing all ASCIIDoc documents in a directory
+
+.code::generate-html/list-asciidocs
+[source,lisp,linenums]
+----
+(in-package #:ulqui/generate-html)
+
+(defun list-all-adocs (path &key (recursive t))
+  "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
+extensions) from directory `path', ignoring all temporary files.  TODO: Make
+this extensible."
+  (declare ((or string pathname) path)
+           (ignore recursive))
+  (labels ((valid? (path)
+             (let ((path (namestring path)))
+               (and (not (cl-fad:directory-pathname-p path))
+                    (cl-ppcre:scan "^[^#]" path)
+                    (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path)))))
+    (let ((result (list)))
+      (cl-fad:walk-directory path
+                             #'(lambda (file) (push file result))
+                             :test #'valid?)
+      result)))
+
+----
+
+=== Retrieving full path
+
+.code::generate-html/full-path
+[source,lisp,linenums]
+----
+(in-package #:ulqui/generate-html)
+
+(defun full-path (path)
+  "Returns absolute path."
+  (declare ((or string pathname) path))
+  (uiop:merge-pathnames* path (cl-cwd:cwd)))
+
+----
+
 
 And last but not least, for +generate-html+ to be ready, we need a function to
 extract file name and replace +.adoc+ extension with +.html+ extension.
