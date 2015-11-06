@@ -1816,17 +1816,9 @@ HTML documents with some default options.
 
 == Generating HTML
 
-.code::generate-html
+.code::generate-html/doc
 [source,lisp,linenums]
 ----
-(defpackage #:ulqui/generate-html
-  (:use :cl :cl-cwd)
-  (:export #:run))
-
-(in-package #:ulqui/generate-html)
-
-(defun run (&key (from "src")
-                        (to "generated-html"))
   "Usage: generate-html [--from from] [--to to]
 
 Generate HTMLs from literate documents.
