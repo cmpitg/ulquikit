@@ -107,7 +107,7 @@ https://github.com/capitaomorte/fiasco[Fiasco] with little success.  The
 interface is nice but inflexible.  There is no easy way to remove or redefine
 tests/test packages.
 
-.code::defpackage-ulquikit-tests
+.code::define-ulquikit-test-package
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-tests
@@ -165,7 +165,7 @@ snippet has been passed through <<func/include-snippet,+include-snippet!+>>
 
 Thus, the struct representation of a snippet is as followed:
 
-.code::defstruct-snippet
+.code::define-snippet-struct
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
@@ -378,7 +378,7 @@ delimiters is stored as content of the snippet.
 Before diving into `extract-snippets-from-file`, let us define a data
 structure for storing all snippets:
 
-.code::defstruct-snippets
+.code::define-snippets-struct
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
@@ -1329,7 +1329,7 @@ Generate source code from ../literate-source/ to ../source/
 Once all functions are ready, let's put them together into a command to
 generate source code.
 
-.code::defpackage-ulquikit-cmd
+.code::define-ulquikit-command-package
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit-cmd
@@ -1432,7 +1432,7 @@ boolean (e.g. in case of ``1``, ``t``, ``true``, ``false``, ...).
 The `command-core` package and its test counterpart could be declared as
 followed:
 
-.code::command-core/defpackage
+.code::define-command-core-package
 [source,lisp,linenums]
 ----
 (in-package #:cl)
@@ -1453,7 +1453,7 @@ followed:
       lisp-unit:*print-errors*   t)
 ----
 
-.code::command-core/parse-cmd-args
+.code::parse-command-line-arguments
 [source,lisp,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1691,7 +1691,7 @@ a dash \"-\"."
 
 === Calling corresponding command
 
-.code::command-core/run
+.code::run-command
 [source,lisp,linenums]
 ----
 (in-package #:command-core)
@@ -1741,7 +1741,7 @@ the corresponding package."
 We also have `run-help` to display help of a command.  `run-help` simply reads
 the help file of the corresponding command and returns its content.
 
-.code::command-core/help
+.code::run-command-help
 [source,lisp,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1790,11 +1790,13 @@ of the corresponding function."
 ----
 ;; include::license-header
 
-;; include::command-core/defpackage
+;; include::define-command-core-package
 
-;; include::command-core/run
+;; include::run-command
 
-;; include:;command-core/help
+;; include::run-command-help
+
+;; include::parse-command-line-arguments
 
 (in-package #:command-core)
 
@@ -1809,7 +1811,7 @@ HTML documents with some default options.
 
 == Generating HTML
 
-.code::generate-html/doc
+.code::generate-html/documentation
 [source,lisp,linenums]
 ----
   "Usage: generate-html [--from from] [--to to]
@@ -1864,7 +1866,7 @@ Generate HTMLs from literate-source/ to generated-documents/
 
 (defun run (&key (from "src")
               (to "generated-html"))
-  ;; include::generate-html/doc
+  ;; include::generate-html/documentation
   (let* ((from (full-path from))
          (to   (full-path to))
          (docs (list-all-adocs from)))
