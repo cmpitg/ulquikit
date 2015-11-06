@@ -95,7 +95,6 @@ to interact with the outside world as a Common Lisp package.
            #:collect-snippet
            #:get-all-adocs))
 
-(in-package #:ulquikit)
 ----
 
 Along with the main package comes one that is for testing.  I decide to use
@@ -117,6 +116,7 @@ tests/test packages.
 
 ;; Print failure details by default
 (setf *print-failures* t)
+
 ----
 
 == Extracting and including snippets
@@ -176,6 +176,7 @@ Thus, the struct representation of a snippet is as followed:
   (linenum 0      :type integer)
   (lines (list)   :type list)
   (processed? nil :type boolean))
+
 ----
 
 IMPORTANT: Snippets should never be created directly with `make-snippet`.
@@ -213,7 +214,7 @@ have a helper that joins those lines into a complete string:
   (assert-equal (format nil "a~%b") (ulquikit::join-lines '("a" "b")))
   (assert-equal (format nil "a~%b~%") (ulquikit::join-lines '("a" "b" ""))))
 
-;;; (run-tests '(test-join-lines))
+;; (run-tests '(test-join-lines))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
@@ -778,7 +779,7 @@ The following snippet doesn't get captured as it has no title:
   \(format t \"world!~%\"\)\)"
                     (snippet->string (gethash "say-world" code-snippets))))))
 
-;;; (run-tests '(test-extract-snippets))
+;; (run-tests '(test-extract-snippets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -799,7 +800,7 @@ The following snippet doesn't get captured as it has no title:
     (assert-equal "hello" (gethash :first hash))
     (assert-equal "world" (gethash :second hash))))
 
-;;; (run-tests '(test-macro-sethash))
+;; (run-tests '(test-macro-sethash))
 
 (in-package #:ulquikit)
 
@@ -819,7 +820,7 @@ The following snippet doesn't get captured as it has no title:
 ueoa"
                 (snippet->string (make-snippet :lines '("aoeu" "ueoa")))))
 
-;;; (run-tests '(test-snippet->string))
+;; (run-tests '(test-snippet->string))
 
 (in-package #:ulquikit)
 
@@ -881,7 +882,7 @@ extensible."
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)))
 
-;;; (run-tests '(test-get-all-adocs))
+;; (run-tests '(test-get-all-adocs))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
@@ -979,7 +980,7 @@ modifies `snippets' in-place and returns it after processing."
 
 (in-package #:ulquikit-tests)
 
-;;; (run-tests '(test-include-snippet))
+;; (run-tests '(test-include-snippet))
 
 (define-test test-include-snippet
   (let* ((snp/file (ulquikit::make-snippet :name "/tmp/tmp.lisp"
@@ -1033,7 +1034,7 @@ modifies `snippets' in-place and returns it after processing."
       (assert-true (scan "^World\\nHello\\n" content))
       (assert-true (scan ";; The end$" content)))))
 
-;;; (run-tests '(test-include-snippet))
+;; (run-tests '(test-include-snippet))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -1081,7 +1082,7 @@ modifies `snippets' in-place and returns it after processing."
     (assert-eq nil (ulquikit::snippet-exists? file/b snippets))
     (assert-eq nil (ulquikit::snippet-exists? "b"    snippets))))
 
-;;; (run-tests '(test-snippet-exists?))
+;; (run-tests '(test-snippet-exists?))
 
 (in-package #:ulquikit)
 
@@ -1107,7 +1108,7 @@ modifies `snippets' in-place and returns it after processing."
   (assert-eq t   (ulquikit::include-directive? "<!-- include::something -->"))
   (assert-eq nil (ulquikit::include-directive? "a <!-- include::something -->")))
 
-;;; (run-tests '(test-include-directive?))
+;; (run-tests '(test-include-directive?))
 
 (in-package #:ulquikit)
 
@@ -1148,7 +1149,7 @@ for detailed information on input/output format.  TODO: make this extensible."
   (assert-equal "something" (ulquikit::parse-include-directive
                              "<!-- include::something -->")))
 
-;;; (run-tests '(test-include-directive))
+;; (run-tests '(test-include-directive))
 
 (in-package #:ulquikit)
 
@@ -1186,7 +1187,7 @@ for detailed information on input/output format.  TODO: make this extensible."
                                                              :type :file
                                                              :name "c"))))
 
-;;; (run-tests '(test-snippets/get-snippet))
+;; (run-tests '(test-snippets/get-snippet))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
@@ -1268,7 +1269,7 @@ literate source files are retrieved recursively.
   (assert-false (file? "tmp.txt/"))
   (assert-false (file? #p"tmp.txt/")))
 
-;;; (run-tests '(test-file?))
+;; (run-tests '(test-file?))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
@@ -1735,7 +1736,7 @@ the corresponding package."
   (assert-equal #'command-core:run-cmd (command-core::get-function :run-cmd :command-core))
   (assert-error 'undefined-function (command-core::get-function :doesnt-exist :command-core)))
 
-;;; (run-tests '(test-get-function))
+;; (run-tests '(test-get-function))
 ----
 
 We also have `run-help` to display help of a command.  `run-help` simply reads
