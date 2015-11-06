@@ -11,7 +11,7 @@
 
 Current version:
 
-.code::ulquikit-version
+.code::declare-version
 [source,lisp,linenums]
 ----
 (defvar *ulquikit-version* "2.0.0")
@@ -69,7 +69,7 @@ documentations.  On my setup, I use:
 Before going into any detail, let us define the interface that Ulquikit uses
 to interact with the outside world as a Common Lisp package.
 
-.code::defpackage-ulquikit
+.code::define-ulquikit-package
 [source,lisp,linenums]
 ----
 (defpackage #:ulquikit
