@@ -249,30 +249,28 @@ anchor:func/create-snippet[]
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::create-snippet)
-(import 'ulquikit::snippet)
 (define-test test-snippet-creation
   (assert-equalp (make-snippet :type :file
                                :name "hello-world"
                                :linenum 10
                                :lines ("Hmm")
                                :processed? nil)
-                 (create-snippet :type :file
-                                 :name 'hello-world
-                                 :linenum 10
-                                 :lines '("Hmm")))
+                 (ulquikit::create-snippet :type :file
+                                           :name 'hello-world
+                                           :linenum 10
+                                           :lines '("Hmm")))
   (assert-equalp (make-snippet :type :string
                                :name "string"
                                :linenum 100
                                :lines ("string")
                                :processed? t)
-                 (create-snippet :type "string"
-                                 :name "string"
-                                 :linenum 100
-                                 :lines "string"
-                                 :processed? t)))
+                 (ulquikit::create-snippet :type "string"
+                                           :name "string"
+                                           :linenum 100
+                                           :lines "string"
+                                           :processed? t)))
 
-;;; (run-tests)
+;; (run-tests)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -599,12 +597,6 @@ anchor:func/extract-snippets-from-file[]
 
 (in-package #:ulquikit-tests)
 
-(import 'ulquikit::snippet)
-(import 'ulquikit::snippets)
-(import 'ulquikit::snippet/type)
-(import 'ulquikit::snippet/name)
-(import 'ulquikit::snippets/file)
-(import 'ulquikit::snippets/code)
 (define-test test-collect-snippets
   (assert-equalp (collect-snippet (ulquikit::make-snippets)
                                   (create-snippet :type :file
@@ -613,22 +605,22 @@ anchor:func/extract-snippets-from-file[]
                                                   :lines '("Something")))
                  (ulquikit::make-snippets
                   :file (alexandria:alist-hash-table `(("hello" . ,(ulquikit::make-snippet
-                                                                      :type :file
-                                                                      :name "hello"
-                                                                      :linenum 10
-                                                                      :lines ("Something")
-                                                                      :processed? nil)))
+                                                                    :type :file
+                                                                    :name "hello"
+                                                                    :linenum 10
+                                                                    :lines ("Something")
+                                                                    :processed? nil)))
                                                      :test #'equal)
                   :code (make-hash-table :test #'equal)))
 
   (assert-equalp (collect-snippet
                   (ulquikit::make-snippets
                    :file (alexandria:alist-hash-table `(("hello" . ,(ulquikit::make-snippet
-                                                                       :type :file
-                                                                       :name "hello"
-                                                                       :linenum 10
-                                                                       :lines ("Something")
-                                                                       :processed? nil)))
+                                                                     :type :file
+                                                                     :name "hello"
+                                                                     :linenum 10
+                                                                     :lines ("Something")
+                                                                     :processed? nil)))
                                                       :test #'equal)
                    :code (make-hash-table :test #'equal))
                   (create-snippet :type 'code
@@ -636,21 +628,21 @@ anchor:func/extract-snippets-from-file[]
                                   :linenum 100
                                   :lines '("Something else")))
                  (ulquikit::make-snippets :file (alexandria:alist-hash-table
-                                       `(("hello" . ,(ulquikit::make-snippet
-                                                        :type :file
-                                                        :name "hello"
-                                                        :linenum 10
-                                                        :lines ("Something")
-                                                        :processed? nil)))
-                                       :test #'equal)
-                                :code (alexandria:alist-hash-table
-                                       `(("say-something" . (ulquikit::make-snippet
-                                                               :type :code
-                                                               :name "say-something"
-                                                               :linenum 100
-                                                               :lines ("Something else")
-                                                               :processed? nil)))
-                                       :test #'equal))))
+                                                 `(("hello" . ,(ulquikit::make-snippet
+                                                                :type :file
+                                                                :name "hello"
+                                                                :linenum 10
+                                                                :lines ("Something")
+                                                                :processed? nil)))
+                                                 :test #'equal)
+                                          :code (alexandria:alist-hash-table
+                                                 `(("say-something" . (ulquikit::make-snippet
+                                                                       :type :code
+                                                                       :name "say-something"
+                                                                       :linenum 100
+                                                                       :lines ("Something else")
+                                                                       :processed? nil)))
+                                                 :test #'equal))))
 
 ;; (run-tests '(test-collect-snippets))
 
