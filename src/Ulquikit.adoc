@@ -19,8 +19,11 @@ Current version:
 
 '''
 
-Ulquikit was originally written in Racket using several bootstrap scripts
-(also in Racket).  The current version is a complete rewrite in Common Lisp.
+Ulquikit is an extensible literate programming which supports multiple markup
+languages and user-friendly interface.
+
+Ulquikit was originally written in Racket.  The current version is a complete
+rewrite in Common Lisp.
 
 For building Ulquikit, the following dependencies are required:
 
