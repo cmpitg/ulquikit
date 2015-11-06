@@ -25,7 +25,7 @@ languages and user-friendly interface.
 Ulquikit was originally written in Racket.  The current version is a complete
 rewrite in Common Lisp.
 
-For building Ulquikit, the following dependencies are required:
+To build Ulquikit, the following dependencies are required:
 
 * Ruby 2.1+ with
 ** http://asciidoctor.org[AsciiDoctor] - AsciiDoc renderer
@@ -45,7 +45,8 @@ documentations.  On my setup, I use:
 
 == Terminology
 
-* A *code block* is an AsciiDoc code block.
+* A *code block* is an AsciiDoc/Markdown/whatever markup language you use code
+  block.
 
 * A *snippet* is a code block with Ulquikit-defined title.  By default, a code
   block title that starts with `file::` and `code::` defines a _file snippet_
