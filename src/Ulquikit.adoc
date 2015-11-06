@@ -162,7 +162,7 @@ extracted
 first time, `:processed?` is always `nil`.  It is only changed after the
 snippet has been passed through <<func/include-snippet,+include-snippet!+>>
 
-Thus, the struct representation of a snippet is defined as followed:
+Thus, the struct representation of a snippet is as followed:
 
 .code::defstruct-snippet
 [source,lisp,linenums]
@@ -178,7 +178,7 @@ Thus, the struct representation of a snippet is defined as followed:
 ----
 
 IMPORTANT: Snippets should never be created directly with `make-snippet`.
-They should be created with <<func/create-snippet,`create-snippet`>>.
+Instead, they should be created with <<create-snippet,`create-snippet`>>.
 
 Since a snippet stores a list of lines as its content, it'd be convenient to
 have a helper that joins those lines into a complete string:
