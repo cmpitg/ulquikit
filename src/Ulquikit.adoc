@@ -19,11 +19,11 @@ Current version:
 
 '''
 
-Ulquikit is an extensible literate programming which supports multiple markup
-languages and user-friendly interface.
+Ulquikit is an extensible literate programming tool supporting multiple markup
+languages with user-friendly interface.
 
 Ulquikit was originally written in Racket.  The current version is a complete
-rewrite in Common Lisp.
+rewrite in Common Lisp for better startup time and deployment.
 
 To build Ulquikit, the following dependencies are required:
 
