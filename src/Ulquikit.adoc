@@ -25,6 +25,9 @@ languages with user-friendly interface.
 Ulquikit was originally written in Racket.  The current version is a complete
 rewrite in Common Lisp for better startup time and deployment.
 
+This document is the literate source code Ulquikit itself.  TODO: Reason why
+Ulquikit exists.
+
 To build Ulquikit, the following dependencies are required:
 
 * Ruby 2.1+ with
