@@ -36,25 +36,27 @@ To build Ulquikit, the following dependencies are required:
 ** https://www.quicklisp.org/beta/[Quicklisp] - library manager
 ** https://github.com/fukamachi/shelly[Shelly] - shelly-friendly interface
 
-For installation of the above software, please consult their official
-documentations.  On my setup, I use:
+To install them, please consult their official documentations.  On my setup, I
+use:
 
 * SBCL 1.2+ with https://github.com/KeenS/CIM[CIM] (Common Lisp Implementation
   Manager)
 * Ruby 2.1.3 with https://rvm.io[RVM] (Ruby Version Manager)
 
+TODO: quick installation
+
 == Terminology
 
-* A *code block* is an AsciiDoc/Markdown/whatever markup language you use code
+* A *code block* is an AsciiDoc/Markdown/whatever-markup-language's code
   block.
 
 * A *snippet* is a code block with Ulquikit-defined title.  By default, a code
   block title that starts with `file::` and `code::` defines a _file snippet_
   and _code snippet_, respectively:
 
-** A *file snippet* is a snippet producing a source file.
-** A *code snippet* is a snippet storing source code that can be included into
-   other snippets.
+** A *file snippet* is a snippet that could be generated to a file.
+** A *code snippet* is a snippet storing a piece of text (or source code) that
+   can be included into other snippets.
 
 * An *include directive* is a line of code that:
 
