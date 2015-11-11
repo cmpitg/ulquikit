@@ -129,7 +129,7 @@ packages.
 
 ;; include::snippet-struct
 
-;; include::define-snippets-struct
+;; include::snippets-struct
 
 ;; include::create-snippet
 
@@ -382,7 +382,7 @@ delimiters is stored as content of the snippet.
 Before diving into `extract-snippets-from-file`, let us define a data
 structure for storing all snippets:
 
-.code::define-snippets-struct
+.code::snippets-struct
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
