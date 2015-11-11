@@ -220,28 +220,6 @@ have a helper that joins those lines into a complete string:
   (declare (snippet snippet))
   (join-lines (snippet/lines snippet)))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helpers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package #:ulquikit)
-
-(defun join-lines (lines)
-  "Joins a list of strings with newline as separator."
-  (declare (list lines))
-  (the string (format nil "~{~A~^~%~}" lines)))
-
-(in-package #:ulquikit-tests)
-
-(define-test test-join-lines
-  (assert-equal "" (ulquikit::join-lines '()))
-  (assert-equal "a" (ulquikit::join-lines '("a")))
-  (assert-equal (format nil "a~%b") (ulquikit::join-lines '("a" "b")))
-  (assert-equal (format nil "a~%b~%") (ulquikit::join-lines '("a" "b" ""))))
-
-;; (run-tests '(test-join-lines))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 `create-snippet` is simply implemented as followed:
