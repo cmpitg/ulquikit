@@ -121,6 +121,28 @@ packages.
 ;; Print failure details by default
 (setf *print-failures* t)
 
+;; include::declare-version
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; include::define-snippet-struct
+
+;; include::define-snippets-struct
+
+;; include::create-snippet
+
+;; include::get-snippet-content
+
+;; include::extract-snippets
+
+;; include::extract-snippets-from-file
+
+;; include::include-snippets
+
+;; include::include-file-snippets
+
 ----
 
 == Extracting and including snippets
