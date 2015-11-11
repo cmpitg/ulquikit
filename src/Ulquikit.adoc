@@ -127,7 +127,7 @@ packages.
 ;; Main
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; include::define-snippet-struct
+;; include::snippet-struct
 
 ;; include::define-snippets-struct
 
@@ -191,7 +191,7 @@ snippet has been passed through <<func/include-snippet,+include-snippet!+>>
 
 Thus, the struct representation of a snippet is as followed:
 
-.code::define-snippet-struct
+.code::snippet-struct
 [source,lisp,linenums]
 ----
 (in-package #:ulquikit)
