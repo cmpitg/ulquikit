@@ -151,20 +151,19 @@ Ulquikit works by
 
 . searching for all AsciiDoc documents inside `<project-root>/src` directory,
 . building a database of snippets,
-. including them into each other if necessary, then,
-. generating documentation and source code.
+. including them into each other if necessary,
+. and generating documentation and source code.
 
 Hence, the following functions are the most important:
 
-* <<func/extract-snippets-from-file,`extract-snippets-from-file`>>, that
-  extracts snippets from a file
+* <<func/extract-snippets-from-file,`extract-snippets-from-file`>>
 
 * <<func/include-snippet,`include-snippet!`>>, that serves as a building block
-  to <<section/include-snippets,include snippets>> into each other
+  to <<section/include-snippets,include snippets>> into each other.
 
 === Extracting snippets
 
-First, we need to decide how snippets are stored.  This is very important as
+First, we need to decide how snippets are stored.  This is very important for
 every change made to this data structure would affect the code later on.
 
 Each snippet is a struct with the following alist representation:
