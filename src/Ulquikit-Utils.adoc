@@ -1,0 +1,52 @@
+= Utilities for Ulquikit
+:Author: Ha-Duong Nguyen (cmpitg)
+:Email: <cmpitg@gmail.com>
+:toc: left
+:toclevels: 4
+:numbered:
+:icons: font
+:source-highlighter: pygments
+:pygments-css: class
+:website: http://reference-error.org/projects/ulquikit
+
+Below is the list of utilities that Ulquikit makes use of:
+
+.file::utils.lisp
+[source,lisp,linenums]
+----
+;; license-header
+
+(defpackage #:ulqui/utils
+  (:use :cl
+        :alexandria)
+  (:export #:join-lines))
+
+(defpackage #:ulqui/utils-tests
+  (:use :cl
+        :lisp-unit
+        :ulqui/utils)
+  (:import-from :alexandria :when-let))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Implementation
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulqui/utils)
+
+(defun join-lines (lines)
+  "Joins a list of strings with newline as separator."
+  (declare (list lines))
+  (the string (format nil "~{~A~^~%~}" lines)))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-join-lines
+  (assert-equal "" (join-lines '()))
+  (assert-equal "a" (join-lines '("a")))
+  (assert-equal (format nil "a~%b") (join-lines '("a" "b")))
+  (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
+
+;; (run-tests '(test-join-lines))
+
+----
+
