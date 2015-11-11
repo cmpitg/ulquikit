@@ -230,8 +230,7 @@ anchor:func/create-snippet[]
 ----
 (in-package #:ulquikit)
 
-(defun create-snippet (&key
-                         (type :code)
+(defun create-snippet (&key (type :code)
                          (name "")
                          (linenum 1)
                          (lines (list))
@@ -260,20 +259,20 @@ anchor:func/create-snippet[]
                                :linenum 10
                                :lines ("Hmm")
                                :processed? nil)
-                 (ulquikit::create-snippet :type :file
-                                           :name 'hello-world
-                                           :linenum 10
-                                           :lines '("Hmm")))
+                 (create-snippet :type :file
+                                 :name 'hello-world
+                                 :linenum 10
+                                 :lines '("Hmm")))
   (assert-equalp (make-snippet :type :string
                                :name "string"
                                :linenum 100
                                :lines ("string")
                                :processed? t)
-                 (ulquikit::create-snippet :type "string"
-                                           :name "string"
-                                           :linenum 100
-                                           :lines "string"
-                                           :processed? t)))
+                 (create-snippet :type "string"
+                                 :name "string"
+                                 :linenum 100
+                                 :lines "string"
+                                 :processed? t)))
 
 ;; (run-tests)
 
