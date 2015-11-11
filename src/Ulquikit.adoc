@@ -97,7 +97,8 @@ packages.
         :cl-ppcre
         :cl-cwd
         :trivial-utf-8
-        :iterate)
+        :iterate
+        :ulqui/utils)
   (:export #:generate-src
            #:generate-html
 
