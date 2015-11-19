@@ -50,8 +50,7 @@ TODO: quick installation
 
 == Terminology
 
-* A *code block* is an AsciiDoc/Markdown/whatever-markup-language's code
-  block.
+* A *code block* is an AsciiDoc/Markdown/... code block.
 
 * A *snippet* is a code block with Ulquikit-defined title.  By default, a code
   block title that starts with `file::` and `code::` defines a _file snippet_
