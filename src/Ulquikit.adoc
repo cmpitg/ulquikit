@@ -279,30 +279,7 @@ anchor:func/create-snippet[]
                                  :lines "string"
                                  :processed? t)))
 
-;; (run-tests)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Helpers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package #:ulquikit)
-
-(defun ->keyword (val)
-  "Converts a symbol or string into keyword."
-  (declare ((or symbol string) val))
-  (the keyword (etypecase val
-                 (keyword val)
-                 (symbol (intern (string-upcase (symbol-name val)) 'keyword))
-                 (string (intern (string-upcase val) 'keyword)))))
-
-(defun ->string (val)
-  "Converts a symbol or keyword into string."
-  (declare ((or symbol string) val))
-  (the string (etypecase val
-                (string val)
-                ((or symbol keyword) (string-downcase (symbol-name val))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (run-tests '(test-s))
 ----
 
 Now all snippet creation utilities are ready.  Let's move on to

@@ -19,7 +19,9 @@ Below is the list of utilities that Ulquikit makes use of:
 (defpackage #:ulqui/utils
   (:use :cl
         :alexandria)
-  (:export #:join-lines))
+  (:export #:join-lines
+           #:->keyword
+           #:->string))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -47,6 +49,23 @@ Below is the list of utilities that Ulquikit makes use of:
   (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
 
 ;; (run-tests '(test-join-lines))
+
+(in-package #:ulqui/utils)
+
+(defun ->keyword (val)
+  "Converts a symbol or string into keyword."
+  (declare ((or symbol string) val))
+  (the keyword (etypecase val
+                 (keyword val)
+                 (symbol (intern (string-upcase (symbol-name val)) 'keyword))
+                 (string (intern (string-upcase val) 'keyword)))))
+
+(defun ->string (val)
+  "Converts a symbol or keyword into string."
+  (declare ((or symbol string) val))
+  (the string (etypecase val
+                (string val)
+                ((or symbol keyword) (string-downcase (symbol-name val))))))
 
 ----
 
