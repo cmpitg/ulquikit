@@ -88,6 +88,8 @@ packages.
 .file::ulquikit.lisp
 [source,lisp,linenums]
 ----
+;; license-header
+
 (defpackage #:ulquikit
   (:use :cl
         :alexandria
