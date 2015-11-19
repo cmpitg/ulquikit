@@ -207,6 +207,8 @@ Thus, the struct representation of a snippet is as followed:
 IMPORTANT: Snippets should never be created directly with `make-snippet`.
 Instead, they should be created with <<create-snippet,`create-snippet`>>.
 
+==== Retrieving snippet content
+
 Since a snippet stores a list of lines as its content, it'd be convenient to
 have a helper that joins those lines into a complete string:
 
@@ -222,9 +224,12 @@ have a helper that joins those lines into a complete string:
 
 ----
 
+==== Creating a snippet
+
 `create-snippet` is simply implemented as followed:
 
 anchor:func/create-snippet[]
+
 .code::create-snippet
 [source,lisp,linenums]
 ----
