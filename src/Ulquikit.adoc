@@ -282,13 +282,15 @@ anchor:func/create-snippet[]
 ;; (run-tests '(test-s))
 ----
 
-Now all snippet creation utilities are ready.  Let's move on to
+Necessary snippet utilities are ready.  Let's move on to
 `extract-snippets-from-file`.
 
-`extract-snippets-from-file` needs to determine whether _a line in a code
-block_ belongs to a _code snippet_, or _file snippet_, or none of those, then
-extracts content of the code block and store it if necessary.  The 3 types
-of code block that we deal with are as followed:
+==== Extracting snippets from file
+
+To extract snippets from a file, we need to determine whether _a line in a
+code block_ belongs to a _code snippet_, or _file snippet_, or none of those,
+then extract content of the code block and store it if necessary.  There are 3
+types of code block that we would deal with:
 
 * A _code snippet_ has the following format:
 +
