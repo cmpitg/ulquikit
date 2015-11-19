@@ -67,7 +67,7 @@ TODO: quick installation
    identical characters denoting a comment.  Ulquikit can also recogize the
    following comment types: `//`, `;;`, `##`, `--`, C-stype `/*
    include::some-snippet-name */`, or XML-style `<!--
-   include::some-snippet-name -->`.
+   include::some-snippet-name -\->`.
 
 == Interfaces
 
