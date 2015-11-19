@@ -296,22 +296,22 @@ types of code block that we would deal with:
 +
 [listing]
 ..........
-.code::title-of-the-code-block  <1>
-[source]                        <2>
-----                            <3>
-Content of the code block
-----                            <4>
+.code::code-block-title    <1>
+[source]                   <2>
+----                       <3>
+Code block content
+----                       <4>
 ..........
 +
 or
 +
 [listing]
 ..........
-[source]                        <2>
-.code::title-of-the-code-block  <1>
-----                            <3>
-Content of the code block
-----                            <4>
+[source]                    <2>
+.code::code-block-title     <1>
+----                        <3>
+Code block content
+----                        <4>
 ..........
 
 
@@ -319,22 +319,22 @@ Content of the code block
 +
 [listing]
 ..........
-.file::title-of-the-code-block  <1>
-[source]                        <2>
-----                            <3>
-Content of the code block
-----                            <4>
+.file::code-block-title     <1>
+[source]                    <2>
+----                        <3>
+Code block content
+----                        <4>
 ..........
 +
 or
 +
 [listing]
 ..........
-[source]                        <2>
-.file::title-of-the-code-block  <1>
-----                            <3>
-Content of the code block
-----                            <4>
+[source]                    <2>
+.file::code-block-title     <1>
+----                        <3>
+Code block content
+----                        <4>
 ..........
 
 * A non-snippet code block is any block without +code::...+ or +file::...+ as
@@ -342,14 +342,14 @@ Content of the code block
 +
 [listing]
 ..........
-[source]                        <2>
-----                            <3>
-Content of the code block
-----                            <4>
+[source]                    <2>
+----                        <3>
+Code block content
+----                        <4>
 
-....                            <3>
+....                        <3>
 This is a literal block
-....                            <4>
+....                        <4>
 ..........
 
 <1> block title
