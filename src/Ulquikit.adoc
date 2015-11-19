@@ -74,12 +74,11 @@ TODO: quick installation
 Before going into any detail, let us define the interface that Ulquikit uses
 to interact with the outside world.
 
-Ulquikit is essentially a collection of Common Lisp packages.  The main
-package is called `ulquikit` itself, along with its test counterpart
-`ulquikit-tests`.
-
-I decide to use https://github.com/OdonataResearchLLC/lisp-unit[lisp-unit]
-since it has very nice interface and helpful messages.
+Essentially, Ulquikit consists of a collection of Common Lisp packages.  The
+main package is called `ulquikit`, along comes its test counterpart
+`ulquikit-tests`.  For testing, I decide to use
+https://github.com/OdonataResearchLLC/lisp-unit[lisp-unit] since it has very
+nice interface and helpful messages.
 
 NOTE: Prior to `lisp-unit`, I have tried
 https://github.com/capitaomorte/fiasco[Fiasco] with little success.  The API
