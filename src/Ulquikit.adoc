@@ -647,8 +647,6 @@ documents in a directory recursively, makes use of
 .code::extract-snippets
 [source,lisp,linenums]
 ----
-;; include::extract-snippets-from-file
-
 (in-package #:ulquikit)
 
 (defun extract-snippets (path)
