@@ -14,7 +14,7 @@ Below is the list of utilities that Ulquikit makes use of:
 .file::utils.lisp
 [source,lisp,linenums]
 ----
-;; license-header
+;; include::license-header
 
 (defpackage #:ulqui/utils
   (:use :cl

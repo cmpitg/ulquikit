@@ -88,7 +88,7 @@ packages.
 .file::ulquikit.lisp
 [source,lisp,linenums]
 ----
-;; license-header
+;; include::license-header
 
 (defpackage #:ulquikit
   (:use :cl
