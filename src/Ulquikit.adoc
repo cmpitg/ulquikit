@@ -139,6 +139,8 @@ packages.
 
 ;; include::extract-snippets-from-file
 
+;; include::include-snippet
+
 ;; include::include-snippets
 
 ;; include::include-file-snippets
