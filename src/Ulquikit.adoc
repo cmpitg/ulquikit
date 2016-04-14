@@ -145,6 +145,10 @@ packages.
 
 ;; include::include-file-snippets
 
+;; include::generate-src
+
+;; include::generate-html
+
 ----
 
 == Extracting and including snippets
