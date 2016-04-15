@@ -1735,12 +1735,9 @@ the help file of the corresponding command and returns its content.
 (defun help (cmd)
   "Reads and returns the help of a command, which is the documentation string
 of the corresponding function."
-  (declare ((or string symbol package) cmd))
-  (let* ((cmd-package (find-package (typecase cmd
-                                      (string (string-upcase cmd))
-                                      (otherwise cmd))))
-         (run-func    (intern "RUN" cmd-package))) ; TODO: make this
-                                                   ; extensible
+  (declare ((or string symbol) cmd))
+  (let* ((cmd-package (find-package :ulquikit-cmd))
+         (run-func    (intern (string-upcase cmd) cmd-package)))
     (format t "~A~%" (documentation run-func 'function))))
 
 (defpackage #:foobar-help
