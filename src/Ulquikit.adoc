@@ -1320,21 +1320,26 @@ Generate source code from ../literate-source/ to ../source/
 Once all functions are ready, let's put them together into a command to
 generate source code.  The `generate-src` command might look like so:
 
+.file::ulquikit-cmd.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(defpackage #:ulquikit-cmd
+  (:use :cl :command-core))
+----
+
 .file::commands/generate-src.lisp
 [source,lisp,linenums]
 ----
 ;; include::license-header
 
-(defpackage #:ulquikit-cmd-generate-src
-  (:use :cl :command-core))
+(in-package #:ulquikit-cmd)
 
-(in-package #:ulquikit-cmd-generate-src)
-
-(defun generate-src (&key (from "src")
-                          (to "generated-src"))
-  "Command: generate source code."
+(defcmd generate-src (&key (from "src")
+                           (to "generated-src"))
   (declare ((or string pathname) from to))
-  (display-command "Generating source")
+  (display-cmd "Generating source")
   (ulquikit:generate-src :from from :to to))
 
 (defun display-command (command &optional (stream t))
