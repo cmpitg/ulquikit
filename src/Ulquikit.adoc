@@ -1422,12 +1422,14 @@ followed:
 (in-package #:cl)
 
 (defpackage #:command-core
-  (:use :cl :iterate)
+  (:use :cl :iterate :trivial-utf-8)
   (:export #:parse-cmd-args
            #:argument?
            #:option?
            #:option->keyword
+           #:defcmd
            #:run-cmd
+           #:display-cmd
            #:help))
 
 (defpackage #:command-core-tests
