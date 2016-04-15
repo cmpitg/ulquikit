@@ -1342,12 +1342,6 @@ generate source code.  The `generate-src` command might look like so:
   (display-cmd "Generating source")
   (ulquikit:generate-src :from from :to to))
 
-(defun display-command (command &optional (stream t))
-  "Displays a command."
-  (declare (string command)
-           ((or stream boolean) stream))
-  (format stream "==== ~A ====~%" command))
-
 ----
 
 That is how a command should be defined.  Let's generalize this idea for other
@@ -1788,11 +1782,15 @@ of the corresponding function."
 
 ;; include::parse-command-line-arguments
 
+;; include::defcmd
+
 (in-package #:command-core)
 
-(defun display-cmd (msg)
+(defun display-cmd (msg &optional (stream t))
   "Nicely formats and displays a command."
-  (format t "==== ~A ====~%" msg))
+  (declare (string msg)
+           ((or stream boolean) stream))
+  (format stream "==== ~A ====~%" msg))
 
 ----
 
@@ -2012,7 +2010,7 @@ The code for command +generate-html+ is as simple as followed:
 
 (define (run #:from [from "src"]
              #:to   [to   "generated-html"])
-  (display-command "Generating HTML")
+  (display-cmd "Generating HTML")
   (generate-html #:from from
                  #:to   to))
 
@@ -2613,7 +2611,7 @@ result.
 ;; include::ulqui/download-and-unzip
 
 (define (run)
-  (display-command "Updating Ulquikit")
+  (display-cmd "Updating Ulquikit")
   (displayln (str "-> Current version: " +ulquikit-version+))
   (let ([latest-version (get-latest-version)])
     (displayln (str "   Latest version:  " latest-version))
