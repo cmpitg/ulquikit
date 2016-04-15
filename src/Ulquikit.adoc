@@ -1764,6 +1764,35 @@ of the corresponding function."
 
 ----
 
+Last, we need a macro used to define a Ulquikit command.  This generates the
+actual function corresponding to a command and assigns help text from
+`commands/<command-name>.help.txt` as its documentation.
+
+.code::defcmd
+[source,lisp,linenums]
+----
+(in-package #:command-core)
+
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun read-file (path)
+    "Reads a file as UTF-8 encoded string."
+    (declare ((or string pathname) path))
+    (with-open-file (in path :element-type '(unsigned-byte 8))
+      (read-utf-8-string in :stop-at-eof t))))
+
+(defmacro defcmd (name list-args &rest body)
+  (let* ((command-core-path *load-pathname*)
+         (help-file (uiop:merge-pathnames* (format nil
+                                                   "commands/~A.help.txt"
+                                                   (string-downcase name))
+                                           command-core-path))
+         (help-content (read-file help-file)))
+    `(defun ,name ,list-args
+       ,help-content
+       ,@body)))
+
+----
+
 === Putting all command helpers together
 
 .file::command-core.lisp
