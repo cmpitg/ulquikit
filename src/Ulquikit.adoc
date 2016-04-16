@@ -1212,14 +1212,16 @@ literate source files are retrieved recursively.
 ----
 (in-package #:ulquikit)
 
-(defun generate-src (&key (from "src")
-                       (to "generated-src"))
+(defun generate-src (&key (from "src") (to "generated-src"))
   "Generates source code from all literate source files in `from' to directory
 `to'.  `from' is either a directory or a single literate source file."
   (declare ((or string pathname) from to))
-  (let* ((from     (uiop:merge-pathnames* from (uiop:getcwd)))
-         (to       (uiop:merge-pathnames* to (uiop:getcwd)))
-         (snippets (if (file? from)
+  (let* ((from (uiop:merge-pathnames* from (uiop:getcwd)))
+         (to (uiop:merge-pathnames* (if (file? to)
+                                        (format nil "~A/" to)
+                                      to)
+                                    (uiop:getcwd)))
+         (snippets (if (null (directory from))
                        (extract-snippets-from-file from)
                      (extract-snippets from))))
     ;; (format t "Generating src from: ~A to: ~A~%" from to)
