@@ -68,9 +68,8 @@ TODO: quick installation
   block title that starts with `file::` and `code::` defines a _file snippet_
   and _code snippet_, respectively:
 
-** A *file snippet* is a snippet that could be generated to a file.
-** A *code snippet* is a snippet storing a piece of text (or source code) that
-   can be included into other snippets.
+** A *file snippet* is a snippet corresponding to a file.
+** A *code snippet* is a snippet that can be included into other snippets.
 
 * An *include directive* is a line of code that:
 
