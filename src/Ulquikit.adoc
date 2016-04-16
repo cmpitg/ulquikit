@@ -31,13 +31,25 @@ Ulquikit exists.
 To build Ulquikit, the following dependencies are required:
 
 * Ruby 2.1+ with
-** http://asciidoctor.org[AsciiDoctor] - AsciiDoc renderer
-** https://github.com/tmm1/pygments.rb[pygments.rb] - syntax highlighter
+** http://asciidoctor.org[AsciiDoctor]: AsciiDoc renderer
+** https://github.com/tmm1/pygments.rb[pygments.rb]: Syntax highlighter
+
 * An ANSI-compliant Common Lisp implementation, preferably
   http://www.sbcl.org[SBCL], with
-** https://common-lisp.net/project/asdf[ASDF 3] - build tool
-** https://www.quicklisp.org/beta/[Quicklisp] - library manager
-** https://github.com/fukamachi/shelly[Shelly] - shelly-friendly interface
+** https://common-lisp.net/project/asdf[ASDF 3]: Build tool
+** https://www.quicklisp.org/beta/[Quicklisp]: Library manager
+** https://github.com/keithj/alexandria[Alexandria]: Collection of Common Lisp
+   utilities
+** https://github.com/sharplispers/split-sequence[split-sequence]: Utility for
+   sequence splitting
+** http://weitz.de/cl-ppcre/[CL-PPCRE]: Portable Perl-compatible regular
+   expressions library
+** https://github.com/Inaimathi/cl-cwd[cl-cwd]: Portable
+   current-working-directory library
+** https://common-lisp.net/project/trivial-utf-8/[Trivial UTF-8]: UTF-8
+   library
+** https://common-lisp.net/project/iterate/[Iterate]: Iteration construct
+   library
 
 To install them, please consult their official documentations.  On my setup, I
 use:
