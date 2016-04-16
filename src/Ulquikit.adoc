@@ -74,11 +74,20 @@ TODO: quick installation
 * An *include directive* is a line of code that:
 
 ** belongs to a snippet
-** has the format of `xx include::some-snippet-name` where `xx` are two
-   identical characters denoting a comment.  Ulquikit can also recogize the
-   following comment types: `//`, `;;`, `##`, `--`, C-stype `/*
-   include::some-snippet-name */`, or XML-style `<!--
-   include::some-snippet-name -\->`.
+** follows the `xx include::some-snippet-name` format, where `xx` are two
+   identical characters denoting a comment.  Ulquikit can recogize the
+   following comment types:
++
+[source]
+----
+// include::some-snippet-name
+;; include::some-snippet-name
+## include::some-snippet-name
+-- include::some-snippet-name
+<!-- include::some-snippet-name -\->
+/* include::some-snippet-name */
+----
+
 
 == Interfaces
 
