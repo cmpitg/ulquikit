@@ -175,17 +175,22 @@ packages.
 
 Ulquikit works by
 
-. searching for all AsciiDoc documents inside `<project-root>/src` directory,
+. searching for all AsciiDoc documents inside directory, or using a single
+  AsciiDoc document,
 . building a database of snippets,
-. including them into each other if necessary,
-. and generating documentation and source code.
+. and including them into each other if necessary
 
+User can then choose to generate documentation or source code with procesesd
+snippets.
+
+In a high-level perspective, the basic functionality of a literate programming
+tool like Ulquikit is to support source code and documentation generation.
 Hence, the following functions are the most important:
 
 * <<func/extract-snippets-from-file,`extract-snippets-from-file`>>
 
-* <<func/include-snippet,`include-snippet!`>>, that serves as a building block
-  to <<section/include-snippets,include snippets>> into each other.
+* <<func/include-snippet,`include-snippet!`>>, serving as a building block to
+  <<section/include-snippets,include snippets>> into each other later on.
 
 === Extracting snippets
 
