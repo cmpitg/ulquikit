@@ -88,6 +88,11 @@ TODO: quick installation
 /* include::some-snippet-name */
 ----
 
+== Utilities
+
+Ulquikit aims to be simple and straigtforward, easy to hack and port.  The
+implementation in this document leverages a lot of utilities written in the
+link:Ulquikit-Utils.html[Ulquikit Utils] document.
 
 == Interfaces
 
