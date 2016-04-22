@@ -193,8 +193,8 @@ the following functions are:
 
 === Extracting snippets
 
-First, we need to decide how snippets are stored.  This is very important for
-every change made to this data structure would affect the code later on.
+First, we need to decide a data structure to store a snippet.  This is very
+important because every change made to this would affect the code later on.
 
 Each snippet is a struct with the following alist representation:
 
@@ -208,17 +208,18 @@ anchor:snippet-format[]
  (:lines      . ,snippet-lines) <4>
  (:processed? . ,processed?))   <5>
 ----
-<1> is either `:file` or `:code`
+<1> is either `:file` or `:code`, corresponding to a file or a code snippet
 <2> is the name of the snippet; e.g. snippet with title `file::something` has
-`something` as its name.  Snippet name is _a string_.
-<3> is the line number from the literate source code from where the snippet is
-extracted
-<4> is the content of the snippet as a list of lines
-<5> determines whether this snippet has been processed?, when created for the
-first time, `:processed?` is always `nil`.  It is only changed after the
-snippet has been passed through <<func/include-snippet,+include-snippet!+>>
+`something` as its name.  Snippet name is a _string_.
+<3> is the line number from the literate source code where the snippet is
+extracted.  The line number is an integer.
+<4> is the content of the snippet as a list of lines (list of strings).
+<5> determines whether this snippet has been processed; when created for the
+first time, `:processed?` is always `nil`.  It is only changed to `t` after
+the snippet is passed through <<func/include-snippet,+include-snippet!+>>
 
-Thus, the struct representation of a snippet is as followed:
+With the above alist representation, we have the `snippet` struct implemented
+as followed:
 
 .code::snippet-struct
 [source,lisp,linenums]
@@ -234,8 +235,9 @@ Thus, the struct representation of a snippet is as followed:
 
 ----
 
-IMPORTANT: Snippets should never be created directly with `make-snippet`.
-Instead, they should be created with <<create-snippet,`create-snippet`>>.
+IMPORTANT: For maintainability and extensiblity reasons, Snippets should never
+be created directly with `make-snippet`.  Instead, they should be created with
+the <<create-snippet,`create-snippet`>> helper.
 
 ==== Retrieving snippet content
 
