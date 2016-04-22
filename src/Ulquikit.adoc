@@ -180,16 +180,15 @@ Ulquikit works by
 . building a database of snippets,
 . and including them into each other if necessary
 
-User can then choose to generate documentation or source code with procesesd
-snippets.
+And provides user with operations to manage source code and documentation.
 
 In a high-level perspective, the basic functionality of a literate programming
-tool like Ulquikit is to support source code and documentation generation.
-Hence, the following functions are the most important:
+tool is to support source code and documentation generation.  Thus, we define
+the following functions are:
 
 * <<func/extract-snippets-from-file,`extract-snippets-from-file`>>
 
-* <<func/include-snippet,`include-snippet!`>>, serving as a building block to
+* <<func/include-snippet,`include-snippet!`>>, used as a building block to
   <<section/include-snippets,include snippets>> into each other later on.
 
 === Extracting snippets
