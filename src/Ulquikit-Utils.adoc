@@ -9,7 +9,9 @@
 :pygments-css: class
 :website: http://reference-error.org/projects/ulquikit
 
-Below is the list of utilities that Ulquikit makes use of:
+Below is the list of utilities/helpers that Ulquikit makes use of.  All of
+them are written with simplicity and reusability in mind, while maintaining
+relative good performance.
 
 .file::utils.lisp
 [source,lisp,linenums]
@@ -68,4 +70,3 @@ Below is the list of utilities that Ulquikit makes use of:
                 ((or symbol keyword) (string-downcase (symbol-name val))))))
 
 ----
-
