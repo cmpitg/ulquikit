@@ -261,11 +261,11 @@ have a helper that joins those lines into a complete string:
 
 ----
 
+anchor:create-snippet[]
+
 ==== Creating a snippet
 
 `create-snippet` is simply implemented as followed:
-
-anchor:func/create-snippet[]
 
 .code::create-snippet
 [source,lisp,linenums]
@@ -316,7 +316,6 @@ anchor:func/create-snippet[]
                                  :lines "string"
                                  :processed? t)))
 
-;; (run-tests '(test-s))
 ----
 
 Necessary snippet utilities are ready.  Let's move on to
@@ -1922,7 +1921,7 @@ Generate HTMLs from literate-source/ to generated-documents/
     (cl-cwd:with-cwd from
       (dolist (doc docs)
         (uiop:ensure-all-directories-exist (list to))
-        
+
         ;; merge-pathnames actually replaces the extension
         (render-asciidoc doc (uiop:merge-pathnames*
                               (html-namepart doc)
