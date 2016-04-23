@@ -642,12 +642,12 @@ We have the following algorithm for `extract-snippets-from-file`:
 ;; (run-tests '(test-collect-snippets))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ----
 
-As a result, `extract-snippets`, which extracts snippets from all AsciiDoc
-documents in a directory recursively, makes use of
-`extract-snippets-from-file`.  `extract-snippets` takes a path and returns a
-`snippets` struct.
+As a result, `extract-snippets`, which recursively extracts snippets from all
+AsciiDoc documents in a directory, makes use of `extract-snippets-from-file`.
+`extract-snippets` takes a path and returns a `snippets` struct.
 
 .code::extract-snippets
 [source,lisp,linenums]
@@ -656,7 +656,7 @@ documents in a directory recursively, makes use of
 
 (defun extract-snippets (path)
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
-files are found recursively."
+files are searched recursively."
   (declare ((or string pathname) path))
   (labels ((merge-snippets (current-snippets adoc-file)
              (declare (snippets current-snippets)
