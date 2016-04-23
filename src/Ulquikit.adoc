@@ -62,6 +62,9 @@ TODO: quick installation
 
 == Terminology
 
+TODO: apply literate programming terminology: tangle & weave, suppert `tangle`
+and `weave` commands as aliases to `generate-src` and `generate-html`.
+
 * A *code block* is an AsciiDoc/Markdown/... code block.
 
 * A *snippet* is a code block with Ulquikit-defined title.  By default, a code
