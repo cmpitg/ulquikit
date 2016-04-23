@@ -240,7 +240,7 @@ as followed:
 
 ----
 
-IMPORTANT: For maintainability and extensiblity reasons, Snippets should never
+IMPORTANT: For maintainability and extensiblity reasons, snippets should never
 be created directly with `make-snippet`.  Instead, they should be created with
 the <<create-snippet,`create-snippet`>> helper.
 
