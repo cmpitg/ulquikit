@@ -1,8 +1,8 @@
 = Utilities for Ulquikit
 :Author: Ha-Duong Nguyen (cmpitg)
 :Email: <cmpitg@gmail.com>
-:toc: left
-:toclevels: 4
+// :toc: left
+// :toclevels: 4
 :numbered:
 :icons: font
 :source-highlighter: pygments
