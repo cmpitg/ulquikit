@@ -23,7 +23,9 @@ relative good performance.
         :alexandria)
   (:export #:join-lines
            #:->keyword
-           #:->string))
+           #:->string
+           #:sethash
+           #:read-file))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -68,5 +70,45 @@ relative good performance.
   (the string (etypecase val
                 (string val)
                 ((or symbol keyword) (string-downcase (symbol-name val))))))
+
+(in-package #:ulqui/utils)
+
+(defun sethash (key hash value &rest args)
+  "Conveniently combining `setf' and `gethash'.
+
+`\(setf \(gethash o hash\) obj\)' ⬄ `\(sethash o hash obj\)'
+`\(setf \(gethash o hash\) obj
+      \(gethash a hash\) abj\)'
+⬄
+`\(sethash o hash obj
+         a hash abj\)'
+"
+  (declare (hash-table hash))
+  (unless (zerop (mod (length args) 3))
+    (error "number of arguments must be divisible by 3."))
+
+  (setf (gethash key hash) value)
+
+  (unless (null args)
+    (apply #'sethash (first args) (second args) (third args) (subseq args 3))))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-macro-sethash
+  (let ((hash (make-hash-table)))
+    (sethash :first hash "hello")
+    (sethash :second hash "world")
+    (assert-equal "hello" (gethash :first hash))
+    (assert-equal "world" (gethash :second hash))))
+
+;; (run-tests '(test-macro-sethash))
+
+(in-package #:ulqui/utils)
+
+(defun read-file (path)
+  "Reads a file as UTF-8 encoded string."
+  (declare ((or string pathname) path))
+  (with-open-file (in path :element-type '(unsigned-byte 8))
+    (read-utf-8-string in :stop-at-eof t)))
 
 ----

@@ -438,7 +438,6 @@ We have the following algorithm for `extract-snippets-from-file`:
 
 *** If this block does not mark the beginning of a snippet, ignore it.
 
-anchor:func/extract-snippets-from-file[]
 .code::extract-snippets-from-file
 [source,lisp,linenums]
 ----
@@ -509,35 +508,6 @@ anchor:func/extract-snippets-from-file[]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(in-package #:ulquikit)
-
-(defun sethash (key hash value &rest args)
-  "Conveniently combining `setf' and `gethash'.
-
-`\(setf \(gethash o hash\) obj\)' ⬄ `\(sethash o hash obj\)'
-`\(setf \(gethash o hash\) obj
-      \(gethash a hash\) abj\)'
-⬄
-`\(sethash o hash obj
-         a hash abj\)'
-"
-  (declare (hash-table hash))
-  (unless (zerop (mod (length args) 3))
-    (error "number of arguments must be divisible by 3."))
-
-  (setf (gethash key hash) value)
-
-  (unless (null args)
-    (apply #'sethash (first args) (second args) (third args) (subseq args 3))))
-
-(in-package #:ulquikit)
-
-(defun read-file (path)
-  "Reads a file as UTF-8 encoded string."
-  (declare ((or string pathname) path))
-  (with-open-file (in path :element-type '(unsigned-byte 8))
-    (read-utf-8-string in :stop-at-eof t)))
 
 (in-package #:ulquikit)
 
@@ -805,23 +775,6 @@ The following snippet doesn't get captured as it has no title:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (in-package #:ulquikit)
-
-;; (defmacro sethash (obj hash value)
-;;   "Helper macro, used to directly set hash value."
-;;   `(setf (gethash ,obj ,hash) ,value))
-
-(in-package #:ulquikit-tests)
-
-(define-test test-macro-sethash
-  (let ((hash (make-hash-table)))
-    (sethash :first hash "hello")
-    (sethash :second hash "world")
-    (assert-equal "hello" (gethash :first hash))
-    (assert-equal "world" (gethash :second hash))))
-
-;; (run-tests '(test-macro-sethash))
 
 (in-package #:ulquikit)
 
