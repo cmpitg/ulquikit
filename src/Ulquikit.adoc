@@ -374,7 +374,7 @@ Code block content
 ----                        <4>
 ..........
 
-* A non-snippet code block is any block without +code::...+ or +file::...+ as
+* A non-snippet code block is any block without `code::...` and `file::...` as
   its title:
 +
 [listing]
