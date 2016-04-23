@@ -121,7 +121,6 @@ packages.
         :split-sequence
         :cl-ppcre
         :cl-cwd
-        :trivial-utf-8
         :iterate
         :ulqui/utils)
   (:export #:generate-src
@@ -681,7 +680,7 @@ files are searched recursively."
 (in-package #:ulquikit-tests)
 
 (define-test test-extract-snippets
-  (let* ((test-dir (merge-pathnames
+  (let* ((test-dir (uiop:merge-pathnames*
                     "ulquikit/test-extract-snippets/"
                     (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
 
@@ -734,7 +733,7 @@ The following snippet doesn't get captured as it has no title:
 \----
 ")))
          (files (mapcar #'(lambda (content-pair)
-                            (cons (merge-pathnames (car content-pair) test-dir)
+                            (cons (uiop:merge-pathnames* (car content-pair) test-dir)
                                   (cdr content-pair)))
                         content)))
     ;; Some how cl-fad doesn't work
@@ -827,18 +826,18 @@ extensible."
                   "hello/b.html"
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
-         (temppath (merge-pathnames "ulquikit/test-get-all-adocs/"
+         (temppath (uiop:merge-pathnames* "ulquikit/test-get-all-adocs/"
                                     (pathname (cl-fad:pathname-as-directory
                                                (uiop:getenv "TMPDIR")))))
          (expected (iterate
                      (for path in files)
                      (when (scan "\\.adoc$" path)
-                       (collect (merge-pathnames path temppath))))))
+                       (collect (uiop:merge-pathnames* path temppath))))))
     ;; Setup
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)
     (dolist (path files)
-      (let ((file (merge-pathnames path temppath)))
+      (let ((file (uiop:merge-pathnames* path temppath)))
         (ensure-directories-exist (path:dirname file))
         (with-open-file (out file :direction :output
                              :if-exists :supersede)

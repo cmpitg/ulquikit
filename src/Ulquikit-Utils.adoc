@@ -20,7 +20,8 @@ relative good performance.
 
 (defpackage #:ulqui/utils
   (:use :cl
-        :alexandria)
+        :alexandria
+        :trivial-utf-8)
   (:export #:join-lines
            #:->keyword
            #:->string
