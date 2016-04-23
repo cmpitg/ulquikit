@@ -191,7 +191,7 @@ In a high-level perspective, the basic functionality of a literate programming
 tool is to support source code and documentation generation.  Thus, we define
 the following functions are:
 
-* <<func/extract-snippets-from-file,`extract-snippets-from-file`>>
+* <<extract-snippets-from-file,`extract-snippets-from-file`>>
 
 * <<func/include-snippet,`include-snippet!`>>, used as a building block to
   <<section/include-snippets,include snippets>> into each other later on.
@@ -320,6 +320,8 @@ anchor:create-snippet[]
 
 Necessary snippet utilities are ready.  Let's move on to
 `extract-snippets-from-file`.
+
+anchor:extract-snippets-from-file[]
 
 ==== Extracting snippets from file
 
