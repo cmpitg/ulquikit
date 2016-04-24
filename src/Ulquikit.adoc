@@ -900,7 +900,7 @@ anchor:func/include-snippet[]
 (in-package #:ulquikit)
 
 (defun include-snippet! (snippets type+name)
-  "Processes target snippet \(presented by `type+name`\) by replacing all of
+  "Processes target snippet \(presented by `type+name'\) by replacing all of
 its \"include\" directives with the corresponding code snippets found in
 `snippets'.  If the target snippet introduces circular dependency, the result
 is undefined.
