@@ -1316,6 +1316,9 @@ Generate source code from ../literate-source/ to ../source/
 Once all functions are ready, let's put them together into a command to
 generate source code.  The `generate-src` command might look like so:
 
+TODO: Move ulquikit-cmd.lisp to another place, in the anatomy of an Ulquikit
+command section.
+
 .file::ulquikit-cmd.lisp
 [source,lisp,linenums]
 ----
