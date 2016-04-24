@@ -884,7 +884,7 @@ line at a time, and replacing line containing the `include::` directive with
 the corresponding __code snippet__s in the list.  If no snippet is found, the
 line doesn't change.
 
-Note that to prevent unnecessary copy, this function modifies its arguments,
+IMPORTANT: To prevent unnecessary copy, this function modifies its arguments,
 hence its name is suffixed with a bang (`!`).  To safely use
 `include-snippet!`, call it with a copy of the arguments (using `copy-list` or
 `copy-tree`, etc.).
@@ -1257,16 +1257,18 @@ The literate source files are retrieved recursively from `from`.
 ;; (run-tests '(test-file?))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ----
 
-The ultimate goal of generating source code is to produce files, so we only
-need to include other snippets into file snippets.  That's the job of
-`include-file-snippets!` function.  This function takes a list of snippets (of
-of `snippets` type) and returns an instance of `snippets` with all file
-snippets <<section/include-snippets,included>>.
+The `generate-src` function makes use a function, `include-file-snippets!`,
+that we are about it to implement right below.  As the name suggests,
+`include-file-snippets!` takes a list of snippets (of `snippets` struct) and
+returns a new list with all file snippets
+<<section/include-snippets,included>>.
 
-Note that for performance reason, this function is destructive, hence its name
-is prefixed with a bang (``!``).
+IMPORTANT: `include-file-snippets!` is destructive for the same reason
+<<func/include-snippet,`include-snippet!`>> is destructive.  Make sure you
+don't create unwanted side effects when using it directly.
 
 .code::include-file-snippets
 [source,lisp,linenums]
@@ -1275,8 +1277,7 @@ is prefixed with a bang (``!``).
 
 (defun include-file-snippets! (snippets)
   "Includes all file snippets in `snippets' and return a `snippets' with all
-file snippets included.  This function is destructive, i.e. it modifies its
-arguments."
+file snippets included.  Note that this function is destructive."
   (declare (snippets snippets))
   (let ((file-snippets (snippets/file snippets)))
     (iter (for (name _) in-hashtable file-snippets)
