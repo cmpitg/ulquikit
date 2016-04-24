@@ -868,27 +868,29 @@ other.
 
 anchor:section/include-snippets[]
 
-=== Including snippets into each other
+=== Including snippets into each other with `include-snippet!`
 
-Let us call the function `include-snippet!`:
+Taking 2 arguments:
 
-`include-snippet!` takes 2 arguments:
 * the current list of snippets,
-* a `(type . name)` cons representing the snippet being processed, this
-  snippet must be a part of the current list of snippets,
+* a `(type . name)` cons representing the target snippet, i.e. the one being
+  processed, this snippet *must* be a part of the current list of snippets,
 
-This function returns the new list of snippets after included.
+this function returns the new list of snippets with the target snippet
+modified.
 
-`include-snippet!` works by browsing the target snippet's content, one line at
-a time, then replacing lines with `include::` directives with the
-corresponding __code snippet__s in `snippets`.  If no snippet is found, the
+`include-snippet!` works by browsing through the target snippet's content, one
+line at a time, and replacing line containing the `include::` directive with
+the corresponding __code snippet__s in the list.  If no snippet is found, the
 line doesn't change.
 
-Note that to prevent unnecessary copy, this function has side effects for all
-of its arguments, hence its name is suffixed with a bang (`!`).
+Note that to prevent unnecessary copy, this function modifies its arguments,
+hence its name is suffixed with a bang (`!`).  To safely use
+`include-snippet!`, call it with a copy of the arguments (using `copy-list` or
+`copy-tree`, etc.).
 
-WARNING: The result of circular dependency, e.g. snippet A includes itself, is
-*undefined*.  Make sure your snippets are well managed.
+WARNING: In case of circular dependency, e.g. snippet A includes itself, the
+result is *undefined*.  Make sure your snippets are well managed.
 
 anchor:func/include-snippet[]
 
