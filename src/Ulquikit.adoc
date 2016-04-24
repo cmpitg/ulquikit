@@ -1,5 +1,5 @@
 = Ulquikit
-:Author: Ha-Duong Nguyen (cmpitg)
+:Author: Ha-Duong Nguyen
 :Email: <cmpitg@gmail.com>
 :toc: left
 :toclevels: 4
