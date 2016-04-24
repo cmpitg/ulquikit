@@ -1249,8 +1249,8 @@ The literate source files are retrieved recursively from `from`.
 (in-package #:ulquikit-tests)
 
 (define-test test-file?
-  (assert-true (file? "tmp.txt"))
-  (assert-true (file? #p"tmp.txt"))
+  (assert-true  (file? "tmp.txt"))
+  (assert-true  (file? #p"tmp.txt"))
   (assert-false (file? "tmp.txt/"))
   (assert-false (file? #p"tmp.txt/")))
 
