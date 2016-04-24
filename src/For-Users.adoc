@@ -110,8 +110,8 @@ ulqui generate-docs --from source --to documents
 
 == Notes
 
-* Ulquikit will *not* handle the case of invalid AsciiDoc syntax.  Results of
-  such situations are unexpected.
+* Ulquikit will *not* handle invalid AsciiDoc syntax.  Results of such
+  situations are unexpected.
 
 * Nested snippets are *not supported*.  Supporting it brings more complexity
   to your literate source code, which does more harm than good.  Please
