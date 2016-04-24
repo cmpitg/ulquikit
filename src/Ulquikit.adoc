@@ -1173,17 +1173,20 @@ for detailed information on input/output format.  TODO: make this extensible."
 ----
 
 And that concludes the most important functions of Ulquikit.  Those are used
-to implement the higher-level <<section/generate-source,`generate-src`>> right
-below.
+to implement the higher-level <<generate-source,`generate-src`>> functionality
+right below.
 
-anchor:command/generate-src[]
+anchor:generate-src[]
 
 === Generating source code
 
-`generate-src` generates source code from the `from` argument, which
-representing a directory containing literate source files, to the `to`
-argument, which denotes a directory containing the generated source code.  The
-literate source files are retrieved recursively.
+`generate-src` is a function taking 2 keyword arguments:
+
+* `from` - where to read find literate source code, could be either a
+  directory or a file, and
+* `to` - where to generate the source code to.
+
+The literate source files are retrieved recursively from `from`.
 
 .code::generate-src
 [source,lisp,linenums]
