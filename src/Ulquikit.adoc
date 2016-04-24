@@ -830,12 +830,12 @@ extensible."
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
          (temppath (uiop:merge-pathnames* "ulquikit/test-get-all-adocs/"
-                                    (pathname (cl-fad:pathname-as-directory
-                                               (uiop:getenv "TMPDIR")))))
+                                          (pathname (cl-fad:pathname-as-directory
+                                                     (uiop:getenv "TMPDIR")))))
          (expected (iterate
-                     (for path in files)
-                     (when (scan "\\.adoc$" path)
-                       (collect (uiop:merge-pathnames* path temppath))))))
+                    (for path in files)
+                    (when (scan "\\.adoc$" path)
+                      (collect (uiop:merge-pathnames* path temppath))))))
     ;; Setup
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)
