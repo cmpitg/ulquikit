@@ -97,4 +97,4 @@ Special thanks to:
 
 == Copyright
 
-Copyright 2013-2015 © Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
+Copyright 2013-2016 © Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
