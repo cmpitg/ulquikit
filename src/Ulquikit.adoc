@@ -964,29 +964,29 @@ This function modifies `snippets' in-place and returns it after processing."
 
 (define-test test-include-snippet
   (let* ((snp/file (ulquikit::make-snippet :name "/tmp/tmp.lisp"
-                                 :type :file
-                                 :lines '(";; include::A"
-                                          ";; The end")
-                                 :linenum 10))
+                                           :type :file
+                                           :lines '(";; include::A"
+                                                    ";; The end")
+                                           :linenum 10))
          (snp/code/A (ulquikit::make-snippet :name "A"
-                                   :type :code
-                                   :lines '("World"
-                                            ";; include::B"
-                                            ";; include::D")
-                                   :linenum 20))
+                                             :type :code
+                                             :lines '("World"
+                                                      ";; include::B"
+                                                      ";; include::D")
+                                             :linenum 20))
          (snp/code/B (ulquikit::make-snippet :name "B"
-                                   :type :code
-                                   :lines '("Hello")
-                                   :linenum 30))
+                                             :type :code
+                                             :lines '("Hello")
+                                             :linenum 30))
          (snp/code/C (ulquikit::make-snippet :name "C"
-                                   :type :code
-                                   :lines '("Not processed")
-                                   :linenum 15))
+                                             :type :code
+                                             :lines '("Not processed")
+                                             :linenum 15))
          ;; Circular dependency
          (snp/code/D (ulquikit::make-snippet :name "D"
-                                   :type :code
-                                   :lines '(";; include A")
-                                   :linenum 100))
+                                             :type :code
+                                             :lines '(";; include A")
+                                             :linenum 100))
 
          (snippets (let* ((res (ulquikit::make-snippets))
                           (ulquikit::snippets/file (ulquikit::snippets/file res))
