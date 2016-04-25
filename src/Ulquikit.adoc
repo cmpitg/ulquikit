@@ -1347,6 +1347,13 @@ Let's generalize this idea for other commands.
 
 == Anatomy of a Ulquikit command
 
+A Ulquikit command is a function that only has keyword arguments residing in
+`ulquikit-cmd` package.  Its keyword arguments correspond to their
+command-line counterparts.  This makes implementing a new command very
+simple - just by adding a function to `ulquikit-cmd`.  With Common Lisp's
+powerful retrospection ability, commands could be inspected and extended very
+easily as well.
+
 Following convention over configuration principle, Ulquikit commands are
 automatically loaded.  A command is actually a Common Lisp package, residing
 in `commands/` directory.  Each has `help` and `run` functions, which are
