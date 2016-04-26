@@ -1720,8 +1720,8 @@ package."
 ;; (run-tests '(test-get-function))
 ----
 
-We also have `run-help` to display help of a command.  `run-help` simply reads
-the help file of the corresponding command and returns its content.
+We also have `help` to display help of a command.  `help` simply prints to
+the screen the documentation of the function corresponding to that command.
 
 .code::run-command-help
 [source,lisp,linenums]
@@ -1730,35 +1730,14 @@ the help file of the corresponding command and returns its content.
 
 (in-package #:command-core)
 
-(defun help (cmd)
+(defun help (cmd &optional (package *package*))
   "Reads and returns the help of a command, which is the documentation string
 of the corresponding function."
-  (declare ((or string symbol) cmd))
-  (let* ((cmd-package (find-package :ulquikit-cmd))
+  (declare ((or string symbol) cmd)
+           ((or string symbol package) package))
+  (let* ((cmd-package (find-package package))
          (run-func    (intern (string-upcase cmd) cmd-package)))
     (format t "~A~%" (documentation run-func 'function))))
-
-(defpackage #:foobar-help
-  (:use :cl)
-  (:export #:run))
-
-(in-package #:foobar-help)
-
-(defun run ()
-  "A function with documentation string as help."
-  t)
-
-(in-package #:command-core-tests)
-
-(define-test test-help
-  (let* ((output (make-string-output-stream))
-         (*standard-output* output))
-    (help "foobar-help")
-    (assert-equal "A function with documentation string as help.
-"
-                  (get-output-stream-string output))))
-
-;; (run-tests '(test-help))
 
 ----
 
