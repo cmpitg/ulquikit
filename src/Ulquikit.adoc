@@ -1341,6 +1341,7 @@ commands:
 
 (defpackage #:ulquikit-cmd
   (:use :cl :command-core))
+
 ----
 
 Let's generalize this idea for other commands.
@@ -1354,50 +1355,39 @@ simple - just by adding a function to `ulquikit-cmd`.  With Common Lisp's
 powerful retrospection ability, commands could be inspected and extended very
 easily as well.
 
-Following convention over configuration principle, Ulquikit commands are
-automatically loaded.  A command is actually a Common Lisp package, residing
-in `commands/` directory.  Each has `help` and `run` functions, which are
-called when user runs the command or gets help respectively.  Should one of
-the function does not exist, the correponding action does nothing.
+Each command has their own source file in the `commands/` directory and is
+defined with the <<defcmd,`defcmd`>> macro.  This macro:
+. generates the actual function corresponding to a command,
+. assigns the help text from `commands/<command-name>.help.txt` as its
+  documentation,
+. and adds it to the command list (represented by the `*command-list*`
+  variable in the corresponding package that where the function resides).
 
-Commands are loaded in the alphabetical order of their source code files.
-This way, one can override commands by adding another definition to load later
-than its original version.  E.g. if command `extract-text` is defined in
-`commands/extract-text.lisp` and command `help` is defined in
-`commands/help.lisp`, `extract-text` is loaded before `help` as
-`commands/extract-text.lisp` precedes `commands/help.lisp` alphabetically.  If
-`extract-text` is once again defined/modified in
-`commands/z-extract-text.lisp`, those changes override
-`commands/extract-text.lisp` as `commands/z-extract-text.lisp` comes after
-`commands/extract-text.lisp` in alphabetical order.
+Commands are then loaded in alphabetical order of their source code files.
+This way, one can override commands by adding another definition at later
+stage.  Commands must have help.  It is recommended that functions
+corresponding to a command is not exported.
 
-More details of command invocation:
+When used as a command line argument tool, Ulquikit command invocation works
+as followed:
 
-* Command line arguments are parsed and passed through `run` function.
+* Command line arguments are parsed and passed with utilities in
+  `command-core` package:
 +
 E.g.
 
-** `ulqui generate-src` calls `run` function of `generate-src` package.  This
-   function might be private.  It's recommended to make it public, though.
+** `ulqui generate-src` calls `(ulquikit-cmd::generate-src)`.
 
-** `ulqui generate-src some-file` calls `(generate-src:run "some-file")` or
-   `(generate-src::run "some-file")`, depending on the visibility of `run`.
+** `ulqui generate-src some-file` calls `(ulquikit-cmd::generate-src
+   "some-file")`.
 
-** `ulqui generate-src --from file1 --to file2` calls `(generate:run :from
-   "file1" :to "file2")` or `(generate::run :from "file1" :to "file2"),
-   depending on the visibility of `run`.
+** `ulqui generate-src --from file1 --to file2` calls `(ulquikit-cmd::generate-src :from
+   "file1" :to "file2")`.
 
 * When `ulqui help command-name` or `ulqui command-name --help` is invoked,
-  `command-name:help` or `command-help::help` (depending on the visibility of
-  `help` function in `command-name` package) is called.  The `help` function
-  takes no arguments and returns a string that would be displayed as help.
+  `(command-core:help "command-name" :ulquikit-cmd)` is called.
 
-* Documentation of a command is stored in docstring of the `run` function of
-  the corresponding command.
-
-* All command packages must use `command-core` package.
-
-Let's move on to the function to parse command line arguments.
+Let's move on to utilities that are used to parse command line arguments.
 
 === Parsing command line arguments with `parse-command-args`
 
