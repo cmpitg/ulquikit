@@ -1678,11 +1678,12 @@ a dash \"-\"."
 (in-package #:command-core)
 
 (defun run-cmd (cmd args)
-  "Runs command with appropriate arguments by calling the `run' function in
-the corresponding package."
+  "Runs command with appropriate arguments by calling the corresponding
+function (that shares the same name as the command) in `ulquikit-cmd'
+package."
   (declare ((or string symbol package) cmd)
            (list args))
-  (let ((func (get-function "RUN" cmd)))  ; TODO: make this extensible
+  (let ((func (get-function cmd :ulquikit-cmd)))
     (funcall func args)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
