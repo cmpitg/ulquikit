@@ -1741,9 +1741,9 @@ of the corresponding function."
 
 ----
 
-Last, we need a macro used to define a Ulquikit command.  This generates the
-actual function corresponding to a command and assigns help text from
-`commands/<command-name>.help.txt` as its documentation.
+Lastly, we need the `defcmd` macro.
+
+anchor:defcmd[]
 
 .code::defcmd
 [source,lisp,linenums]
@@ -1763,10 +1763,15 @@ actual function corresponding to a command and assigns help text from
                                                    "commands/~A.help.txt"
                                                    (string-downcase name))
                                            command-core-path))
-         (help-content (read-file help-file)))
-    `(defun ,name ,list-args
-       ,help-content
-       ,@body)))
+         (help-content (read-file help-file))
+         (command-list-symb (intern "*COMMAND-LIST*" *package*)))
+    `(progn (defun ,name ,list-args
+              ,help-content
+              ,@body)
+
+            ;; Add command to the command list of the current package
+            (defvar ,command-list-symb '())
+            (push (function ,name) ,command-list-symb))))
 
 ----
 
