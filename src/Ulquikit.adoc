@@ -1610,6 +1610,11 @@ a dash \"-\"."
 
 === Calling corresponding command
 
+When user invokes a command, its corresponding function gets called.  This is
+the job of the `run-cmd` command function, which also serves as the main
+helper for Ulquikit's entrypoint later on when we build Ulquikit as a single
+executable.
+
 .code::run-command
 [source,lisp,linenums]
 ----
