@@ -1627,7 +1627,7 @@ package."
   (declare ((or string symbol package) cmd)
            (list args))
   (let ((func (get-function cmd :ulquikit-cmd)))
-    (funcall func args)))
+    (apply func args)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
