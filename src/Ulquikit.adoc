@@ -1392,7 +1392,7 @@ Let's move on to utilities that are used to parse command line arguments.
 === Parsing command line arguments with `parse-command-args`
 
 This function takes all arguments passed to the command line as a list of
-string and returns an alist of the following format:
+strings and returns an alist as such:
 
 [source,lisp,linenums]
 ----
@@ -1406,10 +1406,11 @@ command line
 
 In Ulquikit, options are prefixed with one or two dashes (`-` or `--`), while
 arguments are not.  Option values are attempted to parse as number or
-boolean (e.g. in case of ``1``, ``t``, ``true``, ``false``, ...).
+boolean (e.g. in case of ``1``, ``t``, ``true``, ``false``, ...).  See the
+test section of the implementation below for detailed information.
 
-The `command-core` package and its test counterpart could be declared as
-followed:
+The `command-core` package and its test counterpart could thus be declared
+like so:
 
 .code::define-command-core-package
 [source,lisp,linenums]
@@ -1432,13 +1433,12 @@ followed:
 
 (setf lisp-unit:*print-failures* t
       lisp-unit:*print-errors*   t)
+
 ----
 
 .code::parse-command-line-arguments
 [source,lisp,linenums]
 ----
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package #:command-core)
 
 (defun parse-cmd-args (args)
