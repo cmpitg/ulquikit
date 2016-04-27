@@ -1742,9 +1742,10 @@ HTML documents with some default options.
 == Generating HTML
 
 .code::generate-html/documentation
+.code::commands/generate-html.help.txt
 [source,lisp,linenums]
 ----
-  "Usage: generate-html [--from from] [--to to]
+Usage: generate-html [--from from] [--to to]
 
 Generate HTMLs from literate documents.
 
