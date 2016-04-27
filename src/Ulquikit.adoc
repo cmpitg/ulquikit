@@ -1291,7 +1291,7 @@ about right away:
 .file::commands/generate-src.help.txt
 [source,text,linenums]
 ----
-ulqui generate-src [--from from] [--to to]
+Usage: ulqui generate-src [--from from] [--to to]
 
 Generate source code from literate documents.
 
