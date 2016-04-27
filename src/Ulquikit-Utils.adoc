@@ -109,11 +109,12 @@ relative good performance.
 
 (in-package #:ulqui/utils)
 
-(defun read-file (path)
-  "Reads a file as UTF-8 encoded string."
-  (declare ((or string pathname) path))
-  (with-open-file (in path :element-type '(unsigned-byte 8))
-    (read-utf-8-string in :stop-at-eof t)))
+(eval-when (:compile-toplevel :load-toplevel :execute)
+  (defun read-file (path)
+    "Reads a file as UTF-8 encoded string."
+    (declare ((or string pathname) path))
+    (with-open-file (in path :element-type '(unsigned-byte 8))
+      (read-utf-8-string in :stop-at-eof t))))
 
 (in-package #:ulqui/utils)
 

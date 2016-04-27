@@ -1681,7 +1681,6 @@ of the corresponding function."
   (let* ((cmd-package (find-package package))
          (run-func    (intern (string-upcase cmd) cmd-package)))
     (format t "~A~%" (documentation run-func 'function))))
-
 ----
 
 Lastly, we need the `defcmd` macro.
@@ -1692,13 +1691,6 @@ anchor:defcmd[]
 [source,lisp,linenums]
 ----
 (in-package #:command-core)
-
-(eval-when (:compile-toplevel :load-toplevel :execute)
-  (defun read-file (path)
-    "Reads a file as UTF-8 encoded string."
-    (declare ((or string pathname) path))
-    (with-open-file (in path :element-type '(unsigned-byte 8))
-      (read-utf-8-string in :stop-at-eof t))))
 
 (defmacro defcmd (name list-args &rest body)
   (let* ((command-core-path *load-pathname*)
@@ -1715,7 +1707,6 @@ anchor:defcmd[]
             ;; Add command to the command list of the current package
             (defvar ,command-list-symb '())
             (push (function ,name) ,command-list-symb))))
-
 ----
 
 === Putting all command helpers together
