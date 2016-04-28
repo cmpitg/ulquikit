@@ -172,6 +172,8 @@ packages.
 
 ;; include::include-file-snippets
 
+;; include::render-asciidoc
+
 ;; include::generate-src
 
 ;; include::generate-html
