@@ -1190,6 +1190,8 @@ anchor:generate-src[]
 
 The literate source files are retrieved recursively from `from`.
 
+anchor:func/generate-src[]
+
 .code::generate-src
 [source,lisp,linenums]
 ----
