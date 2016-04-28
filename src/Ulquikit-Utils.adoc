@@ -29,7 +29,8 @@ relative good performance.
            #:sethash
            #:read-file
            #:take-while
-           #:drop-while))
+           #:drop-while
+           #:full-path))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -170,4 +171,12 @@ E.g.
   (assert-equal '()      (drop-while #'oddp '(1 1 5 7)))
   (assert-equal '(2 3 4) (drop-while #'oddp '(1 1 5 2 3 4)))
   (assert-equal '(2 3 4) (drop-while #'oddp '(2 3 4))))
+
+(in-package #:ulqui/utils)
+
+(defun full-path (path)
+  "Returns absolute path."
+  (declare ((or string pathname) path))
+  (uiop:merge-pathnames* path (cl-cwd:cwd)))
+
 ----
