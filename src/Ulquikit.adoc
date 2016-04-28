@@ -1772,27 +1772,15 @@ Generate HTMLs from literate-source/ to generated-documents/
   ulqui generate-html \
     --from literate-source/ \
     --to generated-documents
-
 ----
 
-=== Defining package
+anchor:generate-html[]
 
-.file::commands/generate-html.lisp
-[source,lisp,linenums]
-----
-(defpackage #:ulqui/generate-html
-  (:use :cl :cl-cwd)
-  (:export #:run))
+=== The main function: `generate-html`
 
-(defpackage #:ulqui/generate-html-tests
-  (:use :cl :lisp-unit))
-
-(in-package #:ulqui/generate-html)
-
-;; include::generate-html/run
-
-;; include::generate-html/render-asciidoc
-----
+Just like <<generate-src,`generate-src`>>, `generate-html` takes 2 arguments:
+. the source, via `:from` parameter, and
+. the destination, via `:to` parameter
 
 === The main function
 
