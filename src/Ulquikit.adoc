@@ -1740,12 +1740,14 @@ anchor:defcmd[]
 
 ----
 
-Next, we are going to talk about the `generate-html` command, which generates
-HTML documents with some default options.
+Next, we are going to talk about the `generate-html` command, used to
+generates HTML documents with some default options.
 
 == Generating HTML
 
-.code::generate-html/documentation
+When called with `--help` as a command line tool, `generate-html` provides the
+following usage note:
+
 .code::commands/generate-html.help.txt
 [source,lisp,linenums]
 ----
