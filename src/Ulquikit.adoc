@@ -50,6 +50,8 @@ To build Ulquikit, the following dependencies are required:
    library
 ** https://common-lisp.net/project/iterate/[Iterate]: Iteration construct
    library
+** https://github.com/sionescu/bordeaux-threads[bordeaux-threads]: Portable
+   threading concurrency library.
 
 To install them, please consult their official documentations.  On my setup, I
 use:
