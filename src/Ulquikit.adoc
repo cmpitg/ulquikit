@@ -1751,16 +1751,17 @@ When called with `--help` as a command line tool, `generate-html` provides the
 following usage note:
 
 .code::commands/generate-html.help.txt
-[source,lisp,linenums]
+[source,text]
 ----
-Usage: generate-html [--from from] [--to to]
+Usage: generate-html [--from from] [--to to] [--recursive recursive]
 
 Generate HTMLs from literate documents.
 
-  --from   either path to a directory where literate documents are stored, or
-           path to one literate document, default: \"src\"
-
-  --to     directory where HTMLs are generated, default: \"generated-html\"
+  --from       either path to a directory where literate documents are stored,
+               or path to one literate document, default: "src"
+  --to         directory where HTMLs are generated, default: "generated-html"
+  --recursive  either the literate documents are searched recursively or
+               non-recursively; by default, they are search recursively
 
 Examples
 
@@ -1768,12 +1769,13 @@ Generate HTMLs from src/ to generated-html/ recursively
   ulqui generate-html
 
 or explicitly
-  ulqui generate-html --from src/ --to generated-html/
+  ulqui generate-html --from src/ --to generated-html/ --recursive true
 
-Generate HTMLs from literate-source/ to generated-documents/
+Generate HTMLs from literate-source/ to generated-documents/ non-recursively
   ulqui generate-html \
     --from literate-source/ \
-    --to generated-documents
+    --to generated-documents \
+    --recursive false
 ----
 
 anchor:generate-html[]
@@ -1786,7 +1788,7 @@ Just like <<generate-src,`generate-src`>>, `generate-html` takes 2 arguments:
 
 `:from` could be either a literate source file or a directory, while `:to` is
 a directory.  `:to` is created if not existed yet.  This function takes
-AsciiDoc files [TODO: CHECK] recursively (using <<func/list-all-adocs,`list-all-adocs`>>)
+AsciiDoc files recursively (using <<func/list-asciidocs,`list-asciidocs`>>)
 and generate their HTML outputs to destination.
 
 .code::generate-html
@@ -1794,21 +1796,34 @@ and generate their HTML outputs to destination.
 ----
 (in-package #:ulquikit)
 
-(defun generate-src (&key (from "src") (to "generated-html"))
+(defun generate-html (&key (from "src")
+                        (to "generated-html")
+                        (recursive t))
   "Generates HTML documentation from all literate source files in `from' to
 directory `to'.  `from' is either a directory or a single literate source
-file."
+file.  The source file could be searched recursively or non-recursively,
+depending on the value of `recursive'.  By default, `recursive' in `t'."
   (let* ((from (full-path from))
          (to   (full-path to))
-         (docs (list-all-adocs from)))
+         (docs (list-asciidocs from :recursive recursive)))
     (cl-cwd:with-cwd from
-      (dolist (doc docs)
-        (uiop:ensure-all-directories-exist (list to))
+      (uiop:ensure-all-directories-exist (list to))
 
-        ;; merge-pathnames actually replaces the extension
-        (render-asciidoc doc (uiop:merge-pathnames*
-                              (html-namepart doc)
-                              to))))))
+      ;; (dolist (doc docs)
+      ;;   ;; merge-pathnames actually replaces the extension
+      ;;   (render-asciidoc doc (uiop:merge-pathnames*
+      ;;                         (html-namepart doc)
+      ;;                         to)))
+
+      ;; Experimental - Run in parallel
+      (dolist (doc docs)
+        ;; Run in parallel
+        (bordeaux-threads:make-thread
+         #'(lambda ()
+             ;; uiop:merge-pathnames* actually replaces the extension
+             (render-asciidoc doc (uiop:merge-pathnames*
+                                   (html-namepart doc)
+                                   to))))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -1830,31 +1845,38 @@ HTML."
 (in-package #:ulquikit-tests)
 
 (define-test test-html-namepart
-  (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello"))
-  (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello.adoc"))
-  (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello.txt")))
+  (assert-equal "hello.html" (html-namepart "/tmp/hello"))
+  (assert-equal "hello.html" (html-namepart "/tmp/hello.adoc"))
+  (assert-equal "hello.html" (html-namepart "/tmp/hello.txt")))
 
 ;; (run-tests '(test-html-namepart))
 
 ----
+
+For `generate-html` to work, we need 2 more utilities:
+
+* `render-asciidoc` to render AsciiDoc file into HTML using AsciiDoctor
+* `list-asciidocs` to search for and return the list of all AsciiDoc files in
+  a directory; the search process might work in a recursive or
+  non-recursive way.
 
 === Rendering a ASCIIDoc document to HTML
 
 .code::render-asciidoc
 [source,lisp,linenums]
 ----
-(in-package #:ulqui/generate-html)
+(in-package #:ulquikit)
+
+(defun render-asciidoc (input output)
+  "Renders an ASCIIDoc `input' to `output' as HTML.  TODO: make this
+extensible."
+  (format t "~A → ~A~%" input output)
+  (!cmd (asciidoctor-command input output)))
 
 (defun asciidoctor-command (input output)
   "Builds and returns command to render `input' to `output' with ASCIIDoctor."
   (declare ((or string pathname) input output))
   (the string (format nil "asciidoctor ~A -d book -o ~A" input output)))
-
-(defun render-asciidoc (input output)
-  "Renders an ASCIIDoc `input' to `output' as HTML.  TODO: make this
-extensible."
-  (format t "→ ~A ⇨ ~A~%" input output)
-  (!cmd (asciidoctor-command input output)))
 
 (defun !cmd (cmd &key (output t)
                  (error-output t)
