@@ -1233,7 +1233,7 @@ anchor:func/generate-src[]
                       to
                       (uiop:getcwd))))
               (content (snippet->string snippet)))
-          (format t "→ Writing ~A~%" path)
+          (format t "Writing ~A~%" path)
           (ensure-directories-exist path)
           (write-file path content))))
 
