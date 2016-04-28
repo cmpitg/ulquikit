@@ -1782,16 +1782,20 @@ Just like <<generate-src,`generate-src`>>, `generate-html` takes 2 arguments:
 . the source, via `:from` parameter, and
 . the destination, via `:to` parameter
 
-=== The main function
+`:from` could be either a literate source file or a directory, while `:to` is
+a directory.  `:to` is created if not existed yet.  This function takes
+AsciiDoc files [TODO: CHECK] recursively (using <<func/list-all-adocs,`list-all-adocs`>>)
+and generate their HTML outputs to destination.
 
-.code::generate-html/run
+.code::generate-html
 [source,lisp,linenums]
 ----
-(in-package #:ulqui/generate-html)
+(in-package #:ulquikit)
 
-(defun run (&key (from "src")
-              (to "generated-html"))
-  ;; include::generate-html/documentation
+(defun generate-src (&key (from "src") (to "generated-html"))
+  "Generates HTML documentation from all literate source files in `from' to
+directory `to'.  `from' is either a directory or a single literate source
+file."
   (let* ((from (full-path from))
          (to   (full-path to))
          (docs (list-all-adocs from)))
@@ -1804,13 +1808,11 @@ Just like <<generate-src,`generate-src`>>, `generate-html` takes 2 arguments:
                               (html-namepart doc)
                               to))))))
 
-;; include::
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(in-package #:ulqui/generate-html)
+(in-package #:ulquikit)
 
 (defun html-namepart (file)
   "Extracts only the name part of the file and replaces its extension with
@@ -1823,7 +1825,7 @@ HTML."
                           file)))
     (the string (format nil "~A.html" namepart-only))))
 
-(in-package #:ulqui/generate-html-tests)
+(in-package #:ulquikit-tests)
 
 (define-test test-html-namepart
   (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello"))
@@ -1831,6 +1833,7 @@ HTML."
   (assert-equal "hello.html" (ulqui/generate-html::html-namepart "/tmp/hello.txt")))
 
 ;; (run-tests '(test-html-namepart))
+
 ----
 
 === Rendering a ASCIIDoc document to HTML
