@@ -1888,17 +1888,16 @@ extensible."
   (uiop:run-program cmd :output output
                     :error-output error-output
                     :force-shell force-shell))
-
 ----
 
 === Listing all ASCIIDoc documents in a directory
 
-.code::generate-html/list-asciidocs
+.code::list-asciidocs
 [source,lisp,linenums]
 ----
-(in-package #:ulqui/generate-html)
+(in-package #:ulquikit)
 
-(defun list-all-adocs (path &key (recursive t))
+(defun list-asciidocs (path &key (recursive t))
   "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
 extensions) from directory `path', ignoring all temporary files.  TODO: Make
 this extensible."
@@ -1914,23 +1913,7 @@ this extensible."
                              #'(lambda (file) (push file result))
                              :test #'valid?)
       result)))
-
 ----
-
-=== Retrieving full path
-
-.code::generate-html/full-path
-[source,lisp,linenums]
-----
-(in-package #:ulqui/generate-html)
-
-(defun full-path (path)
-  "Returns absolute path."
-  (declare ((or string pathname) path))
-  (uiop:merge-pathnames* path (cl-cwd:cwd)))
-
-----
-
 
 And last but not least, for +generate-html+ to be ready, we need a function to
 extract file name and replace +.adoc+ extension with +.html+ extension.
