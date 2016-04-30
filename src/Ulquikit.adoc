@@ -663,9 +663,9 @@ AsciiDoc documents in a directory, makes use of `extract-snippets-from-file`.
 ----
 (in-package #:ulquikit)
 
-(defun extract-snippets (path)
+(defun extract-snippets (path &key (recursive t))
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
-files are searched recursively."
+files are searched recursively or non-recursively depending on `recursive'."
   (declare ((or string pathname) path))
   (labels ((merge-snippets (current-snippets adoc-file)
              (declare (snippets current-snippets)
@@ -684,7 +684,7 @@ files are searched recursively."
                         (snippets/code new-snippets))
                (the snippets current-snippets))))
     (reduce #'merge-snippets
-            (get-all-adocs path)
+            (list-asciidocs path :recursive recursive)
             :initial-value (make-snippets))))
 
 (in-package #:ulquikit-tests)
@@ -851,7 +851,7 @@ this extensible."
                   "hello/b.html"
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
-         (temppath (uiop:merge-pathnames* "ulquikit/test-get-all-adocs/"
+         (temppath (uiop:merge-pathnames* "ulquikit/test-list-asciidocs/"
                                           (pathname (cl-fad:pathname-as-directory
                                                      (uiop:getenv "TMPDIR")))))
          (expected (iterate
@@ -868,7 +868,7 @@ this extensible."
                              :if-exists :supersede)
           (princ "Hello world" out))))
 
-    (let ((adocs (get-all-adocs temppath)))
+    (let ((adocs (list-asciidocs temppath)))
       (assert-equalp (sort expected #'(lambda (path1 path2)
                                         (string< (namestring path1)
                                                  (namestring path2))))
@@ -880,9 +880,7 @@ this extensible."
     (cl-fad:delete-directory-and-files temppath
                                        :if-does-not-exist :ignore)))
 
-;; (run-tests '(test-get-all-adocs))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (run-tests '(test-list-asciidocs))
 ----
 
 After `extract-snippets`, we need a function to include snippets into each
@@ -1217,7 +1215,7 @@ anchor:func/generate-src[]
 ----
 (in-package #:ulquikit)
 
-(defun generate-src (&key (from "src") (to "generated-src"))
+(defun generate-src (&key (from "src") (to "generated-src") (recursive t))
   "Generates source code from all literate source files in `from' to directory
 `to'.  `from' is either a directory or a single literate source file."
   (declare ((or string pathname) from to))
@@ -1225,7 +1223,7 @@ anchor:func/generate-src[]
          (to       (full-path (directorize-path to)))
          (snippets (if (null (directory from))
                        (extract-snippets-from-file from)
-                     (extract-snippets from))))
+                     (extract-snippets from :recursive recursive))))
     ;; (format t "Generating src from: ~A to: ~A~%" from to)
     (write-src-files (include-file-snippets! snippets) to)))
 
