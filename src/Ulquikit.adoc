@@ -1877,8 +1877,16 @@ To conclude, the last bit is to implement the command counterpart of the
 ----
 ;; include::license-header
 
-----
+(in-package #:ulquikit-cmd)
 
+(defcmd generate-html (&key (from "src")
+                            (to "generated-html")
+                            (recursive t))
+  (declare ((or string pathname) from to))
+  (display-cmd "Generating HTML")
+  (ulquikit:generate-html :from from :to to :recursive recursive))
+
+----
 
 == The +ulqui+ script
 
