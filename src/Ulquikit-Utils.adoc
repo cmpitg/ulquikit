@@ -31,7 +31,10 @@ relative good performance.
            #:read-file
            #:take-while
            #:drop-while
-           #:full-path))
+           #:full-path
+           #:directorize-path
+           #:file?
+           #:write-file))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -59,6 +62,23 @@ relative good performance.
   (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
 
 ;; (run-tests '(test-join-lines))
+
+(in-package #:ulqui/utils)
+
+(defun directorize-path (path)
+  "Turns `path' into a canonical directory pathname, i.e. suffixing it with
+\"/\" if necessary."
+  (declare ((or string pathname) path))
+  (if (file? path)
+      (format nil "~A/" path)
+    path))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-directorize-path
+  (assert-equal #p"/" (directorize-path "")
+  (assert-equal #p"/tmp/" (directorize-path "/tmp")
+  (assert-equal #p"/tmp/" (directorize-path "/tmp/")))))
 
 (in-package #:ulqui/utils)
 
