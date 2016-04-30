@@ -1207,11 +1207,8 @@ anchor:func/generate-src[]
   "Generates source code from all literate source files in `from' to directory
 `to'.  `from' is either a directory or a single literate source file."
   (declare ((or string pathname) from to))
-  (let* ((from (uiop:merge-pathnames* from (uiop:getcwd)))
-         (to (uiop:merge-pathnames* (if (file? to)
-                                        (format nil "~A/" to)
-                                      to)
-                                    (uiop:getcwd)))
+  (let* ((from     (full-path from))
+         (to       (full-path (directorize-path to)))
          (snippets (if (null (directory from))
                        (extract-snippets-from-file from)
                      (extract-snippets from))))
@@ -1781,9 +1778,9 @@ and generate their HTML outputs to destination.
   "Generates HTML documentation from all literate source files in `from' to
 directory `to'.  `from' is either a directory or a single literate source
 file.  The source file could be searched recursively or non-recursively,
-depending on the value of `recursive'.  By default, `recursive' in `t'."
+depending on the value of `recursive'.  By default, `recursive' is `t'."
   (let* ((from (full-path from))
-         (to   (full-path to))
+         (to   (full-path (directorize-path to)))
          (docs (list-asciidocs from :recursive recursive)))
     (cl-cwd:with-cwd from
       (uiop:ensure-all-directories-exist (list to))
