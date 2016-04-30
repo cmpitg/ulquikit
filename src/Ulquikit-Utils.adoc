@@ -110,12 +110,39 @@ relative good performance.
 
 (in-package #:ulqui/utils)
 
+(defun file? (path)
+  "Determines if path represents a file."
+  (declare ((or string pathname) path))
+  (the boolean
+       (null (scan "/$" (namestring path)))))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-file?
+  (assert-true  (file? "tmp.txt"))
+  (assert-true  (file? #p"tmp.txt"))
+  (assert-false (file? "tmp.txt/"))
+  (assert-false (file? #p"tmp.txt/")))
+
+;; (run-tests '(test-file?))
+
+(in-package #:ulqui/utils)
+
 (eval-when (:compile-toplevel :load-toplevel :execute)
   (defun read-file (path)
     "Reads a file as UTF-8 encoded string."
     (declare ((or string pathname) path))
     (with-open-file (in path :element-type '(unsigned-byte 8))
       (read-utf-8-string in :stop-at-eof t))))
+
+(in-package #:ulqui/utils)
+
+(defun write-file (path content)
+  "Writes to a file."
+  (declare ((or pathname string) path)
+           (string content))
+  (with-output-to-file (out path :if-exists :supersede)
+    (format out "~A" content)))
 
 (in-package #:ulqui/utils)
 

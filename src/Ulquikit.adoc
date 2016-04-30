@@ -1241,31 +1241,6 @@ anchor:func/generate-src[]
           (ensure-directories-exist path)
           (write-file path content))))
 
-(defun write-file (path content)
-  "Writes to a file."
-  (declare ((or pathname string) path)
-           (string content))
-  (with-output-to-file (out path :if-exists :supersede)
-    (format out "~A" content)))
-
-(in-package #:ulquikit)
-
-(defun file? (path)
-  "Determines if path represents a file."
-  (declare ((or string pathname) path))
-  (the boolean
-       (null (scan "/$" (namestring path)))))
-
-(in-package #:ulquikit-tests)
-
-(define-test test-file?
-  (assert-true  (file? "tmp.txt"))
-  (assert-true  (file? #p"tmp.txt"))
-  (assert-false (file? "tmp.txt/"))
-  (assert-false (file? #p"tmp.txt/")))
-
-;; (run-tests '(test-file?))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ----
