@@ -1886,53 +1886,6 @@ this extensible."
       result)))
 ----
 
-And last but not least, for +generate-html+ to be ready, we need a function to
-extract file name and replace +.adoc+ extension with +.html+ extension.
-
-.code::get-output-file
-[source,racket,linenums]
-----
-(define get-output-file
-  #λ(~> (file-name-from-path %)
-      path->string
-      (string-replace ".adoc" ".html")))
-
-(module+ test
-  (check-equal? (get-output-file "/tmp/tmp.adoc")   "tmp.html")
-  (check-equal? (get-output-file "/tmp/world.adoc") "world.html"))
-
-----
-
-The code for command +generate-html+ is as simple as followed:
-
-.file::commands/generate-html.rkt
-[source,racket,linenums]
-----
-;; include::license-header
-
-;; include::use-rackjure
-
-(require "../command-core.rkt")
-(require "../utils/path.rkt")
-
-(provide run)
-
-(module+ test
-  (require rackunit))
-
-;; include::render-asciidoc
-
-;; include::get-output-file
-
-;; include::generate-html
-
-(define (run #:from [from "src"]
-             #:to   [to   "generated-html"])
-  (display-cmd "Generating HTML")
-  (generate-html #:from from
-                 #:to   to))
-
-----
 
 == The +ulqui+ script
 
