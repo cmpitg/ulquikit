@@ -141,7 +141,7 @@ packages.
            #:extract-snippets
            #:extract-snippets-from-file
            #:collect-snippet
-           #:get-all-adocs))
+           #:list-asciidocs))
 
 (defpackage #:ulquikit-tests
   (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate :cl-fad))
@@ -805,29 +805,44 @@ ueoa"
 
 ;; (run-tests '(test-snippet->string))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+----
+
+And last but not least, we need a helper to retrieve all AsciiDoc documents
+from a directory, recursively or non-recursively.
+
+===== Retrieving all ASCIIDoc documents in a directory
+
+.code::list-asciidocs
+[source,lisp,linenums]
+----
 (in-package #:ulquikit)
 
-(defun get-all-adocs (path)
-  "Retrieves all AsciiDoc files in `path' recursively.  TODO: Make this
-extensible."
+(defun list-asciidocs (path &key (recursive t))
+  "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
+extensions) from directory `path', ignoring all temporary files.  TODO: Make
+this extensible."
   (declare ((or string pathname) path))
-  ;; (format t "Getting all adocs from path: ~A~%" path)
-  (let ((adocs (list)))
-    (cl-fad:walk-directory path #'(lambda (file)
-                                    (push file adocs))
-                           :directories nil
-                           :if-does-not-exist :ignore
-                           :test
-                           #'(lambda (file)
-                               (and
-                                (null (scan "^(\\.|\\#)" (namestring file)))
-                                (scan "\\.adoc$" (namestring file))))
-                           :follow-symlinks t)
-    adocs))
+  (labels ((valid? (path)
+             (let ((path (namestring path)))
+               (and (not (cl-fad:directory-pathname-p path))
+                    (cl-ppcre:scan "^[^#]" path)
+                    (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path)))))
+    (if recursive
+        (let ((result (list)))
+          (cl-fad:walk-directory path
+                                 #'(lambda (file) (push file result))
+                                 :directories nil           ; Skip dirs
+                                 :if-does-not-exist :ignore ; Ignore
+                                                            ; inexistent dirs
+                                 :test #'valid?)
+          result)
+      (remove-if #'(lambda (path) (not (valid? path)))
+                 (cl-fad:list-directory path)))))
 
 (in-package #:ulquikit-tests)
 
-(define-test test-get-all-adocs
+(define-test test-list-asciidocs
   (let* ((files '("a.adoc"
                   "b.adoc"
                   "c.md"
@@ -1860,29 +1875,14 @@ extensible."
                     :force-shell force-shell))
 ----
 
-=== Listing all ASCIIDoc documents in a directory
+To conclude, the last bit is to implement the command counterpart of the
+<<func/generate-html,`generate-html`>> function:
 
-.code::list-asciidocs
+.file::commands/generate-html.lisp
 [source,lisp,linenums]
 ----
-(in-package #:ulquikit)
+;; include::license-header
 
-(defun list-asciidocs (path &key (recursive t))
-  "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
-extensions) from directory `path', ignoring all temporary files.  TODO: Make
-this extensible."
-  (declare ((or string pathname) path)
-           (ignore recursive))
-  (labels ((valid? (path)
-             (let ((path (namestring path)))
-               (and (not (cl-fad:directory-pathname-p path))
-                    (cl-ppcre:scan "^[^#]" path)
-                    (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path)))))
-    (let ((result (list)))
-      (cl-fad:walk-directory path
-                             #'(lambda (file) (push file result))
-                             :test #'valid?)
-      result)))
 ----
 
 
