@@ -1675,9 +1675,9 @@ anchor:defcmd[]
 (in-package #:command-core)
 
 (defmacro defcmd (name list-args &rest body)
-  (let* ((command-core-path *load-pathname*)
+  (let* ((command-core-path (or *load-pathname* *compile-file-pathname*))
          (help-file (uiop:merge-pathnames* (format nil
-                                                   "commands/~A.help.txt"
+                                                   "~A.help.txt"
                                                    (string-downcase name))
                                            command-core-path))
          (help-content (read-file help-file))
