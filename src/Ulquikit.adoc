@@ -1738,7 +1738,7 @@ generates HTML documents with some default options.
 When called with `--help` as a command line tool, `generate-html` provides the
 following usage note:
 
-.code::commands/generate-html.help.txt
+.file::commands/generate-html.help.txt
 [source,text]
 ----
 Usage: generate-html [--from from] [--to to] [--recursive recursive]
