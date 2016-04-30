@@ -38,6 +38,8 @@ To build Ulquikit, the following dependencies are required:
   http://www.sbcl.org[SBCL], with
 ** https://common-lisp.net/project/asdf[ASDF 3]: Build tool
 ** https://www.quicklisp.org/beta/[Quicklisp]: Library manager
+** https://github.com/OdonataResearchLLC/lisp-unit[lisp-unit]: Unit testing
+   framework, designed and implemented with simplicity of use in mind.
 ** https://github.com/keithj/alexandria[Alexandria]: Collection of Common Lisp
    utilities
 ** https://github.com/sharplispers/split-sequence[split-sequence]: Utility for
