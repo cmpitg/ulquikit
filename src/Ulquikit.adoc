@@ -1784,22 +1784,18 @@ depending on the value of `recursive'.  By default, `recursive' is `t'."
          (docs (list-asciidocs from :recursive recursive)))
     (cl-cwd:with-cwd from
       (uiop:ensure-all-directories-exist (list to))
-
-      ;; (dolist (doc docs)
-      ;;   ;; merge-pathnames actually replaces the extension
-      ;;   (render-asciidoc doc (uiop:merge-pathnames*
-      ;;                         (html-namepart doc)
-      ;;                         to)))
-
-      ;; Experimental - Run in parallel
-      (dolist (doc docs)
-        ;; Run in parallel
-        (bordeaux-threads:make-thread
-         #'(lambda ()
-             ;; uiop:merge-pathnames* actually replaces the extension
-             (render-asciidoc doc (uiop:merge-pathnames*
-                                   (html-namepart doc)
-                                   to))))))))
+      (mapcar #'bordeaux-threads:join-thread
+              (mapcar #'(lambda (doc)
+                          ;; uiop:merge-pathnames* actually replaces the
+                          ;; extension
+                          (let ((output (uiop:merge-pathnames*
+                                         (html-namepart doc) to)))
+                            (format t "~A → ~A~%" doc output)
+                            ;; Run in parallel, better performance,
+                            ;; experimental
+                            (bordeaux-threads:make-thread
+                             #'(lambda () (render-asciidoc doc output)))))
+                      docs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
