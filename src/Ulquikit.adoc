@@ -1287,25 +1287,24 @@ about right away:
 .file::commands/generate-src.help.txt
 [source,text]
 ----
-Usage: ulqui generate-src [--from from] [--to to]
+Usage: ulqui generate-src [--from from] [--to to] [--recursive recursive]
 
 Generate source code from literate documents.
 
-  --from   either path to a directory where literate documents are stored, or
-           path to one literate document; default: "src/"
-  --to     directory where source code are generated, default:
-           "generated-src/"
+  --from       either path to a directory where literate documents are stored, or path to one literate document; default: "src/"
+  --to         directory where source code are generated to, default: "generated-src/"
+  --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
 
 Examples
 
-Generate source code from src/ to generated-src/
+Generate source code from src/ to generated-src/ recursively
   ulqui generate-src
 
 or explitcitly
-  ulqui generate-src --from src/ --to generated-src/
+  ulqui generate-src --from src/ --to generated-src/ --recursive true
 
-Generate source code from ../literate-source/ to ../source/
-  ulqui generate-src --from ../literate-source/ --to ../source/
+Generate source code from literate-source/ to source/ non-recursively
+  ulqui generate-src --from literate-source/ --to source/ --recursive false
 
 ----
 
@@ -1320,10 +1319,11 @@ generate source code.  The `generate-src` command might look like so:
 (in-package #:ulquikit-cmd)
 
 (defcmd generate-src (&key (from "src")
-                           (to "generated-src"))
+                           (to "generated-src")
+                           (recursive t))
   (declare ((or string pathname) from to))
   (display-cmd "Generating source")
-  (ulquikit:generate-src :from from :to to))
+  (ulquikit:generate-src :from from :to to :recursive recursive))
 
 ----
 
@@ -1747,11 +1747,9 @@ Usage: generate-html [--from from] [--to to] [--recursive recursive]
 
 Generate HTMLs from literate documents.
 
-  --from       either path to a directory where literate documents are stored,
-               or path to one literate document, default: "src"
-  --to         directory where HTMLs are generated, default: "generated-html"
-  --recursive  either the literate documents are searched recursively or
-               non-recursively; by default, they are search recursively
+  --from       either path to a directory where literate documents are stored, or path to one literate document; default: "src/"
+  --to         directory where HTMLs are generated; default: "generated-html/"
+  --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
 
 Examples
 
@@ -1762,10 +1760,8 @@ or explicitly
   ulqui generate-html --from src/ --to generated-html/ --recursive true
 
 Generate HTMLs from literate-source/ to generated-documents/ non-recursively
-  ulqui generate-html \
-    --from literate-source/ \
-    --to generated-documents \
-    --recursive false
+  ulqui generate-html --from literate-source/ --to generated-documents/ --recursive false
+
 ----
 
 anchor:generate-html[]
