@@ -1840,7 +1840,7 @@ For `generate-html` to work, we need 2 more utilities:
   a directory; the search process might work in a recursive or
   non-recursive way.
 
-=== Rendering a ASCIIDoc document to HTML
+=== Rendering an ASCIIDoc document to HTML
 
 .code::render-asciidoc
 [source,lisp,linenums]
