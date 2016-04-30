@@ -22,7 +22,8 @@ relative good performance.
   (:use :cl
         :alexandria
         :iterate
-        :trivial-utf-8)
+        :trivial-utf-8
+        :cl-ppcre)
   (:export #:join-lines
            #:->keyword
            #:->string
