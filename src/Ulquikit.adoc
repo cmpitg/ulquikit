@@ -1842,7 +1842,6 @@ For `generate-html` to work, we need 2 more utilities:
 (defun render-asciidoc (input output)
   "Renders an ASCIIDoc `input' to `output' as HTML.  TODO: make this
 extensible."
-  (format t "~A → ~A~%" input output)
   (!cmd (asciidoctor-command input output)))
 
 (defun asciidoctor-command (input output)
