@@ -2,7 +2,7 @@
 :Author: Ha-Duong Nguyen
 :Email: <cmpitg@gmail.com>
 :toc: left
-:toclevels: 4
+:toclevels: 5
 :numbered:
 :icons: font
 :source-highlighter: pygments
@@ -1885,6 +1885,38 @@ To conclude, the last bit is to implement the command counterpart of the
   (declare ((or string pathname) from to))
   (display-cmd "Generating HTML")
   (ulquikit:generate-html :from from :to to :recursive recursive))
+
+----
+
+== Defining ASDF system for Ulquikit
+
+Fairly straigtforward:
+
+.file::ulquikit.asd
+[source,lisp,linenums]
+----
+(defsystem ulquikit
+  :name "Ulquikit"
+  :version "2.0.0"
+  :maintainer "Ha-Duong Nguyen <cmpitg@gmail.com>"
+  :license "GNU General Public license v3"
+  :description "Ulquikit is a hackable tool to make literate programming fun and productive again."
+  :depends-on (#:alexandria
+               #:uiop
+               #:split-sequence
+               #:cl-ppcre
+               #:cl-fad
+               #:bordeaux-threads
+               #:cl-cwd
+               #:trivial-utf-8
+               #:iterate
+               #:lisp-unit)
+  :components ((:file "ulquikit" :depends-on ("utils"))
+               (:file "ulquikit-cmd" :depends-on ("utils" "command-core" "ulquikit"))
+               (:file "commands/generate-src" :depends-on ("utils" "command-core"))
+               (:file "commands/generate-html" :depends-on ("utils" "command-core"))
+               (:file "command-core" :depends-on ("utils"))
+               (:file "utils")))
 
 ----
 
