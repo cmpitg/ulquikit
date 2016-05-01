@@ -1,11 +1,10 @@
-Usage: generate-html [--from from] [--to to]
+Usage: generate-html [--from from] [--to to] [--recursive recursive]
 
 Generate HTMLs from literate documents.
 
-  --from   either path to a directory where literate documents are stored, or
-           path to one literate document, default: "src"
-            
-  --to     directory where HTMLs are generated, default: "generated-html"
+  --from       either path to a directory where literate documents are stored, or path to one literate document; default: "src/"
+  --to         directory where HTMLs are generated; default: "generated-html/"
+  --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
 
 Examples
 
@@ -13,9 +12,7 @@ Generate HTMLs from src/ to generated-html/ recursively
   ulqui generate-html
 
 or explicitly
-  ulqui generate-html --from src/ --to generated-html/
+  ulqui generate-html --from src/ --to generated-html/ --recursive true
 
-Generate HTMLs from literate-source/ to generated-documents/
-  ulqui generate-html \
-    --from literate-source/ \
-    --to generated-documents
+Generate HTMLs from literate-source/ to generated-documents/ non-recursively
+  ulqui generate-html --from literate-source/ --to generated-documents/ --recursive false
