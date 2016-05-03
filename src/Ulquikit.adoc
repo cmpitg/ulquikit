@@ -1616,14 +1616,20 @@ executable.
 ----
 (in-package #:command-core)
 
-(defun run-cmd (cmd args)
+(defun run-cmd (cmd args &key (package :ulquikit-cmd))
   "Runs command with appropriate arguments by calling the corresponding
 function (that shares the same name as the command) in `ulquikit-cmd'
 package."
   (declare ((or string symbol package) cmd)
            (list args))
-  (let ((func (get-function cmd :ulquikit-cmd)))
-    (apply func args)))
+  (let ((func (get-function cmd package)))
+    (handler-case (apply func args)
+      (program-error (condition)
+        (let ((condition (format nil "~A" condition)))
+          (when (search "argument" condition)
+            (format *error-output* "Invalid argument: ~A~%~%" condition)
+            (help cmd package)
+            (uiop:quit 1)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
