@@ -1336,6 +1336,8 @@ commands:
 (defpackage #:ulquikit-cmd
   (:use :cl :command-core))
 
+;; include::ulquikit-cmd/main
+
 ----
 
 Let's generalize this idea for other commands.
