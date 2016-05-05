@@ -227,4 +227,19 @@ E.g.
   (declare ((or string pathname) path))
   (uiop:merge-pathnames* path (cl-cwd:cwd)))
 
+(in-package #:ulqui/utils)
+
+(defun function-name (fsymbol)
+  "Returns the name of a corresponding function as string."
+  (declare (function fsymbol))
+  (let ((name-tmp (nth 1 (split-sequence #\Space
+                                         (format nil "~(~A~)" fsymbol)))))
+    (subseq name-tmp 0 (1- (length name-tmp)))))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-function-name
+  (assert-equal "format"        (function-name #'format))
+  (assert-equal "function-name" (function-name #'function-name)))
+
 ----
