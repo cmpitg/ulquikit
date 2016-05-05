@@ -1943,17 +1943,23 @@ Up to this point, Ulquikit is perfectly usable as a library.  With
 https://www.quicklisp.org/beta/[Quicklisp], it could be loaded very
 straightforwardly:
 
-
-.code::ulqui/list-commands
-[source,racket,linenums]
+[source,lisp]
 ----
-(define (list-commands)
-  (let* ([command-dir (get-path +ulqui-dir+ "../commands/")]
-         [commands    (~>> (directory-list command-dir)
-                        (map path->string)
-                        (filter #λ(string-ends-with? % ".rkt"))
-                        (map #λ(regexp-replace #px"\\.rkt$" % "")))])
-    commands))
+;; Symlinking Ulquikit to Quicklisp local projects directory
+;; ln -s /path/to/ulquikit/asdf ~/quicklisp/local-projects/
+
+;; Loading
+(ql:quickload "ulquikit")
+
+;; Using
+(ulquikit:generate-src :from "/path/to/literate/source" :to "/path/to/generated/source")
+(ulquikit:generate-html :from "/path/to/literate/source" :to "/path/to/generated/html/doc")
+
+----
+
+The next step is to turn Ulquikit into a executable named `ulqui` so it could
+be used as a standalone program, integrated in different workflows.
+
 
 ----
 
