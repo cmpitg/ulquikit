@@ -2029,92 +2029,13 @@ replaces documentation of `help` function and shows the actual description of
 
 ----
 
+=== The `main` function
 
-.code::ulqui/display-help
-[source,racket,linenums]
-----
-(define (display-help)
-  (displayln
-   @str{Usage: ulqui <command> [options] ...
+Putting all things together, we have the following entry point for using
+Ulquikit as a standalone program: the `main` function.  By default, running
+`ulqui` usually means users need some help.  Thus running `ulqui` is
+equivalent to running `ulqui help`.
 
-Ulquikit is yet another literate programming tool, with the main tasks of
-generating code and documentation from literate source.
-
-Supported markup language: AsciiDoc.
-Supported output formats for documentation: HTML.
-
-Available commands:
-
-})
-  (let* ([commands   (list-commands)]
-
-         [full-helps (map #λ(with-output-to-string
-                              (λ ()
-                                (run-help %))) commands)]
-
-         [helps      (for/list ([text full-helps])
-                       (let* ([lines (string-split text "\n" #:trim? #f)]
-                              [usage-omitted (dropf lines
-                                                    #λ(not (string=? % "")))]
-                              [help (takef (rest usage-omitted)
-                                           #λ(not (string=? % "")))])
-                         (string-join help "\n")))])
-    (map (λ (command help)
-           (displayln (str (format (~a command
-                                       #:width 15))
-                           " :: "
-                           help)))
-         commands
-         helps))
-  (newline)
-  (displayln
-   @str{
-Use 'ulqui help' or 'ulqui --help' to bring up this help.
-Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a
-command.
-Use 'ulqui --version' to display current running version of Ulquikit.})
-  (newline))
-
-----
-
-One important thing to note is that +ulqui+ script might be linked to and run
-from different places.  Once it has been linked, Ulquikit directory is not the
-directory that contains this script anymore, thus it needs to be re-calculated
-and all functions which are imported need to be ++require++d manually:
-
-.code::ulqui/require-utils
-[source,racket,linenums]
-----
-(define +ulqui-script-path+
-  (resolve-path (syntax-source #'here)))
-
-(define +ulqui-dir+
-  (let-values ([(base name must-be-dir?)
-                (split-path +ulqui-script-path+)])
-    base))
-
-(define get-ulqui-module-path
-  #λ(build-path +ulqui-dir+ %))
-
-(define +ulquikit-version+
- (dynamic-require (get-ulqui-module-path "../ulquikit.rkt")
-                  '+ulquikit-version+))
-
-(define string-ends-with?
- (dynamic-require (get-ulqui-module-path "../utils/string.rkt")
-                  'string-ends-with?))
-
-(define get-path
-  (dynamic-require (get-ulqui-module-path "../utils/path.rkt")
-                   'get-path))
-
-(define run-help
-  (dynamic-require (get-ulqui-module-path "../command-core.rkt")
-                   'run-help))
-
-(define run-command
- (dynamic-require (get-ulqui-module-path "../command-core.rkt")
-                  'run-command))
 ----
 
 
