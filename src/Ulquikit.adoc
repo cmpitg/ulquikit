@@ -1877,8 +1877,8 @@ extensible."
                     :force-shell force-shell))
 ----
 
-To conclude, the last bit is to implement the command counterpart of the
-<<func/generate-html,`generate-html`>> function:
+To conclude this section, let's fill in the the last missing piece -- the
+command counterpart of the <<func/generate-html,`generate-html`>> function:
 
 .file::commands/generate-html.lisp
 [source,lisp,linenums]
@@ -1896,9 +1896,7 @@ To conclude, the last bit is to implement the command counterpart of the
 
 ----
 
-== Defining ASDF system for Ulquikit
-
-Fairly straigtforward:
+== The ASDF system definition
 
 .file::ulquikit.asd
 [source,lisp,linenums]
