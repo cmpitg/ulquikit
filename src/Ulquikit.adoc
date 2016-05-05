@@ -1606,10 +1606,14 @@ a dash \"-\"."
 
 === Calling corresponding command
 
-When user invokes a command, its corresponding function gets called.  This is
+When user invokes a command, the corresponding function gets called.  This is
 the job of the `run-cmd` command function, which also serves as the main
 helper for Ulquikit's entrypoint later on when we build Ulquikit as a single
 executable.
+
+To make Ulquikit as user-friendly as possible, when a user executes as invalid
+commands, s/he would be presented with an error message, a help message, and a
+non-zero exit code.
 
 .code::run-command
 [source,lisp,linenums]
@@ -1987,12 +1991,44 @@ Use 'ulqui version' or 'ulqui --version' to display current version of Ulquikit.
 
 ----
 
+The `help` command could then be implemented as followed.  Note that it
+replaces documentation of `help` function and shows the actual description of
+`help` command itself, not Ulquikit.
+
+.file::commands/help.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(in-package #:ulquikit-cmd)
+
+(defcmd help (&optional cmd)
+  (if cmd
+      (run-help cmd :ulquikit-cmd)
+    (labels ((format-cmd (cmd&desc)
+               (format nil
+                       "~15A :: ~A"
+                       (alist-get cmd&desc :name)
+                       (alist-get cmd&desc :description)))
+             (help-cmd? (cmd&desc)
+               (string= (alist-get cmd&desc :name)
+                        "help")))
+      (let* ((help-template (documentation 'ulquikit-cmd::help 'function))
+             (help-stripped (cons
+                             `((:name . "help")
+                               (:description . "Show this help."))
+                             (remove-if #'help-cmd?
+                                        ulquikit-cmd::*command-list*)))
+             (cmd-descriptions
+              (format nil "~{~A~^~%~}"
+                      (mapcar #'format-cmd help-stripped)))
+             (help-text (regex-replace "{{ commands-docs }}"
+                                       help-template
+                                       cmd-descriptions)))
+        (format t help-text)))))
 
 ----
 
-+ulqui+ might be liked, or copied indenpently, so the help of +ulqui+ should
-should be within in source.  Besides, whenever help is called, +ulqui+ should
-be able to detect all available commands and brief their helps.
 
 .code::ulqui/display-help
 [source,racket,linenums]
