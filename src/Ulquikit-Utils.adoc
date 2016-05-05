@@ -23,7 +23,8 @@ relative good performance.
         :alexandria
         :iterate
         :trivial-utf-8
-        :cl-ppcre)
+        :cl-ppcre
+        :split-sequence)
   (:export #:join-lines
            #:->keyword
            #:->string
@@ -34,7 +35,8 @@ relative good performance.
            #:full-path
            #:directorize-path
            #:file?
-           #:write-file))
+           #:write-file
+           #:function-name))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
