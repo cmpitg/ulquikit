@@ -1696,11 +1696,14 @@ anchor:defcmd[]
 
 (defmacro defcmd (name list-args &rest body)
   (let* ((command-core-path (or *load-pathname* *compile-file-pathname*))
+         (name-downcase (string-downcase name))
          (help-file (uiop:merge-pathnames* (format nil
                                                    "~A.help.txt"
-                                                   (string-downcase name))
+                                                   name-downcase)
                                            command-core-path))
          (help-content (read-file help-file))
+         (description (nth 2 (split-sequence #\Newline
+                                             help-content)))
          (command-list-symb (intern "*COMMAND-LIST*" *package*)))
     `(progn (defun ,name ,list-args
               ,help-content
@@ -1708,7 +1711,14 @@ anchor:defcmd[]
 
             ;; Add command to the command list of the current package
             (defvar ,command-list-symb '())
-            (push (function ,name) ,command-list-symb))))
+            (setf ,command-list-symb
+                  (remove-if #'(lambda (cmd&desc)
+                                 (string= (alist-get cmd&desc :name)
+                                          ,name-downcase))
+                             ,command-list-symb))
+            (push `((:name        . ,,name-downcase)
+                    (:description . ,,description))
+                  ,command-list-symb))))
 ----
 
 === Putting all command helpers together
