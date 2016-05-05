@@ -36,7 +36,8 @@ relative good performance.
            #:directorize-path
            #:file?
            #:write-file
-           #:function-name))
+           #:function-name
+           #:alist-get))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -243,5 +244,19 @@ E.g.
 (define-test test-function-name
   (assert-equal "format"        (function-name #'format))
   (assert-equal "function-name" (function-name #'function-name)))
+
+(in-package #:ulqui/utils)
+
+(defun alist-get (alist key &key (test 'eql))
+  "Returns corresponding value for a key, could be used with `setf'.  This
+function aliases `alexandria:assoc-value'."
+  (alexandria:assoc-value alist key :test test))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-alist-get
+  (assert-equal "a" (alist-get '((:a . "a")) :a))
+  (assert-equal :a  (alist-get '((:a . :a)) :a))
+  (assert-equal nil (alist-get '((:a . :a)) :b)))
 
 ----
