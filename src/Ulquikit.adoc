@@ -1960,6 +1960,33 @@ straightforwardly:
 The next step is to turn Ulquikit into a executable named `ulqui` so it could
 be used as a standalone program, integrated in different workflows.
 
+=== General help
+
+Invoking `ulqui`, `ulqui --help`, or `ulqui help` should bring up the general
+usage of Ulquikit.  This behavior is defined with the `help` command.  This
+command should detect all current Ulquikit commands (defined by the
+<<defcmd,`defcmd`>> macro) and output their short summary.
+
+.file::commands/help.help.txt
+[source,text]
+----
+Usage: ulqui <command> [options] ...
+
+Ulquikit is a literate programming tool, helping developers manage literate source code, including source code and documentation generation.
+
+Supported markup language: AsciiDoc.
+Supported output format for documentation: HTML.
+
+Available commands:
+
+{{ commands-docs }}
+
+Use 'ulqui help' or 'ulqui --help' to bring up this help.
+Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a command.
+Use 'ulqui version' or 'ulqui --version' to display current version of Ulquikit.
+
+----
+
 
 ----
 
