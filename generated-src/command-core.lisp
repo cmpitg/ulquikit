@@ -20,7 +20,7 @@
 (in-package #:cl)
 
 (defpackage #:command-core
-  (:use :cl :ulqui/utils :iterate :trivial-utf-8)
+  (:use :cl :ulqui/utils :iterate :trivial-utf-8 :split-sequence)
   (:export #:parse-cmd-args
            #:argument?
            #:option?
@@ -28,7 +28,7 @@
            #:defcmd
            #:run-cmd
            #:display-cmd
-           #:help))
+           #:run-help))
 
 (defpackage #:command-core-tests
   (:use :cl :lisp-unit))
@@ -39,14 +39,20 @@
 
 (in-package #:command-core)
 
-(defun run-cmd (cmd args)
+(defun run-cmd (cmd args &key (package :ulquikit-cmd))
   "Runs command with appropriate arguments by calling the corresponding
 function (that shares the same name as the command) in `ulquikit-cmd'
 package."
   (declare ((or string symbol package) cmd)
            (list args))
-  (let ((func (get-function cmd :ulquikit-cmd)))
-    (apply func args)))
+  (let ((func (get-function cmd package)))
+    (handler-case (apply func args)
+      (program-error (condition)
+        (let ((condition (format nil "~A" condition)))
+          (when (search "argument" condition)
+            (format *error-output* "Invalid argument: ~A~%~%" condition)
+            (run-help cmd package)
+            (uiop:quit 1)))))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -85,7 +91,7 @@ package."
 
 (in-package #:command-core)
 
-(defun help (cmd &optional (package *package*))
+(defun run-help (cmd &optional (package *package*))
   "Reads and returns the help of a command, which is the documentation string
 of the corresponding function."
   (declare ((or string symbol) cmd)
@@ -266,11 +272,14 @@ a dash \"-\"."
 
 (defmacro defcmd (name list-args &rest body)
   (let* ((command-core-path (or *load-pathname* *compile-file-pathname*))
+         (name-downcase (string-downcase name))
          (help-file (uiop:merge-pathnames* (format nil
                                                    "~A.help.txt"
-                                                   (string-downcase name))
+                                                   name-downcase)
                                            command-core-path))
          (help-content (read-file help-file))
+         (description (nth 2 (split-sequence #\Newline
+                                             help-content)))
          (command-list-symb (intern "*COMMAND-LIST*" *package*)))
     `(progn (defun ,name ,list-args
               ,help-content
@@ -278,7 +287,14 @@ a dash \"-\"."
 
             ;; Add command to the command list of the current package
             (defvar ,command-list-symb '())
-            (push (function ,name) ,command-list-symb))))
+            (setf ,command-list-symb
+                  (remove-if #'(lambda (cmd&desc)
+                                 (string= (alist-get cmd&desc :name)
+                                          ,name-downcase))
+                             ,command-list-symb))
+            (push `((:name        . ,,name-downcase)
+                    (:description . ,,description))
+                  ,command-list-symb))))
 
 (in-package #:command-core)
 

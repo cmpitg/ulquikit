@@ -1,0 +1,14 @@
+Usage: ulqui <command> [options] ...
+
+Ulquikit is a literate programming tool, helping developers manage literate source code, including source code and documentation generation.
+
+Supported markup language: AsciiDoc.
+Supported output format for documentation: HTML.
+
+Available commands:
+
+{{ commands-docs }}
+
+Use 'ulqui help' or 'ulqui --help' to bring up this help.
+Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a command.
+Use 'ulqui version' or 'ulqui --version' to display current version of Ulquikit.

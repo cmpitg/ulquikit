@@ -18,4 +18,25 @@
 ;;
 
 (defpackage #:ulquikit-cmd
-  (:use :cl :command-core))
+  (:use :cl :command-core :cl-ppcre :ulqui/utils))
+
+(in-package #:ulquikit-cmd)
+
+;; TODO: refactor
+(defun main (argv)
+  (let* ((arg&opts (parse-cmd-args (rest argv)))
+         (cmds (alist-get arg&opts :arguments))
+         (opts (alexandria:alist-plist (alist-get arg&opts :options))))
+    (cond
+      ((null cmds)
+       (help))
+
+      ((string= "help" (first cmds))
+       (help (second cmds)))
+
+      ((member :help opts)
+       (help (first cmds)))
+
+      (t
+       (run-cmd (first cmds) opts)))))
+
