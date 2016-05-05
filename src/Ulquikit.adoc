@@ -1937,17 +1937,12 @@ command counterpart of the <<func/generate-html,`generate-html`>> function:
 
 ----
 
-== The +ulqui+ script
+== The `ulqui` executable
 
-So far we have been going through all important internal components of
-Ulquikit.  What's left to make a complete, usable application is the main
-command that takes care of user interactive: the +ulqui+ script.  +ulqui+ is a
-complete Racket module.
+Up to this point, Ulquikit is perfectly usable as a library.  With
+https://www.quicklisp.org/beta/[Quicklisp], it could be loaded very
+straightforwardly:
 
-First and foremost, this module should be able to detect all built-in commands
-residing in +commands/+ directory.  This task is simple and straightforward:
-find all +.rkt+ files is +commands/+ directory and return them as a list
-without their extensions.
 
 .code::ulqui/list-commands
 [source,racket,linenums]
