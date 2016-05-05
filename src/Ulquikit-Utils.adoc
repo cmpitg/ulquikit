@@ -69,9 +69,9 @@ relative good performance.
   "Turns `path' into a canonical directory pathname, i.e. suffixing it with
 \"/\" if necessary."
   (declare ((or string pathname) path))
-  (if (file? path)
-      (format nil "~A/" path)
-    path))
+  (pathname (if (file? path)
+                (format nil "~A/" path)
+              path)))
 
 (in-package #:ulqui/utils-tests)
 
