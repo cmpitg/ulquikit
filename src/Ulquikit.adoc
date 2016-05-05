@@ -2036,60 +2036,31 @@ Ulquikit as a standalone program: the `main` function.  By default, running
 `ulqui` usually means users need some help.  Thus running `ulqui` is
 equivalent to running `ulqui help`.
 
+.code::ulquikit-cmd/main
+[source,lisp,linenums]
+----
+(in-package #:ulquikit-cmd)
+
+;; TODO: refactor
+(defun main (argv)
+  (let* ((arg&opts (parse-cmd-args (rest argv)))
+         (cmds (alist-get arg&opts :arguments))
+         (opts (alexandria:alist-plist (alist-get arg&opts :options))))
+    (cond
+      ((null cmds)
+       (help))
+
+      ((string= "help" (first cmds))
+       (help (second cmds)))
+
+      ((member :help opts)
+       (help (first cmds)))
+
+      (t
+       (run-cmd (first cmds) opts)))))
+
 ----
 
-
-Putting all things mentioned above together, we have the following +ulqui+
-script.  To make the script as practical as possible, certain things should be
-clarified:
-
-* By default, running +ulqui+ alone usually means users need some help.  Thus
-  running +ulqui+ is equivalent to running +ulqui help+.
-
-* If users execute invalid command, this script also fallbacks to +ulqui
-  help+ with a small error message.
-
-.file::bin/ulqui
-[source,racket,linenums]
-----
-#!/usr/bin/env racket
-
-;; include::license-header
-
-#lang at-exp rackjure
-
-(current-curly-dict hash)
-
-;; include::ulqui/display-version
-
-;; include::ulqui/require-utils
-
-;; include::ulqui/list-commands
-
-;; include::ulqui/display-help
-
-(module+ main
-  (void
-   (let* ([command-list (list-commands)]
-          [arguments (vector->list (current-command-line-arguments))]
-          [arg-list  (if (empty? arguments)
-                         '("help")
-                         arguments)]
-          [command   (first arg-list)]
-          [args      (rest arg-list)])
-     (cond [(string=? "help" command)
-            (if (empty? args)
-                (display-help)
-                (run-help (first args)))]
-           [(string=? "--version" command)
-            (display-version)]
-           [(not (member command command-list))
-            (displayln (str "-> Invalid command " command ".\n"))
-            (display-help)]
-           [else
-            (run-command command args)]))))
-
-----
 
 Oh, and let's not forget this small but useful function: +display-version+
 
@@ -2527,27 +2498,6 @@ result.
           [else
            (download-and-unzip latest-version +ulquikit-location+)])))
 
-----
-
-Of course, a little piece of help text is always necessary.
-
-.file::commands/update.help.txt
-[source,text,linenums]
-----
-Usage: update
-
-Update Ulquikit to latest version.
-
-----
-
-== Misc
-
-.code::use-rackjure
-[source,racket,linenums]
-----
-#lang rackjure
-
-(current-curly-dict hash)
 ----
 
 === Quick installation script
