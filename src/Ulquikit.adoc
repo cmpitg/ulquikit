@@ -1334,7 +1334,7 @@ commands:
 ;; include::license-header
 
 (defpackage #:ulquikit-cmd
-  (:use :cl :command-core))
+  (:use :cl :command-core :cl-ppcre :ulqui/utils))
 
 ;; include::ulquikit-cmd/main
 
@@ -1414,7 +1414,7 @@ like so:
 (in-package #:cl)
 
 (defpackage #:command-core
-  (:use :cl :ulqui/utils :iterate :trivial-utf-8)
+  (:use :cl :ulqui/utils :iterate :trivial-utf-8 :split-sequence)
   (:export #:parse-cmd-args
            #:argument?
            #:option?
