@@ -2012,27 +2012,36 @@ replaces documentation of `help` function and shows the actual description of
 (defcmd help (&optional cmd)
   (if cmd
       (run-help cmd :ulquikit-cmd)
-    (labels ((format-cmd (cmd&desc)
-               (format nil
-                       "~15A :: ~A"
-                       (alist-get cmd&desc :name)
-                       (alist-get cmd&desc :description)))
-             (help-cmd? (cmd&desc)
-               (string= (alist-get cmd&desc :name)
-                        "help")))
-      (let* ((help-template (documentation 'ulquikit-cmd::help 'function))
-             (help-stripped (cons
-                             `((:name . "help")
-                               (:description . "Show this help."))
-                             (remove-if #'help-cmd?
-                                        ulquikit-cmd::*command-list*)))
-             (cmd-descriptions
-              (format nil "~{~A~^~%~}"
-                      (mapcar #'format-cmd help-stripped)))
-             (help-text (regex-replace "{{ commands-docs }}"
-                                       help-template
-                                       cmd-descriptions)))
-        (format t help-text)))))
+    (general-usage)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Helper
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit-cmd)
+
+(defun general-usage ()
+  "Shows Ulquikit's general usage."
+  (labels ((format-cmd (cmd&desc)
+             (format nil
+                     "~15A :: ~A"
+                     (alist-get cmd&desc :name)
+                     (string-butlast (alist-get cmd&desc :description))))
+
+           (help-cmd? (cmd&desc)
+             (string= (alist-get cmd&desc :name)
+                      "help")))
+
+    (let* ((help-template (documentation 'ulquikit-cmd::help 'function))
+           (help-stripped (remove-if #'help-cmd?
+                                     ulquikit-cmd::*command-list*))
+           (cmd-descriptions
+            (format nil "~{~A~^~%~}"
+                    (mapcar #'format-cmd help-stripped)))
+           (help-text (regex-replace "{{ commands-docs }}"
+                                     help-template
+                                     cmd-descriptions)))
+      (format t help-text))))
 
 ----
 
