@@ -1676,8 +1676,6 @@ the screen the documentation of the function corresponding to that command.
 .code::run-command-help
 [source,lisp,linenums]
 ----
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package #:command-core)
 
 (defun run-help (cmd &optional (package *package*))
@@ -1686,8 +1684,16 @@ of the corresponding function."
   (declare ((or string symbol) cmd)
            ((or string symbol package) package))
   (let* ((cmd-package (find-package package))
-         (run-func    (intern (string-upcase cmd) cmd-package)))
-    (format t "~A~%" (documentation run-func 'function))))
+         (run-func    (intern (string-upcase cmd) cmd-package))
+         (help-text   (documentation run-func 'function)))
+    (if (and help-text (> (length help-text) 0))
+        (format t "~A~%" help-text)
+      (progn
+        (format *error-output*
+                "No help available for ~A.  Are you sure it's the right command?~%"
+                cmd)
+        (uiop:quit 2)))))
+
 ----
 
 Lastly, we need the `defcmd` macro.
