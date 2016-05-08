@@ -65,9 +65,6 @@ TODO: quick installation
 
 == Terminology
 
-TODO: apply literate programming terminology: tangle & weave, suppert `tangle`
-and `weave` commands as aliases to `generate-src` and `generate-html`.
-
 * A *code block* is an AsciiDoc/Markdown/... code block.
 
 * A *snippet* is a code block with Ulquikit-defined title.  By default, a code
@@ -1562,8 +1559,8 @@ a dash \"-\"."
                       (cl-ppcre:scan-to-strings "^-+(.+)$" opt)
                     (declare (ignore _))
                     (if (zerop (length xs))
-                        (error "~S is not a valid option" xs)
-                        (intern (string-upcase (aref xs 0)) :keyword)))))))
+                        (error "~S is not a valid argument" opt)
+                      (intern (string-upcase (aref xs 0)) :keyword)))))))
 
 (in-package #:command-core-tests)
 
