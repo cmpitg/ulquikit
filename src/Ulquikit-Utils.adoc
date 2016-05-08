@@ -37,7 +37,8 @@ relative good performance.
            #:file?
            #:write-file
            #:function-name
-           #:alist-get))
+           #:alist-get
+           #:string-butlast))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -237,13 +238,32 @@ E.g.
   (declare (function fsymbol))
   (let ((name-tmp (nth 1 (split-sequence #\Space
                                          (format nil "~(~A~)" fsymbol)))))
-    (subseq name-tmp 0 (1- (length name-tmp)))))
+    (string-butlast name-tmp)))
 
 (in-package #:ulqui/utils-tests)
 
 (define-test test-function-name
   (assert-equal "format"        (function-name #'format))
   (assert-equal "function-name" (function-name #'function-name)))
+
+(in-package #:ulqui/utils)
+
+(defun string-butlast (str)
+  "Returns the string without the last character.  If the string is
+zero-length, returns an empty string."
+  (declare (string str))
+  (the string
+       (let ((length (length str)))
+         (if (zerop length)
+             ""
+           (subseq str 0 (1- length))))))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-string-butlast
+  (assert-equal ""  (string-butlast ""))
+  (assert-equal ""  (string-butlast "a"))
+  (assert-equal "a" (string-butlast "ab")))
 
 (in-package #:ulqui/utils)
 
