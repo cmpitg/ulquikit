@@ -2038,23 +2038,24 @@ equivalent to running `ulqui help`.
 ----
 (in-package #:ulquikit-cmd)
 
-;; TODO: refactor
 (defun main (argv)
-  (let* ((arg&opts (parse-cmd-args (rest argv)))
+  (let* ((arg&opts (handler-case
+                       (parse-cmd-args (rest argv))
+                     (simple-error (err)
+                       (format *error-output* "~A~%~%" err)
+                       (help)
+                       (uiop:quit 1))))
          (cmds (alist-get arg&opts :arguments))
          (opts (alexandria:alist-plist (alist-get arg&opts :options))))
     (cond
       ((null cmds)
        (help))
 
-      ((string= "help" (first cmds))
-       (help (second cmds)))
-
       ((member :help opts)
        (help (first cmds)))
 
       (t
-       (run-cmd (first cmds) opts)))))
+       (run-cmd (first cmds) (append (rest cmds) opts))))))
 
 ----
 
