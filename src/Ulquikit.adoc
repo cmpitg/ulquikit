@@ -1632,7 +1632,7 @@ package."
       (program-error (condition)
         (let ((condition (format nil "~A" condition)))
           (when (search "argument" condition)
-            (format *error-output* "Invalid argument: ~A~%~%" condition)
+            (format *error-output* "~A~%~%" condition)
             (run-help cmd package)
             (uiop:quit 1)))))))
 
