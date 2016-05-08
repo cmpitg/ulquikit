@@ -1942,6 +1942,7 @@ command counterpart of the <<func/generate-html,`generate-html`>> function:
                (:file "ulquikit-cmd" :depends-on ("utils" "command-core" "ulquikit"))
                (:file "commands/generate-src" :depends-on ("utils" "command-core"))
                (:file "commands/generate-html" :depends-on ("utils" "command-core"))
+               (:file "commands/version" :depends-on ("utils" "command-core"))
                (:file "commands/help" :depends-on ("utils" "command-core"))
                (:file "command-core" :depends-on ("utils"))
                (:file "utils")))
@@ -2109,14 +2110,27 @@ further processing and `nil' otherwise."
 
 ----
 
+=== The `version` command
 
-Oh, and let's not forget this small but useful function: +display-version+
-
-.code::ulqui/display-version
-[source,racket,linenums]
+.file::commands/version.help.txt
+[source,text]
 ----
-(define (display-version)
-  (displayln (str "Ulquikit v" +ulquikit-version+)))
+Usage: ulqui version
+
+Display the current running version of Ulquikit.
+
+----
+
+.file::commands/version.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(in-package #:ulquikit-cmd)
+
+(defcmd version ()
+  (format t "Ulquikit version ~A~%" ulquikit:*ulquikit-version*))
+
 ----
 
 
