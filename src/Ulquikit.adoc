@@ -14,6 +14,8 @@ Current version:
 .code::declare-version
 [source,lisp,linenums]
 ----
+(in-package #:ulquikit)
+
 (defvar *ulquikit-version* "2.0.0")
 ----
 
