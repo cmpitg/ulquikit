@@ -128,7 +128,9 @@ packages.
         :cl-cwd
         :iterate
         :ulqui/utils)
-  (:export #:generate-src
+  (:export *ulquikit-version*
+
+           #:generate-src
            #:generate-html
 
            #:snippet->string
