@@ -1847,12 +1847,11 @@ depending on the value of `recursive'.  By default, `recursive' is `t'."
   "Extracts only the name part of the file and replaces its extension with
 HTML."
   (declare ((or string pathname) file))
-  (let* ((file (namestring (path:basename file)))
-         (last-dot (search "." file :from-end t))
-         (namepart-only (if last-dot
-                            (subseq file 0 last-dot)
-                          file)))
-    (the string (format nil "~A.html" namepart-only))))
+  (let ((filename-part (file-namestring file)))
+    (multiple-value-bind (namepart _)
+        (uiop:split-name-type filename-part)
+      (declare (ignore _))
+      (the string (format nil "~A.html" namepart)))))
 
 (in-package #:ulquikit-tests)
 
