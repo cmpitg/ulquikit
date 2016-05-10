@@ -693,7 +693,7 @@ files are searched recursively or non-recursively depending on `recursive'."
 (define-test test-extract-snippets
   (let* ((test-dir (uiop:merge-pathnames*
                     "ulquikit/test-extract-snippets/"
-                    (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
+                    (uiop:ensure-directory-pathname (uiop:getenv "TMPDIR"))))
 
          (content `(("Main.adoc" . "= A sample program
 
@@ -806,7 +806,6 @@ ueoa"
 
 ;; (run-tests '(test-snippet->string))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ----
 
 And last but not least, we need a helper to retrieve all AsciiDoc documents
@@ -853,7 +852,7 @@ this extensible."
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
          (temppath (uiop:merge-pathnames* "ulquikit/test-list-asciidocs/"
-                                          (pathname (cl-fad:pathname-as-directory
+                                          (pathname (uiop:ensure-directory-pathname
                                                      (uiop:getenv "TMPDIR")))))
          (expected (iterate
                     (for path in files)
@@ -1221,7 +1220,7 @@ anchor:func/generate-src[]
 `to'.  `from' is either a directory or a single literate source file."
   (declare ((or string pathname) from to))
   (let* ((from     (full-path from))
-         (to       (full-path (directorize-path to)))
+         (to       (full-path (uiop:ensure-directory-pathname to)))
          (snippets (if (null (directory from))
                        (extract-snippets-from-file from)
                      (extract-snippets from :recursive recursive))))
@@ -1817,7 +1816,7 @@ directory `to'.  `from' is either a directory or a single literate source
 file.  The source file could be searched recursively or non-recursively,
 depending on the value of `recursive'.  By default, `recursive' is `t'."
   (let* ((from (full-path from))
-         (to   (full-path (directorize-path to)))
+         (to   (full-path (uiop:ensure-directory-pathname to)))
          (docs (list-asciidocs from :recursive recursive)))
     (cl-cwd:with-cwd from
       (uiop:ensure-all-directories-exist (list to))
