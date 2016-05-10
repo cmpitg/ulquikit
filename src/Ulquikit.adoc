@@ -145,7 +145,7 @@ packages.
            #:list-asciidocs))
 
 (defpackage #:ulquikit-tests
-  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate :cl-fad))
+  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate))
 
 (in-package #:ulquikit-tests)
 
@@ -1932,7 +1932,6 @@ command counterpart of the <<func/generate-html,`generate-html`>> function:
                #:uiop
                #:split-sequence
                #:cl-ppcre
-               #:cl-fad
                #:bordeaux-threads
                #:cl-cwd
                #:trivial-utf-8
