@@ -747,9 +747,7 @@ The following snippet doesn't get captured as it has no title:
                             (cons (uiop:merge-pathnames* (car content-pair) test-dir)
                                   (cdr content-pair)))
                         content)))
-    ;; Some how cl-fad doesn't work
-    ;; (cl-fad:delete-directory-and-files test-dir :if-does-not-exist :ignore)
-    (uiop:run-program (format nil "rm -rf ~A" test-dir) :shell t)
+    (uiop:delete-directory-tree test-dir :if-does-not-exist :ignore)
     (format t "Test dir: ~A~%" test-dir)
 
     (dolist (path+content files)
