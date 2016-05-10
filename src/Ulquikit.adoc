@@ -839,6 +839,14 @@ this extensible."
           result)
       (remove-if #'(lambda (path) (not (valid? path)))
                  (cl-fad:list-directory path)))))
+(in-package #:ulquikit)
+
+(defun valid-asciidoc-file? (path)
+  "Determines if a path refers to an AsciiDoc file based on its extension."
+  (let ((path (namestring path)))
+    (and (not (uiop:directory-pathname-p path))
+         (cl-ppcre:scan "^[^#]" path)
+         (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path))))
 
 (in-package #:ulquikit-tests)
 
