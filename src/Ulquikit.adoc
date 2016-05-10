@@ -870,7 +870,7 @@ this extensible."
     (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)
     (dolist (path files)
       (let ((file (uiop:merge-pathnames* path temppath)))
-        (ensure-directories-exist (path:dirname file))
+        (ensure-directories-exist (uiop:pathname-directory-pathname file))
         (with-open-file (out file :direction :output
                              :if-exists :supersede)
           (princ "Hello world" out))))
