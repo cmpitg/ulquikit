@@ -867,8 +867,7 @@ this extensible."
                     (when (scan "\\.adoc$" path)
                       (collect (uiop:merge-pathnames* path temppath))))))
     ;; Setup
-    (cl-fad:delete-directory-and-files temppath
-                                       :if-does-not-exist :ignore)
+    (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)
     (dolist (path files)
       (let ((file (uiop:merge-pathnames* path temppath)))
         (ensure-directories-exist (path:dirname file))
@@ -885,8 +884,7 @@ this extensible."
                                               (namestring path2))))))
 
     ;; Tear down
-    (cl-fad:delete-directory-and-files temppath
-                                       :if-does-not-exist :ignore)))
+    (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)))
 
 ;; (run-tests '(test-list-asciidocs))
 ----
