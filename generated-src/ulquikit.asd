@@ -8,7 +8,6 @@
                #:uiop
                #:split-sequence
                #:cl-ppcre
-               #:cl-fad
                #:bordeaux-threads
                #:cl-cwd
                #:trivial-utf-8
@@ -18,6 +17,7 @@
                (:file "ulquikit-cmd" :depends-on ("utils" "command-core" "ulquikit"))
                (:file "commands/generate-src" :depends-on ("utils" "command-core"))
                (:file "commands/generate-html" :depends-on ("utils" "command-core"))
+               (:file "commands/version" :depends-on ("utils" "command-core"))
                (:file "commands/help" :depends-on ("utils" "command-core"))
                (:file "command-core" :depends-on ("utils"))
                (:file "utils")))

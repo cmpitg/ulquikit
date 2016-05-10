@@ -50,7 +50,7 @@ package."
       (program-error (condition)
         (let ((condition (format nil "~A" condition)))
           (when (search "argument" condition)
-            (format *error-output* "Invalid argument: ~A~%~%" condition)
+            (format *error-output* "~A~%~%" condition)
             (run-help cmd package)
             (uiop:quit 1)))))))
 
@@ -87,8 +87,6 @@ package."
 
 ;; (run-tests '(test-get-function))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 (in-package #:command-core)
 
 (defun run-help (cmd &optional (package *package*))
@@ -97,8 +95,16 @@ of the corresponding function."
   (declare ((or string symbol) cmd)
            ((or string symbol package) package))
   (let* ((cmd-package (find-package package))
-         (run-func    (intern (string-upcase cmd) cmd-package)))
-    (format t "~A~%" (documentation run-func 'function))))
+         (run-func    (intern (string-upcase cmd) cmd-package))
+         (help-text   (documentation run-func 'function)))
+    (if (and help-text (> (length help-text) 0))
+        (format t "~A~%" help-text)
+      (progn
+        (format *error-output*
+                "No help available for ~A.  Are you sure it's the right command?~%"
+                cmd)
+        (uiop:quit 2)))))
+
 
 (in-package #:command-core)
 
@@ -227,8 +233,8 @@ a dash \"-\"."
                       (cl-ppcre:scan-to-strings "^-+(.+)$" opt)
                     (declare (ignore _))
                     (if (zerop (length xs))
-                        (error "~S is not a valid option" xs)
-                        (intern (string-upcase (aref xs 0)) :keyword)))))))
+                        (error "~S is not a valid argument" opt)
+                      (intern (string-upcase (aref xs 0)) :keyword)))))))
 
 (in-package #:command-core-tests)
 

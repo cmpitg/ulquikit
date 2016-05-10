@@ -25,7 +25,9 @@
         :cl-cwd
         :iterate
         :ulqui/utils)
-  (:export #:generate-src
+  (:export *ulquikit-version*
+
+           #:generate-src
            #:generate-html
 
            #:snippet->string
@@ -40,12 +42,14 @@
            #:list-asciidocs))
 
 (defpackage #:ulquikit-tests
-  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate :cl-fad))
+  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate))
 
 (in-package #:ulquikit-tests)
 
 ;; Print failure details by default
 (setf *print-failures* t)
+
+(in-package #:ulquikit)
 
 (defvar *ulquikit-version* "2.0.0")
 
@@ -156,7 +160,7 @@ files are searched recursively or non-recursively depending on `recursive'."
 (define-test test-extract-snippets
   (let* ((test-dir (uiop:merge-pathnames*
                     "ulquikit/test-extract-snippets/"
-                    (cl-fad:pathname-as-directory (uiop:getenv "TMPDIR"))))
+                    (uiop:ensure-directory-pathname (uiop:getenv "TMPDIR"))))
 
          (content `(("Main.adoc" . "= A sample program
 
@@ -210,9 +214,7 @@ The following snippet doesn't get captured as it has no title:
                             (cons (uiop:merge-pathnames* (car content-pair) test-dir)
                                   (cdr content-pair)))
                         content)))
-    ;; Some how cl-fad doesn't work
-    ;; (cl-fad:delete-directory-and-files test-dir :if-does-not-exist :ignore)
-    (uiop:run-program (format nil "rm -rf ~A" test-dir) :shell t)
+    (uiop:delete-directory-tree test-dir :if-does-not-exist :ignore)
     (format t "Test dir: ~A~%" test-dir)
 
     (dolist (path+content files)
@@ -269,7 +271,6 @@ ueoa"
 
 ;; (run-tests '(test-snippet->string))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (in-package #:ulquikit)
 
@@ -791,22 +792,28 @@ extensible."
 extensions) from directory `path', ignoring all temporary files.  TODO: Make
 this extensible."
   (declare ((or string pathname) path))
-  (labels ((valid? (path)
-             (let ((path (namestring path)))
-               (and (not (cl-fad:directory-pathname-p path))
-                    (cl-ppcre:scan "^[^#]" path)
-                    (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path)))))
-    (if recursive
-        (let ((result (list)))
-          (cl-fad:walk-directory path
-                                 #'(lambda (file) (push file result))
-                                 :directories nil           ; Skip dirs
-                                 :if-does-not-exist :ignore ; Ignore
-                                                            ; inexistent dirs
-                                 :test #'valid?)
-          result)
-      (remove-if #'(lambda (path) (not (valid? path)))
-                 (cl-fad:list-directory path)))))
+  (if (uiop:file-exists-p path)
+      (list path)
+    (let* ((path (uiop:ensure-directory-pathname path))
+           (current-asciidocs (remove-if #'(lambda (path)
+                                             (not (valid-asciidoc-file? path)))
+                                         (uiop:directory-files path))))
+      (if recursive
+          (apply #'append
+                 current-asciidocs
+                 (mapcar #'(lambda (subdir)
+                             (list-asciidocs subdir :recursive recursive))
+                         (uiop:subdirectories path)))
+        current-asciidocs))))
+
+(in-package #:ulquikit)
+
+(defun valid-asciidoc-file? (path)
+  "Determines if a path refers to an AsciiDoc file based on its extension."
+  (let ((path (namestring path)))
+    (and (not (uiop:directory-pathname-p path))
+         (cl-ppcre:scan "^[^#]" path)
+         (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path))))
 
 (in-package #:ulquikit-tests)
 
@@ -820,18 +827,17 @@ this extensible."
                   "hello/world/hola.adoc"
                   "hello/world/mundo.adoc"))
          (temppath (uiop:merge-pathnames* "ulquikit/test-list-asciidocs/"
-                                          (pathname (cl-fad:pathname-as-directory
+                                          (pathname (uiop:ensure-directory-pathname
                                                      (uiop:getenv "TMPDIR")))))
          (expected (iterate
                     (for path in files)
                     (when (scan "\\.adoc$" path)
                       (collect (uiop:merge-pathnames* path temppath))))))
     ;; Setup
-    (cl-fad:delete-directory-and-files temppath
-                                       :if-does-not-exist :ignore)
+    (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)
     (dolist (path files)
       (let ((file (uiop:merge-pathnames* path temppath)))
-        (ensure-directories-exist (path:dirname file))
+        (ensure-directories-exist (uiop:pathname-directory-pathname file))
         (with-open-file (out file :direction :output
                              :if-exists :supersede)
           (princ "Hello world" out))))
@@ -845,8 +851,7 @@ this extensible."
                                               (namestring path2))))))
 
     ;; Tear down
-    (cl-fad:delete-directory-and-files temppath
-                                       :if-does-not-exist :ignore)))
+    (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)))
 
 ;; (run-tests '(test-list-asciidocs))
 
@@ -857,7 +862,7 @@ this extensible."
 `to'.  `from' is either a directory or a single literate source file."
   (declare ((or string pathname) from to))
   (let* ((from     (full-path from))
-         (to       (full-path (directorize-path to)))
+         (to       (full-path (uiop:ensure-directory-pathname to)))
          (snippets (if (null (directory from))
                        (extract-snippets-from-file from)
                      (extract-snippets from :recursive recursive))))
@@ -900,7 +905,7 @@ directory `to'.  `from' is either a directory or a single literate source
 file.  The source file could be searched recursively or non-recursively,
 depending on the value of `recursive'.  By default, `recursive' is `t'."
   (let* ((from (full-path from))
-         (to   (full-path (directorize-path to)))
+         (to   (full-path (uiop:ensure-directory-pathname to)))
          (docs (list-asciidocs from :recursive recursive)))
     (cl-cwd:with-cwd from
       (uiop:ensure-all-directories-exist (list to))
@@ -927,12 +932,11 @@ depending on the value of `recursive'.  By default, `recursive' is `t'."
   "Extracts only the name part of the file and replaces its extension with
 HTML."
   (declare ((or string pathname) file))
-  (let* ((file (namestring (path:basename file)))
-         (last-dot (search "." file :from-end t))
-         (namepart-only (if last-dot
-                            (subseq file 0 last-dot)
-                          file)))
-    (the string (format nil "~A.html" namepart-only))))
+  (let ((filename-part (file-namestring file)))
+    (multiple-value-bind (namepart _)
+        (uiop:split-name-type filename-part)
+      (declare (ignore _))
+      (the string (format nil "~A.html" namepart)))))
 
 (in-package #:ulquikit-tests)
 

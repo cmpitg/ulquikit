@@ -22,7 +22,8 @@
         :alexandria
         :iterate
         :trivial-utf-8
-        :cl-ppcre)
+        :cl-ppcre
+        :split-sequence)
   (:export #:join-lines
            #:->keyword
            #:->string
@@ -31,9 +32,11 @@
            #:take-while
            #:drop-while
            #:full-path
-           #:directorize-path
            #:file?
-           #:write-file))
+           #:write-file
+           #:function-name
+           #:alist-get
+           #:string-butlast))
 
 (defpackage #:ulqui/utils-tests
   (:use :cl
@@ -61,23 +64,6 @@
   (assert-equal (format nil "a~%b~%") (join-lines '("a" "b" ""))))
 
 ;; (run-tests '(test-join-lines))
-
-(in-package #:ulqui/utils)
-
-(defun directorize-path (path)
-  "Turns `path' into a canonical directory pathname, i.e. suffixing it with
-\"/\" if necessary."
-  (declare ((or string pathname) path))
-  (if (file? path)
-      (format nil "~A/" path)
-    path))
-
-(in-package #:ulqui/utils-tests)
-
-(define-test test-directorize-path
-  (assert-equal #p"/" (directorize-path "")
-  (assert-equal #p"/tmp/" (directorize-path "/tmp")
-  (assert-equal #p"/tmp/" (directorize-path "/tmp/")))))
 
 (in-package #:ulqui/utils)
 
@@ -225,3 +211,51 @@ E.g.
   "Returns absolute path."
   (declare ((or string pathname) path))
   (uiop:merge-pathnames* path (cl-cwd:cwd)))
+
+(in-package #:ulqui/utils)
+
+(defun function-name (fsymbol)
+  "Returns the name of a corresponding function as string."
+  (declare (function fsymbol))
+  (let ((name-tmp (nth 1 (split-sequence #\Space
+                                         (format nil "~(~A~)" fsymbol)))))
+    (string-butlast name-tmp)))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-function-name
+  (assert-equal "format"        (function-name #'format))
+  (assert-equal "function-name" (function-name #'function-name)))
+
+(in-package #:ulqui/utils)
+
+(defun string-butlast (str)
+  "Returns the string without the last character.  If the string is
+zero-length, returns an empty string."
+  (declare (string str))
+  (the string
+       (let ((length (length str)))
+         (if (zerop length)
+             ""
+           (subseq str 0 (1- length))))))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-string-butlast
+  (assert-equal ""  (string-butlast ""))
+  (assert-equal ""  (string-butlast "a"))
+  (assert-equal "a" (string-butlast "ab")))
+
+(in-package #:ulqui/utils)
+
+(defun alist-get (alist key &key (test 'eql))
+  "Returns corresponding value for a key, could be used with `setf'.  This
+function aliases `alexandria:assoc-value'."
+  (alexandria:assoc-value alist key :test test))
+
+(in-package #:ulqui/utils-tests)
+
+(define-test test-alist-get
+  (assert-equal "a" (alist-get '((:a . "a")) :a))
+  (assert-equal :a  (alist-get '((:a . :a)) :a))
+  (assert-equal nil (alist-get '((:a . :a)) :b)))
