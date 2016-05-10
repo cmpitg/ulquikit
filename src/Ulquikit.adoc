@@ -821,22 +821,20 @@ from a directory, recursively or non-recursively.
 extensions) from directory `path', ignoring all temporary files.  TODO: Make
 this extensible."
   (declare ((or string pathname) path))
-  (labels ((valid? (path)
-             (let ((path (namestring path)))
-               (and (not (cl-fad:directory-pathname-p path))
-                    (cl-ppcre:scan "^[^#]" path)
-                    (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path)))))
-    (if recursive
-        (let ((result (list)))
-          (cl-fad:walk-directory path
-                                 #'(lambda (file) (push file result))
-                                 :directories nil           ; Skip dirs
-                                 :if-does-not-exist :ignore ; Ignore
-                                                            ; inexistent dirs
-                                 :test #'valid?)
-          result)
-      (remove-if #'(lambda (path) (not (valid? path)))
-                 (cl-fad:list-directory path)))))
+  (if (uiop:file-exists-p path)
+      (list path)
+    (let* ((path (uiop:ensure-directory-pathname path))
+           (current-asciidocs (remove-if #'(lambda (path)
+                                             (not (valid-asciidoc-file? path)))
+                                         (uiop:directory-files path))))
+      (if recursive
+          (apply #'append
+                 current-asciidocs
+                 (mapcar #'(lambda (subdir)
+                             (list-asciidocs subdir :recursive recursive))
+                         (uiop:subdirectories path)))
+        current-asciidocs))))
+
 (in-package #:ulquikit)
 
 (defun valid-asciidoc-file? (path)
