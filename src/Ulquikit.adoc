@@ -2077,25 +2077,24 @@ returns `nil' otherwise."
       (prog1
           :end
         (cond
-          ;; ulqui, or
-          ;; ulqui --help
-          ((or (null opts)
-               (equal '(:help t) opts))
-           (general-usage))
+         ;; ulqui, or
+         ;; ulqui --help ((or (null opts)
+         ((equal '(:help t) opts)
+          (general-usage))
 
-          ;; ulqui --version
-          ((equal '(:version t) (member :version opts))
-           (run-cmd "version" (list)))
+         ;; ulqui --version
+         ((equal '(:version t) (member :version opts))
+          (run-cmd "version" (list)))
 
           ;; ulqui --help <command>
-          ((= 2 (length (member :help opts)))
-           (run-cmd "help" opts))
+         ((= 2 (length (member :help opts)))
+          (run-cmd "help" opts))
 
-          (t
-           (format *error-output*
-                   "Invalid options ~{~A~^ ~}~%~%"
-                   (rest argv))
-           (help)
+         (t
+          (format *error-output*
+                  "Invalid options ~{~A~^ ~}~%~%"
+                  (append cmds opts))
+          (help)
            (uiop:quit 1))))
     nil))
 
