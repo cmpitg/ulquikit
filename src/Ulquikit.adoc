@@ -804,6 +804,31 @@ ueoa"
 
 ;; (run-tests '(test-snippet->string))
 
+(in-package #:ulquikit)
+
+(defun merge-snippets (current-snippets new-src)
+  "Merges 2 chunks of snippet.  If `new-src' is a literate source file,
+`merge-snippets' will perform the extraction before the merge first."
+  (declare (snippets current-snippets)
+           ((or string pathname snippets) new-src))
+  (let ((new-snippets (typecase new-src
+                        ((or string pathname)
+                         (extract-snippets-from-file new-src))
+                        (snippets
+                         new-src))))
+    ;; Merging 2 snippets
+    (maphash #'(lambda (key value)
+                 (sethash key
+                          (snippets/file current-snippets)
+                          value))
+             (snippets/file new-snippets))
+    (maphash #'(lambda (key value)
+                 (sethash key
+                          (snippets/code current-snippets)
+                          value))
+             (snippets/code new-snippets))
+    (the snippets current-snippets)))
+
 ----
 
 And last but not least, we need a helper to retrieve all AsciiDoc documents
