@@ -2,8 +2,8 @@ Usage: ulqui generate-src [--from from] [--to to] [--recursive recursive]
 
 Generate source code from literate documents.
 
-  --from       either path to a directory where literate documents are stored, or path to one literate document; default: "src/"
-  --to         directory where source code are generated to, default: "generated-src/"
+  --from       either path to a directory where literate documents are stored, or list of paths to literate documents; default: "src/"
+  --to         directory where source code are generated to; default: "generated-src/"
   --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
 
 Examples
@@ -16,3 +16,6 @@ or explitcitly
 
 Generate source code from literate-source/ to source/ non-recursively
   ulqui generate-src --from literate-source/ --to source/ --recursive false
+
+Generate source code from Foo.adoc and quux/ to source/ recursively
+  ulqui generate-src --from Foo.adoc quux/ --to source/

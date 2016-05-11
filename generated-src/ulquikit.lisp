@@ -133,27 +133,15 @@
 
 (defun extract-snippets (path &key (recursive t))
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
-files are searched recursively or non-recursively depending on `recursive'."
+files are searched recursively or non-recursively depending on `recursive'.
+This function also takes `path' as a single AsciiDoc file."
   (declare ((or string pathname) path))
-  (labels ((merge-snippets (current-snippets adoc-file)
-             (declare (snippets current-snippets)
-                      ((or string pathname) adoc-file))
-             (let ((new-snippets (extract-snippets-from-file adoc-file)))
-               ;; Merging 2 snippets
-               (maphash #'(lambda (key value)
-                            (sethash key
-                                     (snippets/file current-snippets)
-                                     value))
-                        (snippets/file new-snippets))
-               (maphash #'(lambda (key value)
-                            (sethash key
-                                     (snippets/code current-snippets)
-                                     value))
-                        (snippets/code new-snippets))
-               (the snippets current-snippets))))
-    (reduce #'merge-snippets
-            (list-asciidocs path :recursive recursive)
-            :initial-value (make-snippets))))
+  (if (directory (uiop:ensure-directory-pathname path))
+      (reduce #'merge-snippets
+              (list-asciidocs (uiop:ensure-directory-pathname path)
+                              :recursive recursive)
+              :initial-value (make-snippets))
+    (extract-snippet-from-file path)))
 
 (in-package #:ulquikit-tests)
 
@@ -270,6 +258,31 @@ ueoa"
                 (snippet->string (make-snippet :lines '("aoeu" "ueoa")))))
 
 ;; (run-tests '(test-snippet->string))
+
+(in-package #:ulquikit)
+
+(defun merge-snippets (current-snippets new-src)
+  "Merges 2 chunks of snippet.  If `new-src' is a literate source file,
+`merge-snippets' will perform the extraction before the merge first."
+  (declare (snippets current-snippets)
+           ((or string pathname snippets) new-src))
+  (let ((new-snippets (typecase new-src
+                        ((or string pathname)
+                         (extract-snippets-from-file new-src))
+                        (snippets
+                         new-src))))
+    ;; Merging 2 snippets
+    (maphash #'(lambda (key value)
+                 (sethash key
+                          (snippets/file current-snippets)
+                          value))
+             (snippets/file new-snippets))
+    (maphash #'(lambda (key value)
+                 (sethash key
+                          (snippets/code current-snippets)
+                          value))
+             (snippets/code new-snippets))
+    (the snippets current-snippets)))
 
 
 (in-package #:ulquikit)
@@ -860,16 +873,21 @@ this extensible."
 (defun generate-src (&key (from "src") (to "generated-src") (recursive t))
   "Generates source code from all literate source files in `from' to directory
 `to'.  `from' is either a directory or a single literate source file."
-  (declare ((or string pathname) from to))
-  (let* ((from     (full-path from))
-         (to       (full-path (uiop:ensure-directory-pathname to)))
-         (snippets (if (null (directory from))
-                       (extract-snippets-from-file from)
-                     (extract-snippets from :recursive recursive))))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
+  (let* ((to       (full-path (uiop:ensure-directory-pathname to)))
+         (snippets (typecase from
+                     ((or string pathname)
+                      (extract-snippets from :recursive recursive))
+                     (list
+                      (apply #'merge-snippets
+                             (mapcar #'(lambda (from)
+                                         (extract-snippets
+                                          from
+                                          :recursive recursive))
+                                     from))))))
     ;; (format t "Generating src from: ~A to: ~A~%" from to)
     (write-src-files (include-file-snippets! snippets) to)))
-
-;;; (generate-src :from "src/" :to "/tmp/ulquikit-test/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers

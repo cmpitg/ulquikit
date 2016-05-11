@@ -22,6 +22,7 @@
 (defcmd generate-src (&key (from "src")
                            (to "generated-src")
                            (recursive t))
-  (declare ((or string pathname) from to))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
   (display-cmd "Generating source")
   (ulquikit:generate-src :from from :to to :recursive recursive))
