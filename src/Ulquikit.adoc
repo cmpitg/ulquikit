@@ -669,12 +669,9 @@ AsciiDoc documents in a directory, makes use of `extract-snippets-from-file`.
 files are searched recursively or non-recursively depending on `recursive'.
 This function also takes `path' as a single AsciiDoc file."
   (declare ((or string pathname) path))
-  (if (directory (uiop:ensure-directory-pathname path))
-      (reduce #'merge-snippets
-              (list-asciidocs (uiop:ensure-directory-pathname path)
-                              :recursive recursive)
-              :initial-value (make-snippets))
-    (extract-snippet-from-file path)))
+  (reduce #'merge-snippets
+          (list-asciidocs path :recursive recursive)
+          :initial-value (make-snippets)))
 
 (in-package #:ulquikit-tests)
 
@@ -829,6 +826,7 @@ from a directory, recursively or non-recursively.
 ----
 (in-package #:ulquikit)
 
+;; TODO: list-asciidocs suppors taking path as a list
 (defun list-asciidocs (path &key (recursive t))
   "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
 extensions) from directory `path', ignoring all temporary files.  TODO: Make
