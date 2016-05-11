@@ -22,7 +22,6 @@
         :alexandria
         :split-sequence
         :cl-ppcre
-        :cl-cwd
         :iterate
         :ulqui/utils)
   (:export *ulquikit-version*
@@ -136,12 +135,9 @@
 files are searched recursively or non-recursively depending on `recursive'.
 This function also takes `path' as a single AsciiDoc file."
   (declare ((or string pathname) path))
-  (if (directory (uiop:ensure-directory-pathname path))
-      (reduce #'merge-snippets
-              (list-asciidocs (uiop:ensure-directory-pathname path)
-                              :recursive recursive)
-              :initial-value (make-snippets))
-    (extract-snippet-from-file path)))
+  (reduce #'merge-snippets
+          (list-asciidocs path :recursive recursive)
+          :initial-value (make-snippets)))
 
 (in-package #:ulquikit-tests)
 
@@ -800,6 +796,7 @@ extensible."
 
 (in-package #:ulquikit)
 
+;; TODO: list-asciidocs suppors taking path as a list
 (defun list-asciidocs (path &key (recursive t))
   "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
 extensions) from directory `path', ignoring all temporary files.  TODO: Make
@@ -915,29 +912,48 @@ this extensible."
 
 (in-package #:ulquikit)
 
-(defun generate-html (&key (from "src")
-                        (to "generated-html")
-                        (recursive t))
+(defun generate-html (&key (from "src") (to "docs") (recursive t))
   "Generates HTML documentation from all literate source files in `from' to
 directory `to'.  `from' is either a directory or a single literate source
 file.  The source file could be searched recursively or non-recursively,
 depending on the value of `recursive'.  By default, `recursive' is `t'."
-  (let* ((from (full-path from))
-         (to   (full-path (uiop:ensure-directory-pathname to)))
-         (docs (list-asciidocs from :recursive recursive)))
-    (cl-cwd:with-cwd from
+  (declare ((or string pathname list) from)
+           ((or string pathname) to)
+           (boolean recursive))
+
+  (labels ((make-generate-html-thread (doc to)
+             "Creates and return a thread that does the actual generation"
+             ;; uiop:merge-pathnames* replaces the extension
+             (let ((output (uiop:merge-pathnames* (html-namepart doc) to)))
+               (format t "~A → ~A~%" doc output)
+               (bordeaux-threads:make-thread
+                #'(lambda () (render-asciidoc doc output))))))
+
+    (let ((to   (full-path (uiop:ensure-directory-pathname to)))
+          (docs (typecase from
+
+                  ;; If `from` is a list of paths
+                  (list
+                   (reduce #'append
+                           (mapcar
+                            #'(lambda (path)
+                                (list-asciidocs (full-path path)
+                                                :recursive recursive))
+                            from)))
+
+                  ;; If `from` is one path
+                  ((or string pathname)
+                   (let ((from (full-path from)))
+                     (if (uiop:directory-exists-p from)
+                         (list-asciidocs from :recursive recursive)
+                       (list from)))))))
+
+      ;; (format t "List of AsciiDoc docs: ~A~%" docs)
+
       (uiop:ensure-all-directories-exist (list to))
       (mapcar #'bordeaux-threads:join-thread
               (mapcar #'(lambda (doc)
-                          ;; uiop:merge-pathnames* actually replaces the
-                          ;; extension
-                          (let ((output (uiop:merge-pathnames*
-                                         (html-namepart doc) to)))
-                            (format t "~A → ~A~%" doc output)
-                            ;; Run in parallel, better performance,
-                            ;; experimental
-                            (bordeaux-threads:make-thread
-                             #'(lambda () (render-asciidoc doc output)))))
+                          (make-generate-html-thread doc to))
                       docs)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

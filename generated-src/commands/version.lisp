@@ -19,10 +19,5 @@
 
 (in-package #:ulquikit-cmd)
 
-(defcmd generate-html (&key (from "src")
-                            (to "generated-html")
-                            (recursive t))
-  (declare ((or string pathname list) from)
-           ((or string pathname) to))
-  (display-cmd "Generating HTML")
-  (ulquikit:generate-html :from from :to to :recursive recursive))
+(defcmd version ()
+  (format t "Ulquikit version ~A~%" ulquikit:*ulquikit-version*))

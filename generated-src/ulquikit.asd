@@ -9,7 +9,6 @@
                #:split-sequence
                #:cl-ppcre
                #:bordeaux-threads
-               #:cl-cwd
                #:trivial-utf-8
                #:iterate
                #:lisp-unit)
