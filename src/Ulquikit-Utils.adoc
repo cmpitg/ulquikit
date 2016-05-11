@@ -211,7 +211,7 @@ E.g.
 (defun full-path (path)
   "Returns absolute path."
   (declare ((or string pathname) path))
-  (uiop:merge-pathnames* path (cl-cwd:cwd)))
+  (uiop:merge-pathnames* path (uiop:getcwd)))
 
 (in-package #:ulqui/utils)
 

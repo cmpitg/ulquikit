@@ -48,8 +48,6 @@ To build Ulquikit, the following dependencies are required:
    sequence splitting
 ** http://weitz.de/cl-ppcre/[CL-PPCRE]: Portable Perl-compatible regular
    expressions library
-** https://github.com/Inaimathi/cl-cwd[cl-cwd]: Portable
-   current-working-directory library
 ** https://common-lisp.net/project/trivial-utf-8/[Trivial UTF-8]: UTF-8
    library
 ** https://common-lisp.net/project/iterate/[Iterate]: Iteration construct
@@ -125,7 +123,6 @@ packages.
         :alexandria
         :split-sequence
         :cl-ppcre
-        :cl-cwd
         :iterate
         :ulqui/utils)
   (:export *ulquikit-version*
@@ -1976,7 +1973,6 @@ command counterpart of the <<func/generate-html,`generate-html`>> function:
                #:split-sequence
                #:cl-ppcre
                #:bordeaux-threads
-               #:cl-cwd
                #:trivial-utf-8
                #:iterate
                #:lisp-unit)
