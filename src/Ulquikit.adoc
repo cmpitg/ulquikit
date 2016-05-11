@@ -1245,16 +1245,21 @@ anchor:func/generate-src[]
 (defun generate-src (&key (from "src") (to "generated-src") (recursive t))
   "Generates source code from all literate source files in `from' to directory
 `to'.  `from' is either a directory or a single literate source file."
-  (declare ((or string pathname) from to))
-  (let* ((from     (full-path from))
-         (to       (full-path (uiop:ensure-directory-pathname to)))
-         (snippets (if (null (directory from))
-                       (extract-snippets-from-file from)
-                     (extract-snippets from :recursive recursive))))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
+  (let* ((to       (full-path (uiop:ensure-directory-pathname to)))
+         (snippets (typecase from
+                     ((or string pathname)
+                      (extract-snippets from :recursive recursive))
+                     (list
+                      (apply #'merge-snippets
+                             (mapcar #'(lambda (from)
+                                         (extract-snippets
+                                          from
+                                          :recursive recursive))
+                                     from))))))
     ;; (format t "Generating src from: ~A to: ~A~%" from to)
     (write-src-files (include-file-snippets! snippets) to)))
-
-;;; (generate-src :from "src/" :to "/tmp/ulquikit-test/")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Helpers
@@ -1316,8 +1321,8 @@ Usage: ulqui generate-src [--from from] [--to to] [--recursive recursive]
 
 Generate source code from literate documents.
 
-  --from       either path to a directory where literate documents are stored, or path to one literate document; default: "src/"
-  --to         directory where source code are generated to, default: "generated-src/"
+  --from       either path to a directory where literate documents are stored, or list of paths to literate documents; default: "src/"
+  --to         directory where source code are generated to; default: "generated-src/"
   --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
 
 Examples
@@ -1330,6 +1335,9 @@ or explitcitly
 
 Generate source code from literate-source/ to source/ non-recursively
   ulqui generate-src --from literate-source/ --to source/ --recursive false
+
+Generate source code from Foo.adoc and quux/ to source/ recursively
+  ulqui generate-src --from Foo.adoc quux/ --to source/
 
 ----
 
