@@ -666,27 +666,15 @@ AsciiDoc documents in a directory, makes use of `extract-snippets-from-file`.
 
 (defun extract-snippets (path &key (recursive t))
   "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
-files are searched recursively or non-recursively depending on `recursive'."
+files are searched recursively or non-recursively depending on `recursive'.
+This function also takes `path' as a single AsciiDoc file."
   (declare ((or string pathname) path))
-  (labels ((merge-snippets (current-snippets adoc-file)
-             (declare (snippets current-snippets)
-                      ((or string pathname) adoc-file))
-             (let ((new-snippets (extract-snippets-from-file adoc-file)))
-               ;; Merging 2 snippets
-               (maphash #'(lambda (key value)
-                            (sethash key
-                                     (snippets/file current-snippets)
-                                     value))
-                        (snippets/file new-snippets))
-               (maphash #'(lambda (key value)
-                            (sethash key
-                                     (snippets/code current-snippets)
-                                     value))
-                        (snippets/code new-snippets))
-               (the snippets current-snippets))))
-    (reduce #'merge-snippets
-            (list-asciidocs path :recursive recursive)
-            :initial-value (make-snippets))))
+  (if (directory (uiop:ensure-directory-pathname path))
+      (reduce #'merge-snippets
+              (list-asciidocs (uiop:ensure-directory-pathname path)
+                              :recursive recursive)
+              :initial-value (make-snippets))
+    (extract-snippet-from-file path)))
 
 (in-package #:ulquikit-tests)
 
@@ -1354,7 +1342,8 @@ generate source code.  The `generate-src` command might look like so:
 (defcmd generate-src (&key (from "src")
                            (to "generated-src")
                            (recursive t))
-  (declare ((or string pathname) from to))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
   (display-cmd "Generating source")
   (ulquikit:generate-src :from from :to to :recursive recursive))
 
