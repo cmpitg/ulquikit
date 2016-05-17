@@ -2174,53 +2174,128 @@ Display the current running version of Ulquikit.
 
 ----
 
-
 == Managing Ulquikit source code
 
-As Ulquikit grows, the need for a script/tool to manage source code,
-release, ... arises.  This +schiffer+ script (named after last name of
-http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Ulquiorra
-Schiffer]) is born to fulfilled that need.
 
-=== Generate source code and HTML documents, all at once
+As Ulquikit grows, the need for a tool to manage its source code and release
+arises.
+http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[`schiffer`]
+is born to fulfill the need.
 
-This function simply makes a call to <<command/generate-src,+generate-src+>>
-and <<command/generate-html,generate-html>> commands.  Note that the
-+schiffer+ script only has its use inside Ulquikit project, so when it's
-generated, it's moved outside +generated-src+.  Also, all files in
-+generated-src/bin/+ directory should be given executable permission.
+=== Generating source code and HTML documentation
 
-.code::schiffer/generate-all
-[source,racket,linenums]
+.code::schiffer/generate
+[source,lisp,linenums]
 ----
-(define (generate-src)
-  (system "ulqui generate-src")
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-  (displayln "=> Giving executable permission to generated-src/bin/*")
-  (system "chmod +x generated-src/bin/*")
-  (newline)
+(in-package #:schiffer)
 
-  (displayln "=> Moving schiffer to current directory")
-  (rename-file-or-directory "generated-src/bin/schiffer"
-                            "schiffer-dev"
-                            #t)
-  (displayln "   generated-src/bin/schiffer => ./schiffer-dev")
-  (newline)
+(defun gen-src ()
+  (!cmd "ulqui generate-src --from src/ --to generated-src/ --recursive false"))
 
-  (displayln "=> Moving quick installation script to current directory")
-  (rename-file-or-directory "generated-src/bin/quick-install.sh"
-                            "quick-install.sh"
-                            #t)
-  (displayln "   generated-src/bin/quick-install.sh => ./quick-install.sh")
-  (newline))
+(defun gen-docs ()
+  (!cmd "ulqui generate-html --from src/ --to docs/ --recursive false"))
 
-(define (generate-html)
-  (system "ulqui generate-html")
-  (newline))
+(defun gen-all ()
+  (gen-src)
+  (gen-docs))
 
-(define (generate-all)
-  (generate-src)
-  (generate-html))
+(defun build-ulqui ()
+  (displayln "⇨ Generating Quicklisp manifest")
+  (write-quicklisp-manifest)
+
+  (displayln "⇨ Making sure build/ exists")
+  (uiop/common-lisp:ensure-directories-exist (ulqui-dir-to "build/"))
+
+  (displayln "⇨ Building Ulquikit to build/ulqui")
+  (buildapp :manifest-file "quicklisp-manifest.txt"
+            :systems '("ulquikit")
+            :entry "ulquikit-cmd:main"
+            :output (ulqui-dir-to "build/ulqui")))
+
+(defun build-schiffer ()
+  (displayln "⇨ Generating Quicklisp manifest")
+  (write-quicklisp-manifest)
+
+  (displayln "⇨ Making sure build/ exists")
+  (uiop/common-lisp:ensure-directories-exist (ulqui-dir-to "build/"))
+
+  (displayln "⇨ Building Schiffer to ./schiffer")
+  (asdf:load-system :alexandria)
+  (compile-file (ulqui-dir-to "generated-src/schiffer.lisp")
+                :output-file (ulqui-dir-to "build/schiffer.fasl"))
+  (buildapp :manifest-file "quicklisp-manifest.txt"
+            :systems '("alexandria")
+            :loads `(,(ulqui-dir-to "build/schiffer.fasl"))
+            :entry "schiffer:main"
+            :output (ulqui-dir-to "build/schiffer")))
+
+(defun gen-build-ulqui ()
+  (gen-src)
+  (build-ulqui))
+
+(defun gen-build-all ()
+  (gen-build-ulqui)
+  (build-schiffer))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun !cmd (cmd &key (output t)
+                   (error-output t)
+                   (force-shell t))
+  (uiop:run-program cmd :output output
+                    :error-output error-output
+                    :force-shell force-shell))
+
+(defun buildapp (&key manifest-file entry output systems loads)
+  (!cmd (format-str
+         (str-space
+          "buildapp --manifest-file ~A"
+          "--asdf-tree ~A"
+          "~:[~;~:*~{--load-system '~A' ~}~]"
+          "~:[~;~:*~{--load '~A' ~}~]"
+          "--entry ~A"
+          "--output '~A'")
+         manifest-file
+         (ulqui-dir-to "generated-src/")
+         systems                  ; Only --load-system if `systems` is not nil
+         loads                    ; Only --load if `loads` is not nil
+         entry
+         output)))
+
+(defun str-space (&rest strs)
+  (format nil "~{~A~^ ~}" strs))
+
+(defun format-str (&rest args)
+  (apply 'format nil args))
+
+(defun ulqui-dir-to (dir)
+  (uiop:merge-pathnames* dir (current-dir)))
+
+(defun current-dir ()
+  "Retrieves the current project directory."
+  (uiop:merge-pathnames*
+   (uiop:pathname-parent-directory-pathname
+    (uiop:pathname-directory-pathname (or *compile-file-pathname*
+                                          *load-pathname*)))))
+
+(defun write-quicklisp-manifest ()
+  (!cmd (format-str
+         (str-space
+          "sbcl --noinform --no-sysinit --non-interactive"
+          "--eval '(pushnew \"~A\" asdf:*central-registry*)'"
+          "--eval '(ql:quickload :ulquikit)'"
+          "--eval '(ql:write-asdf-manifest-file \"quicklisp-manifest.txt\")'"
+          "--eval '(quit)'")
+         (ulqui-dir-to "generated-src/"))))
+
+(defun displayln (str)
+  (format t "~A~%" str))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ----
 
