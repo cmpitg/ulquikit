@@ -2008,7 +2008,7 @@ straightforwardly:
 ----
 
 The next step is to turn Ulquikit into a executable named `ulqui` so it could
-be used as a standalone program, integrated in different workflows.
+be used as a standalone program.
 
 === General help
 
