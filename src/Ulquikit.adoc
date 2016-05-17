@@ -2301,17 +2301,15 @@ is born to fulfill the need.
 
 === Update-self
 
-This function simply copy and replace +schiffer+ script with +schiffer-dev+
-without re-generating source code.
+Used to update `schiffer`.
 
 .code::schiffer/update-self
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-(define (update-self)
-  (displayln "=> Replacing schiffer with schiffer-dev")
-  (copy-file "schiffer-dev" "schiffer" #t)
-  (displayln "   ./schiffer-dev -> ./schiffer")
-  (newline))
+(defun update-self ()
+  (format t "⇨ Replacing schiffer with schiffer-dev")
+  (uiop:copy-file (ulqui-dir-to "schiffer-dev")
+                  (ulqui-dir-to "schiffer"))
 
 ----
 
@@ -2322,59 +2320,55 @@ Marking current generated source code as stable by replacing
 *not* re-generate source code.
 
 .code::schiffer/mark-stable
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-(define (mark-stable)
-  (displayln "=> Removing current stable")
-  (delete-directory/files "release" #:must-exist? #f)
-  (newline)
+;; (defun mark-stable ()
+;;   (format t "⇨ Removing current stable")
+;;   (uiop:delete-directory-tree (ulqui-dir-to "release")
+;;                               :if-does-not-exist :ignore)
 
-  (displayln "=> Creating stable directory: release")
-  (make-directory* "release")
-  (newline)
+;;   (format t "⇨ Creating stable directory: release")
+;;   (uiop:ensure-all-directories-exist (list (ulqui-dir-to "release")))
 
-  (displayln "=> Copying current generated source to stable")
-  (displayln "   generated-src -> release/ulquikit")
-  (copy-directory/files "generated-src" "release/ulquikit")
-  (newline)
+;;   (format t "⇨ Copying build to release")
+;;   (uiop:copy-file (ulqui-dir-to "build/ulqui")
+;;                   (ulqui-dir-to "release/ulqui"))
 
-  (displayln "=> Copying docs")
-  (displayln "   generated-html -> release/ulquikit/docs")
-  (copy-directory/files "generated-html" "release/ulquikit/docs")
-  (newline))
+;;   (format t "⇨ Copying docs")
+;;   (format t "   generated-html -> release/ulquikit/docs")
+;;   (copy-directory/files "generated-html" "release/ulquikit/docs")
+;;   (newline))
 
 ----
 
 === Release
 
-[[schiffer/mark-release]]
 .code::schiffer/mark-release
 [source,racket,linenums]
 ----
-(define (mark-release)
-  (mark-stable)
-  (let* ([latest-tag       (~> (process "git tag")
-                             first
-                             port->string
-                             string-split
-                             last)]
-         [filename         (format "ulquikit-~a.zip" latest-tag)]
-         [zip-command      (format "zip -r ~a ulquikit" filename)]
-         [checksum-command (format "md5sum ~a > ~a.md5"
-                                   filename
-                                   filename)])
-    (parameterize [(current-directory "release")]
-      (displayln (str "=> Creating release/" filename))
-      (system zip-command)
-      (newline)
+;; (define (mark-release)
+;;   (mark-stable)
+;;   (let* ([latest-tag       (~> (process "git tag")
+;;                              first
+;;                              port->string
+;;                              string-split
+;;                              last)]
+;;          [filename         (format "ulquikit-~a.zip" latest-tag)]
+;;          [zip-command      (format "zip -r ~a ulquikit" filename)]
+;;          [checksum-command (format "md5sum ~a > ~a.md5"
+;;                                    filename
+;;                                    filename)])
+;;     (parameterize [(current-directory "release")]
+;;       (displayln (str "=> Creating release/" filename))
+;;       (system zip-command)
+;;       (newline)
 
-      (displayln (str "=> Creating checksum for release/" filename))
-      (system checksum-command)
-      (displayln (str "   release/" filename " => release/" filename ".md5"))
-      (newline))))
+;;       (displayln (str "=> Creating checksum for release/" filename))
+;;       (system checksum-command)
+;;       (displayln (str "   release/" filename " => release/" filename ".md5"))
+;;       (newline))))
 
 ----
-
 
 === Run current dev version of Ulquikit
 
@@ -2384,11 +2378,11 @@ Running current Ulquikit dev version is done by calling
 .code::schiffer/ulqui-dev
 [source,racket,linenums]
 ----
-(define (ulqui-dev args)
-  (system (str "generated-src/bin/ulqui "
-               (~> (map #λ(string-append "'" % "'") args)
-                 (string-join " "))))
-  (newline))
+;; (define (ulqui-dev args)
+;;   (system (str "generated-src/bin/ulqui "
+;;                (~> (map #λ(string-append "'" % "'") args)
+;;                  (string-join " "))))
+;;   (newline))
 
 ----
 
@@ -2399,9 +2393,9 @@ By calling +raco test generated-src/*+.
 .code::schiffer/run-tests
 [source,racket,linenums]
 ----
-(define (run-tests)
-  (system "raco test generated-src/*")
-  (newline))
+;; (define (run-tests)
+;;   (system "raco test generated-src/*")
+;;   (newline))
 
 ----
 
@@ -2412,102 +2406,86 @@ Simply removing +generated-html+ and +generated-src+ directories:
 .code::schiffer/clean-up
 [source,racket,linenums]
 ----
-(define (clean-up)
-  (displayln "=> Removing generated-html")
-  (delete-directory/files "generated-html" #:must-exist? #f)
-  (displayln "=> Removing generated-src")
-  (delete-directory/files "generated-src" #:must-exist? #f)
-  (newline))
+;; (define (clean-up)
+;;   (displayln "=> Removing generated-html")
+;;   (delete-directory/files "generated-html" #:must-exist? #f)
+;;   (displayln "=> Removing generated-src")
+;;   (delete-directory/files "generated-src" #:must-exist? #f)
+;;   (newline))
 ----
 
 === Help
 
-Of course, help is particularly useful.
-
 .code::schiffer/help
-[source,racket,linenums]
+[source,lisp,linenums]
 ----
-(define (help)
-  (displayln @str{
-Usage: schiffer <command> [options] ...
+(in-package #:schiffer)
 
-Schiffer is a simple build script for Ulquikit.
+(defun show-help ()
+  (format t "Usage: schiffer <command> [options] ...
+
+Schiffer is a build helper for Ulquikit.
 
 Available commands:
 
-  generate-src  :: Generate Ulquikit source code to 'generated-src'.
-  generate-html :: Generate Ulquikit HTML docs to 'generated-html'.
-  generate-all  :: Call 'generate-src', then 'generate-html'.
-  update-self   :: Update Schiffer, replace itself with './schiffer-dev'.
-  mark-stable   :: Mark current 'generated-src' as stable by copying it into
-                   'release/ulquikit'
-  mark-release  :: Mark current stable in 'release/ulquikit' as release by
-                   zipping it with latest Git tag name.  E.g.
-                  'release/ulquikit' is zipped into 'release/ulquikit-v2.0.zip'.
-  ulqui-dev     :: Analogous to 'generated-src/bin/ulqui'.
-  clean-up      :: Clean up generated source and HTML.
-  run-tests     :: Run all Ulquikit tests in 'generated-src/'.
-  help          :: Print this help.
+  gen-src         :: Generate Ulquikit and Schiffer source code to 'generated-src/'
+  gen-docs        :: Generate Ulquikit HTML docs to 'docs/'
+  gen-all         :: Call 'gen-src', then 'gen-docs'
+  build-ulqui     :: Build Ulquikit from 'generated-src/' to 'build/ulqui'
+  build-schiffer  :: Build Schiffer from 'generated-src/' to 'build/schiffer'
 
-Note that only 'ulqui-dev' takes options.
-})
-  (newline))
+  gen-build-ulqui :: Call 'gen-src', 'build-ulqui'
+  gen-build-all   :: Call 'gen-src', 'build-ulqui', then 'build-schiffer'
+
+  run-tests       :: Run all Ulquikit tests in 'generated-src/'
+  ulqui-dev       :: Call the development version of Ulquikit: 'build/ulqui'
+  clean           :: Remove all generated source, docs, and build
+
+  mark-stable     :: Mark current source code as stable by copying 'generated-src' to 'release/ulquikit/src' and copying 'build/ulqui' to 'release/ulquikit/ulqui' 
+  mark-release    :: Prepare for a release by generating MD5 and SHA1 checksums of 'release/ulquikit/ulqui' to 'release/ulquikit/ulqui.md5sum' and 'release/ulquikit/ulqui.sha1sum'
+
+  update-self     :: Update Schiffer by replacing 'schiffer' with 'build/schiffer'
+  help            :: Print this help
+
+Only command 'ulqui-dev' takes extra arguments.
+"))
 
 ----
 
 
 === Combine into +schiffer+
 
-.file::bin/schiffer
-[source,racket,linenums]
+.file::schiffer.lisp
+[source,lisp,linenums]
 ----
-#!/usr/bin/env racket
-
 ;; include::license-header
 
-#lang at-exp rackjure
+(defpackage #:schiffer
+  (:use :cl))
 
-(current-curly-dict hash)
-
-(require net/url)
-
-;; include::schiffer/generate-all
-
-;; include::schiffer/update-self
-
-;; include::schiffer/mark-stable
-
-;; include::schiffer/mark-release
-
-;; include::schiffer/ulqui-dev
-
-;; include::schiffer/clean-up
-
-;; include::schiffer/run-tests
+;; include::schiffer/generate
 
 ;; include::schiffer/help
 
-(module+ main
-  (void
-   (let* ([args    (current-command-line-arguments)]
-          [command (vector-ref (if (zero? (vector-length args))
-                                   #("")
-                                   args)
-                               0)])
-     (match command
-       ["generate-src"     (generate-src)]
-       ["generate-html"    (generate-html)]
-       ["clean"            (clean-up)]
-       ["update-self"      (update-self)]
-       ["mark-stable"      (mark-stable)]
-       ["mark-release"     (mark-release)]
-       [(or "ulqui-dev"
-            "run-dev")     (ulqui-dev (vector->list (vector-drop args 1)))]
-       [(or "test"
-            "run-tests")   (run-tests)]
-       [(or "generate-all"
-            "build")       (generate-all)]
-       [_                  (help)]))))
+(in-package #:schiffer)
+
+(defun main (argv)
+  (when (= 1 (length argv))
+    (show-help)
+    (uiop:quit 0))
+
+  (let* ((cmd (first (rest argv)))
+         (args (rest (rest argv))))
+    (alexandria:switch (cmd :test #'string=)
+      ("help"            (show-help))
+      ("gen-src"         (apply #'gen-src args))
+      ("gen-docs"        (apply #'gen-docs args))
+      ("gen-all"         (apply #'gen-all args))
+      ("build-ulqui"     (apply #'build-ulqui args))
+      ("build-schiffer"  (apply #'build-schiffer args))
+      ("gen-build-ulqui" (apply #'gen-build-ulqui args))
+      ("gen-build-all"   (apply #'gen-build-all args)))))
+
 ----
 
 == Updating Ulquikit
