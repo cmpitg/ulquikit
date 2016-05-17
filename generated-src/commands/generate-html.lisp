@@ -20,7 +20,7 @@
 (in-package #:ulquikit-cmd)
 
 (defcmd generate-html (&key (from "src")
-                            (to "generated-html")
+                            (to "docs")
                             (recursive t))
   (declare ((or string pathname list) from)
            ((or string pathname) to))

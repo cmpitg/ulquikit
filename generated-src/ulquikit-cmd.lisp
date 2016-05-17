@@ -23,6 +23,10 @@
 (in-package #:ulquikit-cmd)
 
 (defun main (argv)
+  (when (null argv)
+    (general-usage)
+    (uiop:quit 0))
+
   (let* ((arg&opts (handler-case (parse-cmd-args (rest argv))
                      (simple-error (err)
                        (format *error-output* "~A~%~%" err)
