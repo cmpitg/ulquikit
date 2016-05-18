@@ -538,7 +538,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_managing_ulquikit_source_code">9. Managing Ulquikit source code</a>
 <ul class="sectlevel2">
 <li><a href="#_generating_source_code_and_html_documentation">9.1. Generating source code and HTML documentation</a></li>
-<li><a href="#_update_self">9.2. Update-self</a></li>
+<li><a href="#_update_self">9.2. Update self</a></li>
 <li><a href="#_mark_current_source_as_stable">9.3. Mark current source as stable</a></li>
 <li><a href="#_release">9.4. Release</a></li>
 <li><a href="#_run_current_dev_version_of_ulquikit">9.5. Run current dev version of Ulquikit</a></li>
@@ -574,8 +574,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_command_list">12.1. Command list</a></li>
 <li><a href="#_story_how_the_racket_version_of_ulquikit_was_actually_developed">12.2. Story: How the Racket version of Ulquikit was actually developed</a></li>
-<li><a href="#_emacs_lisp_snippets_to_quickly_compile_snippets">12.3. Emacs Lisp snippets to quickly compile snippets</a></li>
-<li><a href="#_enhancing_narrow_region_functionality_in_emacs">12.4. Enhancing narrow-region functionality in Emacs</a></li>
+<li><a href="#_enhancing_narrow_region_functionality_in_emacs">12.3. Enhancing narrow-region functionality in Emacs</a></li>
 </ul>
 </li>
 </ul>
@@ -4516,8 +4515,11 @@ Display the current running version of Ulquikit.</code></pre>
 <div class="paragraph">
 <p>As Ulquikit grows, the need for a tool to manage its source code and release
 arises.
-<a href="http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer"><code>schiffer</code></a>
-is born to fulfill the need.</p>
+<a href="http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer">Schiffer</a>
+is born to fulfill the need.  Schiffer is written in Common Lisp, build with
+<a href="http://www.xach.com/lisp/buildapp/">Buildapp</a> and used as a standalone
+executable in the project root.  It could be thought as a Ulquikit-specific
+Make-like/Rake-like tool.</p>
 </div>
 <div class="sect2">
 <h3 id="_generating_source_code_and_html_documentation">9.1. Generating source code and HTML documentation</h3>
@@ -4746,9 +4748,12 @@ is born to fulfill the need.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_update_self">9.2. Update-self</h3>
+<h3 id="_update_self">9.2. Update self</h3>
 <div class="paragraph">
-<p>Used to update <code>schiffer</code>.</p>
+<p>Each time Schiffer it built, its development version at
+<code>&lt;project-root&gt;/build/schiffer</code> is created.  When the development version is
+stable, it could replace the current version at <code>&lt;project-root&gt;/schiffer</code>.
+For that, we have a command:</p>
 </div>
 <div class="listingblock">
 <div class="title">code::schiffer/update-self</div>
@@ -4756,10 +4761,14 @@ is born to fulfill the need.</p>
 <pre class="pygments highlight"><code data-lang="lisp"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
 3
-4</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">update-self</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nb">format</span> <span class="tok-no">t</span> <span class="tok-s">&quot;⇨ Replacing schiffer with schiffer-dev&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">uiop:copy-file</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;schiffer-dev&quot;</span><span class="tok-p">)</span>
-                  <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;schiffer&quot;</span><span class="tok-p">))</span>
+4
+5
+6</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
+
+<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">update-self</span> <span class="tok-p">()</span>
+  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Updating schiffer, replacing itself with the development version at build/schiffer&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nv">uiop:copy-file</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/schiffer&quot;</span><span class="tok-p">)</span>
+                  <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;schiffer&quot;</span><span class="tok-p">)))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -4900,23 +4909,24 @@ generated-src/bin/ulqui.</p>
 </div>
 <div class="sect2">
 <h3 id="_clean_up">9.7. Clean up</h3>
-<div class="paragraph">
-<p>Simply removing generated-html and generated-src directories:</p>
-</div>
 <div class="listingblock">
-<div class="title">code::schiffer/clean-up</div>
+<div class="title">code::schiffer/clean</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
+<pre class="pygments highlight"><code data-lang="lisp"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
 3
 4
 5
-6</div></td><td class="code"><span class="tok-c1">;; (define (clean-up)</span>
-<span class="tok-c1">;;   (displayln &quot;=&gt; Removing generated-html&quot;)</span>
-<span class="tok-c1">;;   (delete-directory/files &quot;generated-html&quot; #:must-exist? #f)</span>
-<span class="tok-c1">;;   (displayln &quot;=&gt; Removing generated-src&quot;)</span>
-<span class="tok-c1">;;   (delete-directory/files &quot;generated-src&quot; #:must-exist? #f)</span>
-<span class="tok-c1">;;   (newline))</span>
+6
+7
+8</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
+
+<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">clean</span> <span class="tok-p">()</span>
+  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Removing docs/ generated-src/ build/&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-nv">!cmd</span> <span class="tok-p">(</span><span class="tok-nv">format-str</span> <span class="tok-s">&quot;rm -rf &#39;~A&#39; &#39;~A&#39; &#39;~A&#39;&quot;</span>
+                    <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;docs/&quot;</span><span class="tok-p">)</span>
+                    <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;generated-src/&quot;</span><span class="tok-p">)</span>
+                    <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/&quot;</span><span class="tok-p">))))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -5020,7 +5030,17 @@ generated-src/bin/ulqui.</p>
 24
 25
 26
-27</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defpackage</span> <span class="tok-ss">#:schiffer</span>
   <span class="tok-p">(</span><span class="tok-ss">:use</span> <span class="tok-ss">:cl</span><span class="tok-p">))</span>
@@ -5028,6 +5048,10 @@ generated-src/bin/ulqui.</p>
 <span class="tok-c1">;; include::schiffer/generate</span>
 
 <span class="tok-c1">;; include::schiffer/help</span>
+
+<span class="tok-c1">;; include::schiffer/update-self</span>
+
+<span class="tok-c1">;; include::schiffer/clean</span>
 
 <span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
 
@@ -5040,13 +5064,19 @@ generated-src/bin/ulqui.</p>
          <span class="tok-p">(</span><span class="tok-nv">args</span> <span class="tok-p">(</span><span class="tok-nb">rest</span> <span class="tok-p">(</span><span class="tok-nb">rest</span> <span class="tok-nv">argv</span><span class="tok-p">))))</span>
     <span class="tok-p">(</span><span class="tok-nv">alexandria:switch</span> <span class="tok-p">(</span><span class="tok-nv">cmd</span> <span class="tok-ss">:test</span> <span class="tok-nf">#&#39;</span><span class="tok-nb">string=</span><span class="tok-p">)</span>
       <span class="tok-p">(</span><span class="tok-s">&quot;help&quot;</span>            <span class="tok-p">(</span><span class="tok-nv">show-help</span><span class="tok-p">))</span>
+
       <span class="tok-p">(</span><span class="tok-s">&quot;gen-src&quot;</span>         <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-src</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
       <span class="tok-p">(</span><span class="tok-s">&quot;gen-docs&quot;</span>        <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-docs</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
       <span class="tok-p">(</span><span class="tok-s">&quot;gen-all&quot;</span>         <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-all</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
+
       <span class="tok-p">(</span><span class="tok-s">&quot;build-ulqui&quot;</span>     <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">build-ulqui</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
       <span class="tok-p">(</span><span class="tok-s">&quot;build-schiffer&quot;</span>  <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">build-schiffer</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
+
       <span class="tok-p">(</span><span class="tok-s">&quot;gen-build-ulqui&quot;</span> <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-build-ulqui</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
-      <span class="tok-p">(</span><span class="tok-s">&quot;gen-build-all&quot;</span>   <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-build-all</span> <span class="tok-nv">args</span><span class="tok-p">)))))</span>
+      <span class="tok-p">(</span><span class="tok-s">&quot;gen-build-all&quot;</span>   <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-build-all</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
+
+      <span class="tok-p">(</span><span class="tok-s">&quot;update-self&quot;</span>     <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">update-self</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
+      <span class="tok-p">(</span><span class="tok-s">&quot;clean&quot;</span>           <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">clean</span> <span class="tok-nv">args</span><span class="tok-p">)))))</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -5637,92 +5667,7 @@ necessary.</p>
 
 </div>
 <div class="sect2">
-<h3 id="_emacs_lisp_snippets_to_quickly_compile_snippets">12.3. Emacs Lisp snippets to quickly compile snippets</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="pygments highlight"><code data-lang="emacs-lisp"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv"> 1
- 2
- 3
- 4
- 5
- 6
- 7
- 8
- 9
-10
-11
-12
-13
-14
-15
-16
-17
-18
-19
-20
-21
-22
-23
-24
-25
-26
-27
-28
-29
-30
-31
-32
-33
-34
-35
-36
-37
-38
-39</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">~cl/next-snippet</span> <span class="tok-p">()</span>
-  <span class="tok-s">&quot;Jumps to the next `eval&#39;-able AsciiDoc snippet.&quot;</span>
-  <span class="tok-p">(</span><span class="tok-nv">interactive</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nb">cond</span> <span class="tok-p">((</span><span class="tok-nv">re-search-forward</span> <span class="tok-s">&quot;\\.\\(code\\|file\\).*\n\\[source,lisp&quot;</span> <span class="tok-p">(</span><span class="tok-nv">point-max</span><span class="tok-p">)</span> <span class="tok-no">t</span><span class="tok-p">)</span>
-         <span class="tok-p">(</span><span class="tok-nv">search-forward</span> <span class="tok-s">&quot;----&quot;</span><span class="tok-p">)</span>
-         <span class="tok-p">(</span><span class="tok-nv">next-line</span><span class="tok-p">)</span>
-         <span class="tok-p">(</span><span class="tok-nv">beginning-of-line</span><span class="tok-p">)</span>
-         <span class="tok-p">(</span><span class="tok-nv">point</span><span class="tok-p">))</span>
-        <span class="tok-p">(</span><span class="tok-no">t</span>
-         <span class="tok-mi">-1</span><span class="tok-p">)))</span>
-
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">~cl/compile-snippet</span> <span class="tok-p">()</span>
-  <span class="tok-s">&quot;Compiles the current snippet with Common Lisp&#39;s Slime.  Note</span>
-<span class="tok-s">that this function would not work reliably if the current point</span>
-<span class="tok-s">is not inside a snippet.&quot;</span>
-  <span class="tok-p">(</span><span class="tok-nv">interactive</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">save-excursion</span>
-    <span class="tok-p">(</span><span class="tok-nb">cond</span> <span class="tok-p">((</span><span class="tok-nb">member</span> <span class="tok-nv">major-mode</span> <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-nv">lisp-mode</span> <span class="tok-nv">common-lisp-mode</span><span class="tok-p">))</span>
-           <span class="tok-p">(</span><span class="tok-nv">beginning-of-buffer</span><span class="tok-p">)</span>
-           <span class="tok-p">(</span><span class="tok-k">let</span> <span class="tok-p">((</span><span class="tok-nv">start</span> <span class="tok-p">(</span><span class="tok-nv">point</span><span class="tok-p">)))</span>
-             <span class="tok-p">(</span><span class="tok-nv">end-of-buffer</span><span class="tok-p">)</span>
-             <span class="tok-p">(</span><span class="tok-nv">slime-compile-region</span> <span class="tok-nv">start</span> <span class="tok-p">(</span><span class="tok-nv">point</span><span class="tok-p">))))</span>
-          <span class="tok-p">(</span><span class="tok-no">t</span>
-           <span class="tok-p">(</span><span class="tok-nv">re-search-backward</span> <span class="tok-s">&quot;^----$&quot;</span><span class="tok-p">)</span>
-           <span class="tok-p">(</span><span class="tok-nv">next-line</span><span class="tok-p">)</span>
-           <span class="tok-p">(</span><span class="tok-nv">beginning-of-line</span><span class="tok-p">)</span>
-           <span class="tok-p">(</span><span class="tok-k">let</span> <span class="tok-p">((</span><span class="tok-nv">start</span> <span class="tok-p">(</span><span class="tok-nv">point</span><span class="tok-p">)))</span>
-             <span class="tok-p">(</span><span class="tok-nv">re-search-forward</span> <span class="tok-s">&quot;^----$&quot;</span><span class="tok-p">)</span>
-             <span class="tok-p">(</span><span class="tok-nv">previous-line</span><span class="tok-p">)</span>
-             <span class="tok-p">(</span><span class="tok-nv">end-of-line</span><span class="tok-p">)</span>
-             <span class="tok-p">(</span><span class="tok-nv">slime-compile-region</span> <span class="tok-nv">start</span> <span class="tok-p">(</span><span class="tok-nv">point</span><span class="tok-p">)))))))</span>
-
-
-<span class="tok-p">(</span><span class="tok-nv">global-set-key</span> <span class="tok-p">(</span><span class="tok-nv">kbd</span> <span class="tok-s">&quot;&lt;f5&gt;&quot;</span><span class="tok-p">)</span> <span class="tok-ss">&#39;~cl/next-snippet</span><span class="tok-p">)</span>
-<span class="tok-p">(</span><span class="tok-nv">global-set-key</span> <span class="tok-p">(</span><span class="tok-nv">kbd</span> <span class="tok-s">&quot;&lt;f6&gt;&quot;</span><span class="tok-p">)</span> <span class="tok-ss">&#39;~cl/compile-snippet</span><span class="tok-p">)</span>
-
-<span class="tok-c1">;;; Or binding key with bind-key library</span>
-<span class="tok-c1">;; (bind-key &quot;&lt;f5&gt;&quot; &#39;~cl/next-snippet)</span>
-<span class="tok-c1">;; (bind-key &quot;&lt;f6&gt;&quot; &#39;~cl/compile-snippet)</span>
-</td></tr></table></code></pre>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_enhancing_narrow_region_functionality_in_emacs">12.4. Enhancing narrow-region functionality in Emacs</h3>
+<h3 id="_enhancing_narrow_region_functionality_in_emacs">12.3. Enhancing narrow-region functionality in Emacs</h3>
 
 </div>
 </div>
@@ -5730,7 +5675,7 @@ necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-17 23:28:56 EEST
+Last updated 2016-05-18 23:30:55 EEST
 </div>
 </div>
 </body>

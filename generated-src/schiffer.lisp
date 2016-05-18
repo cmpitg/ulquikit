@@ -173,6 +173,16 @@ Only command 'ulqui-dev' takes extra arguments.
 
 (in-package #:schiffer)
 
+(defun clean ()
+  (displayln "⇨ Removing docs/ generated-src/ build/")
+  (!cmd (format-str "rm -rf '~A' '~A' '~A'"
+                    (ulqui-dir-to "docs/")
+                    (ulqui-dir-to "generated-src/")
+                    (ulqui-dir-to "build/"))))
+
+
+(in-package #:schiffer)
+
 (defun main (argv)
   (when (= 1 (length argv))
     (show-help)
@@ -192,5 +202,6 @@ Only command 'ulqui-dev' takes extra arguments.
 
       ("gen-build-ulqui" (apply #'gen-build-ulqui args))
       ("gen-build-all"   (apply #'gen-build-all args))
-      
-      ("update-self"     (apply #'update-self args)))))
+
+      ("update-self"     (apply #'update-self args))
+      ("clean"           (apply #'clean args)))))
