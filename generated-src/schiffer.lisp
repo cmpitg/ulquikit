@@ -165,6 +165,14 @@ Only command 'ulqui-dev' takes extra arguments.
 
 (in-package #:schiffer)
 
+(defun update-self ()
+  (displayln "⇨ Updating schiffer, replacing itself with the development version at build/schiffer")
+  (uiop:copy-file (ulqui-dir-to "build/schiffer")
+                  (ulqui-dir-to "schiffer")))
+
+
+(in-package #:schiffer)
+
 (defun main (argv)
   (when (= 1 (length argv))
     (show-help)
@@ -174,10 +182,15 @@ Only command 'ulqui-dev' takes extra arguments.
          (args (rest (rest argv))))
     (alexandria:switch (cmd :test #'string=)
       ("help"            (show-help))
+
       ("gen-src"         (apply #'gen-src args))
       ("gen-docs"        (apply #'gen-docs args))
       ("gen-all"         (apply #'gen-all args))
+
       ("build-ulqui"     (apply #'build-ulqui args))
       ("build-schiffer"  (apply #'build-schiffer args))
+
       ("gen-build-ulqui" (apply #'gen-build-ulqui args))
-      ("gen-build-all"   (apply #'gen-build-all args)))))
+      ("gen-build-all"   (apply #'gen-build-all args))
+      
+      ("update-self"     (apply #'update-self args)))))
