@@ -2179,8 +2179,11 @@ Display the current running version of Ulquikit.
 
 As Ulquikit grows, the need for a tool to manage its source code and release
 arises.
-http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[`schiffer`]
-is born to fulfill the need.
+http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Schiffer]
+is born to fulfill the need.  Schiffer is written in Common Lisp, build with
+http://www.xach.com/lisp/buildapp/[Buildapp] and used as a standalone
+executable in the project root.  It could be thought as a Ulquikit-specific
+Make-like/Rake-like tool.
 
 === Generating source code and HTML documentation
 
