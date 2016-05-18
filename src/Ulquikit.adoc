@@ -2409,17 +2409,18 @@ By calling +raco test generated-src/*+.
 
 === Clean up
 
-Simply removing +generated-html+ and +generated-src+ directories:
-
-.code::schiffer/clean-up
-[source,racket,linenums]
+.code::schiffer/clean
+[source,lisp,linenums]
 ----
-;; (define (clean-up)
-;;   (displayln "=> Removing generated-html")
-;;   (delete-directory/files "generated-html" #:must-exist? #f)
-;;   (displayln "=> Removing generated-src")
-;;   (delete-directory/files "generated-src" #:must-exist? #f)
-;;   (newline))
+(in-package #:schiffer)
+
+(defun clean ()
+  (displayln "⇨ Removing docs/ generated-src/ build/")
+  (!cmd (format-str "rm -rf '~A' '~A' '~A'"
+                    (ulqui-dir-to "docs/")
+                    (ulqui-dir-to "generated-src/")
+                    (ulqui-dir-to "build/"))))
+
 ----
 
 === Help
@@ -2477,6 +2478,8 @@ Only command 'ulqui-dev' takes extra arguments.
 
 ;; include::schiffer/update-self
 
+;; include::schiffer/clean
+
 (in-package #:schiffer)
 
 (defun main (argv)
@@ -2499,7 +2502,8 @@ Only command 'ulqui-dev' takes extra arguments.
       ("gen-build-ulqui" (apply #'gen-build-ulqui args))
       ("gen-build-all"   (apply #'gen-build-all args))
 
-      ("update-self"     (apply #'update-self args)))))
+      ("update-self"     (apply #'update-self args))
+      ("clean"           (apply #'clean args)))))
 
 ----
 
