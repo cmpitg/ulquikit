@@ -2475,6 +2475,8 @@ Only command 'ulqui-dev' takes extra arguments.
 
 ;; include::schiffer/help
 
+;; include::schiffer/update-self
+
 (in-package #:schiffer)
 
 (defun main (argv)
