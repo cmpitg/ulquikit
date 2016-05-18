@@ -2302,17 +2302,22 @@ Make-like/Rake-like tool.
 
 ----
 
-=== Update-self
+=== Update self
 
-Used to update `schiffer`.
+Each time Schiffer it built, its development version at
+`<project-root>/build/schiffer` is created.  When the development version is
+stable, it could replace the current version at `<project-root>/schiffer`.
+For that, we have a command:
 
 .code::schiffer/update-self
 [source,lisp,linenums]
 ----
+(in-package #:schiffer)
+
 (defun update-self ()
-  (format t "⇨ Replacing schiffer with schiffer-dev")
-  (uiop:copy-file (ulqui-dir-to "schiffer-dev")
-                  (ulqui-dir-to "schiffer"))
+  (displayln "⇨ Updating schiffer, replacing itself with the development version at build/schiffer")
+  (uiop:copy-file (ulqui-dir-to "build/schiffer")
+                  (ulqui-dir-to "schiffer")))
 
 ----
 
@@ -2481,13 +2486,18 @@ Only command 'ulqui-dev' takes extra arguments.
          (args (rest (rest argv))))
     (alexandria:switch (cmd :test #'string=)
       ("help"            (show-help))
+
       ("gen-src"         (apply #'gen-src args))
       ("gen-docs"        (apply #'gen-docs args))
       ("gen-all"         (apply #'gen-all args))
+
       ("build-ulqui"     (apply #'build-ulqui args))
       ("build-schiffer"  (apply #'build-schiffer args))
+
       ("gen-build-ulqui" (apply #'gen-build-ulqui args))
-      ("gen-build-all"   (apply #'gen-build-all args)))))
+      ("gen-build-all"   (apply #'gen-build-all args))
+
+      ("update-self"     (apply #'update-self args)))))
 
 ----
 
