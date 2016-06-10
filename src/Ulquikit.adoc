@@ -2180,22 +2180,19 @@ Display the current running version of Ulquikit.
 As Ulquikit grows, the need for a tool to manage its source code and release
 arises.
 http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Schiffer]
-is born to fulfill the need.  Schiffer is written in Common Lisp, build with
-http://www.xach.com/lisp/buildapp/[Buildapp] and used as a standalone
-executable in the project root.  It could be thought as a Ulquikit-specific
-Make-like/Rake-like tool.
+is born to fulfill the need.  Schiffer is written in
+https://github.com/ruby/rake[Rake].
 
 === Generating source code and HTML documentation
 
 .code::schiffer/generate
-[source,lisp,linenums]
+[source,ruby,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(in-package #:schiffer)
-
-(defun gen-src ()
-  (!cmd "ulqui generate-src --from src/ --to generated-src/ --recursive false"))
+task "gen-src" do
+  sh "ulqui generate-src --from src/ --to generated-src/ --recursive false"
+end
 
 (defun gen-docs ()
   (!cmd "ulqui generate-html --from src/ --to docs/ --recursive false"))
