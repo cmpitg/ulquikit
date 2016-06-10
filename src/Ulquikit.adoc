@@ -2194,12 +2194,11 @@ task "gen-src" do
   sh "ulqui generate-src --from src/ --to generated-src/ --recursive false"
 end
 
-(defun gen-docs ()
-  (!cmd "ulqui generate-html --from src/ --to docs/ --recursive false"))
+task "gen-docs" do
+  sh "ulqui generate-html --from src/ --to docs/ --recursive false"
+end
 
-(defun gen-all ()
-  (gen-src)
-  (gen-docs))
+task "gen-all" => ["gen-src", "gen-docs"]
 
 (defun build-ulqui ()
   (displayln "⇨ Generating Quicklisp manifest")
