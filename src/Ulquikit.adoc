@@ -2176,7 +2176,6 @@ Display the current running version of Ulquikit.
 
 == Managing Ulquikit source code
 
-
 As Ulquikit grows, the need for a tool to manage its source code and release
 arises.
 http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Schiffer]
@@ -2190,15 +2189,17 @@ https://github.com/ruby/rake[Rake].
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-task "gen-src" do
-  sh "ulqui generate-src --from src/ --to generated-src/ --recursive false"
-end
+(in-package #:schiffer)
 
-task "gen-docs" do
-  sh "ulqui generate-html --from src/ --to docs/ --recursive false"
-end
+(defun gen-src ()
+  (!cmd "ulqui generate-src --from src/ --to generated-src/ --recursive false"))
 
-task "gen-all" => ["gen-src", "gen-docs"]
+(defun gen-docs ()
+  (!cmd "ulqui generate-html --from src/ --to docs/ --recursive false"))
+
+(defun gen-all ()
+  (gen-src)
+  (gen-docs))
 
 (defun build-ulqui ()
   (displayln "⇨ Generating Quicklisp manifest")
