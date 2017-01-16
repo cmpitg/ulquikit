@@ -2225,6 +2225,7 @@ task "gen-all" => ["gen-src", "gen-docs"]
   (compile-file (ulqui-dir-to "generated-src/schiffer.lisp")
                 :output-file (ulqui-dir-to "build/schiffer.fasl"))
   (buildapp :manifest-file "quicklisp-manifest.txt"
+            :options '("--compress-core")'
             :systems '("alexandria")
             :loads `(,(ulqui-dir-to "build/schiffer.fasl"))
             :entry "schiffer:main"
