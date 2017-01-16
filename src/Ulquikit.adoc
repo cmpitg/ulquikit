@@ -2490,6 +2490,7 @@ Only command 'ulqui-dev' takes extra arguments.
   (let* ((cmd (first (rest argv)))
          (args (rest (rest argv))))
     (alexandria:switch (cmd :test #'string=)
+      (""                (when (string= "--help" (first args)) (show-help)))
       ("help"            (show-help))
 
       ("gen-src"         (apply #'gen-src args))
