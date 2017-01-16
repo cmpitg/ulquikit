@@ -2249,19 +2249,21 @@ task "gen-all" => ["gen-src", "gen-docs"]
                     :error-output error-output
                     :force-shell force-shell))
 
-(defun buildapp (&key manifest-file entry output systems loads)
+(defun buildapp (&key manifest-file entry output systems loads options)
   (!cmd (format-str
          (str-space
           "buildapp --manifest-file ~A"
           "--asdf-tree ~A"
           "~:[~;~:*~{--load-system '~A' ~}~]"
           "~:[~;~:*~{--load '~A' ~}~]"
+          "~:[~;~:*~{~A ~}~]"
           "--entry ~A"
           "--output '~A'")
          manifest-file
          (ulqui-dir-to "generated-src/")
          systems                  ; Only --load-system if `systems` is not nil
          loads                    ; Only --load if `loads` is not nil
+         options                  ; Only if `options` is not nil
          entry
          output)))
 
