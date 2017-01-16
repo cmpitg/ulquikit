@@ -14,6 +14,7 @@ sbcl --noinform --non-interactive \
 
 echo ⇒ Building Schiffer executable
 buildapp --manifest-file quicklisp-manifest.txt \
+		 --compress-core \
 		 --load-system alexandria \
 		 --load "${current_dir_}/../build/schiffer.fasl" \
 		 --entry schiffer:main \
