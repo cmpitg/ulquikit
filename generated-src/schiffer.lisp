@@ -1,7 +1,7 @@
 ;;
 ;; This file is part of Ulquikit project.
 ;;
-;; Copyright (C) 2014-2016 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
+;; Copyright (C) 2014-2017 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
 ;;
 ;; Ulquikit is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -59,6 +59,7 @@
   (compile-file (ulqui-dir-to "generated-src/schiffer.lisp")
                 :output-file (ulqui-dir-to "build/schiffer.fasl"))
   (buildapp :manifest-file "quicklisp-manifest.txt"
+            :options '("--compress-core")'
             :systems '("alexandria")
             :loads `(,(ulqui-dir-to "build/schiffer.fasl"))
             :entry "schiffer:main"
@@ -83,19 +84,21 @@
                     :error-output error-output
                     :force-shell force-shell))
 
-(defun buildapp (&key manifest-file entry output systems loads)
+(defun buildapp (&key manifest-file entry output systems loads options)
   (!cmd (format-str
          (str-space
           "buildapp --manifest-file ~A"
           "--asdf-tree ~A"
           "~:[~;~:*~{--load-system '~A' ~}~]"
           "~:[~;~:*~{--load '~A' ~}~]"
+          "~:[~;~:*~{~A ~}~]"
           "--entry ~A"
           "--output '~A'")
          manifest-file
          (ulqui-dir-to "generated-src/")
          systems                  ; Only --load-system if `systems` is not nil
          loads                    ; Only --load if `loads` is not nil
+         options                  ; Only if `options` is not nil
          entry
          output)))
 
@@ -191,6 +194,7 @@ Only command 'ulqui-dev' takes extra arguments.
   (let* ((cmd (first (rest argv)))
          (args (rest (rest argv))))
     (alexandria:switch (cmd :test #'string=)
+      (""                (when (string= "--help" (first args)) (show-help)))
       ("help"            (show-help))
 
       ("gen-src"         (apply #'gen-src args))

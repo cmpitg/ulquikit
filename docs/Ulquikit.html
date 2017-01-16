@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="generator" content="Asciidoctor 1.5.4">
+<meta name="generator" content="Asciidoctor 1.5.5">
 <meta name="author" content="Ha-Duong Nguyen">
 <title>Ulquikit</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
@@ -18,7 +18,6 @@ audio:not([controls]){display:none;height:0}
 [hidden],template{display:none}
 script{display:none!important}
 html{font-family:sans-serif;-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%}
-body{margin:0}
 a{background:transparent}
 a:focus{outline:thin dotted}
 a:active,a:hover{outline:0}
@@ -53,7 +52,7 @@ textarea{overflow:auto;vertical-align:top}
 table{border-collapse:collapse;border-spacing:0}
 *,*:before,*:after{-moz-box-sizing:border-box;-webkit-box-sizing:border-box;box-sizing:border-box}
 html,body{font-size:100%}
-body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto}
+body{background:#fff;color:rgba(0,0,0,.8);padding:0;margin:0;font-family:"Noto Serif","DejaVu Serif",serif;font-weight:400;font-style:normal;line-height:1;position:relative;cursor:auto;tab-size:4;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased}
 a:hover{cursor:pointer}
 img,object,embed{max-width:100%;height:auto}
 object,embed{height:100%}
@@ -65,7 +64,6 @@ img{-ms-interpolation-mode:bicubic}
 .text-center{text-align:center!important}
 .text-justify{text-align:justify!important}
 .hide{display:none}
-body{-webkit-font-smoothing:antialiased}
 img,object,svg{display:inline-block;vertical-align:middle}
 textarea{height:auto;min-height:50px}
 select{width:100%}
@@ -120,13 +118,16 @@ table thead tr th,table thead tr td,table tfoot tr th,table tfoot tr td{padding:
 table tr th,table tr td{padding:.5625em .625em;font-size:inherit;color:rgba(0,0,0,.8)}
 table tr.even,table tr.alt,table tr:nth-of-type(even){background:#f8f8f7}
 table thead tr th,table tfoot tr th,table tbody tr td,table tr td,table tfoot tr td{display:table-cell;line-height:1.6}
-body{tab-size:4}
 h1,h2,h3,#toctitle,.sidebarblock>.content>.title,h4,h5,h6{line-height:1.2;word-spacing:-.05em}
 h1 strong,h2 strong,h3 strong,#toctitle strong,.sidebarblock>.content>.title strong,h4 strong,h5 strong,h6 strong{font-weight:400}
 .clearfix:before,.clearfix:after,.float-group:before,.float-group:after{content:" ";display:table}
 .clearfix:after,.float-group:after{clear:both}
-*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed}
+*:not(pre)>code{font-size:.9375em;font-style:normal!important;letter-spacing:0;padding:.1em .5ex;word-spacing:-.15em;background-color:#f7f7f8;-webkit-border-radius:4px;border-radius:4px;line-height:1.45;text-rendering:optimizeSpeed;word-wrap:break-word}
+*:not(pre)>code.nobreak{word-wrap:normal}
+*:not(pre)>code.nowrap{white-space:nowrap}
 pre,pre>code{line-height:1.45;color:rgba(0,0,0,.9);font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;font-weight:400;text-rendering:optimizeSpeed}
+em em{font-style:normal}
+strong strong{font-weight:400}
 .keyseq{color:rgba(51,51,51,.8)}
 kbd{font-family:"Droid Sans Mono","DejaVu Sans Mono",monospace;display:inline-block;color:rgba(0,0,0,.8);font-size:.65em;line-height:1.45;background-color:#f7f7f7;border:1px solid #ccc;-webkit-border-radius:3px;border-radius:3px;-webkit-box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em white inset;box-shadow:0 1px 0 rgba(0,0,0,.2),0 0 0 .1em #fff inset;margin:0 .15em;padding:.2em .5em;vertical-align:middle;position:relative;top:-.1em;white-space:nowrap}
 .keyseq kbd:first-child{margin-left:0}
@@ -417,16 +418,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .hide-for-print{display:none!important}
 .show-for-print{display:inherit!important}}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
 <style>
 .listingblock .pygments .hll { background-color: #ffffcc }
-.listingblock .pygments  { background: #f8f8f8; }
+.listingblock .pygments, .listingblock .pygments code { background: #f8f8f8; }
 .listingblock .pygments .tok-c { color: #408080; font-style: italic } /* Comment */
 .listingblock .pygments .tok-err { border: 1px solid #FF0000 } /* Error */
 .listingblock .pygments .tok-k { color: #008000; font-weight: bold } /* Keyword */
 .listingblock .pygments .tok-o { color: #666666 } /* Operator */
+.listingblock .pygments .tok-ch { color: #408080; font-style: italic } /* Comment.Hashbang */
 .listingblock .pygments .tok-cm { color: #408080; font-style: italic } /* Comment.Multiline */
 .listingblock .pygments .tok-cp { color: #BC7A00 } /* Comment.Preproc */
+.listingblock .pygments .tok-cpf { color: #408080; font-style: italic } /* Comment.PreprocFile */
 .listingblock .pygments .tok-c1 { color: #408080; font-style: italic } /* Comment.Single */
 .listingblock .pygments .tok-cs { color: #408080; font-style: italic } /* Comment.Special */
 .listingblock .pygments .tok-gd { color: #A00000 } /* Generic.Deleted */
@@ -466,8 +469,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .listingblock .pygments .tok-mh { color: #666666 } /* Literal.Number.Hex */
 .listingblock .pygments .tok-mi { color: #666666 } /* Literal.Number.Integer */
 .listingblock .pygments .tok-mo { color: #666666 } /* Literal.Number.Oct */
+.listingblock .pygments .tok-sa { color: #BA2121 } /* Literal.String.Affix */
 .listingblock .pygments .tok-sb { color: #BA2121 } /* Literal.String.Backtick */
 .listingblock .pygments .tok-sc { color: #BA2121 } /* Literal.String.Char */
+.listingblock .pygments .tok-dl { color: #BA2121 } /* Literal.String.Delimiter */
 .listingblock .pygments .tok-sd { color: #BA2121; font-style: italic } /* Literal.String.Doc */
 .listingblock .pygments .tok-s2 { color: #BA2121 } /* Literal.String.Double */
 .listingblock .pygments .tok-se { color: #BB6622; font-weight: bold } /* Literal.String.Escape */
@@ -478,9 +483,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 .listingblock .pygments .tok-s1 { color: #BA2121 } /* Literal.String.Single */
 .listingblock .pygments .tok-ss { color: #19177C } /* Literal.String.Symbol */
 .listingblock .pygments .tok-bp { color: #008000 } /* Name.Builtin.Pseudo */
+.listingblock .pygments .tok-fm { color: #0000FF } /* Name.Function.Magic */
 .listingblock .pygments .tok-vc { color: #19177C } /* Name.Variable.Class */
 .listingblock .pygments .tok-vg { color: #19177C } /* Name.Variable.Global */
 .listingblock .pygments .tok-vi { color: #19177C } /* Name.Variable.Instance */
+.listingblock .pygments .tok-vm { color: #19177C } /* Name.Variable.Magic */
 .listingblock .pygments .tok-il { color: #666666 } /* Literal.Number.Integer.Long */
 </style>
 </head>
@@ -591,28 +598,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="pygments highlight"><code data-lang="lisp"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
-3</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+3</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defvar</span> <span class="tok-vg">*ulquikit-version*</span> <span class="tok-s">&quot;2.0.0&quot;</span><span class="tok-p">)</span>
 </td></tr></table></code></pre>
 </div>
 </div>
 <hr>
-<div class="paragraph">
-<p>TODO: Build schiffer for the first time: sbcl --eval "(ql:quickload :alexandria)" --eval '(compile-file "generated-src/schiffer.lisp")' --eval "(quit)" &amp;&amp; mkdir -p build &amp;&amp; buildapp --manifest-file quicklisp-manifest.txt --load-system alexandria --load generated-src/schiffer.fasl --entry schiffer:main --output build/schiffer &amp;&amp; rm -f generated-src/schiffer.fasl
-TODO: --from "." error
-TODO: Make ASDF automatically recognize new files in commands/
-TODO: generate-html should preserve directory structure?
-TODO: Bug: Reloading ulquikit makes functions appear in <strong>command-list</strong> more than once
-TODO: apply literate programming terminology: tangle &amp; weave, support <code>tangle</code>
-and <code>weave</code> commands as aliases to <code>generate-src</code> and <code>generate-html</code>.
-TODO: Reflect source → literate
-TODO: Source code comparison
-TODO: Vim mode
-TODO: Emacs mode
-TODO: Incremental generation
-TODO: ;; separator</p>
-</div>
 <div class="paragraph">
 <p>Ulquikit is an extensible literate programming tool supporting multiple markup
 languages with user-friendly interface.</p>
@@ -697,7 +689,7 @@ use:</p>
 <p>Official <a href="http://www.sbcl.org/platform-table.html">SBCL binary</a>.</p>
 </li>
 <li>
-<p>Ruby 2.1.3 with <a href="https://rvm.io">RVM</a> (Ruby Version Manager)</p>
+<p>Ruby 2.3.3p222 with <a href="https://rvm.io">RVM</a> (Ruby Version Manager)</p>
 </li>
 </ul>
 </div>
@@ -863,7 +855,7 @@ packages.
 61
 62
 63
-64</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+64</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defpackage</span> <span class="tok-ss">#:ulquikit</span>
   <span class="tok-p">(</span><span class="tok-ss">:use</span> <span class="tok-ss">:cl</span>
@@ -1034,7 +1026,7 @@ as followed:</p>
 5
 6
 7
-8</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+8</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defstruct</span> <span class="tok-p">(</span><span class="tok-nv">snippet</span> <span class="tok-p">(</span><span class="tok-ss">:conc-name</span> <span class="tok-nv">snippet/</span><span class="tok-p">))</span>
   <span class="tok-p">(</span><span class="tok-k">type</span> <span class="tok-ss">:code</span>     <span class="tok-ss">:type</span> <span class="tok-kt">keyword</span><span class="tok-p">)</span>
@@ -1073,7 +1065,7 @@ have a helper that joins those lines into a complete string:</p>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+6</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">get-snippet-content</span> <span class="tok-p">(</span><span class="tok-nv">snippet</span><span class="tok-p">)</span>
   <span class="tok-s">&quot;Returns the content of a snippet as string.&quot;</span>
@@ -1138,7 +1130,7 @@ have a helper that joins those lines into a complete string:</p>
 42
 43
 44
-45</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+45</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">create-snippet</span> <span class="tok-p">(</span><span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-k">type</span> <span class="tok-ss">:code</span><span class="tok-p">)</span>
                          <span class="tok-p">(</span><span class="tok-nv">name</span> <span class="tok-s">&quot;&quot;</span><span class="tok-p">)</span>
@@ -1308,7 +1300,7 @@ structure for storing all snippets:</p>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+6</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defstruct</span> <span class="tok-p">(</span><span class="tok-nv">snippets</span>
              <span class="tok-p">(</span><span class="tok-ss">:conc-name</span> <span class="tok-nv">snippets/</span><span class="tok-p">))</span>
@@ -1571,7 +1563,7 @@ name and add a new snippet.  Otherwise</p>
 198
 199
 200
-201</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+201</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">extract-snippets-from-file</span> <span class="tok-p">(</span><span class="tok-nv">path</span><span class="tok-p">)</span>
   <span class="tok-s">&quot;Extracts snippets from a file and return a `snippets&#39; struct.&quot;</span>
@@ -1933,7 +1925,7 @@ AsciiDoc documents in a directory, makes use of <code>extract-snippets-from-file
 148
 149
 150
-151</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+151</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">extract-snippets</span> <span class="tok-p">(</span><span class="tok-nv">path</span> <span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-nv">recursive</span> <span class="tok-no">t</span><span class="tok-p">))</span>
   <span class="tok-s">&quot;Extracts all snippets from all AsciiDoc directory in `path&#39;.  The AsciiDoc</span>
@@ -2165,7 +2157,7 @@ from a directory, recursively or non-recursively.</p>
 67
 68
 69
-70</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+70</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-c1">;; TODO: list-asciidocs suppors taking path as a list</span>
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">list-asciidocs</span> <span class="tok-p">(</span><span class="tok-nv">path</span> <span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-nv">recursive</span> <span class="tok-no">t</span><span class="tok-p">))</span>
@@ -2580,7 +2572,7 @@ result is <strong>undefined</strong>.  Make sure your snippets are well managed.
 270
 271
 272
-273</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+273</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">include-snippet!</span> <span class="tok-p">(</span><span class="tok-nv">snippets</span> <span class="tok-nv">type+name</span><span class="tok-p">)</span>
   <span class="tok-s">&quot;Processes target snippet \(presented by `type+name&#39;\) by replacing all of</span>
@@ -2932,7 +2924,7 @@ directory or a file, and</p>
 40
 41
 42
-43</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+43</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">generate-src</span> <span class="tok-p">(</span><span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-nv">from</span> <span class="tok-s">&quot;src&quot;</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nv">to</span> <span class="tok-s">&quot;generated-src&quot;</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nv">recursive</span> <span class="tok-no">t</span><span class="tok-p">))</span>
   <span class="tok-s">&quot;Generates source code from all literate source files in `from&#39; to directory</span>
@@ -3011,7 +3003,7 @@ don&#8217;t create unwanted side effects when using it directly.
  7
  8
  9
-10</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+10</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">include-file-snippets!</span> <span class="tok-p">(</span><span class="tok-nv">snippets</span><span class="tok-p">)</span>
   <span class="tok-s">&quot;Includes all file snippets in `snippets&#39; and return a `snippets&#39; with all</span>
@@ -3071,7 +3063,7 @@ generate source code.  The <code>generate-src</code> command might look like so:
  8
  9
 10
-11</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+11</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit-cmd</span><span class="tok-p">)</span>
 
@@ -3097,7 +3089,7 @@ commands:</p>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+6</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defpackage</span> <span class="tok-ss">#:ulquikit-cmd</span>
   <span class="tok-p">(</span><span class="tok-ss">:use</span> <span class="tok-ss">:cl</span> <span class="tok-ss">:command-core</span> <span class="tok-ss">:cl-ppcre</span> <span class="tok-ss">:ulqui/utils</span><span class="tok-p">))</span>
@@ -3184,7 +3176,7 @@ strings and returns an alist as such:</p>
 <div class="listingblock">
 <div class="content">
 <pre class="pygments highlight"><code data-lang="lisp"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
-2</div></td><td class="code"><span class="tok-p">((</span><span class="tok-ss">:arguments</span> <span class="tok-o">.</span> <span class="tok-nv">list-of-arguments</span><span class="tok-p">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
+2</div></td><td class="code"><span></span><span class="tok-p">((</span><span class="tok-ss">:arguments</span> <span class="tok-o">.</span> <span class="tok-nv">list-of-arguments</span><span class="tok-p">)</span> <i class="conum" data-value="1"></i><b>(1)</b>
  <span class="tok-p">(</span><span class="tok-ss">:options</span>   <span class="tok-o">.</span> <span class="tok-nv">alist-of-options</span><span class="tok-p">))</span> <i class="conum" data-value="2"></i><b>(2)</b>
 </td></tr></table></code></pre>
 </div>
@@ -3232,7 +3224,7 @@ like so:</p>
 15
 16
 17
-18</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:cl</span><span class="tok-p">)</span>
+18</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:cl</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defpackage</span> <span class="tok-ss">#:command-core</span>
   <span class="tok-p">(</span><span class="tok-ss">:use</span> <span class="tok-ss">:cl</span> <span class="tok-ss">:ulqui/utils</span> <span class="tok-ss">:iterate</span> <span class="tok-ss">:trivial-utf-8</span> <span class="tok-ss">:split-sequence</span><span class="tok-p">)</span>
@@ -3421,7 +3413,7 @@ like so:</p>
 163
 164
 165
-166</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
+166</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">parse-cmd-args</span> <span class="tok-p">(</span><span class="tok-nv">args</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">let</span> <span class="tok-p">((</span><span class="tok-nv">arguments</span> <span class="tok-p">(</span><span class="tok-nv">take-while</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">argument?</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
@@ -3655,7 +3647,7 @@ non-zero exit code.</p>
 46
 47
 48
-49</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
+49</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">run-cmd</span> <span class="tok-p">(</span><span class="tok-nv">cmd</span> <span class="tok-nv">args</span> <span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-nc">package</span> <span class="tok-ss">:ulquikit-cmd</span><span class="tok-p">))</span>
   <span class="tok-s">&quot;Runs command with appropriate arguments by calling the corresponding</span>
@@ -3730,7 +3722,7 @@ the screen the documentation of the function corresponding to that command.</p>
 14
 15
 16
-17</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
+17</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">run-help</span> <span class="tok-p">(</span><span class="tok-nv">cmd</span> <span class="tok-k">&amp;optional</span> <span class="tok-p">(</span><span class="tok-nc">package</span> <span class="tok-vg">*package*</span><span class="tok-p">))</span>
   <span class="tok-s">&quot;Reads and returns the help of a command, which is the documentation string</span>
@@ -3785,7 +3777,7 @@ the screen the documentation of the function corresponding to that command.</p>
 24
 25
 26
-27</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
+27</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:command-core</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defmacro</span> <span class="tok-nv">defcmd</span> <span class="tok-p">(</span><span class="tok-nv">name</span> <span class="tok-nv">list-args</span> <span class="tok-k">&amp;rest</span> <span class="tok-nv">body</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">let*</span> <span class="tok-p">((</span><span class="tok-nv">command-core-path</span> <span class="tok-p">(</span><span class="tok-nb">or</span> <span class="tok-vg">*load-pathname*</span> <span class="tok-vg">*compile-file-pathname*</span><span class="tok-p">))</span>
@@ -3839,7 +3831,7 @@ the screen the documentation of the function corresponding to that command.</p>
 16
 17
 18
-19</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+19</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-c1">;; include::define-command-core-package</span>
 
@@ -3989,7 +3981,7 @@ and generate their HTML outputs to destination.</p>
 67
 68
 69
-70</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+70</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">generate-html</span> <span class="tok-p">(</span><span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-nv">from</span> <span class="tok-s">&quot;src&quot;</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nv">to</span> <span class="tok-s">&quot;docs&quot;</span><span class="tok-p">)</span> <span class="tok-p">(</span><span class="tok-nv">recursive</span> <span class="tok-no">t</span><span class="tok-p">))</span>
   <span class="tok-s">&quot;Generates HTML documentation from all literate source files in `from&#39; to</span>
@@ -4104,7 +4096,7 @@ non-recursive way.</p>
 19
 20
 21
-22</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
+22</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">render-asciidoc</span> <span class="tok-p">(</span><span class="tok-nv">input</span> <span class="tok-nv">output</span><span class="tok-p">)</span>
   <span class="tok-s">&quot;Renders an ASCIIDoc `input&#39; to `output&#39; as HTML.  TODO: make this</span>
@@ -4146,7 +4138,7 @@ command counterpart of the <a href="#func/generate-html"><code>generate-html</co
  8
  9
 10
-11</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+11</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit-cmd</span><span class="tok-p">)</span>
 
@@ -4190,7 +4182,7 @@ command counterpart of the <a href="#func/generate-html"><code>generate-html</co
 19
 20
 21
-22</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nv">defsystem</span> <span class="tok-nv">ulquikit</span>
+22</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nv">defsystem</span> <span class="tok-nv">ulquikit</span>
   <span class="tok-ss">:name</span> <span class="tok-s">&quot;Ulquikit&quot;</span>
   <span class="tok-ss">:version</span> <span class="tok-s">&quot;2.0.0&quot;</span>
   <span class="tok-ss">:maintainer</span> <span class="tok-s">&quot;Ha-Duong Nguyen &lt;cmpitg@gmail.com&gt;&quot;</span>
@@ -4313,7 +4305,7 @@ replaces documentation of <code>help</code> function and shows the actual descri
 34
 35
 36
-37</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+37</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit-cmd</span><span class="tok-p">)</span>
 
@@ -4418,7 +4410,7 @@ equivalent to running <code>ulqui help</code>.</p>
 51
 52
 53
-54</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit-cmd</span><span class="tok-p">)</span>
+54</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit-cmd</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">main</span> <span class="tok-p">(</span><span class="tok-nv">argv</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-nb">when</span> <span class="tok-p">(</span><span class="tok-nb">null</span> <span class="tok-nv">argv</span><span class="tok-p">)</span>
@@ -4494,7 +4486,7 @@ Display the current running version of Ulquikit.</code></pre>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+6</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:ulquikit-cmd</span><span class="tok-p">)</span>
 
@@ -4510,23 +4502,18 @@ Display the current running version of Ulquikit.</code></pre>
 <h2 id="_managing_ulquikit_source_code">9. Managing Ulquikit source code</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>RIGHTHERE</p>
-</div>
-<div class="paragraph">
 <p>As Ulquikit grows, the need for a tool to manage its source code and release
 arises.
 <a href="http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer">Schiffer</a>
-is born to fulfill the need.  Schiffer is written in Common Lisp, build with
-<a href="http://www.xach.com/lisp/buildapp/">Buildapp</a> and used as a standalone
-executable in the project root.  It could be thought as a Ulquikit-specific
-Make-like/Rake-like tool.</p>
+is born to fulfill the need.  Schiffer is written in
+<a href="https://github.com/ruby/rake">Rake</a>.</p>
 </div>
 <div class="sect2">
 <h3 id="_generating_source_code_and_html_documentation">9.1. Generating source code and HTML documentation</h3>
 <div class="listingblock">
 <div class="title">code::schiffer/generate</div>
 <div class="content">
-<pre class="pygments highlight"><code data-lang="lisp"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">  1
+<pre class="pygments highlight"><code data-lang="ruby"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">  1
   2
   3
   4
@@ -4634,115 +4621,121 @@ Make-like/Rake-like tool.</p>
 106
 107
 108
-109</div></td><td class="code"><span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+109
+110
+111
+112</div></td><td class="code"><span></span><span class="tok-p">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 
-<span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-k">in</span><span class="tok-o">-</span><span class="tok-n">package</span> <span class="tok-c1">#:schiffer)</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">gen-src</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">!cmd</span> <span class="tok-s">&quot;ulqui generate-src --from src/ --to generated-src/ --recursive false&quot;</span><span class="tok-p">))</span>
+<span class="tok-p">(</span><span class="tok-n">defun</span> <span class="tok-n">gen</span><span class="tok-o">-</span><span class="tok-n">src</span> <span class="tok-p">()</span>
+  <span class="tok-p">(</span><span class="tok-o">!</span><span class="tok-n">cmd</span> <span class="tok-s2">&quot;ulqui generate-src --from src/ --to generated-src/ --recursive false&quot;</span><span class="tok-p">))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">gen-docs</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">!cmd</span> <span class="tok-s">&quot;ulqui generate-html --from src/ --to docs/ --recursive false&quot;</span><span class="tok-p">))</span>
+<span class="tok-p">(</span><span class="tok-n">defun</span> <span class="tok-n">gen</span><span class="tok-o">-</span><span class="tok-n">docs</span> <span class="tok-p">()</span>
+  <span class="tok-p">(</span><span class="tok-o">!</span><span class="tok-n">cmd</span> <span class="tok-s2">&quot;ulqui generate-html --from src/ --to docs/ --recursive false&quot;</span><span class="tok-p">))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">gen-all</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">gen-src</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">gen-docs</span><span class="tok-p">))</span>
+<span class="tok-p">(</span><span class="tok-n">defun</span> <span class="tok-n">gen</span><span class="tok-o">-</span><span class="tok-n">all</span> <span class="tok-p">()</span>
+  <span class="tok-p">(</span><span class="tok-n">gen</span><span class="tok-o">-</span><span class="tok-n">src</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-n">gen</span><span class="tok-o">-</span><span class="tok-n">docs</span><span class="tok-p">))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">build-ulqui</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Generating Quicklisp manifest&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">write-quicklisp-manifest</span><span class="tok-p">)</span>
+<span class="tok-p">(</span><span class="tok-n">defun</span> <span class="tok-n">build</span><span class="tok-o">-</span><span class="tok-n">ulqui</span> <span class="tok-p">()</span>
+  <span class="tok-p">(</span><span class="tok-n">displayln</span> <span class="tok-s2">&quot;⇨ Generating Quicklisp manifest&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-n">write</span><span class="tok-o">-</span><span class="tok-n">quicklisp</span><span class="tok-o">-</span><span class="tok-n">manifest</span><span class="tok-p">)</span>
 
-  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Making sure build/ exists&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">uiop/common-lisp:ensure-directories-exist</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/&quot;</span><span class="tok-p">))</span>
+  <span class="tok-p">(</span><span class="tok-n">displayln</span> <span class="tok-s2">&quot;⇨ Making sure build/ exists&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-n">uiop</span><span class="tok-o">/</span><span class="tok-n">common</span><span class="tok-o">-</span><span class="tok-ss">lisp</span><span class="tok-p">:</span><span class="tok-k">ensure</span><span class="tok-o">-</span><span class="tok-n">directories</span><span class="tok-o">-</span><span class="tok-n">exist</span> <span class="tok-p">(</span><span class="tok-n">ulqui</span><span class="tok-o">-</span><span class="tok-n">dir</span><span class="tok-o">-</span><span class="tok-n">to</span> <span class="tok-s2">&quot;build/&quot;</span><span class="tok-p">))</span>
 
-  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Building Ulquikit to build/ulqui&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">buildapp</span> <span class="tok-ss">:manifest-file</span> <span class="tok-s">&quot;quicklisp-manifest.txt&quot;</span>
-            <span class="tok-ss">:systems</span> <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;ulquikit&quot;</span><span class="tok-p">)</span>
-            <span class="tok-ss">:entry</span> <span class="tok-s">&quot;ulquikit-cmd:main&quot;</span>
-            <span class="tok-ss">:output</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/ulqui&quot;</span><span class="tok-p">)))</span>
+  <span class="tok-p">(</span><span class="tok-n">displayln</span> <span class="tok-s2">&quot;⇨ Building Ulquikit to build/ulqui&quot;</span><span class="tok-p">)</span>
+  <span class="tok-p">(</span><span class="tok-n">buildapp</span> <span class="tok-ss">:manifest</span><span class="tok-o">-</span><span class="tok-n">file</span> <span class="tok-s2">&quot;quicklisp-manifest.txt&quot;</span>
+            <span class="tok-ss">:systems</span> <span class="tok-s1">&#39;(&quot;ulquikit&quot;)</span>
+<span class="tok-s1">            :entry &quot;ulquikit-cmd:main&quot;</span>
+<span class="tok-s1">            :output (ulqui-dir-to &quot;build/ulqui&quot;)))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">build-schiffer</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Generating Quicklisp manifest&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">write-quicklisp-manifest</span><span class="tok-p">)</span>
+<span class="tok-s1">(defun build-schiffer ()</span>
+<span class="tok-s1">  (displayln &quot;⇨ Generating Quicklisp manifest&quot;)</span>
+<span class="tok-s1">  (write-quicklisp-manifest)</span>
 
-  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Making sure build/ exists&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">uiop/common-lisp:ensure-directories-exist</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/&quot;</span><span class="tok-p">))</span>
+<span class="tok-s1">  (displayln &quot;⇨ Making sure build/ exists&quot;)</span>
+<span class="tok-s1">  (uiop/common-lisp:ensure-directories-exist (ulqui-dir-to &quot;build/&quot;))</span>
 
-  <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Building Schiffer to ./schiffer&quot;</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">asdf:load-system</span> <span class="tok-ss">:alexandria</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nb">compile-file</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;generated-src/schiffer.lisp&quot;</span><span class="tok-p">)</span>
-                <span class="tok-ss">:output-file</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/schiffer.fasl&quot;</span><span class="tok-p">))</span>
-  <span class="tok-p">(</span><span class="tok-nv">buildapp</span> <span class="tok-ss">:manifest-file</span> <span class="tok-s">&quot;quicklisp-manifest.txt&quot;</span>
-            <span class="tok-ss">:systems</span> <span class="tok-o">&#39;</span><span class="tok-p">(</span><span class="tok-s">&quot;alexandria&quot;</span><span class="tok-p">)</span>
-            <span class="tok-ss">:loads</span> <span class="tok-o">`</span><span class="tok-p">(</span><span class="tok-o">,</span><span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/schiffer.fasl&quot;</span><span class="tok-p">))</span>
-            <span class="tok-ss">:entry</span> <span class="tok-s">&quot;schiffer:main&quot;</span>
-            <span class="tok-ss">:output</span> <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;build/schiffer&quot;</span><span class="tok-p">)))</span>
+<span class="tok-s1">  (displayln &quot;⇨ Building Schiffer to ./schiffer&quot;)</span>
+<span class="tok-s1">  (asdf:load-system :alexandria)</span>
+<span class="tok-s1">  (compile-file (ulqui-dir-to &quot;generated-src/schiffer.lisp&quot;)</span>
+<span class="tok-s1">                :output-file (ulqui-dir-to &quot;build/schiffer.fasl&quot;))</span>
+<span class="tok-s1">  (buildapp :manifest-file &quot;quicklisp-manifest.txt&quot;</span>
+<span class="tok-s1">            :options &#39;</span><span class="tok-p">(</span><span class="tok-s2">&quot;--compress-core&quot;</span><span class="tok-p">)</span><span class="tok-s1">&#39;</span>
+<span class="tok-s1">            :systems &#39;</span><span class="tok-p">(</span><span class="tok-s2">&quot;alexandria&quot;</span><span class="tok-p">)</span>
+            <span class="tok-ss">:loads</span> <span class="tok-sb">`(,(ulqui-dir-to &quot;build/schiffer.fasl&quot;))</span>
+<span class="tok-sb">            :entry &quot;schiffer:main&quot;</span>
+<span class="tok-sb">            :output (ulqui-dir-to &quot;build/schiffer&quot;)))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">gen-build-ulqui</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">gen-src</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">build-ulqui</span><span class="tok-p">))</span>
+<span class="tok-sb">(defun gen-build-ulqui ()</span>
+<span class="tok-sb">  (gen-src)</span>
+<span class="tok-sb">  (build-ulqui))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">gen-build-all</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">gen-build-ulqui</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">build-schiffer</span><span class="tok-p">))</span>
+<span class="tok-sb">(defun gen-build-all ()</span>
+<span class="tok-sb">  (gen-build-ulqui)</span>
+<span class="tok-sb">  (build-schiffer))</span>
 
-<span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
-<span class="tok-c1">;; Helpers</span>
-<span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+<span class="tok-sb">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+<span class="tok-sb">;; Helpers</span>
+<span class="tok-sb">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">!cmd</span> <span class="tok-p">(</span><span class="tok-nv">cmd</span> <span class="tok-k">&amp;key</span> <span class="tok-p">(</span><span class="tok-nv">output</span> <span class="tok-no">t</span><span class="tok-p">)</span>
-                   <span class="tok-p">(</span><span class="tok-nv">error-output</span> <span class="tok-no">t</span><span class="tok-p">)</span>
-                   <span class="tok-p">(</span><span class="tok-nv">force-shell</span> <span class="tok-no">t</span><span class="tok-p">))</span>
-  <span class="tok-p">(</span><span class="tok-nv">uiop:run-program</span> <span class="tok-nv">cmd</span> <span class="tok-ss">:output</span> <span class="tok-nv">output</span>
-                    <span class="tok-ss">:error-output</span> <span class="tok-nv">error-output</span>
-                    <span class="tok-ss">:force-shell</span> <span class="tok-nv">force-shell</span><span class="tok-p">))</span>
+<span class="tok-sb">(defun !cmd (cmd &amp;key (output t)</span>
+<span class="tok-sb">                   (error-output t)</span>
+<span class="tok-sb">                   (force-shell t))</span>
+<span class="tok-sb">  (uiop:run-program cmd :output output</span>
+<span class="tok-sb">                    :error-output error-output</span>
+<span class="tok-sb">                    :force-shell force-shell))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">buildapp</span> <span class="tok-p">(</span><span class="tok-k">&amp;key</span> <span class="tok-nv">manifest-file</span> <span class="tok-nv">entry</span> <span class="tok-nv">output</span> <span class="tok-nv">systems</span> <span class="tok-nv">loads</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">!cmd</span> <span class="tok-p">(</span><span class="tok-nv">format-str</span>
-         <span class="tok-p">(</span><span class="tok-nv">str-space</span>
-          <span class="tok-s">&quot;buildapp --manifest-file ~A&quot;</span>
-          <span class="tok-s">&quot;--asdf-tree ~A&quot;</span>
-          <span class="tok-s">&quot;~:[~;~:*~{--load-system &#39;~A&#39; ~}~]&quot;</span>
-          <span class="tok-s">&quot;~:[~;~:*~{--load &#39;~A&#39; ~}~]&quot;</span>
-          <span class="tok-s">&quot;--entry ~A&quot;</span>
-          <span class="tok-s">&quot;--output &#39;~A&#39;&quot;</span><span class="tok-p">)</span>
-         <span class="tok-nv">manifest-file</span>
-         <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;generated-src/&quot;</span><span class="tok-p">)</span>
-         <span class="tok-nv">systems</span>                  <span class="tok-c1">; Only --load-system if `systems` is not nil</span>
-         <span class="tok-nv">loads</span>                    <span class="tok-c1">; Only --load if `loads` is not nil</span>
-         <span class="tok-nv">entry</span>
-         <span class="tok-nv">output</span><span class="tok-p">)))</span>
+<span class="tok-sb">(defun buildapp (&amp;key manifest-file entry output systems loads options)</span>
+<span class="tok-sb">  (!cmd (format-str</span>
+<span class="tok-sb">         (str-space</span>
+<span class="tok-sb">          &quot;buildapp --manifest-file ~A&quot;</span>
+<span class="tok-sb">          &quot;--asdf-tree ~A&quot;</span>
+<span class="tok-sb">          &quot;~:[~;~:*~{--load-system &#39;~A&#39; ~}~]&quot;</span>
+<span class="tok-sb">          &quot;~:[~;~:*~{--load &#39;~A&#39; ~}~]&quot;</span>
+<span class="tok-sb">          &quot;~:[~;~:*~{~A ~}~]&quot;</span>
+<span class="tok-sb">          &quot;--entry ~A&quot;</span>
+<span class="tok-sb">          &quot;--output &#39;~A&#39;&quot;)</span>
+<span class="tok-sb">         manifest-file</span>
+<span class="tok-sb">         (ulqui-dir-to &quot;generated-src/&quot;)</span>
+<span class="tok-sb">         systems                  ; Only --load-system if `</span><span class="tok-n">systems</span><span class="tok-sb">` is not nil</span>
+<span class="tok-sb">         loads                    ; Only --load if `</span><span class="tok-n">loads</span><span class="tok-sb">` is not nil</span>
+<span class="tok-sb">         options                  ; Only if `</span><span class="tok-n">options</span><span class="tok-sb">` is not nil</span>
+<span class="tok-sb">         entry</span>
+<span class="tok-sb">         output)))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">str-space</span> <span class="tok-p">(</span><span class="tok-k">&amp;rest</span> <span class="tok-nv">strs</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nb">format</span> <span class="tok-no">nil</span> <span class="tok-s">&quot;~{~A~^ ~}&quot;</span> <span class="tok-nv">strs</span><span class="tok-p">))</span>
+<span class="tok-sb">(defun str-space (&amp;rest strs)</span>
+<span class="tok-sb">  (format nil &quot;~{~A~^ ~}&quot; strs))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">format-str</span> <span class="tok-p">(</span><span class="tok-k">&amp;rest</span> <span class="tok-nv">args</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-ss">&#39;format</span> <span class="tok-no">nil</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
+<span class="tok-sb">(defun format-str (&amp;rest args)</span>
+<span class="tok-sb">  (apply &#39;format nil args))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">ulqui-dir-to</span> <span class="tok-p">(</span><span class="tok-nv">dir</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nv">uiop:merge-pathnames*</span> <span class="tok-nv">dir</span> <span class="tok-p">(</span><span class="tok-nv">current-dir</span><span class="tok-p">)))</span>
+<span class="tok-sb">(defun ulqui-dir-to (dir)</span>
+<span class="tok-sb">  (uiop:merge-pathnames* dir (current-dir)))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">current-dir</span> <span class="tok-p">()</span>
-  <span class="tok-s">&quot;Retrieves the current project directory.&quot;</span>
-  <span class="tok-p">(</span><span class="tok-nv">uiop:merge-pathnames*</span>
-   <span class="tok-p">(</span><span class="tok-nv">uiop:pathname-parent-directory-pathname</span>
-    <span class="tok-p">(</span><span class="tok-nv">uiop:pathname-directory-pathname</span> <span class="tok-p">(</span><span class="tok-nb">or</span> <span class="tok-vg">*compile-file-pathname*</span>
-                                          <span class="tok-vg">*load-pathname*</span><span class="tok-p">)))))</span>
+<span class="tok-sb">(defun current-dir ()</span>
+<span class="tok-sb">  &quot;Retrieves the current project directory.&quot;</span>
+<span class="tok-sb">  (uiop:merge-pathnames*</span>
+<span class="tok-sb">   (uiop:pathname-parent-directory-pathname</span>
+<span class="tok-sb">    (uiop:pathname-directory-pathname (or *compile-file-pathname*</span>
+<span class="tok-sb">                                          *load-pathname*)))))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">write-quicklisp-manifest</span> <span class="tok-p">()</span>
-  <span class="tok-p">(</span><span class="tok-nv">!cmd</span> <span class="tok-p">(</span><span class="tok-nv">format-str</span>
-         <span class="tok-p">(</span><span class="tok-nv">str-space</span>
-          <span class="tok-s">&quot;sbcl --noinform --no-sysinit --non-interactive&quot;</span>
-          <span class="tok-s">&quot;--eval &#39;(pushnew \&quot;~A\&quot; asdf:*central-registry*)&#39;&quot;</span>
-          <span class="tok-s">&quot;--eval &#39;(ql:quickload :ulquikit)&#39;&quot;</span>
-          <span class="tok-s">&quot;--eval &#39;(ql:write-asdf-manifest-file \&quot;quicklisp-manifest.txt\&quot;)&#39;&quot;</span>
-          <span class="tok-s">&quot;--eval &#39;(quit)&#39;&quot;</span><span class="tok-p">)</span>
-         <span class="tok-p">(</span><span class="tok-nv">ulqui-dir-to</span> <span class="tok-s">&quot;generated-src/&quot;</span><span class="tok-p">))))</span>
+<span class="tok-sb">(defun write-quicklisp-manifest ()</span>
+<span class="tok-sb">  (!cmd (format-str</span>
+<span class="tok-sb">         (str-space</span>
+<span class="tok-sb">          &quot;sbcl --noinform --no-sysinit --non-interactive&quot;</span>
+<span class="tok-sb">          &quot;--eval &#39;(pushnew </span><span class="tok-se">\&quot;</span><span class="tok-sb">~A</span><span class="tok-se">\&quot;</span><span class="tok-sb"> asdf:*central-registry*)&#39;&quot;</span>
+<span class="tok-sb">          &quot;--eval &#39;(ql:quickload :ulquikit)&#39;&quot;</span>
+<span class="tok-sb">          &quot;--eval &#39;(ql:write-asdf-manifest-file </span><span class="tok-se">\&quot;</span><span class="tok-sb">quicklisp-manifest.txt</span><span class="tok-se">\&quot;</span><span class="tok-sb">)&#39;&quot;</span>
+<span class="tok-sb">          &quot;--eval &#39;(quit)&#39;&quot;)</span>
+<span class="tok-sb">         (ulqui-dir-to &quot;generated-src/&quot;))))</span>
 
-<span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">displayln</span> <span class="tok-p">(</span><span class="tok-nv">str</span><span class="tok-p">)</span>
-  <span class="tok-p">(</span><span class="tok-nb">format</span> <span class="tok-no">t</span> <span class="tok-s">&quot;~A~%&quot;</span> <span class="tok-nv">str</span><span class="tok-p">))</span>
+<span class="tok-sb">(defun displayln (str)</span>
+<span class="tok-sb">  (format t &quot;~A~%&quot; str))</span>
 
-<span class="tok-c1">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
+<span class="tok-sb">;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -4763,7 +4756,7 @@ For that, we have a command:</p>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
+6</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">update-self</span> <span class="tok-p">()</span>
   <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Updating schiffer, replacing itself with the development version at build/schiffer&quot;</span><span class="tok-p">)</span>
@@ -4798,7 +4791,7 @@ release/ulquikit with generated-src.  Note that this function/command does
 13
 14
 15
-16</div></td><td class="code"><span class="tok-c1">;; (defun mark-stable ()</span>
+16</div></td><td class="code"><span></span><span class="tok-c1">;; (defun mark-stable ()</span>
 <span class="tok-c1">;;   (format t &quot;⇨ Removing current stable&quot;)</span>
 <span class="tok-c1">;;   (uiop:delete-directory-tree (ulqui-dir-to &quot;release&quot;)</span>
 <span class="tok-c1">;;                               :if-does-not-exist :ignore)</span>
@@ -4843,7 +4836,7 @@ release/ulquikit with generated-src.  Note that this function/command does
 18
 19
 20
-21</div></td><td class="code"><span class="tok-c1">;; (define (mark-release)</span>
+21</div></td><td class="code"><span></span><span class="tok-c1">;; (define (mark-release)</span>
 <span class="tok-c1">;;   (mark-stable)</span>
 <span class="tok-c1">;;   (let* ([latest-tag       (~&gt; (process &quot;git tag&quot;)</span>
 <span class="tok-c1">;;                              first</span>
@@ -4881,7 +4874,7 @@ generated-src/bin/ulqui.</p>
 2
 3
 4
-5</div></td><td class="code"><span class="tok-c1">;; (define (ulqui-dev args)</span>
+5</div></td><td class="code"><span></span><span class="tok-c1">;; (define (ulqui-dev args)</span>
 <span class="tok-c1">;;   (system (str &quot;generated-src/bin/ulqui &quot;</span>
 <span class="tok-c1">;;                (~&gt; (map #λ(string-append &quot;&#39;&quot; % &quot;&#39;&quot;) args)</span>
 <span class="tok-c1">;;                  (string-join &quot; &quot;))))</span>
@@ -4900,7 +4893,7 @@ generated-src/bin/ulqui.</p>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
-3</div></td><td class="code"><span class="tok-c1">;; (define (run-tests)</span>
+3</div></td><td class="code"><span></span><span class="tok-c1">;; (define (run-tests)</span>
 <span class="tok-c1">;;   (system &quot;raco test generated-src/*&quot;)</span>
 <span class="tok-c1">;;   (newline))</span>
 </td></tr></table></code></pre>
@@ -4919,7 +4912,7 @@ generated-src/bin/ulqui.</p>
 5
 6
 7
-8</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
+8</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">clean</span> <span class="tok-p">()</span>
   <span class="tok-p">(</span><span class="tok-nv">displayln</span> <span class="tok-s">&quot;⇨ Removing docs/ generated-src/ build/&quot;</span><span class="tok-p">)</span>
@@ -4965,7 +4958,7 @@ generated-src/bin/ulqui.</p>
 27
 28
 29
-30</div></td><td class="code"><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
+30</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-nb">in-package</span> <span class="tok-ss">#:schiffer</span><span class="tok-p">)</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defun</span> <span class="tok-nv">show-help</span> <span class="tok-p">()</span>
   <span class="tok-p">(</span><span class="tok-nb">format</span> <span class="tok-no">t</span> <span class="tok-s">&quot;Usage: schiffer &lt;command&gt; [options] ...</span>
@@ -5040,7 +5033,8 @@ generated-src/bin/ulqui.</p>
 34
 35
 36
-37</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+37
+38</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-p">(</span><span class="tok-nb">defpackage</span> <span class="tok-ss">#:schiffer</span>
   <span class="tok-p">(</span><span class="tok-ss">:use</span> <span class="tok-ss">:cl</span><span class="tok-p">))</span>
@@ -5063,6 +5057,7 @@ generated-src/bin/ulqui.</p>
   <span class="tok-p">(</span><span class="tok-k">let*</span> <span class="tok-p">((</span><span class="tok-nv">cmd</span> <span class="tok-p">(</span><span class="tok-nb">first</span> <span class="tok-p">(</span><span class="tok-nb">rest</span> <span class="tok-nv">argv</span><span class="tok-p">)))</span>
          <span class="tok-p">(</span><span class="tok-nv">args</span> <span class="tok-p">(</span><span class="tok-nb">rest</span> <span class="tok-p">(</span><span class="tok-nb">rest</span> <span class="tok-nv">argv</span><span class="tok-p">))))</span>
     <span class="tok-p">(</span><span class="tok-nv">alexandria:switch</span> <span class="tok-p">(</span><span class="tok-nv">cmd</span> <span class="tok-ss">:test</span> <span class="tok-nf">#&#39;</span><span class="tok-nb">string=</span><span class="tok-p">)</span>
+      <span class="tok-p">(</span><span class="tok-s">&quot;&quot;</span>                <span class="tok-p">(</span><span class="tok-nb">when</span> <span class="tok-p">(</span><span class="tok-nb">string=</span> <span class="tok-s">&quot;--help&quot;</span> <span class="tok-p">(</span><span class="tok-nb">first</span> <span class="tok-nv">args</span><span class="tok-p">))</span> <span class="tok-p">(</span><span class="tok-nv">show-help</span><span class="tok-p">)))</span>
       <span class="tok-p">(</span><span class="tok-s">&quot;help&quot;</span>            <span class="tok-p">(</span><span class="tok-nv">show-help</span><span class="tok-p">))</span>
 
       <span class="tok-p">(</span><span class="tok-s">&quot;gen-src&quot;</span>         <span class="tok-p">(</span><span class="tok-nb">apply</span> <span class="tok-nf">#&#39;</span><span class="tok-nv">gen-src</span> <span class="tok-nv">args</span><span class="tok-p">))</span>
@@ -5116,12 +5111,12 @@ to latest release.</p>
 4
 5
 6
-7</div></td><td class="code">curl --head https://github.com/cmpitg/ulquikit/releases/latest
+7</div></td><td class="code"><span></span>curl --head https://github.com/cmpitg/ulquikit/releases/latest
 
-<span class="tok-c"># HTTP/1.1 302 Found</span>
-<span class="tok-c"># Server: GitHub.com</span>
+<span class="tok-c1"># HTTP/1.1 302 Found</span>
+<span class="tok-c1"># Server: GitHub.com</span>
 <span class="tok-o">[</span>snip<span class="tok-o">]</span>
-<span class="tok-c"># Location: https://github.com/cmpitg/ulquikit/releases/tag/v0.2</span>
+<span class="tok-c1"># Location: https://github.com/cmpitg/ulquikit/releases/tag/v0.2</span>
 <span class="tok-o">[</span>snip<span class="tok-o">]</span>
 </td></tr></table></code></pre>
 </div>
@@ -5145,7 +5140,7 @@ to latest release.</p>
  9
 10
 11
-12</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-n">+latest-release-url+</span>
+12</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-n">+latest-release-url+</span>
   <span class="tok-p">(</span><span class="tok-n">string-&gt;url</span> <span class="tok-s2">&quot;https://github.com/cmpitg/ulquikit/releases/latest&quot;</span><span class="tok-p">))</span>
 
 <span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-p">(</span><span class="tok-n">get-latest-version</span><span class="tok-p">)</span>
@@ -5188,7 +5183,7 @@ version:</p>
 <pre class="pygments highlight"><code data-lang="racket"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
 3
-4</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-p">(</span><span class="tok-n">construct-download-url</span> <span class="tok-p">[</span><span class="tok-nb">version</span> <span class="tok-p">(</span><span class="tok-n">get-latest-version</span><span class="tok-p">)])</span>
+4</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-p">(</span><span class="tok-n">construct-download-url</span> <span class="tok-p">[</span><span class="tok-nb">version</span> <span class="tok-p">(</span><span class="tok-n">get-latest-version</span><span class="tok-p">)])</span>
   <span class="tok-p">(</span><span class="tok-nb">format</span> <span class="tok-s2">&quot;https://github.com/cmpitg/ulquikit/releases/download/v~a/ulquikit-v~a.zip&quot;</span>
           <span class="tok-nb">version</span>
           <span class="tok-nb">version</span><span class="tok-p">))</span>
@@ -5251,7 +5246,7 @@ result.</p>
 24
 25
 26
-27</div></td><td class="code"><span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-p">(</span><span class="tok-n">download-and-unzip</span> <span class="tok-nb">version</span> <span class="tok-n">to-dir</span><span class="tok-p">)</span>
+27</div></td><td class="code"><span></span><span class="tok-p">(</span><span class="tok-k">define</span> <span class="tok-p">(</span><span class="tok-n">download-and-unzip</span> <span class="tok-nb">version</span> <span class="tok-n">to-dir</span><span class="tok-p">)</span>
   <span class="tok-p">(</span><span class="tok-k">parameterize</span> <span class="tok-p">([</span><span class="tok-nb">current-directory</span> <span class="tok-n">to-dir</span><span class="tok-p">])</span>
     <span class="tok-p">(</span><span class="tok-k">let</span> <span class="tok-p">([</span><span class="tok-n">url</span>              <span class="tok-p">(</span><span class="tok-n">construct-download-url</span> <span class="tok-nb">version</span><span class="tok-p">)]</span>
           <span class="tok-p">[</span><span class="tok-n">filename</span>         <span class="tok-p">(</span><span class="tok-nb">format</span> <span class="tok-s2">&quot;ulquikit-v~a.zip&quot;</span> <span class="tok-nb">version</span><span class="tok-p">)]</span>
@@ -5314,7 +5309,7 @@ result.</p>
 25
 26
 27
-28</div></td><td class="code"><span class="tok-c1">;; include::license-header</span>
+28</div></td><td class="code"><span></span><span class="tok-c1">;; include::license-header</span>
 
 <span class="tok-c1">;; include::use-rackjure</span>
 
@@ -5369,17 +5364,17 @@ decide upon how it looks like:</p>
  8
  9
 10
-11</div></td><td class="code"><span class="tok-c">#!/bin/sh</span>
+11</div></td><td class="code"><span></span><span class="tok-ch">#!/bin/sh</span>
 
-<span class="tok-c">## include::quick-install/racket</span>
+<span class="tok-c1">## include::quick-install/racket</span>
 
-<span class="tok-c">## include::quick-install/ruby</span>
+<span class="tok-c1">## include::quick-install/ruby</span>
 
-<span class="tok-c">## include::quick-install/asciidoctor</span>
+<span class="tok-c1">## include::quick-install/asciidoctor</span>
 
-<span class="tok-c">## include::quick-install/rackjure</span>
+<span class="tok-c1">## include::quick-install/rackjure</span>
 
-<span class="tok-c">## include::quick-install/ulquikit</span>
+<span class="tok-c1">## include::quick-install/ulquikit</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -5391,8 +5386,8 @@ might end up look like:</p>
 <div class="content">
 <pre class="pygments highlight"><code data-lang="sh"><table class="pyhltable"><tr><td class="linenos"><div class="linenodiv">1
 2
-3</div></td><td class="code"><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which some-exec &gt;/dev/null 2&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo true</span> <span class="tok-o">||</span> <span class="tok-nb">echo false</span><span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;true&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
-   <span class="tok-c"># Do-something</span>
+3</div></td><td class="code"><span></span><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which some-exec &gt;/dev/null <span class="tok-m">2</span>&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo</span> <span class="tok-nb">true</span> <span class="tok-o">||</span> <span class="tok-nb">echo</span> <span class="tok-nb">false</span><span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;true&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+   <span class="tok-c1"># Do-something</span>
 <span class="tok-k">fi</span>
 </td></tr></table></code></pre>
 </div>
@@ -5420,13 +5415,13 @@ installed, thus the exit 1 command.</p>
  7
  8
  9
-10</div></td><td class="code"><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which racket &gt;/dev/null 2&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo </span>t <span class="tok-o">||</span> <span class="tok-nb">echo </span>f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;f&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+10</div></td><td class="code"><span></span><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which racket &gt;/dev/null <span class="tok-m">2</span>&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo</span> t <span class="tok-o">||</span> <span class="tok-nb">echo</span> f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;f&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Racket not found, please install it first.&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;   You might refer to your OS&#39;s package manager to install Racket,&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;   or download it from: http://racket-lang.org/download/&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;   Please MAKE SURE you have Racket 6+.&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Installation aborted.&quot;</span>
-    <span class="tok-nb">exit </span>1
+    <span class="tok-nb">exit</span> <span class="tok-m">1</span>
 <span class="tok-k">else</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Found Racket.  MAKE SURE you have Racket 6+.&quot;</span>
 <span class="tok-k">fi</span>
@@ -5465,29 +5460,29 @@ installed, thus the exit 1 command.</p>
 24
 25
 26
-27</div></td><td class="code"><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which ruby &gt;/dev/null 2&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo </span>t <span class="tok-o">||</span> <span class="tok-nb">echo </span>f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;f&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+27</div></td><td class="code"><span></span><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which ruby &gt;/dev/null <span class="tok-m">2</span>&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo</span> t <span class="tok-o">||</span> <span class="tok-nb">echo</span> f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;f&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Ruby not found.&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;   You might refer to your OS&#39;s package manager to install Ruby.&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;   However, this script could install Ruby for you using RVM stable.&quot;</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;   Please refer to http://rvm.io for further information.&quot;</span>
 
     <span class="tok-nb">echo</span> -n <span class="tok-s2">&quot;-&gt; Would you like to install RVM stable single-user mode? [Y/n] &quot;</span>
-    <span class="tok-nb">read </span>DO_INSTALL_RVM
+    <span class="tok-nb">read</span> DO_INSTALL_RVM
 
-    <span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;$DO_INSTALL_RVM&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;&quot;</span> <span class="tok-o">]</span> <span class="tok-se">\</span>
-        <span class="tok-o">||</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;$DO_INSTALL_RVM&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;y&quot;</span> <span class="tok-o">]</span> <span class="tok-se">\</span>
-        <span class="tok-o">||</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;$DO_INSTALL_RVM&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;Y&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+    <span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;</span><span class="tok-nv">$DO_INSTALL_RVM</span><span class="tok-s2">&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;&quot;</span> <span class="tok-o">]</span> <span class="tok-se">\</span>
+        <span class="tok-o">||</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;</span><span class="tok-nv">$DO_INSTALL_RVM</span><span class="tok-s2">&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;y&quot;</span> <span class="tok-o">]</span> <span class="tok-se">\</span>
+        <span class="tok-o">||</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;</span><span class="tok-nv">$DO_INSTALL_RVM</span><span class="tok-s2">&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;Y&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
         <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Installing Ruby 1.9 and RVM...&quot;</span>
 
         <span class="tok-se">\c</span>url -sSL https://get.rvm.io <span class="tok-p">|</span> bash -s stable
         <span class="tok-o">[[</span> -f ~/.bashrc <span class="tok-o">]]</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-o">(</span><span class="tok-nb">echo</span> <span class="tok-s1">&#39;source $HOME/.rvm/scripts/rvm&#39;</span> &gt;&gt; ~/.bashrc<span class="tok-o">)</span>
         <span class="tok-o">[[</span> -f ~/.zshrc  <span class="tok-o">]]</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-o">(</span><span class="tok-nb">echo</span> <span class="tok-s1">&#39;source $HOME/.rvm/scripts/rvm&#39;</span> &gt;&gt; ~/.zshrc<span class="tok-o">)</span>
         <span class="tok-nb">source</span> <span class="tok-nv">$HOME</span>/.rvm/scripts/rvm
-        rvm install 1.9
-        rvm use 1.9 --default
+        rvm install <span class="tok-m">1</span>.9
+        rvm use <span class="tok-m">1</span>.9 --default
     <span class="tok-k">else</span>
         <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Installation aborted.&quot;</span>
-        <span class="tok-nb">exit </span>1
+        <span class="tok-nb">exit</span> <span class="tok-m">1</span>
     <span class="tok-k">fi</span>
 <span class="tok-k">else</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Found Ruby.  MAKE SURE you have Ruby 1.9+.&quot;</span>
@@ -5506,7 +5501,7 @@ installed, thus the exit 1 command.</p>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which asciidoctor &gt;/dev/null 2&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo </span>t <span class="tok-o">||</span> <span class="tok-nb">echo </span>f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;t&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+6</div></td><td class="code"><span></span><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which asciidoctor &gt;/dev/null <span class="tok-m">2</span>&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo</span> t <span class="tok-o">||</span> <span class="tok-nb">echo</span> f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;t&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; AsciiDoctor found.&quot;</span>
 <span class="tok-k">else</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Installing AsciiDoctor...&quot;</span>
@@ -5526,7 +5521,7 @@ installed, thus the exit 1 command.</p>
 3
 4
 5
-6</div></td><td class="code"><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span><span class="tok-o">(</span>raco pkg show <span class="tok-p">|</span> grep rackjure<span class="tok-o">)</span> &gt;/dev/null 2&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo </span>t <span class="tok-o">||</span> <span class="tok-nb">echo </span>f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;t&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+6</div></td><td class="code"><span></span><span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span><span class="tok-o">(</span>raco pkg show <span class="tok-p">|</span> grep rackjure<span class="tok-o">)</span> &gt;/dev/null <span class="tok-m">2</span>&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo</span> t <span class="tok-o">||</span> <span class="tok-nb">echo</span> f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;t&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Rackjure found.&quot;</span>
 <span class="tok-k">else</span>
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Installing Rackjure...&quot;</span>
@@ -5584,20 +5579,20 @@ DOWNLOAD_URL needs to change everytime there&#8217;s new release.
 29
 30
 31
-32</div></td><td class="code"><span class="tok-nv">DOWNLOAD_URL</span><span class="tok-o">=</span>https://github.com/cmpitg/ulquikit/releases/download/v0.2.1/ulquikit-v0.2.1.zip
+32</div></td><td class="code"><span></span><span class="tok-nv">DOWNLOAD_URL</span><span class="tok-o">=</span>https://github.com/cmpitg/ulquikit/releases/download/v0.2.1/ulquikit-v0.2.1.zip
 
-<span class="tok-nb">echo</span> -n <span class="tok-s2">&quot;-&gt; Where would you like to install/update Ulquikit? (default: $HOME/) &quot;</span>
-<span class="tok-nb">read </span>ULQUIKIT_DEST
-<span class="tok-nb">eval </span><span class="tok-nv">ULQUIKIT_DEST</span><span class="tok-o">=</span><span class="tok-nv">$ULQUIKIT_DEST</span>
+<span class="tok-nb">echo</span> -n <span class="tok-s2">&quot;-&gt; Where would you like to install/update Ulquikit? (default: </span><span class="tok-nv">$HOME</span><span class="tok-s2">/) &quot;</span>
+<span class="tok-nb">read</span> ULQUIKIT_DEST
+<span class="tok-nb">eval</span> <span class="tok-nv">ULQUIKIT_DEST</span><span class="tok-o">=</span><span class="tok-nv">$ULQUIKIT_DEST</span>
 
-<span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;$ULQUIKIT_DEST&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+<span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-s2">&quot;</span><span class="tok-nv">$ULQUIKIT_DEST</span><span class="tok-s2">&quot;</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
     <span class="tok-nv">ULQUIKIT_DEST</span><span class="tok-o">=</span><span class="tok-nv">$HOME</span>/
 <span class="tok-k">fi</span>
 
 <span class="tok-nb">cd</span> <span class="tok-nv">$ULQUIKIT_DEST</span>
 
 <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Downloading latest version...&quot;</span>
-wget -q <span class="tok-s2">&quot;$DOWNLOAD_URL&quot;</span> -O ulquikit.zip
+wget -q <span class="tok-s2">&quot;</span><span class="tok-nv">$DOWNLOAD_URL</span><span class="tok-s2">&quot;</span> -O ulquikit.zip
 
 <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Unpacking...&quot;</span>
 unzip ulquikit.zip
@@ -5605,17 +5600,17 @@ unzip ulquikit.zip
 <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Removing zip file...&quot;</span>
 rm -f ulquikit.zip
 
-<span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which ulqui &gt;/dev/null 2&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo </span>t <span class="tok-o">||</span> <span class="tok-nb">echo </span>f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;f&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
+<span class="tok-k">if</span> <span class="tok-o">[</span> <span class="tok-sb">`</span>which ulqui &gt;/dev/null <span class="tok-m">2</span>&gt;<span class="tok-p">&amp;</span><span class="tok-m">1</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-nb">echo</span> t <span class="tok-o">||</span> <span class="tok-nb">echo</span> f<span class="tok-sb">`</span> <span class="tok-o">==</span> <span class="tok-s2">&quot;f&quot;</span> <span class="tok-o">]</span><span class="tok-p">;</span> <span class="tok-k">then</span>
     <span class="tok-nb">echo</span> <span class="tok-s1">&#39;-&gt; Adding ulquikit/bin to your $PATH&#39;</span>
-    <span class="tok-o">[[</span> -f ~/.bashrc <span class="tok-o">]]</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-o">(</span><span class="tok-nb">echo export </span><span class="tok-nv">PATH</span><span class="tok-o">=</span><span class="tok-nv">$ULQUI_DEST</span>/ulquikit/bin:<span class="tok-s1">&#39;$PATH&#39;</span> &gt;&gt; ~/.bashrc<span class="tok-o">)</span>
-    <span class="tok-o">[[</span> -f ~/.zshrc <span class="tok-o">]]</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-o">(</span><span class="tok-nb">echo export </span><span class="tok-nv">PATH</span><span class="tok-o">=</span><span class="tok-nv">$ULQUI_DEST</span>/ulquikit/bin:<span class="tok-s1">&#39;$PATH&#39;</span> &gt;&gt; ~/.zshrc<span class="tok-o">)</span>
+    <span class="tok-o">[[</span> -f ~/.bashrc <span class="tok-o">]]</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-o">(</span><span class="tok-nb">echo</span> <span class="tok-nb">export</span> <span class="tok-nv">PATH</span><span class="tok-o">=</span><span class="tok-nv">$ULQUI_DEST</span>/ulquikit/bin:<span class="tok-s1">&#39;$PATH&#39;</span> &gt;&gt; ~/.bashrc<span class="tok-o">)</span>
+    <span class="tok-o">[[</span> -f ~/.zshrc <span class="tok-o">]]</span> <span class="tok-o">&amp;&amp;</span> <span class="tok-o">(</span><span class="tok-nb">echo</span> <span class="tok-nb">export</span> <span class="tok-nv">PATH</span><span class="tok-o">=</span><span class="tok-nv">$ULQUI_DEST</span>/ulquikit/bin:<span class="tok-s1">&#39;$PATH&#39;</span> &gt;&gt; ~/.zshrc<span class="tok-o">)</span>
 
     <span class="tok-nb">echo</span> <span class="tok-s2">&quot;-&gt; Done!  Enjoy your time with literate programming!&quot;</span>
 <span class="tok-k">else</span>
     <span class="tok-nb">echo</span> <span class="tok-s1">&#39;-&gt; Found ulqui command in your $PATH.&#39;</span>
 <span class="tok-k">fi</span>
 
-<span class="tok-nb">export </span><span class="tok-nv">PATH</span><span class="tok-o">=</span><span class="tok-nv">$ULQUI_DEST</span>/ulquikit/bin:<span class="tok-nv">$PATH</span>
+<span class="tok-nb">export</span> <span class="tok-nv">PATH</span><span class="tok-o">=</span><span class="tok-nv">$ULQUI_DEST</span>/ulquikit/bin:<span class="tok-nv">$PATH</span>
 </td></tr></table></code></pre>
 </div>
 </div>
@@ -5636,7 +5631,7 @@ necessary.</p>
 <pre class="pygments highlight"><code data-lang="lisp"><span class="tok-c1">;;</span>
 <span class="tok-c1">;; This file is part of Ulquikit project.</span>
 <span class="tok-c1">;;</span>
-<span class="tok-c1">;; Copyright (C) 2014-2016 Ha-Duong Nguyen &lt;cmpitg AT gmailDOTcom&gt;</span>
+<span class="tok-c1">;; Copyright (C) 2014-2017 Ha-Duong Nguyen &lt;cmpitg AT gmailDOTcom&gt;</span>
 <span class="tok-c1">;;</span>
 <span class="tok-c1">;; Ulquikit is free software: you can redistribute it and/or modify it under</span>
 <span class="tok-c1">;; the terms of the GNU General Public License as published by the Free</span>
@@ -5675,7 +5670,7 @@ necessary.</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-05-18 23:30:55 EEST
+Last updated 2017-01-16 17:51:37 EET
 </div>
 </div>
 </body>

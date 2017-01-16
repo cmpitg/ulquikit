@@ -1,7 +1,7 @@
 ;;
 ;; This file is part of Ulquikit project.
 ;;
-;; Copyright (C) 2014-2016 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
+;; Copyright (C) 2014-2017 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
 ;;
 ;; Ulquikit is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
