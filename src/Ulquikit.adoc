@@ -2685,7 +2685,7 @@ installed Racket and Ruby*.
 The user-friendliness provided by the script is the most important, so let's
 decide upon how it looks like:
 
-.file::bin/quick-install.sh
+// .file::bin/quick-install.sh
 [source,sh,linenums]
 ----
 #!/bin/sh
