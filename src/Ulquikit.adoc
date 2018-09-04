@@ -2185,7 +2185,7 @@ https://github.com/ruby/rake[Rake].
 === Generating source code and HTML documentation
 
 .code::schiffer/generate
-[source,ruby,linenums]
+[source,lisp,linenums]
 ----
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
