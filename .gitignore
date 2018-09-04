@@ -1,3 +1,6 @@
 **/compiled
 /schiffer-dev
 /schiffer
+/bin
+/build
+/quicklisp-manifest.txt
