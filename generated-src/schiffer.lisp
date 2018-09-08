@@ -156,7 +156,7 @@ Available commands:
   ulqui-dev       :: Call the development version of Ulquikit: 'build/ulqui'
   clean           :: Remove all generated source, docs, and build
 
-  mark-stable     :: Mark current source code as stable by copying 'generated-src' to 'release/ulquikit/src' and copying 'build/ulqui' to 'release/ulquikit/ulqui' 
+  mark-stable     :: Mark current source code as stable by copying 'generated-src' to 'release/ulquikit/src' and copying 'build/ulqui' to 'release/ulquikit/ulqui'
   mark-release    :: Prepare for a release by generating MD5 and SHA1 checksums of 'release/ulquikit/ulqui' to 'release/ulquikit/ulqui.md5sum' and 'release/ulquikit/ulqui.sha1sum'
 
   update-self     :: Update Schiffer by replacing 'schiffer' with 'build/schiffer'
