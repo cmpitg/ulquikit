@@ -1,0 +1,85 @@
+= Ulquikit
+
+This repo is under a revamp process.
+
+== Introduction to literate programming
+
+Literate programming is a term coined by professor http://en.wikipedia.org/wiki/Donald_Knuth[Donald E. Knuth] in 1984, describing a paradigm of **thinking and writing** computer programs.
+
+From the Wikipedia page:
+
+[quote]
+____
+The literate programming paradigm [...] represents a move away from writing programs in the manner and order imposed by the computer, and instead enables programmers to develop programs in the order demanded by the logic and flow of their thoughts.  Literate programs are written as an uninterrupted exposition of logic in an ordinary human language, much like the text of an essay, in which macros are included to hide abstractions and traditional source code.
+____
+
+To quote prof. Knuth:
+
+[quote, Donald E. Knuth, "Literate Programming (1984). CSLI, 1992, pg. 99."]
+____
+Let us change our traditional attitude to the construction of programs: Instead of imagining that our main task is to instruct a computer what to do, let us concentrate rather on explaining to human beings what we want a computer to do.
+
+The practitioner of literate programming can be regarded as an essayist, whose main concern is with exposition and excellence of style.  Such an author, with thesaurus in hand, chooses the names of variables carefully and explains what each variable means.  He or she strives for a program that is comprehensible because its concepts have been introduced in an order that is best for human understanding, using a mixture of formal and informal methods that reinforce each other.
+____
+
+=== So why literate programming?
+
+* It enforces software writers to think and explain the solution before writing code.  The result is that programs are generally easier to understand as they are written with a human-communication goal in mind.
+
+* Developers appreciate high-quality, up-to-date documentation.  Yet, it is usually a bastard child in a lot of software projects.  In literate programming, documentation is a first-class citizen and integrated directly with the source code.  This effectively helps mitigate the overlooking of documentation.
+
+* Bugs that start from designing and thinking process are often easier to detect and fix in literate programming than other paradigms.
+
+* Programs in literate programming are composed and presented in a linear fashion, making it much more effective to read, understand, and http://paulgraham.com/head.html[hold in the head] as it is more natural to the human brain (as opposed to working with multiple source files span across different directories).  In that manner, reading a literate program is comparable to reading a book or watching a movie - the story is linear, with a beginning and (an) end(s), with one thing follows another.
+
+=== Why not literate programming?
+
+* Harder to debug using traditional tools.
+
+* Might not suit rapid development (since it might not be so rapid).
+
+* When writing documentation is not your cup of tea.
+
+== Introduction to Ulquikit
+
+Ulquikit is a literate programming tool that allows users to write program using a markup language, then extract code snippets into source files and render documentation in a desirable format.  Ulquikit is a fresh take on the original https://en.wikipedia.org/wiki/WEB[WEB] by Knuth.
+
+Currently Ulquikit supports the excellent https://asciidoctor.org/[AsciiDoc markup language] and allow exporting to PDF or HTML using http://asciidoctor.org/[AsciiDoctor].  Ulquikit aims to be both robust and quick to get started.  Below is some sample commands:
+
+[source,sh]
+----
+# Scan all files in source/ for literate source code and extract the source code files to generated-source/
+ulqui generate-src --from source --to generated-source
+
+# Scan all files in source/ for literate source code and generate HTML documentation to documents/
+ulqui generate-docs --from source --to documents
+----
+
+See `src/Users-Guide.adoc` for users' guide.
+
+== Installation
+
+TODO: Coming soon.
+
+=== Requirements
+
+* Ruby 2+ with http://asciidoctor.org/[AsciiDoctor].
+
+== Communication channels
+
+Please use https://github.com/cmpitg/ulquikit/issues[Github issue tracker].
+
+== License
+
+This project is distributed under the terms of the GNU General Public License v3.  See `COPYING` for further information.
+
+== Contributors
+
+Special thanks to:
+
+* https://github.com/myguidingstar[@myguidingstar]
+* https://github.com/lewtds[@lewtds]
+
+== Copyright
+
+Copyright 2013-2019 © Ha-Duong Nguyen <cmpitg AT gmailDOTCOM>

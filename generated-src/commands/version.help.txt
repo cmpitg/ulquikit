@@ -1,0 +1,3 @@
+Usage: ulqui version
+
+Display the current running version of Ulquikit.

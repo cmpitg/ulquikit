@@ -1,7 +1,7 @@
 ;;
 ;; This file is part of Ulquikit project.
 ;;
-;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;; Copyright (C) 2014-2017 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
 ;;
 ;; Ulquikit is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -17,16 +17,7 @@
 ;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 
-#lang racket
+(in-package #:ulquikit-cmd)
 
-(require racket/path)
-
-(provide +ulquikit-version+
-         +ulquikit-location+)
-
-(define +ulquikit-version+ "0.2.2")
-
-(define-values (+ulquikit-location+ _ __)
-  (split-path (or (syntax-source #'here)
-                  (find-system-path 'run-file))))
-
+(defcmd version ()
+  (format t "Ulquikit version ~A~%" ulquikit:*ulquikit-version*))

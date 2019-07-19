@@ -1,0 +1,9 @@
+* Installation instructions
+* Support building with container (Docker/Rkt)
+* Support building/developing with Guix
+* Remove dependency on Buildapp, support SBCL as the main (and currently only) Common Lisp implementation
+* Rewrite Users' Guide
+* Snippet management:
+** List all snippets
+** Query snippets
+** Filter snippets to extract

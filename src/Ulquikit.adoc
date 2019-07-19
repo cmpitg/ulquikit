@@ -1,0 +1,2878 @@
+= Ulquikit
+:Author: Ha-Duong Nguyen
+:Email: <cmpitg@gmail.com>
+:toc: left
+:toclevels: 5
+:numbered:
+:icons: font
+:source-highlighter: pygments
+:pygments-css: class
+:website: http://reference-error.org/projects/ulquikit
+
+Current version:
+
+.code::declare-version
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defvar *ulquikit-version* "2.0.0")
+----
+
+'''
+
+Ulquikit is an extensible literate programming tool supporting multiple markup
+languages with user-friendly interface.
+
+Ulquikit was originally written in Racket.  The current version is a complete
+rewrite in Common Lisp for better startup time and deployment.
+
+This document is the literate source code Ulquikit itself.  TODO: Reason why
+Ulquikit exists.
+
+To build Ulquikit, the following dependencies are required:
+
+* Ruby 2.1+ with
+** http://asciidoctor.org[AsciiDoctor]: AsciiDoc renderer
+** https://github.com/tmm1/pygments.rb[pygments.rb]: Syntax highlighter
+
+* An ANSI-compliant Common Lisp implementation, preferably
+  http://www.sbcl.org[SBCL], with
+** https://common-lisp.net/project/asdf[ASDF 3]: Build tool
+** https://www.quicklisp.org/beta/[Quicklisp]: Library manager
+** https://github.com/OdonataResearchLLC/lisp-unit[lisp-unit]: Unit testing
+   framework, designed and implemented with simplicity of use in mind.
+** https://github.com/keithj/alexandria[Alexandria]: Collection of Common Lisp
+   utilities
+** https://github.com/sharplispers/split-sequence[split-sequence]: Utility for
+   sequence splitting
+** http://weitz.de/cl-ppcre/[CL-PPCRE]: Portable Perl-compatible regular
+   expressions library
+** https://common-lisp.net/project/trivial-utf-8/[Trivial UTF-8]: UTF-8
+   library
+** https://common-lisp.net/project/iterate/[Iterate]: Iteration construct
+   library
+** https://github.com/sionescu/bordeaux-threads[bordeaux-threads]: Portable
+   threading concurrency library.
+
+To install them, please consult their official documentations.  On my setup, I
+use:
+
+* Official http://www.sbcl.org/platform-table.html[SBCL binary].
+* Ruby 2.3.3p222 with https://rvm.io[RVM] (Ruby Version Manager)
+
+TODO: quick installation
+
+== Terminology
+
+* A *code block* is an AsciiDoc/Markdown/... code block.
+
+* A *snippet* is a code block with Ulquikit-defined title.  By default, a code
+  block title that starts with `file::` and `code::` defines a _file snippet_
+  and _code snippet_, respectively:
+
+** A *file snippet* is a snippet corresponding to a file.
+** A *code snippet* is a snippet that can be included into other snippets.
+
+* An *include directive* is a line of code that:
+
+** belongs to a snippet
+** follows the `xx include::some-snippet-name` format, where `xx` are two
+   identical characters denoting a comment.  Ulquikit can recogize the
+   following comment types:
++
+[source]
+----
+// include::some-snippet-name
+;; include::some-snippet-name
+## include::some-snippet-name
+-- include::some-snippet-name
+<!-- include::some-snippet-name -\->
+/* include::some-snippet-name */
+----
+
+== Utilities
+
+Ulquikit aims to be simple and straigtforward, easy to hack and port.  The
+implementation in this document leverages a lot of utilities written in the
+link:Ulquikit-Utils.html[Ulquikit Utils] document.
+
+== Interfaces
+
+Before going into any detail, let us define the interface that Ulquikit uses
+to interact with the outside world.
+
+Essentially, Ulquikit consists of a collection of Common Lisp packages.  The
+main package is `ulquikit`, along comes its test counterpart `ulquikit-tests`.
+For testing, I decide to use
+https://github.com/OdonataResearchLLC/lisp-unit[lisp-unit] since it has very
+nice interface and helpful messages.
+
+NOTE: Prior to `lisp-unit`, I have tried
+https://github.com/capitaomorte/fiasco[Fiasco] with little success.  The API
+is nice but inflexible.  There is no easy way to remove or redefine tests/test
+packages.
+
+.file::ulquikit.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(defpackage #:ulquikit
+  (:use :cl
+        :alexandria
+        :split-sequence
+        :cl-ppcre
+        :iterate
+        :ulqui/utils)
+  (:export *ulquikit-version*
+
+           #:generate-src
+           #:generate-html
+
+           #:snippet->string
+           #:sethash
+           #:file?
+
+           #:snippet
+           #:create-snippet
+           #:extract-snippets
+           #:extract-snippets-from-file
+           #:collect-snippet
+           #:list-asciidocs))
+
+(defpackage #:ulquikit-tests
+  (:use :cl :ulquikit :cl-ppcre :lisp-unit :iterate))
+
+(in-package #:ulquikit-tests)
+
+;; Print failure details by default
+(setf *print-failures* t)
+
+;; include::declare-version
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Main
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; include::snippet-struct
+
+;; include::snippets-struct
+
+;; include::create-snippet
+
+;; include::get-snippet-content
+
+;; include::extract-snippets
+
+;; include::extract-snippets-from-file
+
+;; include::include-snippet
+
+;; include::include-snippets
+
+;; include::include-file-snippets
+
+;; include::render-asciidoc
+
+;; include::list-asciidocs
+
+;; include::generate-src
+
+;; include::generate-html
+
+----
+
+== Extracting and including snippets
+
+Ulquikit works by
+
+. searching for all AsciiDoc documents inside directory, or using a single
+  AsciiDoc document,
+. building a database of snippets,
+. and including them into each other if necessary
+
+And provides user with operations to manage source code and documentation.
+
+In a high-level perspective, the basic functionality of a literate programming
+tool is to support source code and documentation generation.  Thus, we define
+the following functions are:
+
+* <<extract-snippets-from-file,`extract-snippets-from-file`>>
+
+* <<func/include-snippet,`include-snippet!`>>, used as a building block to
+  <<section/include-snippets,include snippets>> into each other later on.
+
+=== Extracting snippets
+
+First, we need to decide a data structure to store a snippet.  This is very
+important because every change made to this would affect the code later on.
+
+Each snippet is a struct with the following alist representation:
+
+anchor:snippet-format[]
+
+[source,lisp]
+----
+((:type       . ,snippet-type)  <1>
+ (:name       . ,snippet-name)  <2>
+ (:linenum    . ,line-number)   <3>
+ (:lines      . ,snippet-lines) <4>
+ (:processed? . ,processed?))   <5>
+----
+<1> is either `:file` or `:code`, corresponding to a file or a code snippet
+<2> is the name of the snippet; e.g. snippet with title `file::something` has
+`something` as its name.  Snippet name is a _string_.
+<3> is the line number from the literate source code where the snippet is
+extracted.  The line number is an integer.
+<4> is the content of the snippet as a list of lines (list of strings).
+<5> determines whether this snippet has been processed; when created for the
+first time, `:processed?` is always `nil`.  It is only changed to `t` after
+the snippet is passed through <<func/include-snippet,+include-snippet!+>>
+
+With the above alist representation, we have the `snippet` struct implemented
+as followed:
+
+.code::snippet-struct
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defstruct (snippet (:conc-name snippet/))
+  (type :code     :type keyword)
+  (name ""        :type string)
+  (linenum 0      :type integer)
+  (lines (list)   :type list)
+  (processed? nil :type boolean))
+
+----
+
+IMPORTANT: For maintainability and extensiblity reasons, snippets should never
+be created directly with `make-snippet`.  Instead, they should be created with
+the <<create-snippet,`create-snippet`>> helper.
+
+==== Retrieving snippet content
+
+Since a snippet stores a list of lines as its content, it'd be convenient to
+have a helper that joins those lines into a complete string:
+
+.code::get-snippet-content
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun get-snippet-content (snippet)
+  "Returns the content of a snippet as string."
+  (declare (snippet snippet))
+  (join-lines (snippet/lines snippet)))
+
+----
+
+anchor:create-snippet[]
+
+==== Creating a snippet
+
+`create-snippet` is simply implemented as followed:
+
+.code::create-snippet
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun create-snippet (&key (type :code)
+                         (name "")
+                         (linenum 1)
+                         (lines (list))
+                         (processed? nil))
+  "Helper to create snippet."
+  (declare ((or string symbol) type name)
+           ((or string list) lines)
+           (integer linenum)
+           (boolean processed?))
+  (let ((type (->keyword type))
+        (name (->string name))
+        (lines (if (stringp lines)
+                   (split-sequence #\Newline lines)
+                 lines)))
+    (the snippet (make-snippet :type type
+                               :name name
+                               :linenum linenum
+                               :lines lines
+                               :processed? processed?))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-snippet-creation
+  (assert-equalp (make-snippet :type :file
+                               :name "hello-world"
+                               :linenum 10
+                               :lines ("Hmm")
+                               :processed? nil)
+                 (create-snippet :type :file
+                                 :name 'hello-world
+                                 :linenum 10
+                                 :lines '("Hmm")))
+  (assert-equalp (make-snippet :type :string
+                               :name "string"
+                               :linenum 100
+                               :lines ("string")
+                               :processed? t)
+                 (create-snippet :type "string"
+                                 :name "string"
+                                 :linenum 100
+                                 :lines "string"
+                                 :processed? t)))
+
+----
+
+Those are all snippet helpers we need.  Let's move on to
+`extract-snippets-from-file`.
+
+anchor:extract-snippets-from-file[]
+
+==== Extracting snippets from file
+
+To extract snippets from a file, we need to determine whether _a line in a
+code block_ belongs to a _code snippet_, or _file snippet_, or just a line,
+then extract the content of the code block.  There are 3 types of code block
+we have to deal with:
+
+* A _code snippet_ has the following format:
++
+[listing]
+..........
+.code::code-block-title    <1>
+[source]                   <2>
+----                       <3>
+Code block content
+----                       <4>
+..........
++
+or
++
+[listing]
+..........
+[source]                    <2>
+.code::code-block-title     <1>
+----                        <3>
+Code block content
+----                        <4>
+..........
+
+* A _file snippet_ shares the same structure as a _code snippet_:
++
+[listing]
+..........
+.file::code-block-title     <1>
+[source]                    <2>
+----                        <3>
+Code block content
+----                        <4>
+..........
++
+or
++
+[listing]
+..........
+[source]                    <2>
+.file::code-block-title     <1>
+----                        <3>
+Code block content
+----                        <4>
+..........
+
+* A non-snippet code block is any block without `code::...` and `file::...` as
+  its title:
++
+[listing]
+..........
+[source]                    <2>
+----                        <3>
+Code block content
+----                        <4>
+
+....                        <3>
+This is a literal block
+....                        <4>
+..........
+
+<1> block title
+<2> block type
+<3> opening block delimiter
+<4> closing block delimiter
+
+As we can clearly see from the 3 examples, _code snippets_ and _file snippets_
+could be determined by checking 2 lines from the opening block delimiter
+backward to see if it starts with `.file::` or `.code::`.  Everything between
+the 2 delimiters is stored as content of the snippet.
+
+Before diving into `extract-snippets-from-file`, let us define a data
+structure for storing all snippets:
+
+.code::snippets-struct
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defstruct (snippets
+             (:conc-name snippets/))
+  (file (make-hash-table :test #'equal) :type hash-table)
+  (code (make-hash-table :test #'equal) :type hash-table))
+----
+
+We have the following algorithm for `extract-snippets-from-file`:
+
+* Read the content of the file;
+
+* Break the content into lines, preserving line numbers;
+
+* For each line:
+
+** If we're already inside a snippet:
+
+*** Complete a snippet and add it to snippet list if current line is a block
+    delimiter (i.e. `----`)
+
+*** Add current line to the current snippet's content if current line is not a
+    block delimiter
+
+** If we're outside a snippet, we only care if current line is a block
+   delimiter (i.e. `----`):
+
+*** If this block has a title that marks the beginning of a snippet (i.e. the
+    2^nd^ previous line starts with `.file::` or `.code::`), extract snippet
+    name and add a new snippet.  Otherwise
+
+*** If this block does not mark the beginning of a snippet, ignore it.
+
+.code::extract-snippets-from-file
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun extract-snippets-from-file (path)
+  "Extracts snippets from a file and return a `snippets' struct."
+  (declare ((or string pathname) path))
+  (let* ((text (string-trim '(#\Space #\Newline #\e #\t #\m) (read-file path)))
+         (lines (split-sequence #\Newline text))
+
+         (snippets (make-snippets))
+
+         (prev-prev-line "")
+         (prev-line      "")
+         (linenum        0)             ; current line number
+         (inside?        nil)           ; currently inside a snippet?
+
+         (s/type       :code)
+         (s/lines/rev  (list))
+         (s/name       "")
+         (s/linenum    0))
+    (dolist (line lines)
+      (incf linenum)
+
+      ;; (format t "~A |> ~A~%" linenum line)
+      ;; (format t "   |> block? ~A~%" (block-delimiter? line))
+
+      (cond ((and inside? (not (block-delimiter? line)))
+
+             (push line s/lines/rev))
+
+            ((and inside? (block-delimiter? line))
+
+             ;; Close the current snippet
+             (setf inside?  nil
+                   snippets (collect-snippet snippets
+                                             (create-snippet
+                                              :type s/type
+                                              :name s/name
+                                              :lines (nreverse s/lines/rev)
+                                              :linenum s/linenum))))
+
+            ((and (not inside?) (block-delimiter? line))
+             ;; (format t "  found snippet > num: ~A~%" linenum)
+
+             (when-let (title (cond ((block-title? prev-line) prev-line)
+                                    ((block-title? prev-prev-line) prev-prev-line)
+                                    (t nil)))
+               (multiple-value-bind (type name) (parse-snippet-title title)
+                 (setf inside?     t
+                       s/type      type
+                       s/name      name
+                       s/lines/rev (list)
+                       s/linenum   (1- linenum))))))
+
+      ;; Update previous lines
+      (unless (zerop (length (string-trim '(#\Space #\Newline #\e #\t #\m) line)))
+        (setf prev-prev-line prev-line
+              prev-line      line)))
+
+    ;; (list linenum (length lines) snippets)
+    snippets))
+
+;; (extract-snippets-from-file "/m/src/ulquikit/src/Ulquikit.adoc")
+;; (time (extract-snippets-from-file "/m/src/ulquikit/src/Ulquikit.adoc"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun block-delimiter? (str)
+  "Determines if a string is a block delimiter.  TODO: Make this extensible."
+  (declare (string str))
+  (scan "^----( *)$" str))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-block-delimiter
+  (assert-true (ulquikit::block-delimiter? "----"))
+  (assert-true (not (ulquikit::block-delimiter? " ----")))
+  (assert-true (ulquikit::block-delimiter? "---- "))
+  (assert-true (ulquikit::block-delimiter? "----  "))
+  (assert-true (not (ulquikit::block-delimiter? "----a"))))
+
+;; (run-tests '(test-block-delimiter))
+
+(in-package #:ulquikit)
+
+(defun block-title? (str)
+  "Determines if a string is a block title.  TODO: Make this extensible."
+  (declare (string str))
+  (scan "^\\.(file|code)::" str))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-block-title
+  (assert-true (ulquikit::block-title? ".file::something"))
+  (assert-true (ulquikit::block-title? ".file::something else"))
+  (assert-true (ulquikit::block-title? ".file::"))
+  (assert-true (null (ulquikit::block-title? ".file:something"))))
+
+;; (run-tests '(test-block-title))
+
+(in-package #:ulquikit)
+
+(defun parse-snippet-title (title)
+  "Parses a snippet title and returns `(values <snippet-type>
+<snippet-name>)'."
+  (declare (string title))
+  (multiple-value-bind (_ res) (scan-to-strings "\.(file|code)::(.*)" title)
+    (declare (ignore _))
+    (values (the keyword (->keyword (aref res 0)))
+            (the string  (aref res 1)))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-parse-snippet-title
+  (dolist (el '((".file::"    . (:file ""))
+                (".code::"    . (:code ""))
+                (".file::abc" . (:file "abc"))
+                (".code::a b" . (:code "a b"))))
+    (let ((title    (first el))
+          (expected (rest  el)))
+      (multiple-value-bind (type name) (ulquikit::parse-snippet-title title)
+        (assert-equal expected (list type name))))))
+
+;; (run-tests '(test-parse-snippet-title))
+
+(in-package #:ulquikit)
+
+(defun collect-snippet (snippets snippet)
+  "Collects `snippet' into the list of snippets."
+  (declare (snippets snippets)
+           (snippet  snippet))
+  (let* ((type (snippet/type snippet))
+         (name (snippet/name snippet))
+         (current-file (snippets/file snippets))
+         (current-code (snippets/code snippets))
+         (file (case type
+                 (:file     (sethash name current-file snippet)
+                            current-file)
+                 (otherwise current-file)))
+         (code (case type
+                 (:code     (sethash name current-code snippet)
+                            current-code)
+                 (otherwise current-code))))
+    (the snippets (make-snippets :file file
+                                 :code code))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-collect-snippets
+  (assert-equalp (collect-snippet (ulquikit::make-snippets)
+                                  (create-snippet :type :file
+                                                  :name :hello
+                                                  :linenum 10
+                                                  :lines '("Something")))
+                 (ulquikit::make-snippets
+                  :file (alexandria:alist-hash-table `(("hello" . ,(ulquikit::make-snippet
+                                                                    :type :file
+                                                                    :name "hello"
+                                                                    :linenum 10
+                                                                    :lines ("Something")
+                                                                    :processed? nil)))
+                                                     :test #'equal)
+                  :code (make-hash-table :test #'equal)))
+
+  (assert-equalp (collect-snippet
+                  (ulquikit::make-snippets
+                   :file (alexandria:alist-hash-table `(("hello" . ,(ulquikit::make-snippet
+                                                                     :type :file
+                                                                     :name "hello"
+                                                                     :linenum 10
+                                                                     :lines ("Something")
+                                                                     :processed? nil)))
+                                                      :test #'equal)
+                   :code (make-hash-table :test #'equal))
+                  (create-snippet :type 'code
+                                  :name 'say-something
+                                  :linenum 100
+                                  :lines '("Something else")))
+                 (ulquikit::make-snippets :file (alexandria:alist-hash-table
+                                                 `(("hello" . ,(ulquikit::make-snippet
+                                                                :type :file
+                                                                :name "hello"
+                                                                :linenum 10
+                                                                :lines ("Something")
+                                                                :processed? nil)))
+                                                 :test #'equal)
+                                          :code (alexandria:alist-hash-table
+                                                 `(("say-something" . (ulquikit::make-snippet
+                                                                       :type :code
+                                                                       :name "say-something"
+                                                                       :linenum 100
+                                                                       :lines ("Something else")
+                                                                       :processed? nil)))
+                                                 :test #'equal))))
+
+;; (run-tests '(test-collect-snippets))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+----
+
+As a result, `extract-snippets`, which recursively extracts snippets from all
+AsciiDoc documents in a directory, makes use of `extract-snippets-from-file`.
+`extract-snippets` takes a path and returns a `snippets` struct.
+
+.code::extract-snippets
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun extract-snippets (path &key (recursive t))
+  "Extracts all snippets from all AsciiDoc directory in `path'.  The AsciiDoc
+files are searched recursively or non-recursively depending on `recursive'.
+This function also takes `path' as a single AsciiDoc file."
+  (declare ((or string pathname) path))
+  (reduce #'merge-snippets
+          (list-asciidocs path :recursive recursive)
+          :initial-value (make-snippets)))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-extract-snippets
+  (let* ((test-dir (uiop:merge-pathnames*
+                    "ulquikit/test-extract-snippets/"
+                    (uiop:ensure-directory-pathname (uiop:getenv "TMPDIR"))))
+
+         (content `(("Main.adoc" . "= A sample program
+
+This program consists of several snippets and a hello
+
+== Main program
+
+The main program includes function `say-hello` from `lib/Say-Hello.adoc` and
+function `say-world` from `lib/Say-World.adoc` and calls them.
+
+.file::/tmp/main.lisp
+\----
+;; include::say-hello
+
+;; include::say-world
+
+\(say-hello\)
+\(say-world\)
+
+\----
+")
+                    ("License" . "Do what you want to do with it!")
+                    ("lib/Say-Hello.adoc" . "What do you actually expect in this
+file?  Two snippets, one of which doesn't get captured.
+
+.code::say-hello
+[source,lisp,linenums]
+\----
+\(defun say-hello \(\)
+  \(format t \"Hello \"\)\)
+\----
+
+The following snippet doesn't get captured as it has no title:
+
+[source,lisp,linenums]
+\----
+\(defun throw-away \(\)
+  \(error \"If you see me, there is at least one error happened!\"\)\)
+\----
+")
+                    ("lib/Say-World.adoc" . "Another way to define code block title with AsciiDoc:
+
+[source,lisp,linenums]
+.code::say-world
+\----
+\(defun say-world \(\)
+  \(format t \"world!~%\"\)\)
+\----
+")))
+         (files (mapcar #'(lambda (content-pair)
+                            (cons (uiop:merge-pathnames* (car content-pair) test-dir)
+                                  (cdr content-pair)))
+                        content)))
+    (uiop:delete-directory-tree test-dir :if-does-not-exist :ignore)
+    (format t "Test dir: ~A~%" test-dir)
+
+    (dolist (path+content files)
+      (let ((path    (car path+content))
+            (content (cdr path+content)))
+        (ensure-directories-exist path)
+        (with-open-file (out path :direction :output)
+          (princ content out))))
+
+    (let* ((snippets (ulquikit::extract-snippets test-dir))
+           (file-snippets (ulquikit::snippets/file snippets))
+           (code-snippets (ulquikit::snippets/code snippets)))
+      (assert-equal 1 (hash-table-count file-snippets))
+      (assert-equal 2 (hash-table-count code-snippets))
+
+      (assert-equal ";; include::say-hello
+
+;; include::say-world
+
+\(say-hello\)
+\(say-world\)
+"
+                    (snippet->string (gethash "/tmp/main.lisp" file-snippets)))
+      (assert-equal "\(defun say-hello \(\)
+  \(format t \"Hello \"\)\)"
+                    (snippet->string (gethash "say-hello" code-snippets)))
+      (assert-equal "\(defun say-world \(\)
+  \(format t \"world!~%\"\)\)"
+                    (snippet->string (gethash "say-world" code-snippets))))))
+
+;; (run-tests '(test-extract-snippets))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun snippet->string (snippet)
+  "Returns the string representation of a snippet."
+  (declare (snippet snippet))
+  (get-snippet-content snippet))
+
+;;; (snippet->string (make-snippet))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-snippet->string
+  (assert-equal "" (snippet->string (make-snippet)))
+  (assert-equal "aoeu" (snippet->string (make-snippet :lines '("aoeu"))))
+  (assert-equal "aoeu
+ueoa"
+                (snippet->string (make-snippet :lines '("aoeu" "ueoa")))))
+
+;; (run-tests '(test-snippet->string))
+
+(in-package #:ulquikit)
+
+(defun merge-snippets (current-snippets new-src)
+  "Merges 2 chunks of snippet.  If `new-src' is a literate source file,
+`merge-snippets' will perform the extraction before the merge first."
+  (declare (snippets current-snippets)
+           ((or string pathname snippets) new-src))
+  (let ((new-snippets (typecase new-src
+                        ((or string pathname)
+                         (extract-snippets-from-file new-src))
+                        (snippets
+                         new-src))))
+    ;; Merging 2 snippets
+    (maphash #'(lambda (key value)
+                 (sethash key
+                          (snippets/file current-snippets)
+                          value))
+             (snippets/file new-snippets))
+    (maphash #'(lambda (key value)
+                 (sethash key
+                          (snippets/code current-snippets)
+                          value))
+             (snippets/code new-snippets))
+    (the snippets current-snippets)))
+
+----
+
+And last but not least, we need a helper to retrieve all AsciiDoc documents
+from a directory, recursively or non-recursively.
+
+===== Retrieving all ASCIIDoc documents in a directory
+
+.code::list-asciidocs
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+;; TODO: list-asciidocs suppors taking path as a list
+(defun list-asciidocs (path &key (recursive t))
+  "Returns a list of all ASCIIDoc file (i.e. file with .adoc or .txt
+extensions) from directory `path', ignoring all temporary files.  TODO: Make
+this extensible."
+  (declare ((or string pathname) path))
+  (if (uiop:file-exists-p path)
+      (list path)
+    (let* ((path (uiop:ensure-directory-pathname path))
+           (current-asciidocs (remove-if #'(lambda (path)
+                                             (not (valid-asciidoc-file? path)))
+                                         (uiop:directory-files path))))
+      (if recursive
+          (apply #'append
+                 current-asciidocs
+                 (mapcar #'(lambda (subdir)
+                             (list-asciidocs subdir :recursive recursive))
+                         (uiop:subdirectories path)))
+        current-asciidocs))))
+
+(in-package #:ulquikit)
+
+(defun valid-asciidoc-file? (path)
+  "Determines if a path refers to an AsciiDoc file based on its extension."
+  (let ((path (namestring path)))
+    (and (not (uiop:directory-pathname-p path))
+         (cl-ppcre:scan "^[^#]" path)
+         (cl-ppcre:scan "\\.(adoc|txt|asciidoc)$" path))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-list-asciidocs
+  (let* ((files '("a.adoc"
+                  "b.adoc"
+                  "c.md"
+                  "e.adoc"
+                  "hello/a.adoc"
+                  "hello/b.html"
+                  "hello/world/hola.adoc"
+                  "hello/world/mundo.adoc"))
+         (temppath (uiop:merge-pathnames* "ulquikit/test-list-asciidocs/"
+                                          (pathname (uiop:ensure-directory-pathname
+                                                     (uiop:getenv "TMPDIR")))))
+         (expected (iterate
+                    (for path in files)
+                    (when (scan "\\.adoc$" path)
+                      (collect (uiop:merge-pathnames* path temppath))))))
+    ;; Setup
+    (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)
+    (dolist (path files)
+      (let ((file (uiop:merge-pathnames* path temppath)))
+        (ensure-directories-exist (uiop:pathname-directory-pathname file))
+        (with-open-file (out file :direction :output
+                             :if-exists :supersede)
+          (princ "Hello world" out))))
+
+    (let ((adocs (list-asciidocs temppath)))
+      (assert-equalp (sort expected #'(lambda (path1 path2)
+                                        (string< (namestring path1)
+                                                 (namestring path2))))
+                     (sort adocs #'(lambda (path1 path2)
+                                     (string< (namestring path1)
+                                              (namestring path2))))))
+
+    ;; Tear down
+    (uiop:delete-directory-tree temppath :if-does-not-exist :ignore)))
+
+;; (run-tests '(test-list-asciidocs))
+----
+
+After `extract-snippets`, we need a function to include snippets into each
+other.
+
+anchor:section/include-snippets[]
+
+=== Including snippets into each other with `include-snippet!`
+
+Taking 2 arguments:
+
+* the current list of snippets,
+* a `(type . name)` cons representing the target snippet, i.e. the one being
+  processed, this snippet *must* be a part of the current list of snippets,
+
+this function returns the new list of snippets with the target snippet
+modified.
+
+`include-snippet!` works by browsing through the target snippet's content, one
+line at a time, and replacing line containing the `include::` directive with
+the corresponding __code snippet__s in the list.  If no snippet is found, the
+line doesn't change.
+
+IMPORTANT: To prevent unnecessary copy, this function modifies its arguments,
+hence its name is suffixed with a bang (`!`).  To safely use
+`include-snippet!`, call it with a copy of the arguments (using `copy-list` or
+`copy-tree`, etc.).
+
+WARNING: In case of circular dependency, e.g. snippet A includes itself, the
+result is *undefined*.  Make sure your snippets are well managed.
+
+anchor:func/include-snippet[]
+
+.code::include-snippet
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun include-snippet! (snippets type+name)
+  "Processes target snippet \(presented by `type+name'\) by replacing all of
+its \"include\" directives with the corresponding code snippets found in
+`snippets'.  If the target snippet introduces circular dependency, the result
+is undefined.
+
+This function modifies `snippets' in-place and returns it after processing."
+  (declare (cons type+name) (snippets snippets))
+
+  ;; (format t "→ including snippet ~A~%" type+name)
+
+  ;; Ignore of the target snippet doesn't exist in the list of snippets
+  (when (snippet-exists? type+name snippets)
+    (let* ((target/type (car type+name))
+           (target/name (cdr type+name))
+           (target      (snippets/get-snippet snippets
+                                              :type target/type
+                                              :name target/name))
+           (lines       (snippet/lines target))
+           (lines-final (list)))
+      ;; Also, we ignore if this snippet has already been processed
+      (unless (snippet/processed? target)
+        ;; Consider this snippet processed
+        (setf (snippet/processed? target) t)
+
+        ;; Now, recollect lines
+        (dolist (line lines)
+          ;; (format t "  Processing ~A~%" line)
+          (if (include-directive? line)
+              (let* ((includee-name (parse-include-directive line))
+                     (includee      (snippets/get-snippet snippets
+                                                          :type :code
+                                                          :name includee-name)))
+                (cond ((null includee)
+                       ;; No such snippet to include
+                       (push line lines-final))
+
+                      ((snippet/processed? includee)
+                       (push (snippet->string includee) lines-final))
+
+                      ((not (snippet-exists? includee snippets))
+                       (push line lines-final))
+
+                      (t
+                       (setf snippets (include-snippet!
+                                       snippets
+                                       `(:code . ,includee-name)))
+                       (push (snippet->string includee) lines-final))))
+            (push line lines-final)))
+
+        ;; (format t "Snippet: ~A; result: ~A~%"
+        ;;         (cdr type+name)
+        ;;         (join-lines (reverse (copy-list lines-final))))
+
+        ;; Then, collect result
+        (setf (snippet/lines target)
+              (list (join-lines (nreverse lines-final)))))))
+  snippets)
+
+(in-package #:ulquikit-tests)
+
+;; (run-tests '(test-include-snippet))
+
+(define-test test-include-snippet
+  (let* ((snp/file (ulquikit::make-snippet :name "/tmp/tmp.lisp"
+                                           :type :file
+                                           :lines '(";; include::A"
+                                                    ";; The end")
+                                           :linenum 10))
+         (snp/code/A (ulquikit::make-snippet :name "A"
+                                             :type :code
+                                             :lines '("World"
+                                                      ";; include::B"
+                                                      ";; include::D")
+                                             :linenum 20))
+         (snp/code/B (ulquikit::make-snippet :name "B"
+                                             :type :code
+                                             :lines '("Hello")
+                                             :linenum 30))
+         (snp/code/C (ulquikit::make-snippet :name "C"
+                                             :type :code
+                                             :lines '("Not processed")
+                                             :linenum 15))
+         ;; Circular dependency
+         (snp/code/D (ulquikit::make-snippet :name "D"
+                                             :type :code
+                                             :lines '(";; include A")
+                                             :linenum 100))
+
+         (snippets (let* ((res (ulquikit::make-snippets))
+                          (ulquikit::snippets/file (ulquikit::snippets/file res))
+                          (ulquikit::snippets/code (ulquikit::snippets/code res)))
+                     (setf (gethash "/tmp/tmp.lisp" ulquikit::snippets/file) snp/file
+                           (gethash "A" ulquikit::snippets/code) snp/code/A
+                           (gethash "B" ulquikit::snippets/code) snp/code/B
+                           (gethash "C" ulquikit::snippets/code) snp/code/C
+                           (gethash "D" ulquikit::snippets/code) snp/code/D)
+                     ;; Don't add D right away
+                     res)))
+    (setf snippets (ulquikit::include-snippet! snippets `(:code . "A")))
+    (assert-true t)
+    (assert-true (ulquikit::snippet/processed? snp/code/A))
+    (assert-true (ulquikit::snippet/processed? snp/code/B))
+    (assert-true (ulquikit::snippet/processed? snp/code/D))
+    (assert-false (ulquikit::snippet/processed? snp/code/C))
+    (assert-false (ulquikit::snippet/processed? snp/file))
+    (assert-true (scan "^World\\nHello\\n"
+                       (nth 0 (ulquikit::snippet/lines snp/code/A))))
+
+    (setf snippets (ulquikit::include-snippet! snippets `(:file . "/tmp/tmp.lisp")))
+    (let ((content (nth 0 (ulquikit::snippet/lines snp/file))))
+      (assert-true (ulquikit::snippet/processed? snp/file))
+      (assert-true (scan "^World\\nHello\\n" content))
+      (assert-true (scan ";; The end$" content)))))
+
+;; (run-tests '(test-include-snippet))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun snippet-exists? (snippet snippets)
+  "Determines if the corresponding snippet is in `snippets'."
+  (declare ((or snippet string cons) snippet)
+           (snippets snippets))
+  (typecase snippet
+    ((or cons snippet)
+     (let ((name (typecase snippet
+                   (cons    (cdr snippet))
+                   (snippet (snippet/name snippet))))
+           (type (typecase snippet
+                   (cons    (car snippet))
+                   (snippet (snippet/type snippet)))))
+       (case type
+         (:code (not (null (gethash name (snippets/code snippets)))))
+         (:file (not (null (gethash name (snippets/file snippets))))))))
+    (string
+     (or (not (null (gethash snippet (snippets/code snippets))))
+         (not (null (gethash snippet (snippets/file snippets))))))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-snippet-exists?
+  (let* ((code/a (make-snippet :name "a" :type :code))
+         (code/b (make-snippet :name "b" :type :code))
+         (file/a (make-snippet :name "a" :type :file))
+         (file/b (make-snippet :name "b" :type :file))
+         (snippets (let ((res (make-snippets)))
+                     (sethash "a" (snippets/code res) code/a)
+                     (sethash "a" (snippets/file res) file/a)
+                     res)))
+    (assert-eq t   (ulquikit::snippet-exists? code/a snippets))
+    (assert-eq t   (ulquikit::snippet-exists? file/a snippets))
+    (assert-eq t   (ulquikit::snippet-exists? "a"    snippets))
+    (assert-eq t   (ulquikit::snippet-exists? `(:code . "a") snippets))
+    (assert-eq t   (ulquikit::snippet-exists? `(:file . "a") snippets))
+    (assert-eq nil (ulquikit::snippet-exists? `(:code . "b") snippets))
+    (assert-eq nil (ulquikit::snippet-exists? code/b snippets))
+    (assert-eq nil (ulquikit::snippet-exists? file/b snippets))
+    (assert-eq nil (ulquikit::snippet-exists? "b"    snippets))))
+
+;; (run-tests '(test-snippet-exists?))
+
+(in-package #:ulquikit)
+
+(defun include-directive? (line)
+  "Determines of the corresponding line is a include directive.  TODO: Make this extensible."
+  (declare (string line))
+  (the boolean
+       (let ((line (string-trim '(#\Space #\e #\t #\m) line)))
+         (not (null (or (scan "^[#;/-]{2} include::.*" line)
+                        (scan "^<!-- include::.* -->" line)
+                        (scan "^/\\* include::.* \\*/" line)))))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-include-directive?
+  (assert-eq t   (ulquikit::include-directive? "  ;; include::"))
+  (assert-eq t   (ulquikit::include-directive? ";; include::"))
+  (assert-eq nil (ulquikit::include-directive? "a;; include::"))
+  (assert-eq t   (ulquikit::include-directive? ";; include::something"))
+  (assert-eq t   (ulquikit::include-directive? "## include::something"))
+  (assert-eq t   (ulquikit::include-directive? "// include::something"))
+  (assert-eq t   (ulquikit::include-directive? "/* include::something */"))
+  (assert-eq t   (ulquikit::include-directive? "<!-- include::something -->"))
+  (assert-eq nil (ulquikit::include-directive? "a <!-- include::something -->")))
+
+;; (run-tests '(test-include-directive?))
+
+(in-package #:ulquikit)
+
+(defun parse-include-directive (str)
+  "Parses and extracts snippet name from an include directive.  See its tests
+for detailed information on input/output format.  TODO: make this extensible."
+  (declare (string str))
+  (the
+   string
+   (if (include-directive? str)
+       (let ((input (cond ((and (scan " -->$" str) (scan "^<!-- " str))
+                           (subseq str 0 (- (length str) (length " -->"))))
+                          ((and (scan " \\*/$" str) (scan "^/\\* " str))
+                           (subseq str 0 (- (length str) (length " */"))))
+                          (t
+                           str))))
+         (multiple-value-bind (_ name/array)
+             (scan-to-strings "include::(.*)$" input)
+           (declare (ignore _))
+           (elt name/array 0)))
+     "")))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-include-directive
+  (assert-equal "" (ulquikit::parse-include-directive "  ;; include::"))
+  (assert-equal "" (ulquikit::parse-include-directive ";; include::"))
+  (assert-equal "" (ulquikit::parse-include-directive
+                    "a <!-- include::something -->"))
+  (assert-equal "something" (ulquikit::parse-include-directive
+                             ";; include::something"))
+  (assert-equal "something" (ulquikit::parse-include-directive
+                             "## include::something"))
+  (assert-equal "something" (ulquikit::parse-include-directive
+                             "// include::something"))
+  (assert-equal "something" (ulquikit::parse-include-directive
+                             "/* include::something */"))
+  (assert-equal "something" (ulquikit::parse-include-directive
+                             "<!-- include::something -->")))
+
+;; (run-tests '(test-include-directive))
+
+(in-package #:ulquikit)
+
+(defun snippets/get-snippet (snippets &key
+                                        (type :code)
+                                        name)
+  "Helper to quickly retrieve a snippet from a `snippets' struct."
+  (declare (snippets snippets)
+           (keyword  type)
+           (string   name))
+  (let ((hash (case type
+                (:code (snippets/code snippets))
+                (:file (snippets/file snippets))
+                (otherwise (make-hash-table)))))
+    (the (or boolean snippet) (gethash name hash))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-snippets/get-snippet
+  (let* ((snp/code/a (make-snippet :type :code :name "a"))
+         (snp/code/b (make-snippet :type :code :name "b"))
+         (snp/file/c (make-snippet :type :file :name "c.lisp"))
+         (snippets (let ((res (make-snippets)))
+                     (sethash "a" (snippets/code res) snp/code/a)
+                     (sethash "b" (snippets/code res) snp/code/b)
+                     (sethash "c" (snippets/file res) snp/file/c)
+                     res)))
+    (assert-equal snp/code/a (ulquikit::snippets/get-snippet snippets
+                                                             :type :code
+                                                             :name "a"))
+    (assert-equal snp/code/b (ulquikit::snippets/get-snippet snippets
+                                                             :type :code
+                                                             :name "b"))
+    (assert-equal snp/file/c (ulquikit::snippets/get-snippet snippets
+                                                             :type :file
+                                                             :name "c"))))
+
+;; (run-tests '(test-snippets/get-snippet))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+----
+
+And that concludes the most important functions of Ulquikit.  Those are used
+to implement the higher-level <<generate-source,`generate-src`>> functionality
+right below.
+
+anchor:generate-src[]
+
+=== Generating source code
+
+`generate-src` is a function taking 2 keyword arguments:
+
+* `from` - where to read find literate source code, could be either a
+  directory or a file, and
+* `to` - where to generate the source code to.
+
+The literate source files are retrieved recursively from `from`.
+
+anchor:func/generate-src[]
+
+.code::generate-src
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun generate-src (&key (from "src") (to "generated-src") (recursive t))
+  "Generates source code from all literate source files in `from' to directory
+`to'.  `from' is either a directory or a single literate source file."
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
+  (let* ((to       (full-path (uiop:ensure-directory-pathname to)))
+         (snippets (typecase from
+                     ((or string pathname)
+                      (extract-snippets from :recursive recursive))
+                     (list
+                      (apply #'merge-snippets
+                             (mapcar #'(lambda (from)
+                                         (extract-snippets
+                                          from
+                                          :recursive recursive))
+                                     from))))))
+    ;; (format t "Generating src from: ~A to: ~A~%" from to)
+    (write-src-files (include-file-snippets! snippets) to)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun write-src-files (snippets to)
+  "Writes all source snippets as files to `to'."
+  (declare (snippets snippets)
+           ((or string pathname) to))
+  (iter (for (name snippet) in-hashtable (snippets/file snippets))
+        (let ((path (uiop:merge-pathnames*
+                     name
+                     (uiop:merge-pathnames*
+                      to
+                      (uiop:getcwd))))
+              (content (snippet->string snippet)))
+          (format t "Writing ~A~%" path)
+          (ensure-directories-exist path)
+          (write-file path content))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+----
+
+The `generate-src` function makes use a function, `include-file-snippets!`,
+that we are about it to implement right below.  As the name suggests,
+`include-file-snippets!` takes a list of snippets (of `snippets` struct) and
+returns a new list with all file snippets
+<<section/include-snippets,included>>.
+
+IMPORTANT: `include-file-snippets!` is destructive for the same reason
+<<func/include-snippet,`include-snippet!`>> is destructive.  Make sure you
+don't create unwanted side effects when using it directly.
+
+.code::include-file-snippets
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun include-file-snippets! (snippets)
+  "Includes all file snippets in `snippets' and return a `snippets' with all
+file snippets included.  Note that this function is destructive."
+  (declare (snippets snippets))
+  (let ((file-snippets (snippets/file snippets)))
+    (iter (for (name _) in-hashtable file-snippets)
+          (include-snippet! snippets `(:file . ,name))))
+  snippets)
+----
+
+And of course, we need help string for `generate-src` command that we'll talk
+about right away:
+
+.file::commands/generate-src.help.txt
+[source,text]
+----
+Usage: ulqui generate-src [--from from] [--to to] [--recursive recursive]
+
+Generate source code from literate documents.
+
+  --from       either path to a directory where literate documents are stored, or list of paths to literate documents; default: "src/"
+  --to         directory where source code are generated to; default: "generated-src/"
+  --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
+
+Examples
+
+Generate source code from src/ to generated-src/ recursively
+  ulqui generate-src
+
+or explitcitly
+  ulqui generate-src --from src/ --to generated-src/ --recursive true
+
+Generate source code from literate-source/ to source/ non-recursively
+  ulqui generate-src --from literate-source/ --to source/ --recursive false
+
+Generate source code from Foo.adoc and quux/ to source/ recursively
+  ulqui generate-src --from Foo.adoc quux/ --to source/
+
+----
+
+Once all functions are ready, let's put them together into a command to
+generate source code.  The `generate-src` command might look like so:
+
+.file::commands/generate-src.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(in-package #:ulquikit-cmd)
+
+(defcmd generate-src (&key (from "src")
+                           (to "generated-src")
+                           (recursive t))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
+  (display-cmd "Generating source")
+  (ulquikit:generate-src :from from :to to :recursive recursive))
+
+----
+
+Of course we need to define the `ulquikit-cmd` package that holds all Ulquikit
+commands:
+
+.file::ulquikit-cmd.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(defpackage #:ulquikit-cmd
+  (:use :cl :command-core :cl-ppcre :ulqui/utils))
+
+;; include::ulquikit-cmd/main
+
+----
+
+Let's generalize this idea for other commands.
+
+== Anatomy of a Ulquikit command
+
+A Ulquikit command is a function that only has keyword arguments residing in
+`ulquikit-cmd` package.  Its keyword arguments correspond to their
+command-line counterparts.  This makes implementing a new command very
+simple - just by adding a function to `ulquikit-cmd`.  With Common Lisp's
+powerful retrospection ability, commands could be inspected and extended very
+easily as well.
+
+Each command has their own source file in the `commands/` directory and is
+defined with the <<defcmd,`defcmd`>> macro.  This macro:
+. generates the actual function corresponding to a command,
+. assigns the help text from `commands/<command-name>.help.txt` as its
+  documentation,
+. and adds it to the command list (represented by the `*command-list*`
+  variable in the corresponding package that where the function resides).
+
+Commands are then loaded in alphabetical order of their source code files.
+This way, one can override commands by adding another definition at later
+stage.  Commands must have help.  It is recommended that functions
+corresponding to a command is not exported.
+
+When used as a command line argument tool, Ulquikit command invocation works
+as followed:
+
+* Command line arguments are parsed and passed with utilities in
+  `command-core` package:
++
+E.g.
+
+** `ulqui generate-src` calls `(ulquikit-cmd::generate-src)`.
+
+** `ulqui generate-src some-file` calls `(ulquikit-cmd::generate-src
+   "some-file")`.
+
+** `ulqui generate-src --from file1 --to file2` calls `(ulquikit-cmd::generate-src :from
+   "file1" :to "file2")`.
+
+* When `ulqui help command-name` or `ulqui command-name --help` is invoked,
+  `(command-core:help "command-name" :ulquikit-cmd)` is called.
+
+Let's move on to utilities that are used to parse command line arguments.
+
+=== Parsing command line arguments with `parse-cmd-args`
+
+This function takes all arguments passed to the command line as a list of
+strings and returns an alist as such:
+
+[source,lisp,linenums]
+----
+((:arguments . list-of-arguments) <1>
+ (:options   . alist-of-options)) <2>
+----
+
+<1> main arguments collected as a list, with the same order as they are at the
+command line
+<2> options are collected as alist; options that have no values are set to `t`
+
+In Ulquikit, options are prefixed with one or two dashes (`-` or `--`), while
+arguments are not.  Option values are attempted to parse as number or boolean
+(e.g. in case of `1`, `t`, `true`, `false`, ...).  See the test section of the
+implementation below for detailed information.
+
+The `command-core` package and its test counterpart could thus be declared
+like so:
+
+.code::define-command-core-package
+[source,lisp,linenums]
+----
+(in-package #:cl)
+
+(defpackage #:command-core
+  (:use :cl :ulqui/utils :iterate :trivial-utf-8 :split-sequence)
+  (:export #:parse-cmd-args
+           #:argument?
+           #:option?
+           #:option->keyword
+           #:defcmd
+           #:run-cmd
+           #:display-cmd
+           #:run-help))
+
+(defpackage #:command-core-tests
+  (:use :cl :lisp-unit))
+
+(setf lisp-unit:*print-failures* t
+      lisp-unit:*print-errors*   t)
+
+----
+
+.code::parse-command-line-arguments
+[source,lisp,linenums]
+----
+(in-package #:command-core)
+
+(defun parse-cmd-args (args)
+  (let ((arguments (take-while #'argument? args))
+        (rest-args (drop-while #'argument? args)))
+    (labels ((parse-options (rest-args current-opts)
+               (declare (list rest-args current-opts))
+               (if (null rest-args)
+
+                   ;; No more option to parse
+                   current-opts
+
+                 (let* ((option-name   (first rest-args))
+                        (option-values (take-while #'argument? (rest rest-args)))
+                        (rest-args     (drop-while #'argument? (rest rest-args)))
+
+                        (option-values/converted (mapcar #'try-convert-value option-values))
+                        (option-name/keyword     (option->keyword option-name))
+
+                        (option-values/res
+                         (cond
+                           ((null option-values)         ;; --help → (:help . t)
+                            t)
+
+                           ((= 1 (length option-values)) ;; --help a → (:help . "a")
+                            (first option-values/converted)) ;
+
+                           (t                            ;; --help a b → (:help . ("a" "b"))
+                            option-values/converted)))
+
+                        (new-option (cons option-name/keyword option-values/res)))
+                   (parse-options rest-args
+                                  (push new-option
+                                        current-opts))))))
+      `((:arguments . ,arguments)
+        (:options   . ,(parse-options rest-args (list)))))))
+
+(in-package #:command-core-tests)
+
+(define-test test-parse-cmd-args
+  (assert-equal `((:arguments . ())
+                  (:options   . ()))
+                (parse-cmd-args '()))
+  (assert-equal `((:arguments . ("hello-world"))
+                  (:options   . ()))
+                (parse-cmd-args '("hello-world")))
+  (assert-equal `((:arguments . ("hello" "world"))
+                  (:options   . ()))
+                (parse-cmd-args '("hello" "world")))
+  (assert-equal `((:arguments . ())
+                  (:options   . ((:help . t))))
+                (parse-cmd-args '("--help")))
+  (assert-equal `((:arguments . ("hello"))
+                  (:options   . ((:help . t))))
+                (parse-cmd-args '("hello" "--help")))
+  (assert-equal `((:arguments . ("hello"))
+                  (:options   . ((:help . ("world" "args")))))
+                (parse-cmd-args '("hello" "--help" "world" "args")))
+  (assert-equal `((:arguments . ())
+                  (:options   . ((:help . "hello"))))
+                (parse-cmd-args '("--help" "hello")))
+  (assert-equal `((:arguments . ("hello" "world"))
+                  (:options   . ((:set-tab . 4)
+                                 (:help    . t))))
+                (parse-cmd-args '("hello" "world" "--help" "--set-tab" "4"))))
+
+;; (run-tests '(test-parse-cmd-args))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(defun argument? (str)
+  "Determines if a string is considered an argument.  An argument is not
+prefixed with a dash \"-\"."
+  (declare (string str))
+  (the boolean (not (alexandria:starts-with #\- str))))
+
+(in-package #:command-core-tests)
+
+(define-test test-argument?
+  (assert-equal t   (argument? ""))
+  (assert-equal t   (argument? "a"))
+  (assert-equal nil (argument? "-a"))
+  (assert-equal nil (argument? "--a"))
+  (assert-equal nil (argument? "-")))
+
+;; (run-tests '(test-argument?))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(defun option? (str)
+  "Determines if a string is considered an option.  An option is prefixed with
+a dash \"-\"."
+  (declare (string str))
+  (the boolean (not (argument? str))))
+
+(in-package #:command-core-tests)
+
+(define-test test-option?
+  (assert-equal nil (option? ""))
+  (assert-equal nil (option? "a"))
+  (assert-equal t   (option? "-a"))
+  (assert-equal t   (option? "--a"))
+  (assert-equal t   (option? "-")))
+
+;; (run-tests '(test-option?))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(defun option->keyword (opt)
+  "Converts option as string to Common Lisp keyword."
+  (declare ((or symbol string) opt))
+  (the keyword
+       (typecase opt
+         (keyword opt)
+         (symbol  (intern (symbol-name opt) :keyword))
+         (string  (multiple-value-bind (_ xs)
+                      (cl-ppcre:scan-to-strings "^-+(.+)$" opt)
+                    (declare (ignore _))
+                    (if (zerop (length xs))
+                        (error "~S is not a valid argument" opt)
+                      (intern (string-upcase (aref xs 0)) :keyword)))))))
+
+(in-package #:command-core-tests)
+
+(define-test test-option->keyword
+  (assert-equal :h       (option->keyword "-h"))
+  (assert-equal :help    (option->keyword "--help"))
+  (assert-equal :help    (option->keyword "---help"))
+  (assert-equal :help-me (option->keyword "---help-me")))
+
+;; (run-tests '(test-option->keyword))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(defun try-convert-value (value)
+  "Tries converting a string value as number, boolean, or returns itself."
+  (declare (string value))
+  (cond ((string-equal "true" value) t)
+        ((string-equal "false" value) nil)
+        ((string-equal "t" value) "t")
+        ((string-equal "nil" value) "nil")
+        (t (let ((res (read-from-string value)))
+             (if (numberp res)
+                 res
+               value)))))
+
+(in-package #:command-core-tests)
+
+(define-test test-try-convert-value
+  (assert-equal 1    (command-core::try-convert-value "1"))
+  (assert-equal "a"  (command-core::try-convert-value "a"))
+  (assert-equal t    (command-core::try-convert-value "true"))
+  (assert-equal t    (command-core::try-convert-value "true"))
+  (assert-equal nil  (command-core::try-convert-value "false")))
+
+;; (run-tests '(test-try-convert-value))
+
+----
+
+=== Calling corresponding command
+
+When user invokes a command, the corresponding function gets called.  This is
+the job of the `run-cmd` command function, which also serves as the main
+helper for Ulquikit's entrypoint later on when we build Ulquikit as a single
+executable.
+
+To make Ulquikit as user-friendly as possible, when a user executes as invalid
+commands, s/he would be presented with an error message, a help message, and a
+non-zero exit code.
+
+.code::run-command
+[source,lisp,linenums]
+----
+(in-package #:command-core)
+
+(defun run-cmd (cmd args &key (package :ulquikit-cmd))
+  "Runs command with appropriate arguments by calling the corresponding
+function (that shares the same name as the command) in `ulquikit-cmd'
+package."
+  (declare ((or string symbol package) cmd)
+           (list args))
+  (let ((func (get-function cmd package)))
+    (handler-case (apply func args)
+      (program-error (condition)
+        (let ((condition (format nil "~A" condition)))
+          (when (search "argument" condition)
+            (format *error-output* "~A~%~%" condition)
+            (run-help cmd package)
+            (uiop:quit 1)))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:command-core)
+
+(defun get-function (func &optional (package *package*))
+  "Retrieves a function from a package or throws error if not found."
+  (declare ((or string symbol function) func)
+           ((or string symbol package) package))
+  (let* ((package (find-package (typecase package
+                                  (string (string-upcase package))
+                                  (otherwise package))))
+         (func (typecase func
+                 (string    (fdefinition
+                             (find-symbol (string-upcase func)
+                                          package)))
+                 (symbol    (fdefinition
+                             (find-symbol (symbol-name func)
+                                          package)))
+                 (otherwise func))))
+    func))
+
+(in-package #:command-core-tests)
+
+(define-test test-get-function
+  (assert-equal #'command-core:run-cmd (command-core::get-function "RUN-CMD" "COMMAND-CORE"))
+  (assert-equal #'command-core:run-cmd (command-core::get-function 'run-cmd "COMMAND-CORE"))
+  (assert-equal #'command-core:run-cmd (command-core::get-function :run-cmd :command-core))
+  (assert-error 'undefined-function (command-core::get-function :doesnt-exist :command-core)))
+
+;; (run-tests '(test-get-function))
+----
+
+We also have `run-help` to display help of a command.  `run-help` simply prints to
+the screen the documentation of the function corresponding to that command.
+
+.code::run-command-help
+[source,lisp,linenums]
+----
+(in-package #:command-core)
+
+(defun run-help (cmd &optional (package *package*))
+  "Reads and returns the help of a command, which is the documentation string
+of the corresponding function."
+  (declare ((or string symbol) cmd)
+           ((or string symbol package) package))
+  (let* ((cmd-package (find-package package))
+         (run-func    (intern (string-upcase cmd) cmd-package))
+         (help-text   (documentation run-func 'function)))
+    (if (and help-text (> (length help-text) 0))
+        (format t "~A~%" help-text)
+      (progn
+        (format *error-output*
+                "No help available for ~A.  Are you sure it's the right command?~%"
+                cmd)
+        (uiop:quit 2)))))
+
+----
+
+Lastly, we need the `defcmd` macro.
+
+anchor:defcmd[]
+
+.code::defcmd
+[source,lisp,linenums]
+----
+(in-package #:command-core)
+
+(defmacro defcmd (name list-args &rest body)
+  (let* ((command-core-path (or *load-pathname* *compile-file-pathname*))
+         (name-downcase (string-downcase name))
+         (help-file (uiop:merge-pathnames* (format nil
+                                                   "~A.help.txt"
+                                                   name-downcase)
+                                           command-core-path))
+         (help-content (read-file help-file))
+         (description (nth 2 (split-sequence #\Newline
+                                             help-content)))
+         (command-list-symb (intern "*COMMAND-LIST*" *package*)))
+    `(progn (defun ,name ,list-args
+              ,help-content
+              ,@body)
+
+            ;; Add command to the command list of the current package
+            (defvar ,command-list-symb '())
+            (setf ,command-list-symb
+                  (remove-if #'(lambda (cmd&desc)
+                                 (string= (alist-get cmd&desc :name)
+                                          ,name-downcase))
+                             ,command-list-symb))
+            (push `((:name        . ,,name-downcase)
+                    (:description . ,,description))
+                  ,command-list-symb))))
+----
+
+=== Putting all command helpers together
+
+.file::command-core.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+;; include::define-command-core-package
+
+;; include::run-command
+
+;; include::run-command-help
+
+;; include::parse-command-line-arguments
+
+;; include::defcmd
+
+(in-package #:command-core)
+
+(defun display-cmd (msg &optional (stream t))
+  "Nicely formats and displays a command."
+  (declare (string msg)
+           ((or stream boolean) stream))
+  (format stream "==== ~A ====~%" msg))
+
+----
+
+Next, we are going to talk about the `generate-html` command, used to
+generates HTML documents with some default options.
+
+== Generating HTML
+
+When called with `--help` as a command line tool, `generate-html` provides the
+following usage note:
+
+.file::commands/generate-html.help.txt
+[source,text]
+----
+Usage: generate-html [--from from] [--to to] [--recursive recursive]
+
+Generate HTML from literate documents.
+
+  --from       either path to a directory where literate documents are stored, or list of paths to literate documents; default: "src/"
+  --to         directory where HTMLs are generated; default: "docs/"
+  --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
+
+Examples
+
+Generate HTML from src/ to docs/ recursively
+  ulqui generate-html
+
+or explicitly
+  ulqui generate-html --from src/ --to docs/ --recursive true
+
+Generate HTML from literate-source/ to generated-documents/ non-recursively
+  ulqui generate-html --from literate-source/ --to generated-documents/ --recursive false
+
+Generate HTML code from Foo.adoc and quux/ to docs/ recursively
+  ulqui generate-html --from Foo.adoc quux/ --to docs/
+
+----
+
+anchor:generate-html[]
+
+=== The main function: `generate-html`
+
+Just like <<generate-src,`generate-src`>>, `generate-html` takes 2 arguments:
+. the source, via `:from` parameter, and
+. the destination, via `:to` parameter
+
+`:from` could be either a literate source file or a directory, while `:to` is
+a directory.  `:to` is created if not existed yet.  This function takes
+AsciiDoc files recursively (using <<func/list-asciidocs,`list-asciidocs`>>)
+and generate their HTML outputs to destination.
+
+.code::generate-html
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun generate-html (&key (from "src") (to "docs") (recursive t))
+  "Generates HTML documentation from all literate source files in `from' to
+directory `to'.  `from' is either a directory or a single literate source
+file.  The source file could be searched recursively or non-recursively,
+depending on the value of `recursive'.  By default, `recursive' is `t'."
+  (declare ((or string pathname list) from)
+           ((or string pathname) to)
+           (boolean recursive))
+
+  (labels ((make-generate-html-thread (doc to)
+             "Creates and return a thread that does the actual generation"
+             ;; uiop:merge-pathnames* replaces the extension
+             (let ((output (uiop:merge-pathnames* (html-namepart doc) to)))
+               (format t "~A → ~A~%" doc output)
+               (bordeaux-threads:make-thread
+                #'(lambda () (render-asciidoc doc output))))))
+
+    (let ((to   (full-path (uiop:ensure-directory-pathname to)))
+          (docs (typecase from
+
+                  ;; If `from` is a list of paths
+                  (list
+                   (reduce #'append
+                           (mapcar
+                            #'(lambda (path)
+                                (list-asciidocs (full-path path)
+                                                :recursive recursive))
+                            from)))
+
+                  ;; If `from` is one path
+                  ((or string pathname)
+                   (let ((from (full-path from)))
+                     (if (uiop:directory-exists-p from)
+                         (list-asciidocs from :recursive recursive)
+                       (list from)))))))
+
+      ;; (format t "List of AsciiDoc docs: ~A~%" docs)
+
+      (uiop:ensure-all-directories-exist (list to))
+      (mapcar #'bordeaux-threads:join-thread
+              (mapcar #'(lambda (doc)
+                          (make-generate-html-thread doc to))
+                      docs)))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit)
+
+(defun html-namepart (file)
+  "Extracts only the name part of the file and replaces its extension with
+HTML."
+  (declare ((or string pathname) file))
+  (let ((filename-part (file-namestring file)))
+    (multiple-value-bind (namepart _)
+        (uiop:split-name-type filename-part)
+      (declare (ignore _))
+      (the string (format nil "~A.html" namepart)))))
+
+(in-package #:ulquikit-tests)
+
+(define-test test-html-namepart
+  (assert-equal "hello.html" (html-namepart "/tmp/hello"))
+  (assert-equal "hello.html" (html-namepart "/tmp/hello.adoc"))
+  (assert-equal "hello.html" (html-namepart "/tmp/hello.txt")))
+
+;; (run-tests '(test-html-namepart))
+
+----
+
+For `generate-html` to work, we need 2 more utilities:
+
+* `render-asciidoc` to render AsciiDoc file into HTML using AsciiDoctor
+* `list-asciidocs` to search for and return the list of all AsciiDoc files in
+  a directory; the search process might work in a recursive or
+  non-recursive way.
+
+=== Rendering an ASCIIDoc document to HTML
+
+.code::render-asciidoc
+[source,lisp,linenums]
+----
+(in-package #:ulquikit)
+
+(defun render-asciidoc (input output)
+  "Renders an ASCIIDoc `input' to `output' as HTML.  TODO: make this
+extensible."
+  (!cmd (asciidoctor-command input output)))
+
+(defun asciidoctor-command (input output)
+  "Builds and returns command to render `input' to `output' with ASCIIDoctor."
+  (declare ((or string pathname) input output))
+  (the string (format nil "asciidoctor ~A -d book -o ~A" input output)))
+
+(defun !cmd (cmd &key (output t)
+                 (error-output t)
+                 (force-shell t))
+  "Runs command by calling `uiou:run-program'."
+  (declare (string cmd)
+           (boolean force-shell)
+           ((or boolean stream) output error-output))
+  (uiop:run-program cmd :output output
+                    :error-output error-output
+                    :force-shell force-shell))
+----
+
+To conclude this section, let's fill in the the last missing piece -- the
+command counterpart of the <<func/generate-html,`generate-html`>> function:
+
+.file::commands/generate-html.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(in-package #:ulquikit-cmd)
+
+(defcmd generate-html (&key (from "src")
+                            (to "docs")
+                            (recursive t))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
+  (display-cmd "Generating HTML")
+  (ulquikit:generate-html :from from :to to :recursive recursive))
+
+----
+
+== The ASDF system definition
+
+.file::ulquikit.asd
+[source,lisp,linenums]
+----
+(defsystem ulquikit
+  :name "Ulquikit"
+  :version "2.0.0"
+  :maintainer "Ha-Duong Nguyen <cmpitg@gmail.com>"
+  :license "GNU General Public license v3"
+  :description "Ulquikit is a hackable tool to make literate programming fun and productive again."
+  :depends-on (#:alexandria
+               #:uiop
+               #:split-sequence
+               #:cl-ppcre
+               #:bordeaux-threads
+               #:trivial-utf-8
+               #:iterate
+               #:lisp-unit)
+  :components ((:file "ulquikit" :depends-on ("utils"))
+               (:file "ulquikit-cmd" :depends-on ("utils" "command-core" "ulquikit"))
+               (:file "commands/generate-src" :depends-on ("utils" "command-core"))
+               (:file "commands/generate-html" :depends-on ("utils" "command-core"))
+               (:file "commands/version" :depends-on ("utils" "command-core"))
+               (:file "commands/help" :depends-on ("utils" "command-core"))
+               (:file "command-core" :depends-on ("utils"))
+               (:file "utils")))
+
+----
+
+== The `ulqui` executable
+
+Up to this point, Ulquikit is perfectly usable as a library.  With
+https://www.quicklisp.org/beta/[Quicklisp], it could be loaded very
+straightforwardly:
+
+[source,lisp]
+----
+;; Symlinking Ulquikit to Quicklisp local projects directory
+;; ln -s /path/to/ulquikit/asdf ~/quicklisp/local-projects/
+
+;; Loading
+(ql:quickload "ulquikit")
+
+;; Using
+(ulquikit:generate-src :from "/path/to/literate/source" :to "/path/to/generated/source")
+(ulquikit:generate-html :from "/path/to/literate/source" :to "/path/to/generated/html/doc")
+
+----
+
+The next step is to turn Ulquikit into a executable named `ulqui` so it could
+be used as a standalone program.
+
+=== General help
+
+Invoking `ulqui`, `ulqui --help`, or `ulqui help` should bring up the general
+usage of Ulquikit.  This behavior is defined with the `help` command.  This
+command should detect all current Ulquikit commands (defined by the
+<<defcmd,`defcmd`>> macro) and output their short summary.
+
+.file::commands/help.help.txt
+[source,text]
+----
+Usage: ulqui <command> [options] ...
+
+Ulquikit is a literate programming tool, helping developers manage literate source code, including source code and documentation generation.
+
+Supported markup language: AsciiDoc.
+Supported output format for documentation: HTML.
+
+Available commands:
+
+{{ commands-docs }}
+
+Use 'ulqui help' or 'ulqui --help' to bring up this help.
+Use 'ulqui help <command>' or 'ulqui <command> --help' to get help for a command.
+Use 'ulqui version' or 'ulqui --version' to display current version of Ulquikit.
+
+----
+
+The `help` command could then be implemented as followed.  Note that it
+replaces documentation of `help` function and shows the actual description of
+`help` command itself, not Ulquikit.
+
+.file::commands/help.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(in-package #:ulquikit-cmd)
+
+(defcmd help (&optional cmd)
+  (if cmd
+      (run-help cmd :ulquikit-cmd)
+    (general-usage)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; Helper
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:ulquikit-cmd)
+
+(defun general-usage ()
+  "Shows Ulquikit's general usage."
+  (labels ((format-cmd (cmd&desc)
+             (format nil
+                     "~15A :: ~A"
+                     (alist-get cmd&desc :name)
+                     (string-butlast (alist-get cmd&desc :description))))
+
+           (help-cmd? (cmd&desc)
+             (string= (alist-get cmd&desc :name)
+                      "help")))
+
+    (let* ((help-template (documentation 'ulquikit-cmd::help 'function))
+           (help-stripped (remove-if #'help-cmd?
+                                     ulquikit-cmd::*command-list*))
+           (cmd-descriptions
+            (format nil "~{~A~^~%~}"
+                    (mapcar #'format-cmd help-stripped)))
+           (help-text (regex-replace "{{ commands-docs }}"
+                                     help-template
+                                     cmd-descriptions)))
+      (format t help-text))))
+
+----
+
+=== The `main` function
+
+Putting all things together, we have the following entry point for using
+Ulquikit as a standalone program: the `main` function.  By default, running
+`ulqui` usually means users need some help.  Thus running `ulqui` is
+equivalent to running `ulqui help`.
+
+.code::ulquikit-cmd/main
+[source,lisp,linenums]
+----
+(in-package #:ulquikit-cmd)
+
+(defun main (argv)
+  (when (null argv)
+    (general-usage)
+    (uiop:quit 0))
+
+  (let* ((arg&opts (handler-case (parse-cmd-args (rest argv))
+                     (simple-error (err)
+                       (format *error-output* "~A~%~%" err)
+                       (general-usage)
+                       (uiop:quit 1))))
+         (cmds (alist-get arg&opts :arguments))
+         (opts (alexandria:alist-plist (alist-get arg&opts :options))))
+    (or (maybe-usage-or-version cmds opts)
+        (maybe-help cmds opts)
+        (run-cmd (first cmds) (append (rest cmds) opts)))))
+
+(defun maybe-usage-or-version (cmds opts)
+  "Shows help or displays Ulquikit version.  This function returns `:end' if
+it's supposed to tell the caller to not further process `cmds' and `opts' and
+returns `nil' otherwise."
+  (if (null cmds)
+      (prog1
+          :end
+        (cond
+         ;; ulqui, or
+         ;; ulqui --help ((or (null opts)
+         ((equal '(:help t) opts)
+          (general-usage))
+
+         ;; ulqui --version
+         ((equal '(:version t) (member :version opts))
+          (run-cmd "version" (list)))
+
+          ;; ulqui --help <command>
+         ((= 2 (length (member :help opts)))
+          (run-cmd "help" opts))
+
+         (t
+          (format *error-output*
+                  "Invalid options ~{~A~^ ~}~%~%"
+                  (append cmds opts))
+          (help)
+           (uiop:quit 1))))
+    nil))
+
+(defun maybe-help (cmds opts)
+  "Shows help for a command when options contains \"--help\" (or `opts'
+contains `:help').  The function returns `:end' to tell its caller to stop
+further processing and `nil' otherwise."
+  (when (equal '(:help t) opts)
+    (run-cmd "help" cmds)
+    :end))
+
+----
+
+=== The `version` command
+
+.file::commands/version.help.txt
+[source,text]
+----
+Usage: ulqui version
+
+Display the current running version of Ulquikit.
+
+----
+
+.file::commands/version.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(in-package #:ulquikit-cmd)
+
+(defcmd version ()
+  (format t "Ulquikit version ~A~%" ulquikit:*ulquikit-version*))
+
+----
+
+== Managing Ulquikit source code
+
+As Ulquikit grows, the need for a tool to manage its source code and release
+arises.
+http://en.wikipedia.org/wiki/List_of_Hollows_in_Bleach#Ulquiorra_Schiffer[Schiffer]
+is born to fulfill the need.  Schiffer is written in
+https://github.com/ruby/rake[Rake].
+
+=== Generating source code and HTML documentation
+
+.code::schiffer/generate
+[source,lisp,linenums]
+----
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(in-package #:schiffer)
+
+(defun gen-src ()
+  (!cmd "ulqui generate-src --from src/ --to generated-src/ --recursive false"))
+
+(defun gen-docs ()
+  (!cmd "ulqui generate-html --from src/ --to docs/ --recursive false"))
+
+(defun gen-all ()
+  (gen-src)
+  (gen-docs))
+
+(defun build-ulqui ()
+  (displayln "⇨ Generating Quicklisp manifest")
+  (write-quicklisp-manifest)
+
+  (displayln "⇨ Making sure build/ exists")
+  (uiop/common-lisp:ensure-directories-exist (ulqui-dir-to "build/"))
+
+  (displayln "⇨ Building Ulquikit to build/ulqui")
+  (buildapp :manifest-file "quicklisp-manifest.txt"
+            :systems '("ulquikit")
+            :entry "ulquikit-cmd:main"
+            :output (ulqui-dir-to "build/ulqui")))
+
+(defun build-schiffer ()
+  (displayln "⇨ Generating Quicklisp manifest")
+  (write-quicklisp-manifest)
+
+  (displayln "⇨ Making sure build/ exists")
+  (uiop/common-lisp:ensure-directories-exist (ulqui-dir-to "build/"))
+
+  (displayln "⇨ Building Schiffer to ./schiffer")
+  (asdf:load-system :alexandria)
+  (compile-file (ulqui-dir-to "generated-src/schiffer.lisp")
+                :output-file (ulqui-dir-to "build/schiffer.fasl"))
+  (buildapp :manifest-file "quicklisp-manifest.txt"
+            :options '("--compress-core")'
+            :systems '("alexandria")
+            :loads `(,(ulqui-dir-to "build/schiffer.fasl"))
+            :entry "schiffer:main"
+            :output (ulqui-dir-to "build/schiffer")))
+
+(defun gen-build-ulqui ()
+  (gen-src)
+  (build-ulqui))
+
+(defun gen-build-all ()
+  (gen-build-ulqui)
+  (build-schiffer))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Helpers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun !cmd (cmd &key (output t)
+                   (error-output t)
+                   (force-shell t))
+  (uiop:run-program cmd :output output
+                    :error-output error-output
+                    :force-shell force-shell))
+
+(defun buildapp (&key manifest-file entry output systems loads options)
+  (!cmd (format-str
+         (str-space
+          "buildapp --manifest-file ~A"
+          "--asdf-tree ~A"
+          "~:[~;~:*~{--load-system '~A' ~}~]"
+          "~:[~;~:*~{--load '~A' ~}~]"
+          "~:[~;~:*~{~A ~}~]"
+          "--entry ~A"
+          "--output '~A'")
+         manifest-file
+         (ulqui-dir-to "generated-src/")
+         systems                  ; Only --load-system if `systems` is not nil
+         loads                    ; Only --load if `loads` is not nil
+         options                  ; Only if `options` is not nil
+         entry
+         output)))
+
+(defun str-space (&rest strs)
+  (format nil "~{~A~^ ~}" strs))
+
+(defun format-str (&rest args)
+  (apply 'format nil args))
+
+(defun ulqui-dir-to (dir)
+  (uiop:merge-pathnames* dir (current-dir)))
+
+(defun current-dir ()
+  "Retrieves the current project directory."
+  (uiop:merge-pathnames*
+   (uiop:pathname-parent-directory-pathname
+    (uiop:pathname-directory-pathname (or *compile-file-pathname*
+                                          *load-pathname*)))))
+
+(defun write-quicklisp-manifest ()
+  (!cmd (format-str
+         (str-space
+          "sbcl --noinform --no-sysinit --non-interactive"
+          "--eval '(pushnew \"~A\" asdf:*central-registry*)'"
+          "--eval '(ql:quickload :ulquikit)'"
+          "--eval '(ql:write-asdf-manifest-file \"quicklisp-manifest.txt\")'"
+          "--eval '(quit)'")
+         (ulqui-dir-to "generated-src/"))))
+
+(defun displayln (str)
+  (format t "~A~%" str))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+----
+
+=== Update self
+
+Each time Schiffer it built, its development version at
+`<project-root>/build/schiffer` is created.  When the development version is
+stable, it could replace the current version at `<project-root>/schiffer`.
+For that, we have a command:
+
+.code::schiffer/update-self
+[source,lisp,linenums]
+----
+(in-package #:schiffer)
+
+(defun update-self ()
+  (displayln "⇨ Updating schiffer, replacing itself with the development version at build/schiffer")
+  (uiop:copy-file (ulqui-dir-to "build/schiffer")
+                  (ulqui-dir-to "schiffer")))
+
+----
+
+=== Mark current source as stable
+
+Marking current generated source code as stable by replacing
++release/ulquikit+ with +generated-src+.  Note that this function/command does
+*not* re-generate source code.
+
+.code::schiffer/mark-stable
+[source,lisp,linenums]
+----
+;; (defun mark-stable ()
+;;   (format t "⇨ Removing current stable")
+;;   (uiop:delete-directory-tree (ulqui-dir-to "release")
+;;                               :if-does-not-exist :ignore)
+
+;;   (format t "⇨ Creating stable directory: release")
+;;   (uiop:ensure-all-directories-exist (list (ulqui-dir-to "release")))
+
+;;   (format t "⇨ Copying build to release")
+;;   (uiop:copy-file (ulqui-dir-to "build/ulqui")
+;;                   (ulqui-dir-to "release/ulqui"))
+
+;;   (format t "⇨ Copying docs")
+;;   (format t "   generated-html -> release/ulquikit/docs")
+;;   (copy-directory/files "generated-html" "release/ulquikit/docs")
+;;   (newline))
+
+----
+
+=== Release
+
+.code::schiffer/mark-release
+[source,racket,linenums]
+----
+;; (define (mark-release)
+;;   (mark-stable)
+;;   (let* ([latest-tag       (~> (process "git tag")
+;;                              first
+;;                              port->string
+;;                              string-split
+;;                              last)]
+;;          [filename         (format "ulquikit-~a.zip" latest-tag)]
+;;          [zip-command      (format "zip -r ~a ulquikit" filename)]
+;;          [checksum-command (format "md5sum ~a > ~a.md5"
+;;                                    filename
+;;                                    filename)])
+;;     (parameterize [(current-directory "release")]
+;;       (displayln (str "=> Creating release/" filename))
+;;       (system zip-command)
+;;       (newline)
+
+;;       (displayln (str "=> Creating checksum for release/" filename))
+;;       (system checksum-command)
+;;       (displayln (str "   release/" filename " => release/" filename ".md5"))
+;;       (newline))))
+
+----
+
+=== Run current dev version of Ulquikit
+
+Running current Ulquikit dev version is done by calling
++generated-src/bin/ulqui+.
+
+.code::schiffer/ulqui-dev
+[source,racket,linenums]
+----
+;; (define (ulqui-dev args)
+;;   (system (str "generated-src/bin/ulqui "
+;;                (~> (map #λ(string-append "'" % "'") args)
+;;                  (string-join " "))))
+;;   (newline))
+
+----
+
+=== Run tests
+
+By calling +raco test generated-src/*+.
+
+.code::schiffer/run-tests
+[source,racket,linenums]
+----
+;; (define (run-tests)
+;;   (system "raco test generated-src/*")
+;;   (newline))
+
+----
+
+=== Clean up
+
+.code::schiffer/clean
+[source,lisp,linenums]
+----
+(in-package #:schiffer)
+
+(defun clean ()
+  (displayln "⇨ Removing docs/ generated-src/ build/")
+  (!cmd (format-str "rm -rf '~A' '~A' '~A'"
+                    (ulqui-dir-to "docs/")
+                    (ulqui-dir-to "generated-src/")
+                    (ulqui-dir-to "build/"))))
+
+----
+
+=== Help
+
+.code::schiffer/help
+[source,lisp,linenums]
+----
+(in-package #:schiffer)
+
+(defun show-help ()
+  (format t "Usage: schiffer <command> [options] ...
+
+Schiffer is a build helper for Ulquikit.
+
+Available commands:
+
+  gen-src         :: Generate Ulquikit and Schiffer source code to 'generated-src/'
+  gen-docs        :: Generate Ulquikit HTML docs to 'docs/'
+  gen-all         :: Call 'gen-src', then 'gen-docs'
+  build-ulqui     :: Build Ulquikit from 'generated-src/' to 'build/ulqui'
+  build-schiffer  :: Build Schiffer from 'generated-src/' to 'build/schiffer'
+
+  gen-build-ulqui :: Call 'gen-src', 'build-ulqui'
+  gen-build-all   :: Call 'gen-src', 'build-ulqui', then 'build-schiffer'
+
+  run-tests       :: Run all Ulquikit tests in 'generated-src/'
+  ulqui-dev       :: Call the development version of Ulquikit: 'build/ulqui'
+  clean           :: Remove all generated source, docs, and build
+
+  mark-stable     :: Mark current source code as stable by copying 'generated-src' to 'release/ulquikit/src' and copying 'build/ulqui' to 'release/ulquikit/ulqui' 
+  mark-release    :: Prepare for a release by generating MD5 and SHA1 checksums of 'release/ulquikit/ulqui' to 'release/ulquikit/ulqui.md5sum' and 'release/ulquikit/ulqui.sha1sum'
+
+  update-self     :: Update Schiffer by replacing 'schiffer' with 'build/schiffer'
+  help            :: Print this help
+
+Only command 'ulqui-dev' takes extra arguments.
+"))
+
+----
+
+
+=== Combine into +schiffer+
+
+.file::schiffer.lisp
+[source,lisp,linenums]
+----
+;; include::license-header
+
+(defpackage #:schiffer
+  (:use :cl))
+
+;; include::schiffer/generate
+
+;; include::schiffer/help
+
+;; include::schiffer/update-self
+
+;; include::schiffer/clean
+
+(in-package #:schiffer)
+
+(defun main (argv)
+  (when (= 1 (length argv))
+    (show-help)
+    (uiop:quit 0))
+
+  (let* ((cmd (first (rest argv)))
+         (args (rest (rest argv))))
+    (alexandria:switch (cmd :test #'string=)
+      (""                (when (string= "--help" (first args)) (show-help)))
+      ("help"            (show-help))
+
+      ("gen-src"         (apply #'gen-src args))
+      ("gen-docs"        (apply #'gen-docs args))
+      ("gen-all"         (apply #'gen-all args))
+
+      ("build-ulqui"     (apply #'build-ulqui args))
+      ("build-schiffer"  (apply #'build-schiffer args))
+
+      ("gen-build-ulqui" (apply #'gen-build-ulqui args))
+      ("gen-build-all"   (apply #'gen-build-all args))
+
+      ("update-self"     (apply #'update-self args))
+      ("clean"           (apply #'clean args)))))
+
+----
+
+== Updating Ulquikit
+
+As more versions of Ulquikit are released, having a way to update Ulquikit
+from the command line is very helpful.  One way to do this is by adding
++update+ command, so that users could update Ulquikit to latest version just
+by running:
+
+[source,sh]
+----
+ulqui update
+----
+
+=== Retrieve latest version
+
+Ulquikit is officially released via
+https://help.github.com/articles/about-releases[Github Releases], which
+provides this URL https://github.com/cmpitg/ulquikit/releases/latest pointing
+to latest release.
+
+First of all, let's +curl+ this URL to see how it's redirected:
+
+[source,sh,linenums]
+----
+curl --head https://github.com/cmpitg/ulquikit/releases/latest
+
+# HTTP/1.1 302 Found
+# Server: GitHub.com
+[snip]
+# Location: https://github.com/cmpitg/ulquikit/releases/tag/v0.2
+[snip]
+----
+
+So that's how it works, simple and straightforward.  The job now is to get the
+"Location" attribute from HTTP header and grab the version.  With Racket's
+http://docs.racket-lang.org/net/url.html[+net/url+] library, it becomes trivial:
+
+.code::ulqui/latest-version
+[source,racket,linenums]
+----
+(define +latest-release-url+
+  (string->url "https://github.com/cmpitg/ulquikit/releases/latest"))
+
+(define (get-latest-version)
+  (~> (call/input-url +latest-release-url+
+                      head-impure-port
+                      port->string)
+    string-split
+    (dropf #λ(not (string=? "Location:" %)))
+    second
+    (#λ(regexp-match #rx"v(.*)" %))
+    second))
+
+----
+
+Note that we use
+http://docs.racket-lang.org/net/url.html#%28def._%28%28lib._net%2Furl..rkt%29._head-impure-port%29%29[+head-impure-port+]
+instead of
+http://docs.racket-lang.org/net/url.html#%28def._%28%28lib._net%2Furl..rkt%29._head-pure-port%29%29[+head-pure-port+]
+as the response might content body.
+
+=== Download and replace Ulquikit
+
+==== Construct download URL
+
+Let's have a closer look: Version 2.0 has
+https://github.com/cmpitg/ulquikit/releases/download/v0.2/ulquikit-v0.2.zip as
+its download URL.  The filename +ulquikit-v0.2.zip+ certainly depends on
+naming convention, which <<schiffer/mark-release,+schiffer+>> has got us
+covered.  So all download URLs follow the following format:
++https://github.com/cmpitg/ulquikit/releases/download/v{latest-version}/ulquikit-v{latest-version}.zip+.
+Based on that, we have this function to construct download URL of the latest
+version:
+
+.code::ulqui/construct-download-url
+[source,racket,linenums]
+----
+(define (construct-download-url [version (get-latest-version)])
+  (format "https://github.com/cmpitg/ulquikit/releases/download/v~a/ulquikit-v~a.zip"
+          version
+          version))
+----
+
+==== Download and unzip
+
+There are a couple of ways to download and unzip the release file, among which
+the following 2 are the most commonly used:
+
+* Using Racket's own API - bad in performance and memory space.
+
+* Calling shell commands - platform-dependant but much better in performance.
+
+Let's make this work first then improve later.  I'm going to choose the 2^nd^
+option for now.
+
+Note that +system+ is used to call external commands, which in turn produce
+some data to standard output and standard error.  Thus we make standard output
+and standard error unbeffered during to +system+ call to achieve the best
+result.
+
+.code::ulqui/download-and-unzip
+[source,racket,linenums]
+----
+(define (download-and-unzip version to-dir)
+  (parameterize ([current-directory to-dir])
+    (let ([url              (construct-download-url version)]
+          [filename         (format "ulquikit-v~a.zip" version)]
+          [out-buffer-mode  (file-stream-buffer-mode (current-output-port))]
+          [err-buffer-mode  (file-stream-buffer-mode (current-error-port))])
+
+      (with-handlers ([exn:fail?
+                       (λ (_)
+                         (file-stream-buffer-mode (current-output-port)
+                                                  out-buffer-mode)
+                         (file-stream-buffer-mode (current-error-port)
+                                                  err-buffer-mode))])
+        (file-stream-buffer-mode (current-output-port) 'none)
+        (file-stream-buffer-mode (current-error-port) 'none)
+
+        (displayln (str "-> Downloading from " url))
+        (system (str "curl -O " url))
+
+        (displayln (str "-> Unzipping " filename ", replacing old version with new version"))
+        (system (str "unzip -o " filename))
+
+        (displayln (str "-> Removing " filename))
+        (delete-directory/files filename)
+
+        (file-stream-buffer-mode (current-output-port) out-buffer-mode)
+        (file-stream-buffer-mode (current-error-port) err-buffer-mode)))))
+
+----
+
+=== The +update+ command
+
+// .file::commands/update.rkt
+
+[source,racket,linenums]
+----
+;; include::license-header
+
+;; include::use-rackjure
+
+(require net/url)
+
+(require "../ulquikit.rkt")
+(require "../command-core.rkt")
+(require "../utils/path.rkt")
+
+(provide run)
+
+;; include::ulqui/latest-version
+
+;; include::ulqui/construct-download-url
+
+;; include::ulqui/download-and-unzip
+
+(define (run)
+  (display-cmd "Updating Ulquikit")
+  (displayln (str "-> Current version: " +ulquikit-version+))
+  (let ([latest-version (get-latest-version)])
+    (displayln (str "   Latest version:  " latest-version))
+    (cond [(string=? latest-version +ulquikit-version+)
+           (newline)
+           (displayln (str "   Congratulations! You are running the latest version of Ulquikit!"))]
+          [else
+           (download-and-unzip latest-version +ulquikit-location+)])))
+
+----
+
+=== Quick installation script
+
+This comes in handy at times.  The script assumes that *users have already
+installed Racket and Ruby*.
+
+The user-friendliness provided by the script is the most important, so let's
+decide upon how it looks like:
+
+// .file::bin/quick-install.sh
+[source,sh,linenums]
+----
+#!/bin/sh
+
+## include::quick-install/racket
+
+## include::quick-install/ruby
+
+## include::quick-install/asciidoctor
+
+## include::quick-install/rackjure
+
+## include::quick-install/ulquikit
+
+----
+
+Bourne shell is a horrible language, so even a simple check-and-make-decision
+might end up look like:
+
+[source,sh,linenums]
+----
+if [ `which some-exec >/dev/null 2>&1 && echo true || echo false` == "true" ]; then
+   # Do-something
+fi
+----
+
+Unfortunately, each part of this +quick-install.sh+ script requires that kind
+of check.  Let's walk through them one by one.
+
+==== Make sure Racket is installed
+
+This task is simple done by checking whether +racket+ executable is found.
+Note that it doesn't check Racket version.  The script fails if Racket is not
+installed, thus the +exit 1+ command.
+
+.code::quick-install/racket
+[source,sh,linenums]
+----
+if [ `which racket >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
+    echo "-> Racket not found, please install it first."
+    echo "   You might refer to your OS's package manager to install Racket,"
+    echo "   or download it from: http://racket-lang.org/download/"
+    echo "   Please MAKE SURE you have Racket 6+."
+    echo "-> Installation aborted."
+    exit 1
+else
+    echo "-> Found Racket.  MAKE SURE you have Racket 6+."
+fi
+
+----
+
+==== Install Ruby 1.9 (using RVM) if necessary
+
+.code::quick-install/ruby
+[source,sh,linenums]
+----
+if [ `which ruby >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
+    echo "-> Ruby not found."
+    echo "   You might refer to your OS's package manager to install Ruby."
+    echo "   However, this script could install Ruby for you using RVM stable."
+    echo "   Please refer to http://rvm.io for further information."
+
+    echo -n "-> Would you like to install RVM stable single-user mode? [Y/n] "
+    read DO_INSTALL_RVM
+
+    if [ "$DO_INSTALL_RVM" == "" ] \
+        || [ "$DO_INSTALL_RVM" == "y" ] \
+        || [ "$DO_INSTALL_RVM" == "Y" ]; then
+        echo "-> Installing Ruby 1.9 and RVM..."
+
+        \curl -sSL https://get.rvm.io | bash -s stable
+        [[ -f ~/.bashrc ]] && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.bashrc)
+        [[ -f ~/.zshrc  ]] && (echo 'source $HOME/.rvm/scripts/rvm' >> ~/.zshrc)
+        source $HOME/.rvm/scripts/rvm
+        rvm install 1.9
+        rvm use 1.9 --default
+    else
+        echo "-> Installation aborted."
+        exit 1
+    fi
+else
+    echo "-> Found Ruby.  MAKE SURE you have Ruby 1.9+."
+fi
+----
+
+==== Install AsciiDoctor if necessary
+
+.code::quick-install/asciidoctor
+[source,sh,linenums]
+----
+if [ `which asciidoctor >/dev/null 2>&1 && echo t || echo f` == "t" ]; then
+    echo "-> AsciiDoctor found."
+else
+    echo "-> Installing AsciiDoctor..."
+    gem install -V asciidoctor
+fi
+
+----
+
+==== Install Rackjure if necessary
+
+.code::quick-install/rackjure
+[source,sh,linenums]
+----
+if [ `(raco pkg show | grep rackjure) >/dev/null 2>&1 && echo t || echo f` == "t" ]; then
+    echo "-> Rackjure found."
+else
+    echo "-> Installing Rackjure..."
+    raco pkg install rackjure
+fi
+
+----
+
+==== Install Ulquikit
+
+NOTE: +DOWNLOAD_URL+ needs to change everytime there's new release.
+
+.code::quick-install/ulquikit
+[source,sh,linenums]
+----
+DOWNLOAD_URL=https://github.com/cmpitg/ulquikit/releases/download/v0.2.1/ulquikit-v0.2.1.zip
+
+echo -n "-> Where would you like to install/update Ulquikit? (default: $HOME/) "
+read ULQUIKIT_DEST
+eval ULQUIKIT_DEST=$ULQUIKIT_DEST
+
+if [ "$ULQUIKIT_DEST" == "" ]; then
+    ULQUIKIT_DEST=$HOME/
+fi
+
+cd $ULQUIKIT_DEST
+
+echo "-> Downloading latest version..."
+wget -q "$DOWNLOAD_URL" -O ulquikit.zip
+
+echo "-> Unpacking..."
+unzip ulquikit.zip
+
+echo "-> Removing zip file..."
+rm -f ulquikit.zip
+
+if [ `which ulqui >/dev/null 2>&1 && echo t || echo f` == "f" ]; then
+    echo '-> Adding ulquikit/bin to your $PATH'
+    [[ -f ~/.bashrc ]] && (echo export PATH=$ULQUI_DEST/ulquikit/bin:'$PATH' >> ~/.bashrc)
+    [[ -f ~/.zshrc ]] && (echo export PATH=$ULQUI_DEST/ulquikit/bin:'$PATH' >> ~/.zshrc)
+
+    echo "-> Done!  Enjoy your time with literate programming!"
+else
+    echo '-> Found ulqui command in your $PATH.'
+fi
+
+export PATH=$ULQUI_DEST/ulquikit/bin:$PATH
+
+----
+
+== License header
+
+Since Ulquikit is distributed under the terms of GPLv3, the license header is
+necessary.
+
+.code::license-header
+[source,lisp]
+----
+;;
+;; This file is part of Ulquikit project.
+;;
+;; Copyright (C) 2014-2017 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
+;;
+;; Ulquikit is free software: you can redistribute it and/or modify it under
+;; the terms of the GNU General Public License as published by the Free
+;; Software Foundation, either version 3 of the License, or (at your option)
+;; any later version.
+;;
+;; Ulquikit is distributed in the hope that it will be useful, but WITHOUT ANY
+;; WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+;; FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+;; details.
+;;
+;; You should have received a copy of the GNU General Public License along
+;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
+;;
+----
+
+== Extras
+
+=== Command list
+
+=== Story: How the Racket version of Ulquikit was actually developed
+
+=== Enhancing narrow-region functionality in Emacs

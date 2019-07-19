@@ -1,21 +1,21 @@
-Usage: generate-html [--from from] [--to to]
+Usage: generate-html [--from from] [--to to] [--recursive recursive]
 
-Generate HTMLs from literate documents.
+Generate HTML from literate documents.
 
-  --from   either path to a directory where literate documents are stored, or
-           path to one literate document, default: "src"
-            
-  --to     directory where HTMLs are generated, default: "generated-html"
+  --from       either path to a directory where literate documents are stored, or list of paths to literate documents; default: "src/"
+  --to         directory where HTMLs are generated; default: "docs/"
+  --recursive  either the literate documents are searched recursively or non-recursively; default: "true"
 
 Examples
 
-Generate HTMLs from src/ to generated-html/ recursively
+Generate HTML from src/ to docs/ recursively
   ulqui generate-html
 
 or explicitly
-  ulqui generate-html --from src/ --to generated-html/
+  ulqui generate-html --from src/ --to docs/ --recursive true
 
-Generate HTMLs from literate-source/ to generated-documents/
-  ulqui generate-html \
-    --from literate-source/ \
-    --to generated-documents
+Generate HTML from literate-source/ to generated-documents/ non-recursively
+  ulqui generate-html --from literate-source/ --to generated-documents/ --recursive false
+
+Generate HTML code from Foo.adoc and quux/ to docs/ recursively
+  ulqui generate-html --from Foo.adoc quux/ --to docs/

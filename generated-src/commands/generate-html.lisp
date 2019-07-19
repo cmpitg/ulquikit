@@ -1,7 +1,7 @@
 ;;
 ;; This file is part of Ulquikit project.
 ;;
-;; Copyright (C) 2014 Nguyễn Hà Dương <cmpitg AT gmailDOTcom>
+;; Copyright (C) 2014-2017 Ha-Duong Nguyen <cmpitg AT gmailDOTcom>
 ;;
 ;; Ulquikit is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free
@@ -17,8 +17,12 @@
 ;; with Ulquikit.  If not, see <http://www.gnu.org/licenses/>.
 ;;
 
-#lang racket
+(in-package #:ulquikit-cmd)
 
-(provide +ulquikit-version+)
-
-(define +ulquikit-version+ "0.2.1")
+(defcmd generate-html (&key (from "src")
+                            (to "docs")
+                            (recursive t))
+  (declare ((or string pathname list) from)
+           ((or string pathname) to))
+  (display-cmd "Generating HTML")
+  (ulquikit:generate-html :from from :to to :recursive recursive))
